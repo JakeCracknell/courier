@@ -7,15 +7,12 @@
     Private LongLength As Double
     Private LatHeight As Double
 
-    Public Sub New(ByVal Bounds As Bounds)
+    Public Sub New(ByVal Bounds As Bounds, ByVal PanelWidth As Integer, ByVal PanelHeight As Integer)
         Me.Bounds = Bounds
-        LongLength = Bounds.MaxLongitude - Bounds.MinLongitude
-        LatHeight = Bounds.MaxLatitude - Bounds.MinLatitude
-    End Sub
-
-    Public Sub SetPanel(ByVal PanelWidth As Integer, ByVal PanelHeight As Integer)
         Me.PanelHeight = PanelHeight
         Me.PanelWidth = PanelWidth
+        LongLength = Bounds.MaxLongitude - Bounds.MinLongitude
+        LatHeight = Bounds.MaxLatitude - Bounds.MinLatitude
     End Sub
 
     Public Sub SetZoom(ByVal ZoomAmount As Decimal)

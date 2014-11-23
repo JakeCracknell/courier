@@ -73,13 +73,14 @@
     <Compile Include="Agent.vb" />
     <Compile Include="Bounds.vb" />
     <Compile Include="CoordinateConverter.vb" />
-    <Compile Include="Form1.vb">
+    <Compile Include="Graphics\frmMain.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.vb">
-      <DependentUpon>Form1.vb</DependentUpon>
+    <Compile Include="Graphics\frmMain.Designer.vb">
+      <DependentUpon>frmMain.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Graphics\MapGraphics.vb" />
     <Compile Include="NodesAdjacencyList\NodesAdjacencyList.vb" />
     <Compile Include="NodesAdjacencyList\NodesAdjacencyListCell.vb" />
     <Compile Include="NodesAdjacencyList\NodesAdjacencyListRow.vb" />
@@ -110,8 +111,8 @@
     <Compile Include="WayType.vb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.vb</DependentUpon>
+    <EmbeddedResource Include="Graphics\frmMain.resx">
+      <DependentUpon>frmMain.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
