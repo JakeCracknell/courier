@@ -1,0 +1,23 @@
+﻿
+Public Enum WayType
+    ROAD_RESIDENTIAL
+
+    ROAD_OTHER
+
+    ROAD_TERTIARY
+
+    ROAD_SECONDARY
+
+    ROAD_PRIMARY
+
+    ROAD_TRUNK
+
+    ROAD_MOTORWAY
+
+    ROAD_SERVICE
+
+    UNSPECIFIED
+
+    ROAD_UNCLASSIFIED
+
+End Enum
