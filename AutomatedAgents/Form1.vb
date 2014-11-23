@@ -13,6 +13,7 @@
     Private AGENT_TSMI_AMOUNTS() As Integer = {1, 5, 10, 50, 100, 500, 1000, 5000, 10000}
     Private Const DRAW_NODES As Boolean = True
     Private Const DRAW_ROADS As Boolean = True
+    Private OverlayFont As New Font("TimesNewRoman", 12)
 
     Private Agents As New List(Of Agent)
 
@@ -57,6 +58,7 @@
         CC = New CoordinateConverter(Map.Bounds)
         CC.SetPanel(picMap.Width, picMap.Height)
         DrawMap()
+        tmrAgents.Start()
     End Sub
 
     Sub DrawMap()
@@ -115,7 +117,8 @@
         For Each Hop As Hop In Hops
             Dim FromPoint As Point = CC.GetPoint(Hop.FromNode)
             Dim ToPoint As Point = CC.GetPoint(Hop.ToNode)
-            gr.DrawLine(Pens.Gold, FromPoint, ToPoint)
+            Dim Pen As New Pen(Brushes.Gold, 3)
+            gr.DrawLine(Pen, FromPoint, ToPoint)
         Next
     End Sub
 
@@ -139,26 +142,31 @@
         Next
     End Sub
 
+
     Private Sub tmrAgents_Tick(sender As Object, e As EventArgs) Handles tmrAgents.Tick
         Time = Time.Add(TIME_INCREMENT)
         If Agents.Count = 0 Then
             Exit Sub
         End If
 
-        Dim BitmapCopy As Bitmap = MapBitmapOriginal.Clone
+        Dim OverlayBitmapCopy As Bitmap = MapBitmapOriginal.Clone
 
-        Dim gr As Graphics = Graphics.FromImage(BitmapCopy)
+        Dim grOverlay As Graphics = Graphics.FromImage(OverlayBitmapCopy)
         For Each Agent As Agent In Agents
             Agent.MoveRandomly()
-            DrawAgent(Agent, gr)
+            DrawAgent(Agent, grOverlay)
         Next
-        gr.Dispose()
 
+        Dim MapBitmapCopy As Bitmap = MapBitmapOriginal.Clone
+        Dim grMap As Graphics = Graphics.FromImage(MapBitmapCopy)
+        grMap.DrawImage(OverlayBitmapCopy, 0, 0)
+        OverlayBitmapCopy.Dispose()
+        grMap.Dispose()
+        grOverlay.Dispose()
         picMap.Image.Dispose()
-        picMap.Image = BitmapCopy
+        picMap.Image = MapBitmapCopy
 
     End Sub
-
     Private Sub tmrStatus_Tick(sender As Object, e As EventArgs) Handles tmrStatus.Tick
         ShowMemoryUsage()
         ShowTime()
@@ -175,15 +183,12 @@
     Dim MapMousePosition As Point
     Private Sub RouteFromToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RouteFromToolStripMenuItem.Click
         SelectionMode = MapSelectionMode.ROUTE_FROM
-    End Sub
-
-    Private Sub RouteToToolStripMenuItem_Click_1(sender As Object, e As EventArgs) Handles RouteToToolStripMenuItem.Click
-        SelectionMode = MapSelectionMode.ROUTE_TO
+        RouteFromNode = Nothing
+        RouteToNode = Nothing
     End Sub
 
     Private Sub picMap_Click(sender As Object, e As EventArgs) Handles picMap.Click
         Dim grOverlay As Graphics = Graphics.FromImage(MapBitmapOverlay)
-        'grOverlay.Clear(Color.Transparent)
 
         Select Case SelectionMode
             Case MapSelectionMode.NONE
@@ -191,20 +196,21 @@
             Case MapSelectionMode.ROUTE_FROM
                 RouteFromNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
                 Dim NodePoint As Point = CC.GetPoint(RouteFromNode)
+                grOverlay.Clear(Color.Transparent)
                 grOverlay.DrawRectangle(Pens.Red, NodePoint.X - 5, NodePoint.Y - 5, 10, 10)
+                grOverlay.DrawString("FROM", OverlayFont, Brushes.Black, NodePoint)
                 SelectionMode = MapSelectionMode.ROUTE_TO
             Case MapSelectionMode.ROUTE_TO
                 RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
                 Dim NodePoint As Point = CC.GetPoint(RouteToNode)
                 grOverlay.DrawRectangle(Pens.Green, NodePoint.X - 5, NodePoint.Y - 5, 10, 10)
+
+                Dim RouteFinder As RouteFinder = New BreadthFirstSearch(RouteFromNode, RouteToNode, Map.NodesAdjacencyList)
+                DrawRoute(RouteFinder.GetRoute, grOverlay)
+                grOverlay.DrawString("TO (" & RouteFinder.GetCost & ")", OverlayFont, Brushes.Black, NodePoint)
+
                 SelectionMode = MapSelectionMode.NONE
         End Select
-
-        If RouteFromNode IsNot Nothing And RouteToNode IsNot Nothing Then
-            Dim RouteFinder As RouteFinder = New BreadthFirstSearch(RouteFromNode, RouteToNode, Map.NodesAdjacencyList)
-            DrawRoute(RouteFinder.GetRoute, grOverlay)
-            MsgBox(RouteFinder.GetCost)
-        End If
 
         Dim MapBitmapCopy As Bitmap = MapBitmapOriginal.Clone
         Dim grMap As Graphics = Graphics.FromImage(MapBitmapCopy)
@@ -232,7 +238,8 @@
             Dim MapBitmapCopy As Bitmap = MapBitmapOriginal.Clone
             Dim grMap As Graphics = Graphics.FromImage(MapBitmapCopy)
             grMap.DrawImage(OverlayBitmapCopy, 0, 0)
-
+            OverlayBitmapCopy.Dispose()
+            grMap.Dispose()
             grOverlay.Dispose()
             picMap.Image.Dispose()
             picMap.Image = MapBitmapCopy

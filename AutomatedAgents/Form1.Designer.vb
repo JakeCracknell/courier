@@ -30,12 +30,11 @@ Partial Class Form1
         Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
         Me.FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AgentsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RouteTestingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RouteFromToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.tmrAgents = New System.Windows.Forms.Timer(Me.components)
         Me.picMap = New System.Windows.Forms.PictureBox()
         Me.tmrStatus = New System.Windows.Forms.Timer(Me.components)
-        Me.RouteTestingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.RouteFromToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.RouteToToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.picMap, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -88,9 +87,21 @@ Partial Class Form1
         Me.AgentsToolStripMenuItem.Size = New System.Drawing.Size(56, 20)
         Me.AgentsToolStripMenuItem.Text = "Agents"
         '
+        'RouteTestingToolStripMenuItem
+        '
+        Me.RouteTestingToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RouteFromToolStripMenuItem})
+        Me.RouteTestingToolStripMenuItem.Name = "RouteTestingToolStripMenuItem"
+        Me.RouteTestingToolStripMenuItem.Size = New System.Drawing.Size(92, 20)
+        Me.RouteTestingToolStripMenuItem.Text = "Route Testing"
+        '
+        'RouteFromToolStripMenuItem
+        '
+        Me.RouteFromToolStripMenuItem.Name = "RouteFromToolStripMenuItem"
+        Me.RouteFromToolStripMenuItem.Size = New System.Drawing.Size(145, 22)
+        Me.RouteFromToolStripMenuItem.Text = "Route From..."
+        '
         'tmrAgents
         '
-        Me.tmrAgents.Enabled = True
         Me.tmrAgents.Interval = 20
         '
         'picMap
@@ -105,25 +116,6 @@ Partial Class Form1
         'tmrStatus
         '
         Me.tmrStatus.Enabled = True
-        '
-        'RouteTestingToolStripMenuItem
-        '
-        Me.RouteTestingToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RouteFromToolStripMenuItem, Me.RouteToToolStripMenuItem})
-        Me.RouteTestingToolStripMenuItem.Name = "RouteTestingToolStripMenuItem"
-        Me.RouteTestingToolStripMenuItem.Size = New System.Drawing.Size(92, 20)
-        Me.RouteTestingToolStripMenuItem.Text = "Route Testing"
-        '
-        'RouteFromToolStripMenuItem
-        '
-        Me.RouteFromToolStripMenuItem.Name = "RouteFromToolStripMenuItem"
-        Me.RouteFromToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-        Me.RouteFromToolStripMenuItem.Text = "Route From..."
-        '
-        'RouteToToolStripMenuItem
-        '
-        Me.RouteToToolStripMenuItem.Name = "RouteToToolStripMenuItem"
-        Me.RouteToToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-        Me.RouteToToolStripMenuItem.Text = "Route To..."
         '
         'Form1
         '
@@ -157,6 +149,5 @@ Partial Class Form1
     Friend WithEvents tmrStatus As System.Windows.Forms.Timer
     Friend WithEvents RouteTestingToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents RouteFromToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents RouteToToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class
