@@ -73,6 +73,7 @@
     <Compile Include="Agent.vb" />
     <Compile Include="Bounds.vb" />
     <Compile Include="CoordinateConverter.vb" />
+    <Compile Include="Graphics\AASimulation.vb" />
     <Compile Include="Graphics\frmMain.vb">
       <SubType>Form</SubType>
     </Compile>

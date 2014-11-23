@@ -27,11 +27,19 @@ Partial Class frmMain
         Me.pbLoad = New System.Windows.Forms.ToolStripProgressBar()
         Me.lblLoadStatus = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lblTime = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.lblDebugVariable = New System.Windows.Forms.ToolStripStatusLabel()
         Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
         Me.FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AgentsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RouteTestingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RouteFromToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ViewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.NodesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RoadsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SimulationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.StartToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.StopToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ResetToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.tmrAgents = New System.Windows.Forms.Timer(Me.components)
         Me.picMap = New System.Windows.Forms.PictureBox()
         Me.tmrStatus = New System.Windows.Forms.Timer(Me.components)
@@ -42,7 +50,7 @@ Partial Class frmMain
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.pbLoad, Me.lblLoadStatus, Me.lblTime})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.pbLoad, Me.lblLoadStatus, Me.lblTime, Me.lblDebugVariable})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 438)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(1099, 22)
@@ -66,9 +74,15 @@ Partial Class frmMain
         Me.lblTime.Size = New System.Drawing.Size(46, 17)
         Me.lblTime.Text = "Time: 0"
         '
+        'lblDebugVariable
+        '
+        Me.lblDebugVariable.Name = "lblDebugVariable"
+        Me.lblDebugVariable.Size = New System.Drawing.Size(55, 17)
+        Me.lblDebugVariable.Text = "Variable: "
+        '
         'MenuStrip1
         '
-        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.AgentsToolStripMenuItem, Me.RouteTestingToolStripMenuItem})
+        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.AgentsToolStripMenuItem, Me.RouteTestingToolStripMenuItem, Me.ViewToolStripMenuItem, Me.SimulationToolStripMenuItem})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
         Me.MenuStrip1.Size = New System.Drawing.Size(1099, 24)
@@ -100,6 +114,56 @@ Partial Class frmMain
         Me.RouteFromToolStripMenuItem.Size = New System.Drawing.Size(145, 22)
         Me.RouteFromToolStripMenuItem.Text = "Route From..."
         '
+        'ViewToolStripMenuItem
+        '
+        Me.ViewToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NodesToolStripMenuItem, Me.RoadsToolStripMenuItem})
+        Me.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem"
+        Me.ViewToolStripMenuItem.Size = New System.Drawing.Size(44, 20)
+        Me.ViewToolStripMenuItem.Text = "View"
+        '
+        'NodesToolStripMenuItem
+        '
+        Me.NodesToolStripMenuItem.Checked = True
+        Me.NodesToolStripMenuItem.CheckOnClick = True
+        Me.NodesToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.NodesToolStripMenuItem.Name = "NodesToolStripMenuItem"
+        Me.NodesToolStripMenuItem.Size = New System.Drawing.Size(108, 22)
+        Me.NodesToolStripMenuItem.Text = "Nodes"
+        '
+        'RoadsToolStripMenuItem
+        '
+        Me.RoadsToolStripMenuItem.Checked = True
+        Me.RoadsToolStripMenuItem.CheckOnClick = True
+        Me.RoadsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.RoadsToolStripMenuItem.Name = "RoadsToolStripMenuItem"
+        Me.RoadsToolStripMenuItem.Size = New System.Drawing.Size(108, 22)
+        Me.RoadsToolStripMenuItem.Text = "Roads"
+        '
+        'SimulationToolStripMenuItem
+        '
+        Me.SimulationToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StartToolStripMenuItem, Me.StopToolStripMenuItem, Me.ResetToolStripMenuItem})
+        Me.SimulationToolStripMenuItem.Name = "SimulationToolStripMenuItem"
+        Me.SimulationToolStripMenuItem.Size = New System.Drawing.Size(76, 20)
+        Me.SimulationToolStripMenuItem.Text = "Simulation"
+        '
+        'StartToolStripMenuItem
+        '
+        Me.StartToolStripMenuItem.Name = "StartToolStripMenuItem"
+        Me.StartToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.StartToolStripMenuItem.Text = "Start"
+        '
+        'StopToolStripMenuItem
+        '
+        Me.StopToolStripMenuItem.Name = "StopToolStripMenuItem"
+        Me.StopToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.StopToolStripMenuItem.Text = "Stop"
+        '
+        'ResetToolStripMenuItem
+        '
+        Me.ResetToolStripMenuItem.Name = "ResetToolStripMenuItem"
+        Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.ResetToolStripMenuItem.Text = "Reset"
+        '
         'tmrAgents
         '
         Me.tmrAgents.Interval = 20
@@ -117,7 +181,7 @@ Partial Class frmMain
         '
         Me.tmrStatus.Enabled = True
         '
-        'Form1
+        'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -126,7 +190,7 @@ Partial Class frmMain
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.MenuStrip1)
         Me.MainMenuStrip = Me.MenuStrip1
-        Me.Name = "Form1"
+        Me.Name = "frmMain"
         Me.Text = "Autonomous Agents Simulator"
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
@@ -149,5 +213,13 @@ Partial Class frmMain
     Friend WithEvents tmrStatus As System.Windows.Forms.Timer
     Friend WithEvents RouteTestingToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents RouteFromToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents lblDebugVariable As System.Windows.Forms.ToolStripStatusLabel
+    Friend WithEvents ViewToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents NodesToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents RoadsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents SimulationToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents StartToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents StopToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ResetToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class

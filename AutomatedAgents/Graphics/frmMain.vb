@@ -1,15 +1,12 @@
 ﻿Public Class frmMain
     Private Map As StreetMap
  
-    Private Time As TimeSpan
-    Private TIME_INCREMENT As TimeSpan = TimeSpan.FromSeconds(1)
     Private Const OSM_FOLDER As String = "C:\Users\Jake\Downloads\"
     Private Const LOAD_TSMI_TEXT_PREFIX As String = "Load "
     Private Const AGENT_TSMI_TEXT_PREFIX As String = "Add "
     Private AGENT_TSMI_AMOUNTS() As Integer = {1, 5, 10, 50, 100, 500, 1000, 5000, 10000}
 
-
-    Private Agents As New List(Of Agent)
+    Private AASimulation As New AASimulation
 
     'On form load, add menu items to load each som file, spawn agents.
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -34,51 +31,45 @@
     Private Sub frmMain_Resize(sender As Object, e As EventArgs) Handles Me.Resize
         If Map IsNot Nothing Then
             MapGraphics.Resize(picMap.Width, picMap.Height, Map.Bounds)
-            picMap.Image = MapGraphics.DrawMap(Map)
+            SetPictureBox(MapGraphics.DrawMap(Map))
         End If
     End Sub
 
     Private Sub LoadToolStripMenuItem_Click(sender As Object, e As EventArgs)
-        Dim File As String = OSM_FOLDER & CType(sender, ToolStripMenuItem).Text.Replace(LOAD_TSMI_TEXT_PREFIX, "")
-        Dim Loader As OSMLoader = New OSMLoader(File)
+        Dim FileName As String = OSM_FOLDER & CType(sender, ToolStripMenuItem).Text.Replace(LOAD_TSMI_TEXT_PREFIX, "")
+        Dim Loader As OSMLoader = New OSMLoader(FileName)
         Map = Loader.CreateMap()
-        Agents.Clear()
+        AASimulation = New AASimulation()
         MapGraphics.Resize(picMap.Width, picMap.Height, Map.Bounds)
-        picMap.Image = MapGraphics.DrawMap(Map)
+        SetPictureBox(MapGraphics.DrawMap(Map))
         tmrAgents.Start()
     End Sub
 
-    Sub ShowMemoryUsage()
-        Dim Bytes As Long = Process.GetCurrentProcess.WorkingSet64
-        Dim KB As Long = Bytes / 1024
-        lblLoadStatus.Text = KB & " K"
-    End Sub
-    Private Sub ShowTime()
-        lblTime.Text = Time.ToString
+    Private Sub NodesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NodesToolStripMenuItem.Click
+        MapGraphics.DRAW_NODES = NodesToolStripMenuItem.Checked
+        SetPictureBox(DrawMap(Map))
     End Sub
 
-    Sub AddAgent()
-        Agents.Add(New Agent(Map, GetRandomColor))
+    Private Sub RoadsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RoadsToolStripMenuItem.Click
+        MapGraphics.DRAW_ROADS = RoadsToolStripMenuItem.Checked
+        SetPictureBox(DrawMap(Map))
     End Sub
+
 
     Private Sub AgentToolStripMenuItem_Click(sender As Object, e As EventArgs)
         Dim Amount As Integer = CInt(CType(sender, ToolStripMenuItem).Text.Replace(AGENT_TSMI_TEXT_PREFIX, ""))
         For i = 1 To Amount
-            AddAgent()
+            AASimulation.AddAgent(Map)
         Next
     End Sub
 
 
     Private Sub tmrAgents_Tick(sender As Object, e As EventArgs) Handles tmrAgents.Tick
-        Time = Time.Add(TIME_INCREMENT)
-        If Agents.Count = 0 Then
-            Exit Sub
+        If AASimulation.IsRunning Then
+            If AASimulation.Tick() Then
+                SetPictureBox(MapGraphics.DrawAgents(AASimulation.Agents))
+            End If
         End If
-        For Each Agent As Agent In Agents
-            Agent.MoveRandomly()
-        Next
-
-        picMap.Image = MapGraphics.DrawAgents(Agents)
     End Sub
     Private Sub tmrStatus_Tick(sender As Object, e As EventArgs) Handles tmrStatus.Tick
         ShowMemoryUsage()
@@ -107,12 +98,12 @@
                 Exit Sub
             Case MapSelectionMode.ROUTE_FROM
                 RouteFromNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
-                picMap.Image = MapGraphics.DrawRouteStart(RouteFromNode)
+                SetPictureBox(MapGraphics.DrawRouteStart(RouteFromNode))
                 SelectionMode = MapSelectionMode.ROUTE_TO
             Case MapSelectionMode.ROUTE_TO
                 RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
                 Dim RouteFinder As RouteFinder = New BreadthFirstSearch(RouteFromNode, RouteToNode, Map.NodesAdjacencyList)
-                picMap.Image = MapGraphics.DrawRoute(RouteFinder.GetRoute)
+                SetPictureBox(MapGraphics.DrawRoute(RouteFinder.GetRoute))
                 SelectionMode = MapSelectionMode.NONE
         End Select
     End Sub
@@ -122,9 +113,38 @@
         If SelectionMode <> MapSelectionMode.NONE Then
             MapMousePosition = e.Location
             Dim CC As New CoordinateConverter(Map.Bounds, picMap.Width, picMap.Height)
-            Dim DrawNode As Node = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
-            lblLoadStatus.Text = DrawNode.Latitude & "," & DrawNode.Longitude
-            picMap.Image = DrawHighlightedNode(DrawNode)
+            Dim Node As Node = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
+            SetPictureBox(DrawHighlightedNode(Node, MapMousePosition))
         End If
+    End Sub
+
+    'Without this the garbage collector has too much garbage. :(
+    Private Sub SetPictureBox(ByVal NewImage As Image)
+        If picMap.Image IsNot Nothing Then
+            picMap.Image.Dispose()
+        End If
+        picMap.Image = NewImage
+    End Sub
+
+    Sub ShowMemoryUsage()
+        Dim Bytes As Long = Process.GetCurrentProcess.WorkingSet64
+        Dim KB As Long = Bytes / 1024
+        lblLoadStatus.Text = FormatNumber(KB, 0) & " K"
+    End Sub
+    Private Sub ShowTime()
+        lblTime.Text = "Time: " & AASimulation.GetSimulationTime
+    End Sub
+
+    Private Sub StartToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles StartToolStripMenuItem.Click
+        AASimulation.StartSimulation()
+    End Sub
+
+    Private Sub StopToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles StopToolStripMenuItem.Click
+        AASimulation.StopSimulation()
+    End Sub
+
+    Private Sub ResetToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetToolStripMenuItem.Click
+        AASimulation = New AASimulation()
+        SetPictureBox(MapGraphics.DrawMap(Map))
     End Sub
 End Class

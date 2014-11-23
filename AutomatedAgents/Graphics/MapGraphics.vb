@@ -5,8 +5,8 @@
     Private BG_COLOR As Color = Color.White
     Private Const AGENT_DRAW_SIZE As Integer = 10
     Private CC As CoordinateConverter
-    Private Const DRAW_NODES As Boolean = True
-    Private Const DRAW_ROADS As Boolean = True
+    Public DRAW_NODES As Boolean = True
+    Public DRAW_ROADS As Boolean = True
     Private OverlayFont As New Font("TimesNewRoman", 12)
 
     Private Width As Integer
@@ -17,7 +17,6 @@
         Height = _Height
         CC = New CoordinateConverter(Bounds, Width, Height)
     End Sub
-
     Function DrawMap(ByVal Map As StreetMap) As Image
         MapBitmapOverlay = New Bitmap(Width, Height)
         Dim gr As Graphics = Graphics.FromImage(MapBitmapOverlay)
@@ -58,7 +57,6 @@
             Next
         End If
 
-        MapBitmapOriginal.Save("out.bmp")
         Return MapBitmapOriginal.Clone
     End Function
 
@@ -70,21 +68,45 @@
                        AGENT_DRAW_SIZE, AGENT_DRAW_SIZE)
     End Sub
 
-    Function DrawHighlightedNode(ByVal Node As Node) As Image
+    'Called many times - unsuccessfulyl tried to optimise the v costly line grMap.DrawImage(OverlayBitmapCopy, 0, 0)
+    Function DrawHighlightedNode(ByVal Node As Node, ByVal Cursor As Point) As Image
         Dim NodePoint As Point = CC.GetPoint(Node)
 
         Dim OverlayBitmapCopy As Bitmap = MapBitmapOverlay.Clone
         Dim grOverlay As Graphics = Graphics.FromImage(OverlayBitmapCopy)
+
         grOverlay.DrawRectangle(Pens.Red, NodePoint.X - 5, NodePoint.Y - 5, 10, 10)
+        grOverlay.DrawLine(Pens.Yellow, Cursor, NodePoint)
+
         Dim MapBitmapCopy As Bitmap = MapBitmapOriginal.Clone
         Dim grMap As Graphics = Graphics.FromImage(MapBitmapCopy)
         grMap.DrawImage(OverlayBitmapCopy, 0, 0)
         OverlayBitmapCopy.Dispose()
         grMap.Dispose()
         grOverlay.Dispose()
-        'picMap.Image.Dispose()
         Return MapBitmapCopy
     End Function
+    'Function DrawHighlightedNode(ByVal Node As Node, ByVal Cursor As Point) As Image
+    '    Dim NodePoint As Point = CC.GetPoint(Node)
+
+    '    Dim OverlayBitmapCopy As Bitmap = MapBitmapOverlay.Clone
+    '    Dim grOverlay As Graphics = Graphics.FromImage(OverlayBitmapCopy)
+
+    '    grOverlay.DrawRectangle(Pens.Red, NodePoint.X - 5, NodePoint.Y - 5, 10, 10)
+    '    grOverlay.DrawLine(Pens.Yellow, Cursor, NodePoint)
+
+    '    Dim MapBitmapCopy As Bitmap = MapBitmapOriginal.Clone
+    '    Dim grMap As Graphics = Graphics.FromImage(MapBitmapCopy)
+
+    '    Dim rect As New Rectangle(NodePoint.X, NodePoint.X, Cursor.X, Cursor.Y)
+    '    rect.Inflate(5, 5)
+
+    '    grMap.DrawImage(OverlayBitmapCopy, rect, rect, GraphicsUnit.Pixel)
+    '    OverlayBitmapCopy.Dispose()
+    '    grMap.Dispose()
+    '    grOverlay.Dispose()
+    '    Return MapBitmapCopy
+    'End Function
 
     Function DrawRouteStart(ByVal Node As Node) As Image
         Dim OneHop As New List(Of Hop)
@@ -120,7 +142,6 @@
         grMap.DrawImage(MapBitmapOverlay, 0, 0)
 
         grOverlay.Dispose()
-        'picMap.Image.Dispose()
         Return MapBitmapCopy
 
     End Function
@@ -139,7 +160,6 @@
         grMap.Dispose()
         grOverlay.Dispose()
         Return MapBitmapCopy
-        'TODO: I removed pbmap.image.dispose, check for mem leak
     End Function
 
 End Module
