@@ -36,11 +36,6 @@ Public Class OSMLoader
             Dim xWayID As Integer = xItem.GetAttribute("id")
             Dim WayType As WayType = WayType.UNSPECIFIED
 
-            'If xWayID = 4005815 Then
-            '    Console.Beep()
-            'End If
-
-
             Dim xTags As XmlNodeList = xItem.GetElementsByTagName("tag")
             For Each xTag As XmlElement In xTags
                 If xTag.GetAttribute("k") = "highway" Then

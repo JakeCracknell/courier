@@ -47,20 +47,28 @@
 
     Private Sub NodesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NodesToolStripMenuItem.Click
         MapGraphics.DRAW_NODES = NodesToolStripMenuItem.Checked
-        SetPictureBox(DrawMap(Map))
+        If Map IsNot Nothing Then
+            SetPictureBox(DrawMap(Map))
+        End If
     End Sub
 
     Private Sub RoadsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RoadsToolStripMenuItem.Click
         MapGraphics.DRAW_ROADS = RoadsToolStripMenuItem.Checked
-        SetPictureBox(DrawMap(Map))
+        If Map IsNot Nothing Then
+            SetPictureBox(DrawMap(Map))
+        End If
     End Sub
 
 
     Private Sub AgentToolStripMenuItem_Click(sender As Object, e As EventArgs)
-        Dim Amount As Integer = CInt(CType(sender, ToolStripMenuItem).Text.Replace(AGENT_TSMI_TEXT_PREFIX, ""))
-        For i = 1 To Amount
-            AASimulation.AddAgent(Map)
-        Next
+        If Map IsNot Nothing Then
+            Dim Amount As Integer = CInt(CType(sender, ToolStripMenuItem).Text.Replace(AGENT_TSMI_TEXT_PREFIX, ""))
+            For i = 1 To Amount
+                AASimulation.AddAgent(Map)
+            Next
+        Else
+            MsgBox("Map is not loaded")
+        End If
     End Sub
 
 
@@ -74,6 +82,7 @@
     Private Sub tmrStatus_Tick(sender As Object, e As EventArgs) Handles tmrStatus.Tick
         ShowMemoryUsage()
         ShowTime()
+        ShowDebugVariable()
     End Sub
 
     Enum MapSelectionMode
@@ -92,20 +101,26 @@
     End Sub
 
     Private Sub picMap_Click(sender As Object, e As EventArgs) Handles picMap.Click
-        Dim CC As New CoordinateConverter(Map.Bounds, picMap.Width, picMap.Height)
-        Select Case SelectionMode
-            Case MapSelectionMode.NONE
-                Exit Sub
-            Case MapSelectionMode.ROUTE_FROM
-                RouteFromNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
-                SetPictureBox(MapGraphics.DrawRouteStart(RouteFromNode))
-                SelectionMode = MapSelectionMode.ROUTE_TO
-            Case MapSelectionMode.ROUTE_TO
-                RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
-                Dim RouteFinder As RouteFinder = New BreadthFirstSearch(RouteFromNode, RouteToNode, Map.NodesAdjacencyList)
-                SetPictureBox(MapGraphics.DrawRoute(RouteFinder.GetRoute))
-                SelectionMode = MapSelectionMode.NONE
-        End Select
+        If Map IsNot Nothing Then
+            Dim CC As New CoordinateConverter(Map.Bounds, picMap.Width, picMap.Height)
+            Select Case SelectionMode
+                Case MapSelectionMode.NONE
+                    Exit Sub
+                Case MapSelectionMode.ROUTE_FROM
+                    RouteFromNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
+                    SetPictureBox(MapGraphics.DrawRouteStart(RouteFromNode))
+                    SelectionMode = MapSelectionMode.ROUTE_TO
+                Case MapSelectionMode.ROUTE_TO
+                    RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
+                    Dim RouteFinder As RouteFinder = New BreadthFirstSearch(RouteFromNode, RouteToNode, Map.NodesAdjacencyList)
+                    If RouteFinder.GetRoute() IsNot Nothing Then
+                        SetPictureBox(MapGraphics.DrawRoute(RouteFinder.GetRoute, RouteFinder.GetNodesSearched))
+                    Else
+                        SetPictureBox(MapGraphics.DrawQuestionMark(MapMousePosition))
+                    End If
+                    SelectionMode = MapSelectionMode.NONE
+            End Select
+        End If
     End Sub
 
     'Highlights nodes on mouse over, if selection mode is on
@@ -126,7 +141,12 @@
         picMap.Image = NewImage
     End Sub
 
-    Sub ShowMemoryUsage()
+    Private Sub ShowDebugVariable()
+        If dEbUgVaRiAbLe IsNot Nothing Then
+            lblDebugVariable.Text = "Variable: " & dEbUgVaRiAbLe.ToString
+        End If
+    End Sub
+    Private Sub ShowMemoryUsage()
         Dim Bytes As Long = Process.GetCurrentProcess.WorkingSet64
         Dim KB As Long = Bytes / 1024
         lblLoadStatus.Text = FormatNumber(KB, 0) & " K"

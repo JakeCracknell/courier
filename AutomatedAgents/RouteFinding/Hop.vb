@@ -15,6 +15,10 @@
         Me.Way = Cell.Way
     End Sub
 
+    Public Function GetCost() As Double
+        Return GetDistance(FromNode, ToNode)
+    End Function
+
     Public Shared Function CloneList(ByVal List As List(Of Hop)) As List(Of Hop)
         Dim NewList As New List(Of Hop)
         For Each Hop As Hop In List

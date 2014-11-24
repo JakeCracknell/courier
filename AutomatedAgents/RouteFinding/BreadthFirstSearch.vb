@@ -6,6 +6,7 @@
     Private AdjacencyList As NodesAdjacencyList
     Private HopList As List(Of Hop)
     Private Cost As Integer
+    Private NodesSearched As New List(Of Node)
 
     Sub New(ByVal SourceNode As Node, ByVal DestinationNode As Node, ByVal AdjacencyList As NodesAdjacencyList)
         Me.SourceNode = SourceNode
@@ -51,10 +52,16 @@
                     Dim NextList As List(Of Hop) = Hop.CloneList(ListOfHops)
                     NextList.Add(NextHop)
                     Queue.Enqueue(NextList)
+                    NodesSearched.Add(NextPath.Node)
                 End If
 
             Next
         Loop
 
+        Debug.WriteLine("No route found - disconnected graph?")
     End Sub
+
+    Public Function GetNodesSearched() As List(Of Node) Implements RouteFinder.GetNodesSearched
+        Return NodesSearched
+    End Function
 End Class

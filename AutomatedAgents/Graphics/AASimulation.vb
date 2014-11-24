@@ -8,7 +8,9 @@ Class AASimulation
 
 
     Sub AddAgent(ByVal Map As StreetMap)
-        Agents.Add(New Agent(Map, GetRandomColor))
+        Dim Agent As New AgentAsync(Map, GetRandomColor)
+        Agent.SetRouteTo(Map.NodesAdjacencyList.GetRandomNode)
+        Agents.Add(Agent)
     End Sub
 
     'Returns whether the state has changed.
@@ -16,7 +18,7 @@ Class AASimulation
         Time = Time.Add(TIME_INCREMENT)
         Dim Modified As Boolean = False
         For Each Agent As Agent In Agents
-            Agent.MoveRandomly()
+            Agent.Move()
             Modified = True
         Next
         Return Modified

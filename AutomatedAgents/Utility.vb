@@ -1,4 +1,6 @@
 ﻿Module Utility
+    Public dEbUgVaRiAbLe As Object
+
     Function DecodeHighWayType(ByVal str As String) As WayType
         Select Case str
             Case "service"
@@ -26,7 +28,7 @@
         Return Color.FromArgb(Rnd() * 255, Rnd() * 255, Rnd() * 255)
     End Function
     Function GetDistance(ByVal Node1 As Node, ByVal Node2 As Node) As Double
-        Return GetDistance(Node1.Latitude, Node1.Longitude, Node2.Latitude, Node2.Latitude)
+        Return GetDistance(Node1.Latitude, Node1.Longitude, Node2.Latitude, Node2.Longitude)
     End Function
     Function GetDistance(ByVal lat1 As Double, ByVal lon1 As Double, ByVal lat2 As Double, ByVal lon2 As Double) As Double
         Dim dDistance As Double

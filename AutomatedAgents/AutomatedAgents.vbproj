@@ -73,6 +73,7 @@
     <Compile Include="Agent.vb" />
     <Compile Include="Bounds.vb" />
     <Compile Include="CoordinateConverter.vb" />
+    <Compile Include="AgentAsync.vb" />
     <Compile Include="Graphics\AASimulation.vb" />
     <Compile Include="Graphics\frmMain.vb">
       <SubType>Form</SubType>
@@ -85,6 +86,7 @@
     <Compile Include="NodesAdjacencyList\NodesAdjacencyList.vb" />
     <Compile Include="NodesAdjacencyList\NodesAdjacencyListCell.vb" />
     <Compile Include="NodesAdjacencyList\NodesAdjacencyListRow.vb" />
+    <Compile Include="RouteFinding\AStarSearch.vb" />
     <Compile Include="RouteFinding\Hop.vb" />
     <Compile Include="RouteFinding\RouteFinder.vb" />
     <Compile Include="RouteFinding\BreadthFirstSearch.vb" />

@@ -8,6 +8,7 @@
     Public DRAW_NODES As Boolean = True
     Public DRAW_ROADS As Boolean = True
     Private OverlayFont As New Font("TimesNewRoman", 12)
+    Private ErrorFont As New Font("TimesNewRoman", 36, FontStyle.Bold)
 
     Private Width As Integer
     Private Height As Integer
@@ -33,7 +34,7 @@
             For Each N As Node In Map.Nodes
                 Dim Point As Point = CC.GetPoint(N)
                 gr.DrawRectangle(Pens.Blue, Point.X, Point.Y, 1, 1)
-
+                'gr.DrawString(N.ID, OverlayFont, Brushes.Black, Point)
                 Progress += 1
                 'pbLoad.Value = 100 * Progress / ProgressMax
             Next
@@ -61,11 +62,15 @@
     End Function
 
     Sub DrawAgent(ByVal Agent As Agent, ByVal gr As Graphics)
-        Dim Point As Point = CC.GetPoint(Agent.CurrentNode)
+        Dim CurrentPoint As Point = CC.GetPoint(Agent.CurrentNode)
         Dim Brush As New SolidBrush(Agent.Color)
-        gr.FillEllipse(Brush, CInt(Point.X - AGENT_DRAW_SIZE / 2), _
-                       CInt(Point.Y - AGENT_DRAW_SIZE / 2), _
+        gr.FillEllipse(Brush, CInt(CurrentPoint.X - AGENT_DRAW_SIZE / 2), _
+                       CInt(CurrentPoint.Y - AGENT_DRAW_SIZE / 2), _
                        AGENT_DRAW_SIZE, AGENT_DRAW_SIZE)
+
+        Dim TargetPoint As Point = CC.GetPoint(Agent.GetTargetNode)
+        Dim Pen As New Pen(Agent.Color)
+        gr.DrawLine(Pen, CurrentPoint, TargetPoint)
     End Sub
 
     'Called many times - unsuccessfulyl tried to optimise the v costly line grMap.DrawImage(OverlayBitmapCopy, 0, 0)
@@ -76,7 +81,7 @@
         Dim grOverlay As Graphics = Graphics.FromImage(OverlayBitmapCopy)
 
         grOverlay.DrawRectangle(Pens.Red, NodePoint.X - 5, NodePoint.Y - 5, 10, 10)
-        grOverlay.DrawLine(Pens.Yellow, Cursor, NodePoint)
+        grOverlay.DrawLine(Pens.Red, Cursor, NodePoint)
 
         Dim MapBitmapCopy As Bitmap = MapBitmapOriginal.Clone
         Dim grMap As Graphics = Graphics.FromImage(MapBitmapCopy)
@@ -111,10 +116,10 @@
     Function DrawRouteStart(ByVal Node As Node) As Image
         Dim OneHop As New List(Of Hop)
         OneHop.Add(New Hop(Node, Node, Nothing))
-        Return DrawRoute(OneHop)
+        Return DrawRoute(OneHop, Nothing)
     End Function
 
-    Function DrawRoute(ByVal RouteHops As List(Of Hop)) As Image
+    Function DrawRoute(ByVal RouteHops As List(Of Hop), ByVal NodesSearched As List(Of Node)) As Image
         Dim grOverlay As Graphics = Graphics.FromImage(MapBitmapOverlay)
 
         Dim RouteFromNode As Node = RouteHops(0).FromNode
@@ -135,6 +140,11 @@
                 grOverlay.DrawLine(Pen, FromPoint, ToPoint)
             Next
             grOverlay.DrawString("TO (" & RouteHops.Count & ")", OverlayFont, Brushes.Black, NodePoint)
+
+            For Each N As Node In NodesSearched
+                Dim Point As Point = CC.GetPoint(N)
+                grOverlay.DrawRectangle(Pens.GreenYellow, Point.X, Point.Y, 1, 1)
+            Next
         End If
 
         Dim MapBitmapCopy As Bitmap = MapBitmapOriginal.Clone
@@ -143,7 +153,6 @@
 
         grOverlay.Dispose()
         Return MapBitmapCopy
-
     End Function
 
     Function DrawAgents(ByVal Agents As List(Of Agent)) As Image
@@ -162,4 +171,17 @@
         Return MapBitmapCopy
     End Function
 
+    Function DrawQuestionMark(ByVal MousePoint As Point) As Image
+        Dim OverlayBitmapCopy As Bitmap = MapBitmapOriginal.Clone
+        Dim grOverlay As Graphics = Graphics.FromImage(OverlayBitmapCopy)
+        grOverlay.DrawString("?", ErrorFont, Brushes.Red, MousePoint)
+
+        Dim MapBitmapCopy As Bitmap = MapBitmapOriginal.Clone
+        Dim grMap As Graphics = Graphics.FromImage(MapBitmapCopy)
+        grMap.DrawImage(OverlayBitmapCopy, 0, 0)
+        OverlayBitmapCopy.Dispose()
+        grMap.Dispose()
+        grOverlay.Dispose()
+        Return MapBitmapCopy
+    End Function
 End Module
