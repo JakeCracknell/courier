@@ -11,9 +11,16 @@
 
     Public Overrides Sub Move()
         If AwaitingRoute Then
-            If RouteFinder IsNot Nothing AndAlso RouteFinder.PlannedRoute IsNot Nothing Then
-                PlannedRoute = RouteFinder.PlannedRoute
-                AwaitingRoute = False
+            If RouteFinder IsNot Nothing AndAlso RouteFinder.RoutingComplete Then
+                If RouteFinder.PlannedRoute IsNot Nothing Then
+                    PlannedRoute = RouteFinder.PlannedRoute
+                    AwaitingRoute = False
+                Else
+                    'This handles the case where the agent tried to route to a disconnected subgraph
+                    'What about when it was placed on a small disconnected subgraph - stuck!
+                    SetRouteTo(Map.NodesAdjacencyList.GetRandomNode)
+                    Exit Sub
+                End If
                 dEbUgVaRiAbLe = TicksWaited
                 TicksWaited = 0
             Else
@@ -28,6 +35,16 @@
         Else
             CurrentNode = PlannedRoute(RoutePosition).ToNode
             CurrentWay = PlannedRoute(RoutePosition).Way
+
+
+            'JUST FOR FUN
+            'CurrentNode.Latitude += IIf(Rnd() < 0.5, 0.0001, -0.0001)
+            'CurrentNode.Longitude += IIf(Rnd() < 0.5, 0.0001, -0.0001)
+            'If CurrentWay IsNot Nothing Then
+
+            '    CurrentWay.OneWay = Not CurrentWay.OneWay
+            'End If
+
             RoutePosition += 1
         End If
 
@@ -44,6 +61,7 @@
         Private ToNode As Node
         Private AdjacencyList As NodesAdjacencyList
         Public PlannedRoute As List(Of Hop)
+        Public RoutingComplete As Boolean = False 'Might have failed
 
         Public Sub New(ByVal FromNode As Node, ByVal ToNode As Node, ByVal AdjacencyList As NodesAdjacencyList)
             Me.FromNode = FromNode
@@ -55,6 +73,7 @@
         Protected Sub Run()
             Dim RouteFinder As RouteFinder = New AStarSearch(FromNode, ToNode, AdjacencyList)
             PlannedRoute = RouteFinder.GetRoute
+            RoutingComplete = True
         End Sub
     End Class
 End Class

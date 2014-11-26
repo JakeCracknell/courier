@@ -46,7 +46,7 @@
     End Function
 
     Public Overridable Sub SetRouteTo(ByVal DestinationNode As Node)
-        Dim RouteFinder As RouteFinder = New BreadthFirstSearch(CurrentNode, DestinationNode, Map.NodesAdjacencyList)
+        Dim RouteFinder As RouteFinder = New AStarSearch(CurrentNode, DestinationNode, Map.NodesAdjacencyList)
         PlannedRoute = RouteFinder.GetRoute
         RoutePosition = 0
     End Sub

@@ -1,8 +1,7 @@
 ﻿Public Class frmMain
     Private Map As StreetMap
  
-    Private Const OSM_FOLDER As String = "C:\Users\Jake\Downloads\"
-    Private Const LOAD_TSMI_TEXT_PREFIX As String = "Load "
+     Private Const LOAD_TSMI_TEXT_PREFIX As String = "Load "
     Private Const AGENT_TSMI_TEXT_PREFIX As String = "Add "
     Private AGENT_TSMI_AMOUNTS() As Integer = {1, 5, 10, 50, 100, 500, 1000, 5000, 10000}
 
@@ -10,11 +9,9 @@
 
     'On form load, add menu items to load each som file, spawn agents.
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim FolderToScan As New IO.DirectoryInfo(OSM_FOLDER)
-        Dim OSMFiles As IO.FileInfo() = FolderToScan.GetFiles("*.osm")
-        For Each OSMFile As IO.FileInfo In OSMFiles
-            Dim Filename As String = OSMFile.Name
-            Dim LoadMenuItem As New ToolStripMenuItem(LOAD_TSMI_TEXT_PREFIX & Filename)
+        Randomize()
+        For Each File As String In OSMFileSystemManager.GetAllFilenames()
+            Dim LoadMenuItem As New ToolStripMenuItem(LOAD_TSMI_TEXT_PREFIX & File)
             AddHandler LoadMenuItem.Click, AddressOf LoadToolStripMenuItem_Click
             FileToolStripMenuItem.DropDownItems.Add(LoadMenuItem)
         Next
@@ -24,8 +21,6 @@
             AddHandler AgentMenuItem.Click, AddressOf AgentToolStripMenuItem_Click
             AgentsToolStripMenuItem.DropDownItems.Add(AgentMenuItem)
         Next
-
-        Randomize()
     End Sub
 
     Private Sub frmMain_Resize(sender As Object, e As EventArgs) Handles Me.Resize
@@ -36,7 +31,8 @@
     End Sub
 
     Private Sub LoadToolStripMenuItem_Click(sender As Object, e As EventArgs)
-        Dim FileName As String = OSM_FOLDER & CType(sender, ToolStripMenuItem).Text.Replace(LOAD_TSMI_TEXT_PREFIX, "")
+        Dim FileName As String = CType(sender, ToolStripMenuItem).Text.Replace(LOAD_TSMI_TEXT_PREFIX, "")
+        FileName = OSMFileSystemManager.GetFilePathFromName(FileName)
         Dim Loader As OSMLoader = New OSMLoader(FileName)
         Map = Loader.CreateMap()
         AASimulation = New AASimulation()
@@ -46,17 +42,14 @@
     End Sub
 
     Private Sub NodesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NodesToolStripMenuItem.Click
-        MapGraphics.DRAW_NODES = NodesToolStripMenuItem.Checked
+        MapGraphics.ConfigDrawNodes = NodesToolStripMenuItem.Checked
         If Map IsNot Nothing Then
             SetPictureBox(DrawMap(Map))
         End If
     End Sub
 
-    Private Sub RoadsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RoadsToolStripMenuItem.Click
-        MapGraphics.DRAW_ROADS = RoadsToolStripMenuItem.Checked
-        If Map IsNot Nothing Then
-            SetPictureBox(DrawMap(Map))
-        End If
+    Private Sub AgentRoutesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AgentRoutesToolStripMenuItem.Click
+        MapGraphics.ConfigDrawAgentLines = AgentRoutesToolStripMenuItem.Checked
     End Sub
 
 
@@ -75,6 +68,7 @@
     Private Sub tmrAgents_Tick(sender As Object, e As EventArgs) Handles tmrAgents.Tick
         If AASimulation.IsRunning Then
             If AASimulation.Tick() Then
+                'SetPictureBox(MapGraphics.DrawMap(Map))
                 SetPictureBox(MapGraphics.DrawAgents(AASimulation.Agents))
             End If
         End If
@@ -112,7 +106,7 @@
                     SelectionMode = MapSelectionMode.ROUTE_TO
                 Case MapSelectionMode.ROUTE_TO
                     RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
-                    Dim RouteFinder As RouteFinder = New BreadthFirstSearch(RouteFromNode, RouteToNode, Map.NodesAdjacencyList)
+                    Dim RouteFinder As RouteFinder = New AStarSearch(RouteFromNode, RouteToNode, Map.NodesAdjacencyList)
                     If RouteFinder.GetRoute() IsNot Nothing Then
                         SetPictureBox(MapGraphics.DrawRoute(RouteFinder.GetRoute, RouteFinder.GetNodesSearched))
                     Else
@@ -166,5 +160,31 @@
     Private Sub ResetToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetToolStripMenuItem.Click
         AASimulation = New AASimulation()
         SetPictureBox(MapGraphics.DrawMap(Map))
+    End Sub
+
+    Private Sub ThinRoadsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ThinRoadsToolStripMenuItem.Click
+        If ThinRoadsToolStripMenuItem.Checked Then
+            MapGraphics.ConfigDrawRoads = 1
+            ThickRoadsToolStripMenuItem.Checked = False
+        ElseIf Not ThickRoadsToolStripMenuItem.Checked Then
+            MapGraphics.ConfigDrawRoads = 0
+        End If
+
+        If Map IsNot Nothing Then
+            SetPictureBox(DrawMap(Map))
+        End If
+    End Sub
+
+    Private Sub ThickRoadsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ThickRoadsToolStripMenuItem.Click
+        If ThickRoadsToolStripMenuItem.Checked Then
+            MapGraphics.ConfigDrawRoads = 2
+            ThinRoadsToolStripMenuItem.Checked = False
+        ElseIf Not ThinRoadsToolStripMenuItem.Checked Then
+            MapGraphics.ConfigDrawRoads = 0
+        End If
+
+        If Map IsNot Nothing Then
+            SetPictureBox(DrawMap(Map))
+        End If
     End Sub
 End Class

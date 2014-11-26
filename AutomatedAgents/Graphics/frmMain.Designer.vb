@@ -36,6 +36,7 @@ Partial Class frmMain
         Me.ViewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.NodesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RoadsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AgentRoutesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SimulationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StartToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StopToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -43,6 +44,8 @@ Partial Class frmMain
         Me.tmrAgents = New System.Windows.Forms.Timer(Me.components)
         Me.picMap = New System.Windows.Forms.PictureBox()
         Me.tmrStatus = New System.Windows.Forms.Timer(Me.components)
+        Me.ThinRoadsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ThickRoadsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.picMap, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -116,7 +119,7 @@ Partial Class frmMain
         '
         'ViewToolStripMenuItem
         '
-        Me.ViewToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NodesToolStripMenuItem, Me.RoadsToolStripMenuItem})
+        Me.ViewToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RoadsToolStripMenuItem, Me.NodesToolStripMenuItem, Me.AgentRoutesToolStripMenuItem})
         Me.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem"
         Me.ViewToolStripMenuItem.Size = New System.Drawing.Size(44, 20)
         Me.ViewToolStripMenuItem.Text = "View"
@@ -127,17 +130,24 @@ Partial Class frmMain
         Me.NodesToolStripMenuItem.CheckOnClick = True
         Me.NodesToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
         Me.NodesToolStripMenuItem.Name = "NodesToolStripMenuItem"
-        Me.NodesToolStripMenuItem.Size = New System.Drawing.Size(108, 22)
+        Me.NodesToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.NodesToolStripMenuItem.Text = "Nodes"
         '
         'RoadsToolStripMenuItem
         '
-        Me.RoadsToolStripMenuItem.Checked = True
-        Me.RoadsToolStripMenuItem.CheckOnClick = True
-        Me.RoadsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.RoadsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ThinRoadsToolStripMenuItem, Me.ThickRoadsToolStripMenuItem})
         Me.RoadsToolStripMenuItem.Name = "RoadsToolStripMenuItem"
-        Me.RoadsToolStripMenuItem.Size = New System.Drawing.Size(108, 22)
+        Me.RoadsToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.RoadsToolStripMenuItem.Text = "Roads"
+        '
+        'AgentRoutesToolStripMenuItem
+        '
+        Me.AgentRoutesToolStripMenuItem.Checked = True
+        Me.AgentRoutesToolStripMenuItem.CheckOnClick = True
+        Me.AgentRoutesToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.AgentRoutesToolStripMenuItem.Name = "AgentRoutesToolStripMenuItem"
+        Me.AgentRoutesToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.AgentRoutesToolStripMenuItem.Text = "Agent Routes"
         '
         'SimulationToolStripMenuItem
         '
@@ -181,6 +191,22 @@ Partial Class frmMain
         '
         Me.tmrStatus.Enabled = True
         '
+        'ThinRoadsToolStripMenuItem
+        '
+        Me.ThinRoadsToolStripMenuItem.Checked = True
+        Me.ThinRoadsToolStripMenuItem.CheckOnClick = True
+        Me.ThinRoadsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.ThinRoadsToolStripMenuItem.Name = "ThinRoadsToolStripMenuItem"
+        Me.ThinRoadsToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.ThinRoadsToolStripMenuItem.Text = "Thin Roads"
+        '
+        'ThickRoadsToolStripMenuItem
+        '
+        Me.ThickRoadsToolStripMenuItem.CheckOnClick = True
+        Me.ThickRoadsToolStripMenuItem.Name = "ThickRoadsToolStripMenuItem"
+        Me.ThickRoadsToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.ThickRoadsToolStripMenuItem.Text = "Thick Roads"
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -221,5 +247,8 @@ Partial Class frmMain
     Friend WithEvents StartToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents StopToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ResetToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents AgentRoutesToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ThinRoadsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ThickRoadsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class

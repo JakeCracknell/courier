@@ -7,24 +7,32 @@
             For i = 1 To Way.Nodes.Length - 1
                 Dim CurrentNode As Node = Way.Nodes(i)
                 AddNodesWay(LastNode, CurrentNode, Way)
-                AddNodesWay(CurrentNode, LastNode, Way)
+                If Not Way.OneWay Then
+                    AddNodesWay(CurrentNode, LastNode, Way)
+                Else
+                    AddNodeEmpty(CurrentNode)
+                End If
                 LastNode = CurrentNode
             Next
         End If
     End Sub
 
     Public Sub AddNodesWay(ByVal Node1 As Node, ByVal Node2 As Node, ByVal Way As Way)
-        'One way street???????
-        Dim Row As NodesAdjacencyListRow = Nothing
-        Rows.TryGetValue(Node1.ID, Row)
-        If Row Is Nothing Then
-            Row = New NodesAdjacencyListRow(Node1)
-            Rows.Add(Node1.ID, Row)
-        End If
+        Dim Row As NodesAdjacencyListRow = AddNodeEmpty(Node1)
 
         Dim Cell As New NodesAdjacencyListCell(Node2, Way)
         Row.AddCell(Cell)
     End Sub
+
+    Public Function AddNodeEmpty(ByVal Node As Node) As NodesAdjacencyListRow
+        Dim Row As NodesAdjacencyListRow = Nothing
+        Rows.TryGetValue(Node.ID, Row)
+        If Row Is Nothing Then
+            Row = New NodesAdjacencyListRow(Node)
+            Rows.Add(Node.ID, Row)
+        End If
+        Return Row
+    End Function
 
     Function GetRandomNode() As Node
         Return Rows.Values(Int(Rnd() * Rows.Count)).NodeKey

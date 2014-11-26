@@ -6,7 +6,8 @@ Class AASimulation
     Private Time As TimeSpan
     Private TIME_INCREMENT As TimeSpan = TimeSpan.FromSeconds(1)
 
-
+    'TODO: Need to fix the case where the route is null due to disconnected grpah
+    'Probably just fix the adj/node list as we don't want in final prog
     Sub AddAgent(ByVal Map As StreetMap)
         Dim Agent As New AgentAsync(Map, GetRandomColor)
         Agent.SetRouteTo(Map.NodesAdjacencyList.GetRandomNode)
@@ -21,6 +22,7 @@ Class AASimulation
             Agent.Move()
             Modified = True
         Next
+
         Return Modified
     End Function
 

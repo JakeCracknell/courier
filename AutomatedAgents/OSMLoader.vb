@@ -1,16 +1,14 @@
 ﻿Imports System.Xml
 
 Public Class OSMLoader
-    Private FilePath As String = "C:\Users\Jake\Downloads\map.osm"
-
+    Private FilePath As String
     Public Sub New(ByVal FilePath As String)
         Me.FilePath = FilePath
     End Sub
 
     Function CreateMap() As StreetMap
-        Dim FileContents As String = IO.File.ReadAllText(FilePath)
         Dim xDoc As XmlDocument = New XmlDocument()
-        xDoc.LoadXml(FileContents)
+        xDoc.Load(FilePath)
 
         Dim xBounds As XmlElement = xDoc.GetElementsByTagName("bounds")(0)
         Dim Bounds As New Bounds(xBounds.GetAttribute("minlat"), _
@@ -35,11 +33,16 @@ Public Class OSMLoader
         For Each xItem As XmlElement In xWays
             Dim xWayID As Integer = xItem.GetAttribute("id")
             Dim WayType As WayType = WayType.UNSPECIFIED
+            Dim OneWay As String = ""
 
             Dim xTags As XmlNodeList = xItem.GetElementsByTagName("tag")
             For Each xTag As XmlElement In xTags
-                If xTag.GetAttribute("k") = "highway" Then
+                Dim AttributeName As String = xTag.GetAttribute("k")
+                If AttributeName = "highway" Then
                     WayType = DecodeHighWayType(xTag.GetAttribute("v"))
+                End If
+                If AttributeName = "oneway" Then
+                    OneWay = xTag.GetAttribute("v")
                 End If
             Next
 
@@ -57,6 +60,11 @@ Public Class OSMLoader
                 Next
 
                 Dim Way As New Way(xWayID, Nds.ToArray, WayType)
+
+                If OneWay <> "" Then
+                    Way.SetOneWay(OneWay)
+                End If
+
                 Map.Ways.Add(Way)
                 Map.NodesAdjacencyList.AddWay(Way)
             End If
