@@ -9,15 +9,15 @@
                 Return WayType.ROAD_UNCLASSIFIED 'e.g. vine road
             Case "residential"
                 Return WayType.ROAD_RESIDENTIAL
-            Case "tertiary"
+            Case "tertiary", "tertiary_link"
                 Return WayType.ROAD_TERTIARY
-            Case "secondary"
+            Case "secondary", "secondary_link"
                 Return WayType.ROAD_SECONDARY
-            Case "primary"
+            Case "primary", "primary_link"
                 Return WayType.ROAD_PRIMARY
-            Case "trunk"
+            Case "trunk", "trunk_link"
                 Return WayType.ROAD_TRUNK
-            Case "motorway"
+            Case "motorway", "motorway_link"
                 Return WayType.ROAD_MOTORWAY
             Case Else
                 Return WayType.UNSPECIFIED

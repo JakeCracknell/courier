@@ -19,6 +19,11 @@
         Return GetDistance(FromNode, ToNode)
     End Function
 
+    Public Overrides Function Equals(ByVal obj As Object) As Boolean
+        Dim other As Hop = CType(obj, Hop)
+        Return FromNode = other.FromNode And ToNode = other.ToNode ' And Way = other.Way
+    End Function
+
     Public Shared Function CloneList(ByVal List As List(Of Hop)) As List(Of Hop)
         Dim NewList As New List(Of Hop)
         For Each Hop As Hop In List

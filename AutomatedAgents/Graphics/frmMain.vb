@@ -6,6 +6,7 @@
     Private AGENT_TSMI_AMOUNTS() As Integer = {1, 5, 10, 50, 100, 500, 1000, 5000, 10000}
 
     Private AASimulation As New AASimulation
+    Private Const VISIBLE_SIMULATION_SPEED_X As Integer = 1
 
     'On form load, add menu items to load each som file, spawn agents.
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -67,10 +68,12 @@
 
     Private Sub tmrAgents_Tick(sender As Object, e As EventArgs) Handles tmrAgents.Tick
         If AASimulation.IsRunning Then
-            If AASimulation.Tick() Then
-                'SetPictureBox(MapGraphics.DrawMap(Map))
-                SetPictureBox(MapGraphics.DrawAgents(AASimulation.Agents))
-            End If
+            SelectionMode = MapSelectionMode.AGENTS_ALL_ROUTE_TO
+            Dim SimulationStateChanged As Boolean = False
+            For i = 1 To VISIBLE_SIMULATION_SPEED_X
+                SimulationStateChanged = SimulationStateChanged Or AASimulation.Tick()
+            Next
+            SetPictureBox(MapGraphics.DrawAgents(AASimulation.Agents))
         End If
     End Sub
     Private Sub tmrStatus_Tick(sender As Object, e As EventArgs) Handles tmrStatus.Tick
@@ -83,6 +86,7 @@
         NONE
         ROUTE_FROM
         ROUTE_TO
+        AGENTS_ALL_ROUTE_TO
     End Enum
     Dim SelectionMode As MapSelectionMode
     Dim RouteFromNode As Node
@@ -104,6 +108,7 @@
                     RouteFromNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
                     SetPictureBox(MapGraphics.DrawRouteStart(RouteFromNode))
                     SelectionMode = MapSelectionMode.ROUTE_TO
+                    dEbUgVaRiAbLe = RouteFromNode.ID
                 Case MapSelectionMode.ROUTE_TO
                     RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
                     Dim RouteFinder As RouteFinder = New AStarSearch(RouteFromNode, RouteToNode, Map.NodesAdjacencyList)
@@ -113,14 +118,20 @@
                         SetPictureBox(MapGraphics.DrawQuestionMark(MapMousePosition))
                     End If
                     SelectionMode = MapSelectionMode.NONE
+                    dEbUgVaRiAbLe = RouteToNode.ID
+                Case MapSelectionMode.AGENTS_ALL_ROUTE_TO
+                    RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
+                    For Each Agent In AASimulation.Agents
+                        Agent.SetRouteTo(RouteToNode)
+                    Next
             End Select
         End If
     End Sub
 
     'Highlights nodes on mouse over, if selection mode is on
     Private Sub picMap_MouseMove(sender As Object, e As MouseEventArgs) Handles picMap.MouseMove
-        If SelectionMode <> MapSelectionMode.NONE Then
-            MapMousePosition = e.Location
+        MapMousePosition = e.Location
+        If SelectionMode = MapSelectionMode.ROUTE_FROM Or SelectionMode = MapSelectionMode.ROUTE_TO Then
             Dim CC As New CoordinateConverter(Map.Bounds, picMap.Width, picMap.Height)
             Dim Node As Node = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
             SetPictureBox(DrawHighlightedNode(Node, MapMousePosition))

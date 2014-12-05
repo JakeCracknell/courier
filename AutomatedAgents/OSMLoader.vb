@@ -46,7 +46,7 @@ Public Class OSMLoader
                 End If
             Next
 
-            'Do not add non-highways to way list.
+            'Do not add non-highways to way list. TODO: ref=access, I should not be allowed to drive through hamm bus stn!
             If WayType <> WayType.UNSPECIFIED Then
                 Dim Nds As New List(Of Node)
                 Dim xNds As XmlNodeList = xItem.GetElementsByTagName("nd")
@@ -71,7 +71,10 @@ Public Class OSMLoader
 
         Next
 
+        Node.TotalNodesTraffic = 1
 
+        '.NETs garbage collector will not dispose the XML document
+        'until a while later. SW London = 1GB -> 200MB after GC
 
         Return Map
     End Function

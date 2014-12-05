@@ -72,9 +72,10 @@
   <ItemGroup>
     <Compile Include="Agent.vb" />
     <Compile Include="Bounds.vb" />
+    <Compile Include="Centralised\SimpleDispatcher.vb" />
     <Compile Include="CoordinateConverter.vb" />
     <Compile Include="AgentAsync.vb" />
-    <Compile Include="Graphics\AASimulation.vb" />
+    <Compile Include="AASimulation.vb" />
     <Compile Include="Graphics\frmMain.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -113,6 +114,7 @@
     <Compile Include="OSMLoader.vb" />
     <Compile Include="Utility.vb" />
     <Compile Include="Way.vb" />
+    <Compile Include="RoutePosition.vb" />
     <Compile Include="WayType.vb" />
   </ItemGroup>
   <ItemGroup>

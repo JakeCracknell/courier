@@ -13,7 +13,7 @@
         If AwaitingRoute Then
             If RouteFinder IsNot Nothing AndAlso RouteFinder.RoutingComplete Then
                 If RouteFinder.PlannedRoute IsNot Nothing Then
-                    PlannedRoute = RouteFinder.PlannedRoute
+                    Position = New RoutePosition(RouteFinder.PlannedRoute)
                     AwaitingRoute = False
                 Else
                     'This handles the case where the agent tried to route to a disconnected subgraph
@@ -30,12 +30,11 @@
             End If
         End If
 
-        If CurrentNode = GetTargetNode() Then
+        If Position.RouteCompleted() Then
             SetRouteTo(Map.NodesAdjacencyList.GetRandomNode)
         Else
-            CurrentNode = PlannedRoute(RoutePosition).ToNode
-            CurrentWay = PlannedRoute(RoutePosition).Way
-
+            'RoutePosition may be changed here - ByRef!
+            Position.GetNextPosition(FIXED_KM_PER_SECOND)
 
             'JUST FOR FUN
             'CurrentNode.Latitude += IIf(Rnd() < 0.5, 0.0001, -0.0001)
@@ -45,13 +44,13 @@
             '    CurrentWay.OneWay = Not CurrentWay.OneWay
             'End If
 
-            RoutePosition += 1
+            'RoutePosition += 1
         End If
 
     End Sub
 
     Public Overrides Sub SetRouteTo(ByVal DestinationNode As Node)
-        RouteFinder = New AsyncRouteFinder(CurrentNode, DestinationNode, Map.NodesAdjacencyList)
+        RouteFinder = New AsyncRouteFinder(GetCurrentNode(), DestinationNode, Map.NodesAdjacencyList)
         AwaitingRoute = True
         RoutePosition = 0
     End Sub
@@ -76,4 +75,5 @@
             RoutingComplete = True
         End Sub
     End Class
+
 End Class

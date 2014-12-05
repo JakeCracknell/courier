@@ -20,6 +20,25 @@
         Throw New NotImplementedException
     End Sub
 
+    Public Function GetPoint(ByVal RoutePosition As RoutePosition) As Point
+        Dim Lat, Lon As Double
+        Dim X As Node = RoutePosition.GetOldNode
+        Dim Y As Node = RoutePosition.GetNextNode
+
+        If X.Latitude < Y.Latitude Then
+            Lat = X.Latitude + (Y.Latitude - X.Latitude) * RoutePosition.PercentageTravelled
+        Else
+            Lat = Y.Latitude + (X.Latitude - Y.Latitude) * (1 - RoutePosition.PercentageTravelled)
+        End If
+
+        If X.Longitude < Y.Longitude Then
+            Lon = X.Longitude + (Y.Longitude - X.Longitude) * RoutePosition.PercentageTravelled
+        Else
+            Lon = Y.Longitude + (X.Longitude - Y.Longitude) * (1 - RoutePosition.PercentageTravelled)
+        End If
+
+        Return GetPoint(Lat, Lon)
+    End Function
     Public Function GetPoint(ByVal Node As Node) As Point
         Return GetPoint(Node.Latitude, Node.Longitude)
     End Function

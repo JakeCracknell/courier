@@ -39,7 +39,8 @@
             ProgressMax = Map.Nodes.Count
             For Each N As Node In Map.Nodes
                 Dim Point As Point = CC.GetPoint(N)
-                gr.DrawRectangle(Pens.Blue, Point.X, Point.Y, 1, 1)
+                Dim PointSize As Integer = 1 'Math.Min(Width * Height / 130000, ((Map.Nodes.Count / 10) * N.GetAgentTraffic / Node.TotalNodesTraffic))
+                gr.DrawRectangle(Pens.Blue, Point.X, Point.Y, PointSize, PointSize)
                 'gr.DrawString(N.ID, OverlayFont, Brushes.Black, Point)
                 Progress += 1
                 'pbLoad.Value = 100 * Progress / ProgressMax
@@ -79,18 +80,19 @@
     End Function
 
     Sub DrawAgent(ByVal Agent As Agent, ByVal gr As Graphics)
-        Dim CurrentPoint As Point = CC.GetPoint(Agent.CurrentNode)
-        Dim Brush As New SolidBrush(Agent.Color)
-        gr.FillEllipse(Brush, CInt(CurrentPoint.X - AGENT_DRAW_SIZE / 2), _
-                       CInt(CurrentPoint.Y - AGENT_DRAW_SIZE / 2), _
-                       AGENT_DRAW_SIZE, AGENT_DRAW_SIZE)
+        If Agent.Position IsNot Nothing Then
+            Dim CurrentPoint As Point = CC.GetPoint(Agent.Position)
+            Dim Brush As New SolidBrush(Agent.Color)
+            gr.FillEllipse(Brush, CInt(CurrentPoint.X - AGENT_DRAW_SIZE / 2), _
+                           CInt(CurrentPoint.Y - AGENT_DRAW_SIZE / 2), _
+                           AGENT_DRAW_SIZE, AGENT_DRAW_SIZE)
 
-        If ConfigDrawAgentLines Then
-            Dim TargetPoint As Point = CC.GetPoint(Agent.GetTargetNode)
-            Dim Pen As New Pen(Agent.Color)
-            gr.DrawLine(Pen, CurrentPoint, TargetPoint)
+            If ConfigDrawAgentLines Then
+                Dim TargetPoint As Point = CC.GetPoint(Agent.Position.GetEndNode)
+                Dim Pen As New Pen(Agent.Color)
+                gr.DrawLine(Pen, CurrentPoint, TargetPoint)
+            End If
         End If
-
     End Sub
 
     Private Sub DrawNodeRectangle(ByVal Point As Point, ByVal gr As Graphics)
