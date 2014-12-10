@@ -75,12 +75,18 @@
     <Compile Include="Centralised\SimpleDispatcher.vb" />
     <Compile Include="CoordinateConverter.vb" />
     <Compile Include="AgentAsync.vb" />
-    <Compile Include="AASimulation.vb" />
+    <Compile Include="Simulation\AASimulation.vb" />
     <Compile Include="Graphics\frmMain.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Graphics\frmMain.Designer.vb">
       <DependentUpon>frmMain.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Graphics\frmSimulationSpeed.Designer.vb">
+      <DependentUpon>frmSimulationSpeed.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Graphics\frmSimulationSpeed.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Graphics\MapGraphics.vb" />
@@ -94,6 +100,7 @@
     <Compile Include="RouteFinding\RouteFinder.vb" />
     <Compile Include="RouteFinding\BreadthFirstSearch.vb" />
     <Compile Include="RouteFinding\RoutingUtils.vb" />
+    <Compile Include="Simulation\SimulationParameters.vb" />
     <Compile Include="StreetMap.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -120,6 +127,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Graphics\frmMain.resx">
       <DependentUpon>frmMain.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Graphics\frmSimulationSpeed.resx">
+      <DependentUpon>frmSimulationSpeed.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>

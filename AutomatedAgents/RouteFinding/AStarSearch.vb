@@ -81,11 +81,11 @@
         End Sub
 
         Public Sub New(ByVal OldTree As AStarTreeNode, ByVal LastNodeWay As NodesAdjacencyListCell)
-            Me.New(OldTree, New Hop(OldTree.Route(OldTree.Route.Count - 1).ToNode, LastNodeWay))
+            Me.New(OldTree, New Hop(OldTree.Route.Last.ToNode, LastNodeWay))
         End Sub
 
         Public Function GetCurrentNode() As Node
-            Return Me.Route(Me.Route.Count - 1).ToNode
+            Return Route.Last.ToNode
         End Function
     End Class
 End Class

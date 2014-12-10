@@ -1,12 +1,11 @@
 ﻿Public Class frmMain
     Private Map As StreetMap
  
-     Private Const LOAD_TSMI_TEXT_PREFIX As String = "Load "
+    Private Const LOAD_TSMI_TEXT_PREFIX As String = "Load "
     Private Const AGENT_TSMI_TEXT_PREFIX As String = "Add "
     Private AGENT_TSMI_AMOUNTS() As Integer = {1, 5, 10, 50, 100, 500, 1000, 5000, 10000}
 
     Private AASimulation As New AASimulation
-    Private Const VISIBLE_SIMULATION_SPEED_X As Integer = 1
 
     'On form load, add menu items to load each som file, spawn agents.
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -70,11 +69,12 @@
         If AASimulation.IsRunning Then
             SelectionMode = MapSelectionMode.AGENTS_ALL_ROUTE_TO
             Dim SimulationStateChanged As Boolean = False
-            For i = 1 To VISIBLE_SIMULATION_SPEED_X
+            For i = 1 To Math.Max(1, SimulationParameters.SimulationSpeed / (1000 / SimulationParameters.DisplayRefreshSpeed))
                 SimulationStateChanged = SimulationStateChanged Or AASimulation.Tick()
             Next
             SetPictureBox(MapGraphics.DrawAgents(AASimulation.Agents))
         End If
+        tmrAgents.Interval = SimulationParameters.DisplayRefreshSpeed
     End Sub
     Private Sub tmrStatus_Tick(sender As Object, e As EventArgs) Handles tmrStatus.Tick
         ShowMemoryUsage()
@@ -197,5 +197,9 @@
         If Map IsNot Nothing Then
             SetPictureBox(DrawMap(Map))
         End If
+    End Sub
+
+    Private Sub SpeedToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SpeedToolStripMenuItem.Click
+        frmSimulationSpeed.Show()
     End Sub
 End Class
