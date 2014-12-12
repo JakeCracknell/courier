@@ -130,6 +130,7 @@ Partial Class frmSimulationSpeed
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
         Me.Name = "frmSimulationSpeed"
         Me.Text = "Set Speed"
+        Me.TopMost = True
         Me.TableLayoutPanel1.ResumeLayout(False)
         Me.TableLayoutPanel1.PerformLayout()
         CType(Me.tbSimSpeed, System.ComponentModel.ISupportInitialize).EndInit()

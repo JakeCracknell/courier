@@ -21,7 +21,7 @@
                     SetRouteTo(Map.NodesAdjacencyList.GetRandomNode)
                     Exit Sub
                 End If
-                dEbUgVaRiAbLe = TicksWaited
+
                 TicksWaited = 0
             Else
                 'Skip a turn if still waiting on GPS

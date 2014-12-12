@@ -15,7 +15,7 @@
     Private Height As Integer
     Private CC As CoordinateConverter
 
-    Public ConfigDrawNodes As Boolean = True
+    Public ConfigDrawNodes As Boolean = False
     Public ConfigDrawRoads As Integer = 1
     Public ConfigDrawAgentLines As Boolean = True
 
@@ -144,6 +144,9 @@
         OneHop.Add(New Hop(Node, Node, Nothing))
         Return DrawRoute(OneHop, Nothing)
     End Function
+    Function DrawRoute(ByVal RouteHops As List(Of Hop)) As Image
+        Return DrawRoute(RouteHops, Nothing)
+    End Function
 
     Function DrawRoute(ByVal RouteHops As List(Of Hop), ByVal NodesSearched As List(Of Node)) As Image
         Dim grOverlay As Graphics = Graphics.FromImage(MapBitmapOverlay)
@@ -156,10 +159,12 @@
         grOverlay.DrawString("FROM", OVERLAY_FONT, Brushes.Black, NodePoint)
 
         If RouteHops.Count > 1 Then
-            For Each N As Node In NodesSearched
-                Dim Point As Point = CC.GetPoint(N)
-                grOverlay.FillRectangle(New SolidBrush(Color.Green), Point.X - 1, Point.Y - 1, 2, 2)
-            Next
+            If NodesSearched IsNot Nothing Then
+                For Each N As Node In NodesSearched
+                    Dim Point As Point = CC.GetPoint(N)
+                    grOverlay.FillRectangle(New SolidBrush(Color.Green), Point.X - 1, Point.Y - 1, 2, 2)
+                Next
+            End If
 
             Dim RouteToNode = RouteHops(RouteHops.Count - 1).ToNode
             NodePoint = CC.GetPoint(RouteToNode)
@@ -172,7 +177,7 @@
             Next
             grOverlay.DrawString("TO (" & RouteHops.Count & ")", OVERLAY_FONT, Brushes.Black, NodePoint)
 
-           
+
         End If
 
         Dim MapBitmapCopy As Bitmap = MapBitmapOriginal.Clone

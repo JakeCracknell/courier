@@ -43,10 +43,10 @@ Partial Class frmMain
         Me.StartToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StopToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ResetToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SpeedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.tmrAgents = New System.Windows.Forms.Timer(Me.components)
         Me.picMap = New System.Windows.Forms.PictureBox()
         Me.tmrStatus = New System.Windows.Forms.Timer(Me.components)
-        Me.SpeedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.picMap, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -150,9 +150,7 @@ Partial Class frmMain
         '
         'NodesToolStripMenuItem
         '
-        Me.NodesToolStripMenuItem.Checked = True
         Me.NodesToolStripMenuItem.CheckOnClick = True
-        Me.NodesToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
         Me.NodesToolStripMenuItem.Name = "NodesToolStripMenuItem"
         Me.NodesToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.NodesToolStripMenuItem.Text = "Nodes"
@@ -176,20 +174,26 @@ Partial Class frmMain
         'StartToolStripMenuItem
         '
         Me.StartToolStripMenuItem.Name = "StartToolStripMenuItem"
-        Me.StartToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.StartToolStripMenuItem.Size = New System.Drawing.Size(115, 22)
         Me.StartToolStripMenuItem.Text = "Start"
         '
         'StopToolStripMenuItem
         '
         Me.StopToolStripMenuItem.Name = "StopToolStripMenuItem"
-        Me.StopToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.StopToolStripMenuItem.Size = New System.Drawing.Size(115, 22)
         Me.StopToolStripMenuItem.Text = "Stop"
         '
         'ResetToolStripMenuItem
         '
         Me.ResetToolStripMenuItem.Name = "ResetToolStripMenuItem"
-        Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(115, 22)
         Me.ResetToolStripMenuItem.Text = "Reset"
+        '
+        'SpeedToolStripMenuItem
+        '
+        Me.SpeedToolStripMenuItem.Name = "SpeedToolStripMenuItem"
+        Me.SpeedToolStripMenuItem.Size = New System.Drawing.Size(115, 22)
+        Me.SpeedToolStripMenuItem.Text = "Speed..."
         '
         'tmrAgents
         '
@@ -207,12 +211,6 @@ Partial Class frmMain
         'tmrStatus
         '
         Me.tmrStatus.Enabled = True
-        '
-        'SpeedToolStripMenuItem
-        '
-        Me.SpeedToolStripMenuItem.Name = "SpeedToolStripMenuItem"
-        Me.SpeedToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-        Me.SpeedToolStripMenuItem.Text = "Speed..."
         '
         'frmMain
         '

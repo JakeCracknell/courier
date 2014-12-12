@@ -1,12 +1,18 @@
 ﻿Public Class AStarSearch
     Implements RouteFinder
 
+    Private Enum ASTAR_MODE
+        OPTIMUM_SLOW
+        FUZZY_FAST
+    End Enum
+    Private Const MODE As ASTAR_MODE = ASTAR_MODE.OPTIMUM_SLOW
+
     Private SourceNode As Node
     Private DestinationNode As Node
     Private AdjacencyList As NodesAdjacencyList
     Private HopList As List(Of Hop)
     Private NodesSearched As New List(Of Node)
-    Private Cost As Integer
+    Private Cost As Double
     Private Const EPSILON As Double = 0.0000001
 
     Sub New(ByVal SourceNode As Node, ByVal DestinationNode As Node, ByVal AdjacencyList As NodesAdjacencyList)
@@ -17,8 +23,15 @@
     End Sub
 
     Public Sub DoAStar()
+        'For debugging and assessing performance
+        Dim IterationCount As Integer = 0
+        Dim Stopwatch As New Stopwatch
+        Stopwatch.Start()
+
         Dim PriorityQueue As New SortedList(Of Double, AStarTreeNode)
         Dim AlreadyVisited As New HashSet(Of Long)
+        Dim BestDistancesToNodess As New SortedList(Of Long, Double)
+        Dim BestDistancesToNodes As New Dictionary(Of Long, Double)
         PriorityQueue.Add(0, New AStarTreeNode(SourceNode))
         Do
             Dim AStarTreeNode As AStarTreeNode = PriorityQueue.Values(0)
@@ -26,8 +39,14 @@
             If AStarTreeNode.GetCurrentNode = DestinationNode Then
                 HopList = AStarTreeNode.Route
                 Cost = AStarTreeNode.TotalCost
+                dEbUgVaRiAbLe = Stopwatch.ElapsedMilliseconds & "ms iterations: " & IterationCount & " metres: " & Cost * 1000
                 Exit Sub
             End If
+
+            'MapGraphics.DrawRoute(AStarTreeNode.Route).Save("C:\pics\" & i & ".bmp")
+            IterationCount += 1
+            'Debug.WriteLine(PriorityQueue.Count)
+
 
             NodesSearched.Add(AStarTreeNode.GetCurrentNode)
             AlreadyVisited.Add(AStarTreeNode.GetCurrentNode.ID)
@@ -38,11 +57,39 @@
                     Dim NextAStarTreeNode As New AStarTreeNode(AStarTreeNode, Cell)
 
                     Dim HeuristicCost As Double = GetDistance(Cell.Node, DestinationNode)
-                    Dim F_Cost = HeuristicCost + NextAStarTreeNode.TotalCost
+                    Dim F_Cost As Double = HeuristicCost + NextAStarTreeNode.TotalCost
                     Do Until Not PriorityQueue.ContainsKey(F_Cost) 'Exception can occur otherwise
                         F_Cost += EPSILON
                     Loop
-                    PriorityQueue.Add(F_Cost, NextAStarTreeNode)
+
+                    
+                    'Both modes are the same speed now, so should delete fuzzy.
+                    'Keep it until refactoring a* complete
+                    Select Case MODE
+                        Case ASTAR_MODE.FUZZY_FAST
+                            'Note, this is a non-standard optimisation of the A* algorithm:
+                            'Adding a node to the visitedlist before it is actually explored
+                            'See astar_test map for an example of where this fails to give an optimal route.
+                            AlreadyVisited.Add(Cell.Node.ID)
+                            PriorityQueue.Add(F_Cost, NextAStarTreeNode)
+
+
+                        Case ASTAR_MODE.OPTIMUM_SLOW
+                            If BestDistancesToNodes.ContainsKey(Cell.Node.ID) Then
+                                Dim CompetingDistance As Double = BestDistancesToNodes(Cell.Node.ID)
+                                If F_Cost < CompetingDistance Then
+                                    BestDistancesToNodes(Cell.Node.ID) = F_Cost
+                                    PriorityQueue.Add(F_Cost, NextAStarTreeNode)
+                                End If
+                            Else
+                                BestDistancesToNodes.Add(Cell.Node.ID, F_Cost)
+                                PriorityQueue.Add(F_Cost, NextAStarTreeNode)
+                            End If
+                    End Select
+                    'also investigate if I am insane or if it is looking too far
+                    'to the side of the map with a*. crete for example!
+                    
+
                 End If
             Next
         Loop Until PriorityQueue.Count = 0
@@ -50,7 +97,6 @@
         Debug.WriteLine("No route found - disconnected graph?")
 
     End Sub
-
 
     Public Function GetCost() As Double Implements RouteFinder.GetCost
         Return Cost

@@ -108,7 +108,6 @@
                     RouteFromNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
                     SetPictureBox(MapGraphics.DrawRouteStart(RouteFromNode))
                     SelectionMode = MapSelectionMode.ROUTE_TO
-                    dEbUgVaRiAbLe = RouteFromNode.ID
                 Case MapSelectionMode.ROUTE_TO
                     RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
                     Dim RouteFinder As RouteFinder = New AStarSearch(RouteFromNode, RouteToNode, Map.NodesAdjacencyList)
@@ -118,7 +117,6 @@
                         SetPictureBox(MapGraphics.DrawQuestionMark(MapMousePosition))
                     End If
                     SelectionMode = MapSelectionMode.NONE
-                    dEbUgVaRiAbLe = RouteToNode.ID
                 Case MapSelectionMode.AGENTS_ALL_ROUTE_TO
                     RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
                     For Each Agent In AASimulation.Agents
