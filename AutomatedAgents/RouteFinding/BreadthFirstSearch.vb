@@ -19,8 +19,8 @@
         Return HopList.Count
     End Function
 
-    Public Function GetRoute() As List(Of Hop) Implements RouteFinder.GetRoute
-        Return HopList
+    Public Function GetRoute() As Route Implements RouteFinder.GetRoute
+        Return New Route(HopList)
     End Function
 
     Private Sub DoBFS()
@@ -49,7 +49,7 @@
                 Next
                 If Not AlreadyTraversed Then
                     Dim NextHop As New Hop(CurrentNode, NextPath)
-                    Dim NextList As List(Of Hop) = Hop.CloneList(ListOfHops)
+                    Dim NextList As List(Of Hop) = ListOfHops.ToList 'Cloned
                     NextList.Add(NextHop)
                     Queue.Enqueue(NextList)
                     NodesSearched.Add(NextPath.Node)

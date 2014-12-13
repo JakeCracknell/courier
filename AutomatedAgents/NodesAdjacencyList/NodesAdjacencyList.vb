@@ -38,6 +38,10 @@
         Return Rows.Values(Int(Rnd() * Rows.Count)).NodeKey
     End Function
 
+    Function GetRandomNodePosition() As RoutePosition
+        Return Nothing
+    End Function
+
     Function GetNearestNode(ByVal Latitude As Double, ByVal Longitude As Double)
         Dim BestNode As Node = Nothing
         Dim BestDistance As Double = Double.MaxValue

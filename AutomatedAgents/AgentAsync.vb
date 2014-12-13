@@ -59,7 +59,7 @@
         Private FromNode As Node
         Private ToNode As Node
         Private AdjacencyList As NodesAdjacencyList
-        Public PlannedRoute As List(Of Hop)
+        Public PlannedRoute As Route
         Public RoutingComplete As Boolean = False 'Might have failed
 
         Public Sub New(ByVal FromNode As Node, ByVal ToNode As Node, ByVal AdjacencyList As NodesAdjacencyList)

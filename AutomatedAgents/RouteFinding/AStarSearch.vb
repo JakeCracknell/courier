@@ -10,7 +10,7 @@
     Private SourceNode As Node
     Private DestinationNode As Node
     Private AdjacencyList As NodesAdjacencyList
-    Private HopList As List(Of Hop)
+    Private Route As Route
     Private NodesSearched As New List(Of Node)
     Private Cost As Double
     Private Const EPSILON As Double = 0.0000001
@@ -22,7 +22,7 @@
         DoAStar()
     End Sub
 
-    Public Sub DoAStar()
+    Private Sub DoAStar()
         'For debugging and assessing performance
         Dim IterationCount As Integer = 0
         Dim Stopwatch As New Stopwatch
@@ -37,7 +37,7 @@
             Dim AStarTreeNode As AStarTreeNode = PriorityQueue.Values(0)
             PriorityQueue.RemoveAt(0)
             If AStarTreeNode.GetCurrentNode = DestinationNode Then
-                HopList = AStarTreeNode.Route
+                Route = New Route(AStarTreeNode.RouteHops)
                 Cost = AStarTreeNode.TotalCost
                 dEbUgVaRiAbLe = Stopwatch.ElapsedMilliseconds & "ms iterations: " & IterationCount & " metres: " & Cost * 1000
                 Exit Sub
@@ -62,7 +62,7 @@
                         F_Cost += EPSILON
                     Loop
 
-                    
+
                     'Both modes are the same speed now, so should delete fuzzy.
                     'Keep it until refactoring a* complete
                     Select Case MODE
@@ -88,7 +88,7 @@
                     End Select
                     'also investigate if I am insane or if it is looking too far
                     'to the side of the map with a*. crete for example!
-                    
+
 
                 End If
             Next
@@ -102,8 +102,8 @@
         Return Cost
     End Function
 
-    Public Function GetRoute() As List(Of Hop) Implements RouteFinder.GetRoute
-        Return HopList
+    Public Function GetRoute() As Route Implements RouteFinder.GetRoute
+        Return Route
     End Function
 
     Public Function GetNodesSearched() As List(Of Node) Implements RouteFinder.GetNodesSearched
@@ -111,27 +111,27 @@
     End Function
 
     Private Class AStarTreeNode
-        Public Route As List(Of Hop)
+        Public RouteHops As List(Of Hop)
         Public ReadOnly TotalCost As Double
 
         Public Sub New(ByVal StartNode As Node)
-            Route = New List(Of Hop)
-            Route.Add(New Hop(StartNode, StartNode, Nothing))
+            RouteHops = New List(Of Hop)
+            RouteHops.Add(New Hop(StartNode, StartNode, Nothing))
             TotalCost = 0
         End Sub
 
         Public Sub New(ByVal OldTree As AStarTreeNode, ByVal LastHop As Hop)
-            Route = Hop.CloneList(OldTree.Route)
-            Route.Add(LastHop)
+            RouteHops = OldTree.RouteHops.ToList 'Cloned
+            RouteHops.Add(LastHop)
             TotalCost = OldTree.TotalCost + LastHop.GetCost
         End Sub
 
         Public Sub New(ByVal OldTree As AStarTreeNode, ByVal LastNodeWay As NodesAdjacencyListCell)
-            Me.New(OldTree, New Hop(OldTree.Route.Last.ToNode, LastNodeWay))
+            Me.New(OldTree, New Hop(OldTree.RouteHops.Last.ToNode, LastNodeWay))
         End Sub
 
         Public Function GetCurrentNode() As Node
-            Return Route.Last.ToNode
+            Return RouteHops.Last.ToNode
         End Function
     End Class
 End Class

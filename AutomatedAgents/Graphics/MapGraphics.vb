@@ -8,6 +8,7 @@
     Private ROAD_THICK_PEN_OUTER As New Pen(New SolidBrush(Color.Black), 5)
     Private ROAD_THICK_PEN_INNER_TWOWAY As New Pen(New SolidBrush(Color.White), 3)
     Private ROAD_THICK_PEN_INNER_ONEWAY As New Pen(New SolidBrush(Color.Red), 3)
+    Private Const ROUTE_TO_LABEL_FORMAT As String = "TO ({0} hops, {1} km)"
 
     Private MapBitmapOriginal As Bitmap
     Private MapBitmapOverlay As Bitmap
@@ -140,25 +141,23 @@
     'End Function
 
     Function DrawRouteStart(ByVal Node As Node) As Image
-        Dim OneHop As New List(Of Hop)
-        OneHop.Add(New Hop(Node, Node, Nothing))
-        Return DrawRoute(OneHop, Nothing)
+        Return DrawRoute(New Route(Node), Nothing)
     End Function
-    Function DrawRoute(ByVal RouteHops As List(Of Hop)) As Image
-        Return DrawRoute(RouteHops, Nothing)
+    Function DrawRoute(ByVal Route As Route) As Image
+        Return DrawRoute(Route, Nothing)
     End Function
 
-    Function DrawRoute(ByVal RouteHops As List(Of Hop), ByVal NodesSearched As List(Of Node)) As Image
+    Function DrawRoute(ByVal Route As Route, ByVal NodesSearched As List(Of Node)) As Image
         Dim grOverlay As Graphics = Graphics.FromImage(MapBitmapOverlay)
 
-        Dim RouteFromNode As Node = RouteHops(0).FromNode
+        Dim RouteFromNode As Node = Route.GetStartNode
         Dim NodePoint As Point = CC.GetPoint(RouteFromNode)
         grOverlay.Clear(Color.Transparent)
 
         DrawNodeRectangle(NodePoint, grOverlay)
         grOverlay.DrawString("FROM", OVERLAY_FONT, Brushes.Black, NodePoint)
 
-        If RouteHops.Count > 1 Then
+        If Route.HopCount > 1 Then
             If NodesSearched IsNot Nothing Then
                 For Each N As Node In NodesSearched
                     Dim Point As Point = CC.GetPoint(N)
@@ -166,16 +165,18 @@
                 Next
             End If
 
-            Dim RouteToNode = RouteHops(RouteHops.Count - 1).ToNode
+            Dim RouteToNode = Route.GetEndNode
             NodePoint = CC.GetPoint(RouteToNode)
             DrawNodeRectangle(NodePoint, grOverlay)
 
-            For Each Hop As Hop In RouteHops
+            For Each Hop As Hop In Route.GetHopList()
                 Dim FromPoint As Point = CC.GetPoint(Hop.FromNode)
                 Dim ToPoint As Point = CC.GetPoint(Hop.ToNode)
                 grOverlay.DrawLine(ROUTE_PEN, FromPoint, ToPoint)
             Next
-            grOverlay.DrawString("TO (" & RouteHops.Count & ")", OVERLAY_FONT, Brushes.Black, NodePoint)
+
+            Dim ToLabel As String = String.Format(ROUTE_TO_LABEL_FORMAT, Route.HopCount, Math.Round(Route.GetKM, 1))
+            grOverlay.DrawString(ToLabel, OVERLAY_FONT, Brushes.Black, NodePoint)
 
 
         End If

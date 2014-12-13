@@ -23,12 +23,4 @@
         Dim other As Hop = CType(obj, Hop)
         Return FromNode = other.FromNode And ToNode = other.ToNode ' And Way = other.Way
     End Function
-
-    Public Shared Function CloneList(ByVal List As List(Of Hop)) As List(Of Hop)
-        Dim NewList As New List(Of Hop)
-        For Each Hop As Hop In List
-            NewList.Add(Hop)
-        Next
-        Return NewList
-    End Function
 End Class

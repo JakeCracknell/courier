@@ -2,6 +2,7 @@
 Class AASimulation
     Property Agents As New List(Of Agent)
     Property IsRunning As Boolean = False
+    Property Dispatcher As SimpleDispatcher
 
     Private Time As TimeSpan
     Private TIME_INCREMENT As TimeSpan = TimeSpan.FromSeconds(1)
@@ -33,6 +34,10 @@ Class AASimulation
             Return "paused"
         End If
     End Function
+
+    Sub InitialiseDispatcher(ByVal Map As StreetMap)
+        Dispatcher = New SimpleDispatcher(Map)
+    End Sub
 
     Sub StartSimulation()
         IsRunning = True

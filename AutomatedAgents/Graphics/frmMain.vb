@@ -200,4 +200,11 @@
     Private Sub SpeedToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SpeedToolStripMenuItem.Click
         frmSimulationSpeed.Show()
     End Sub
+
+    Private Sub BenchmarkToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BenchmarkToolStripMenuItem.Click
+        If Map.NodesAdjacencyList IsNot Nothing Then
+            RouteFinderBenchmark.RunRouteFinderBenchmark(Map.NodesAdjacencyList)
+        End If
+
+    End Sub
 End Class

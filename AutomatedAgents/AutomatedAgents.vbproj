@@ -75,6 +75,10 @@
     <Compile Include="Centralised\SimpleDispatcher.vb" />
     <Compile Include="CoordinateConverter.vb" />
     <Compile Include="AgentAsync.vb" />
+    <Compile Include="CourierJob.vb" />
+    <Compile Include="RouteFinding\Route.vb" />
+    <Compile Include="RouteFinding\RouteFinderBenchmark.vb" />
+    <Compile Include="VehicleSize.vb" />
     <Compile Include="Simulation\AASimulation.vb" />
     <Compile Include="Graphics\frmMain.vb">
       <SubType>Form</SubType>
@@ -122,6 +126,7 @@
     <Compile Include="Utility.vb" />
     <Compile Include="Way.vb" />
     <Compile Include="RoutePosition.vb" />
+    <Compile Include="WayPosition.vb" />
     <Compile Include="WayType.vb" />
   </ItemGroup>
   <ItemGroup>

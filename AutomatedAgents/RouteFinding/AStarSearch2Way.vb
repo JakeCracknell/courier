@@ -80,8 +80,8 @@
         Return Cost
     End Function
 
-    Public Function GetRoute() As List(Of Hop) Implements RouteFinder.GetRoute
-        Return HopList
+    Public Function GetRoute() As Route Implements RouteFinder.GetRoute
+        Return New Route(HopList)
     End Function
 
     Public Function GetNodesSearched() As List(Of Node) Implements RouteFinder.GetNodesSearched
@@ -99,7 +99,7 @@
         End Sub
 
         Public Sub New(ByVal OldTree As AStarTreeNode, ByVal LastHop As Hop)
-            Route = Hop.CloneList(OldTree.Route)
+            Route = OldTree.Route.ToList 'Cloned
             Route.Add(LastHop)
             TotalCost = OldTree.TotalCost + LastHop.GetCost
         End Sub

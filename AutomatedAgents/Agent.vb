@@ -5,7 +5,6 @@
     Protected Map As StreetMap
     Public Color As Color
 
-    'Protected PlannedRoute As List(Of Hop)
     Protected RoutePosition As Integer = 0
     Protected NodeToRouteTo As Node
 
