@@ -37,7 +37,7 @@
             Dim AStarTreeNode As AStarTreeNode = PriorityQueue.Values(0)
             PriorityQueue.RemoveAt(0)
             If AStarTreeNode.GetCurrentNode = DestinationNode Then
-                Route = New Route(AStarTreeNode.RouteHops)
+                Route = New Route(New List(Of Hop)(AStarTreeNode.RouteHops))
                 Cost = AStarTreeNode.TotalCost
                 dEbUgVaRiAbLe = Stopwatch.ElapsedMilliseconds & "ms iterations: " & IterationCount & " metres: " & Cost * 1000
                 Exit Sub
@@ -111,18 +111,18 @@
     End Function
 
     Private Class AStarTreeNode
-        Public RouteHops As List(Of Hop)
+        Public RouteHops As Hop()
         Public ReadOnly TotalCost As Double
 
         Public Sub New(ByVal StartNode As Node)
-            RouteHops = New List(Of Hop)
-            RouteHops.Add(New Hop(StartNode, StartNode, Nothing))
+            RouteHops = {New Hop(StartNode, StartNode, Nothing)}
             TotalCost = 0
         End Sub
 
         Public Sub New(ByVal OldTree As AStarTreeNode, ByVal LastHop As Hop)
-            RouteHops = OldTree.RouteHops.ToList 'Cloned
-            RouteHops.Add(LastHop)
+            ReDim RouteHops(OldTree.RouteHops.Length) 'One index larger
+            Array.Copy(OldTree.RouteHops, RouteHops, OldTree.RouteHops.Length)
+            RouteHops(RouteHops.Length - 1) = LastHop
             TotalCost = OldTree.TotalCost + LastHop.GetCost
         End Sub
 
