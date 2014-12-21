@@ -1,12 +1,6 @@
 ﻿Public Class AStarSearch
     Implements RouteFinder
 
-    Private Enum ASTAR_MODE
-        OPTIMUM_SLOW
-        FUZZY_FAST
-    End Enum
-    Private Const MODE As ASTAR_MODE = ASTAR_MODE.OPTIMUM_SLOW
-
     Private SourceNode As Node
     Private DestinationNode As Node
     Private AdjacencyList As NodesAdjacencyList
@@ -29,8 +23,7 @@
         Stopwatch.Start()
 
         Dim PriorityQueue As New SortedList(Of Double, AStarTreeNode)
-        Dim AlreadyVisited As New HashSet(Of Long)
-        Dim BestDistancesToNodess As New SortedList(Of Long, Double)
+        Dim AlreadyVisitedIDs As New HashSet(Of Long)
         Dim BestDistancesToNodes As New Dictionary(Of Long, Double)
         PriorityQueue.Add(0, New AStarTreeNode(SourceNode))
         Do
@@ -43,19 +36,19 @@
                 Exit Sub
             End If
 
-            'MapGraphics.DrawRoute(AStarTreeNode.Route).Save("C:\pics\" & i & ".bmp")
+            'MapGraphics.DrawRoute(New Route(AStarTreeNode.RouteHops.ToList)).Save("C:\pics\" & IterationCount & ".bmp")
             IterationCount += 1
             'Debug.WriteLine(PriorityQueue.Count)
 
 
             NodesSearched.Add(AStarTreeNode.GetCurrentNode)
-            AlreadyVisited.Add(AStarTreeNode.GetCurrentNode.ID)
+            AlreadyVisitedIDs.Add(AStarTreeNode.GetCurrentNode.ID)
 
             Dim Row As NodesAdjacencyListRow = AdjacencyList.Rows(AStarTreeNode.GetCurrentNode.ID)
             For Each Cell As NodesAdjacencyListCell In Row.Cells
-                If Not AlreadyVisited.Contains(Cell.Node.ID) Then
+                If Not AlreadyVisitedIDs.Contains(Cell.Node.ID) Then
+                    'Dim NextAStarTreeNode As New AStarTreeNode(AStarTreeNode, Cell)
                     Dim NextAStarTreeNode As New AStarTreeNode(AStarTreeNode, Cell)
-
                     Dim HeuristicCost As Double = GetDistance(Cell.Node, DestinationNode)
                     Dim F_Cost As Double = HeuristicCost + NextAStarTreeNode.TotalCost
                     Do Until Not PriorityQueue.ContainsKey(F_Cost) 'Exception can occur otherwise
@@ -63,30 +56,18 @@
                     Loop
 
 
-                    'Both modes are the same speed now, so should delete fuzzy.
-                    'Keep it until refactoring a* complete
-                    Select Case MODE
-                        Case ASTAR_MODE.FUZZY_FAST
-                            'Note, this is a non-standard optimisation of the A* algorithm:
-                            'Adding a node to the visitedlist before it is actually explored
-                            'See astar_test map for an example of where this fails to give an optimal route.
-                            AlreadyVisited.Add(Cell.Node.ID)
+                    If BestDistancesToNodes.ContainsKey(Cell.Node.ID) Then
+                        Dim CompetingDistance As Double = BestDistancesToNodes(Cell.Node.ID)
+                        If F_Cost < CompetingDistance Then
+                            BestDistancesToNodes(Cell.Node.ID) = F_Cost
                             PriorityQueue.Add(F_Cost, NextAStarTreeNode)
+                        End If
+                    Else
+                        BestDistancesToNodes.Add(Cell.Node.ID, F_Cost)
+                        PriorityQueue.Add(F_Cost, NextAStarTreeNode)
+                    End If
 
-
-                        Case ASTAR_MODE.OPTIMUM_SLOW
-                            If BestDistancesToNodes.ContainsKey(Cell.Node.ID) Then
-                                Dim CompetingDistance As Double = BestDistancesToNodes(Cell.Node.ID)
-                                If F_Cost < CompetingDistance Then
-                                    BestDistancesToNodes(Cell.Node.ID) = F_Cost
-                                    PriorityQueue.Add(F_Cost, NextAStarTreeNode)
-                                End If
-                            Else
-                                BestDistancesToNodes.Add(Cell.Node.ID, F_Cost)
-                                PriorityQueue.Add(F_Cost, NextAStarTreeNode)
-                            End If
-                    End Select
-                    'also investigate if I am insane or if it is looking too far
+                    'TODO investigate if I am insane or if it is looking too far
                     'to the side of the map with a*. crete for example!
 
 
@@ -128,6 +109,19 @@
 
         Public Sub New(ByVal OldTree As AStarTreeNode, ByVal LastNodeWay As NodesAdjacencyListCell)
             Me.New(OldTree, New Hop(OldTree.RouteHops.Last.ToNode, LastNodeWay))
+        End Sub
+
+        Public Sub Expand(ByVal AdjList As NodesAdjacencyList, ByVal StopNode As Node)
+            'Dim NextHops As New List(Of Hop)
+            'Dim Cell As NodesAdjacencyListCell = LastNodeWay
+            'Dim Row As NodesAdjacencyListRow = AdjList.Rows(RouteHops.Last.ToNode.ID)
+            'Do
+
+            '    NextHops.Add(New Hop(OldTree.RouteHops.Last.ToNode, Cell))
+            '    Row = AdjList.Rows(Cell.Node.ID)
+            'Loop Until Row.Cells.Count <> 1
+
+            'Me.New(OldTree, New Hop(OldTree.RouteHops.Last.ToNode, LastNodeWay))
         End Sub
 
         Public Function GetCurrentNode() As Node

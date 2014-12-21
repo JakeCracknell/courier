@@ -3,6 +3,9 @@
     Public ID As Long
     Public Latitude As Double
     Public Longitude As Double
+
+    Public Connected As Boolean = False
+
     Private AgentTraffic As Integer = 0
     Public Shared TotalNodesTraffic As Integer = 1
 

@@ -76,6 +76,8 @@ Public Class OSMLoader
         '.NETs garbage collector will not dispose the XML document
         'until a while later. SW London = 1GB -> 200MB after GC
 
+        Map.NodesAdjacencyList.RemoveDisconnectedComponents()
+
         Return Map
     End Function
 

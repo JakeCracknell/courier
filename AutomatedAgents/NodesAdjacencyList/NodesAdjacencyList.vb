@@ -39,7 +39,7 @@
     End Function
 
     Function GetRandomNodePosition() As RoutePosition
-        Return Nothing
+        Return Nothing 'TODO
     End Function
 
     Function GetNearestNode(ByVal Latitude As Double, ByVal Longitude As Double)
@@ -54,4 +54,47 @@
         Next
         Return BestNode
     End Function
+
+    Sub RemoveDisconnectedComponents()
+        'Surprisingly fast function. 300ms for crete!
+        Dim t As New Stopwatch
+        t.Start()
+        'Dim GraphComponents As New List(Of List(Of Node))
+        Dim FullyExploredNodeIDs As New HashSet(Of Long)
+
+        'Run DFS from a random node. Traversing any one way roads: call RouteExists() which uses AStar or other to check it is not a dead end
+        Dim Stack As New Stack(Of NodesAdjacencyListRow)
+        Dim StackIDs As New HashSet(Of Long)
+
+        'Dim CurrentNode As Node = GetRandomNode()
+        Stack.Push(Rows.Values(Int(Rnd() * Rows.Count)))
+        Do
+            Dim CurrentRow As NodesAdjacencyListRow = Stack.Peek
+            For Each AdjacentCell As NodesAdjacencyListCell In CurrentRow.Cells
+                If Not StackIDs.Contains(AdjacentCell.Node.ID) AndAlso _
+                        Not FullyExploredNodeIDs.Contains(AdjacentCell.Node.ID) Then
+                    Stack.Push(Rows(AdjacentCell.Node.ID))
+                    StackIDs.Add(AdjacentCell.Node.ID)
+                    Continue Do
+                End If
+            Next
+            'Need to check that this is a valid move. If the road is one-way, we need to verify there is an alternate route
+            'inefficient to run Astar every time from these two points?
+            'Maybe make a list of one-way pops and do astar from the nearest node in FullyExploredNodeIDs
+            Stack.Pop()
+            StackIDs.Remove(CurrentRow.NodeKey.ID)
+            FullyExploredNodeIDs.Add(CurrentRow.NodeKey.ID)
+        Loop Until Stack.Count = 0
+
+        Dim str As String = ""
+        Dim count As Integer = 0
+        For Each Row As NodesAdjacencyListRow In Rows.Values
+            If Not FullyExploredNodeIDs.Contains(Row.NodeKey.ID) Then
+                'TODO: start the same search from here!!!
+                count += 1
+            End If
+        Next
+        'MsgBox(t.ElapsedMilliseconds & " ms", MsgBoxStyle.OkOnly, count)
+    End Sub
+
 End Class
