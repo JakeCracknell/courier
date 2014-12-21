@@ -33,24 +33,20 @@
         MapBitmapOriginal = New Bitmap(Width, Height)
         gr = Graphics.FromImage(MapBitmapOriginal)
         gr.Clear(BG_COLOR)
-        Dim Progress, ProgressMax As Integer
 
         If ConfigDrawNodes Then
-            Progress = 0
-            ProgressMax = Map.Nodes.Count
             For Each N As Node In Map.Nodes
                 Dim Point As Point = CC.GetPoint(N)
                 Dim PointSize As Integer = 1 'Math.Min(Width * Height / 130000, ((Map.Nodes.Count / 10) * N.GetAgentTraffic / Node.TotalNodesTraffic))
                 gr.DrawRectangle(Pens.Blue, Point.X, Point.Y, PointSize, PointSize)
+                If Not N.Connected Then
+                    gr.FillRectangle(Brushes.Red, Point.X, Point.Y, 10, 10)
+                End If
                 'gr.DrawString(N.ID, OverlayFont, Brushes.Black, Point)
-                Progress += 1
-                'pbLoad.Value = 100 * Progress / ProgressMax
             Next
         End If
 
         If ConfigDrawRoads <> 0 Then
-            Progress = 0
-            ProgressMax = Map.Ways.Count
             For Each W As Way In Map.Ways
                 If W.Nodes.Length >= 2 Then
                     Dim LastPoint As Point = CC.GetPoint(W.Nodes(0))
@@ -72,8 +68,6 @@
                         LastPoint = CurrentPoint
                     Next
                 End If
-                Progress += 1
-                'pbLoad.Value = 100 * Progress / ProgressMax
             Next
         End If
 
