@@ -76,89 +76,48 @@
         Dim t As New Stopwatch
         t.Start()
         Dim FullyExploredNodes As New HashSet(Of Node)
-
-        'Run DFS from a random node.
-        Dim Stack As New Stack(Of NodesAdjacencyListRow)
-        Dim StackIDs As New HashSet(Of Long)
-        Dim OneWayPops As New List(Of Tuple(Of Node, Node))
+        Dim DFSStack As New Stack(Of NodesAdjacencyListRow)
+        Dim DFSStackIDs As New HashSet(Of Long)
         Dim VerifiedNodes As New HashSet(Of Node)
-        Dim NodesToVerify As New HashSet(Of Node)
-        Dim NodesToPrune As New List(Of Node)
 
-        'Starts from random Node
+        'Starting from a random node, run DFS and discover all connected nodes
+        'that are reachable somehow from this node.
         Dim RandomStartRow As NodesAdjacencyListRow = Rows.Values(Int(Rnd() * Rows.Count))
-        Stack.Push(RandomStartRow)
+        DFSStack.Push(RandomStartRow)
         VerifiedNodes.Add(RandomStartRow.NodeKey)
         Do
-            Dim CurrentRow As NodesAdjacencyListRow = Stack.Peek
+            Dim CurrentRow As NodesAdjacencyListRow = DFSStack.Peek
             For Each AdjacentCell As NodesAdjacencyListCell In CurrentRow.Cells
-                If Not StackIDs.Contains(AdjacentCell.Node.ID) AndAlso _
+                If Not DFSStackIDs.Contains(AdjacentCell.Node.ID) AndAlso _
                         Not FullyExploredNodes.Contains(AdjacentCell.Node) Then
-
-                    Stack.Push(Rows(AdjacentCell.Node.ID))
-                    StackIDs.Add(AdjacentCell.Node.ID)
+                    DFSStack.Push(Rows(AdjacentCell.Node.ID))
+                    DFSStackIDs.Add(AdjacentCell.Node.ID)
                     Continue Do
                 End If
             Next
 
-            Stack.Pop()
-            If Stack.Count <> 0 Then
-                'If the road is one-way, we need to verify there is an alternate route. Often there is not.
-                If Not AreNodesLinked(CurrentRow.NodeKey, Stack.Peek().NodeKey) Then
-                    OneWayPops.Add(New Tuple(Of Node, Node)(CurrentRow.NodeKey, Stack.Peek().NodeKey))
-                    NodesToVerify.Add(CurrentRow.NodeKey)
-                    'ElseIf VerifiedNodes.Contains(Stack.Peek.NodeKey) Then
-                    '    VerifiedNodes.Add(CurrentRow.NodeKey)
-                End If
-            End If
-
-
-            StackIDs.Remove(CurrentRow.NodeKey.ID)
+            DFSStack.Pop()
+            DFSStackIDs.Remove(CurrentRow.NodeKey.ID)
             FullyExploredNodes.Add(CurrentRow.NodeKey)
-        Loop Until Stack.Count = 0
+        Loop Until DFSStack.Count = 0
 
-        NodesToVerify = New HashSet(Of Node)(FullyExploredNodes)
-        NodesToVerify.ExceptWith(VerifiedNodes)
+        Dim UnverifiedNodes As New HashSet(Of Node)
+        Dim NodesToPrune As New List(Of Node)
+        UnverifiedNodes = New HashSet(Of Node)(FullyExploredNodes)
+        UnverifiedNodes.ExceptWith(VerifiedNodes)
 
-        For Each Node As Node In NodesToVerify
-
-            'Dim AStarSearch As New AStarSearch(Nodes.Item1, Nodes.Item2, Me)
-            'Debug.WriteLine(Nodes.Item1.ID & " " & Nodes.Item2.ID & " " & AStarSearch.GetCost)
-            'If AStarSearch.GetRoute Is Nothing Then
-            '    NodesToPrune.Add(Nodes.Item1)
-            'End If
-
-            'If Node.ID = 1947370028 Then
-            '    Console.Beep()
-            'End If
-            If Not DFSToAny(Node, VerifiedNodes, Me) Then '<> (AStarSearch.GetRoute Is Nothing) Then
-                Dim AStarSearch As New AStarSearch(Node, RandomStartRow.NodeKey, Me)
-                If AStarSearch.GetRoute IsNot Nothing Then
-                    Debug.WriteLine(Node.ID)
+        'For each node discovered, verify them using a DFS to any known verified node.
+        'Remove any that cannot find its way. This sections out inescapable node clusters.
+        For Each Node As Node In UnverifiedNodes
+            If Not VerifiedNodes.Contains(Node) Then
+                'VerifiedNodes will be modified, as paths are found
+                If Not DFSToAny(Node, VerifiedNodes, Me) Then
+                    NodesToPrune.Add(Node)
                 End If
-                'Debug.WriteLine(Nodes.Item1.ID & " " & Nodes.Item2.ID & " " & AStarSearch.GetCost)
-                NodesToPrune.Add(Node)
             End If
         Next
 
-        'For Each Nodes As Tuple(Of Node, Node) In OneWayPops
-
-        '    'Dim AStarSearch As New AStarSearch(Nodes.Item1, Nodes.Item2, Me)
-        '    'Debug.WriteLine(Nodes.Item1.ID & " " & Nodes.Item2.ID & " " & AStarSearch.GetCost)
-        '    'If AStarSearch.GetRoute Is Nothing Then
-        '    '    NodesToPrune.Add(Nodes.Item1)
-        '    'End If
-
-        '    If Nodes.Item1.ID = 1947370028 Then
-        '        Console.Beep()
-        '    End If
-        '    If Not DFSToAny(Nodes.Item1, VerifiedNodes, Me) Then '<> (AStarSearch.GetRoute Is Nothing) Then
-        '        'Debug.WriteLine(Nodes.Item1.ID & " " & Nodes.Item2.ID & " " & AStarSearch.GetCost)
-        '        NodesToPrune.Add(Nodes.Item1)
-        '    End If
-        'Next
-        Debug.WriteLine(NodesToPrune.Count)
-
+        'Remove any disconnected components - those not found by the first DFS.
         For Each Row As NodesAdjacencyListRow In Rows.Values
             If Not FullyExploredNodes.Contains(Row.NodeKey) Then
                 NodesToPrune.Add(Row.NodeKey)
@@ -169,8 +128,7 @@
             'All I am going to do for now. Complex to remove from Adj list and not necessary.
             NodeToPrune.Connected = False
         Next
-
-        Debug.WriteLine(t.ElapsedMilliseconds)
+        Debug.WriteLine(NodesToPrune.Count & " nodes pruned, in " & t.ElapsedMilliseconds & " ms")
     End Sub
 
 End Class
