@@ -3,13 +3,16 @@
     Public ID As Long
     Public Nodes As Node()
     Public Type As WayType
+    Public Name As String
+    Private MaxSpeedOverrideKMH As Double = Double.MinValue
 
     Public OneWay As Boolean
 
-    Public Sub New(ByVal ID As Integer, ByVal Nodes As Node(), ByVal Type As WayType)
+    Public Sub New(ByVal ID As Integer, ByVal Nodes As Node(), ByVal Type As WayType, ByVal Name As String)
         Me.ID = ID
         Me.Nodes = Nodes
         Me.Type = Type
+        Me.Name = Name
     End Sub
 
     Public Shared Operator =(ByVal Way1 As Way, ByVal Way2 As Way) As Boolean
@@ -37,8 +40,42 @@
                 'One way in opposite direction of node list
                 Nodes.Reverse()
                 OneWay = True
+            Case "reversible", ""
+                'Very tricky case where highway direction can change throughout the day.
+                'Very rare, so will assume to be one-way
+                OneWay = True
             Case Else
                 Debug.WriteLine("I cannot categorise this oneway tag: " & Value)
+                OneWay = False
         End Select
     End Sub
+
+    Sub SetSpeed(ByVal MaxSpeedOverrideKMH As Double)
+        Me.MaxSpeedOverrideKMH = MaxSpeedOverrideKMH
+    End Sub
+
+    Function GetMaxSpeedKMH(ByVal Vehicle As VehicleSize)
+        If MaxSpeedOverrideKMH > 0 Then
+            Return MaxSpeedOverrideKMH
+        End If
+
+        'UK speeds available from https://www.gov.uk/speed-limits
+        'However will use estimates as simulation designed for built-up areas.
+        Select Case Type
+            Case WayType.ROAD_MOTORWAY
+                Return 112
+            Case WayType.ROAD_TRUNK
+                Return 80
+            Case WayType.ROAD_PRIMARY
+                Return 64
+            Case WayType.ROAD_RESIDENTIAL
+                Return 32
+            Case WayType.ROAD_SERVICE
+                Return 8
+            Case Else
+                Return 48
+        End Select
+
+
+    End Function
 End Class

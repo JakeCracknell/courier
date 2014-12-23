@@ -31,44 +31,11 @@ Public Class OSMLoader
 
         Dim xWays As XmlNodeList = xDoc.GetElementsByTagName("way")
         For Each xItem As XmlElement In xWays
-            Dim xWayID As Integer = xItem.GetAttribute("id")
-            Dim WayType As WayType = WayType.UNSPECIFIED
-            Dim OneWay As String = ""
-
-            Dim xTags As XmlNodeList = xItem.GetElementsByTagName("tag")
-            For Each xTag As XmlElement In xTags
-                Dim AttributeName As String = xTag.GetAttribute("k")
-                If AttributeName = "highway" Then
-                    WayType = DecodeHighWayType(xTag.GetAttribute("v"))
-                End If
-                If AttributeName = "oneway" Then
-                    OneWay = xTag.GetAttribute("v")
-                End If
-            Next
-
-            'Do not add non-highways to way list. TODO: ref=access, I should not be allowed to drive through hamm bus stn!
-            If WayType <> WayType.UNSPECIFIED Then
-                Dim Nds As New List(Of Node)
-                Dim xNds As XmlNodeList = xItem.GetElementsByTagName("nd")
-                For Each xNd As XmlElement In xNds
-                    Dim NodeRef As Long = xNd.GetAttribute("ref")
-                    Dim Node As Node = Nothing
-                    NodeHashMap.TryGetValue(NodeRef, Node)
-                    If Node IsNot Nothing Then
-                        Nds.Add(Node)
-                    End If
-                Next
-
-                Dim Way As New Way(xWayID, Nds.ToArray, WayType)
-
-                If OneWay <> "" Then
-                    Way.SetOneWay(OneWay)
-                End If
-
+            Dim Way As Way = ParseWay(xItem, NodeHashMap)
+            If Way IsNot Nothing Then
                 Map.Ways.Add(Way)
                 Map.NodesAdjacencyList.AddWay(Way)
             End If
-
         Next
 
         Node.TotalNodesTraffic = 1

@@ -1,5 +1,5 @@
 ﻿Public Enum VehicleSize
     CAR
     VAN
-    HGV
+    TRUCK_7_5_TONNE
 End Enum

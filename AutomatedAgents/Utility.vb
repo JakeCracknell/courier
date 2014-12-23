@@ -1,29 +1,6 @@
 ﻿Module Utility
     Public dEbUgVaRiAbLe As Object
 
-    Function DecodeHighWayType(ByVal str As String) As WayType
-        Select Case str
-            Case "service"
-                Return WayType.ROAD_SERVICE
-            Case "unclassified"
-                Return WayType.ROAD_UNCLASSIFIED 'e.g. vine road
-            Case "residential"
-                Return WayType.ROAD_RESIDENTIAL
-            Case "tertiary", "tertiary_link"
-                Return WayType.ROAD_TERTIARY
-            Case "secondary", "secondary_link"
-                Return WayType.ROAD_SECONDARY
-            Case "primary", "primary_link"
-                Return WayType.ROAD_PRIMARY
-            Case "trunk", "trunk_link"
-                Return WayType.ROAD_TRUNK
-            Case "motorway", "motorway_link"
-                Return WayType.ROAD_MOTORWAY
-            Case Else
-                Return WayType.UNSPECIFIED
-        End Select
-    End Function
-
     Function GetRandomColor() As Color
         Return Color.FromArgb(Rnd() * 255, Rnd() * 255, Rnd() * 255)
     End Function

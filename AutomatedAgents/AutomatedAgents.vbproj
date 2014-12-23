@@ -76,9 +76,10 @@
     <Compile Include="CoordinateConverter.vb" />
     <Compile Include="AgentAsync.vb" />
     <Compile Include="CourierJob.vb" />
+    <Compile Include="OSMData\WayParser.vb" />
     <Compile Include="RouteFinding\Route.vb" />
     <Compile Include="RouteFinding\RouteFinderBenchmark.vb" />
-    <Compile Include="VehicleSize.vb" />
+    <Compile Include="Simulation\VehicleSize.vb" />
     <Compile Include="Simulation\AASimulation.vb" />
     <Compile Include="Graphics\frmMain.vb">
       <SubType>Form</SubType>
@@ -97,7 +98,7 @@
     <Compile Include="NodesAdjacencyList\NodesAdjacencyList.vb" />
     <Compile Include="NodesAdjacencyList\NodesAdjacencyListCell.vb" />
     <Compile Include="NodesAdjacencyList\NodesAdjacencyListRow.vb" />
-    <Compile Include="OSMFileSystemManager.vb" />
+    <Compile Include="OSMData\OSMFileSystemManager.vb" />
     <Compile Include="RouteFinding\AStarSearch.vb" />
     <Compile Include="RouteFinding\AStarSearch2Way.vb" />
     <Compile Include="RouteFinding\Hop.vb" />
@@ -122,12 +123,12 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Node.vb" />
-    <Compile Include="OSMLoader.vb" />
+    <Compile Include="OSMData\OSMLoader.vb" />
     <Compile Include="Utility.vb" />
-    <Compile Include="Way.vb" />
+    <Compile Include="OSMData\Way.vb" />
     <Compile Include="RoutePosition.vb" />
     <Compile Include="WayPosition.vb" />
-    <Compile Include="WayType.vb" />
+    <Compile Include="OSMData\WayType.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Graphics\frmMain.resx">
