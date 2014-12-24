@@ -36,6 +36,7 @@
     Public Function GetKM() As Double
         'Lazily calculated, as I don't want a heavyweight constructor.
         If TotalKM < 0 Then
+            TotalKM = 0
             For Each Hop As Hop In Hops
                 TotalKM += Hop.GetCost
             Next

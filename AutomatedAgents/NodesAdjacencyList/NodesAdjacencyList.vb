@@ -127,6 +127,9 @@
         For Each NodeToPrune In NodesToPrune
             'All I am going to do for now. Complex to remove from Adj list and not necessary.
             NodeToPrune.Connected = False
+
+            'Could do more
+            Rows(NodeToPrune.ID).Cells.Clear()
         Next
         Debug.WriteLine(NodesToPrune.Count & " nodes pruned, in " & t.ElapsedMilliseconds & " ms")
     End Sub

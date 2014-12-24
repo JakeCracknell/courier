@@ -19,6 +19,7 @@
     Public ConfigDrawNodes As Boolean = False
     Public ConfigDrawRoads As Integer = 1
     Public ConfigDrawAgentLines As Boolean = True
+    Public ConfigDrawNodeLabels As Boolean = False
 
     Sub Resize(ByVal _Width As Integer, ByVal _Height As Integer, ByVal Bounds As Bounds)
         Width = _Width
@@ -42,7 +43,9 @@
                 If Not N.Connected Then
                     gr.FillRectangle(Brushes.Red, Point.X, Point.Y, 10, 10)
                 End If
-                'gr.DrawString(N.ID, OverlayFont, Brushes.Black, Point)
+                If ConfigDrawNodeLabels Then
+                    gr.DrawString(N.ID Mod 1000, OVERLAY_FONT, Brushes.Black, Point)
+                End If
             Next
         End If
 
