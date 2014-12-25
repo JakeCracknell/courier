@@ -207,4 +207,11 @@
         End If
 
     End Sub
+
+    Private Sub AgentStatusToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AgentStatusToolStripMenuItem.Click
+        If AASimulation IsNot Nothing Then
+            frmAgentStatus.Show()
+            frmAgentStatus.SetAASimulation(AASimulation)
+        End If
+    End Sub
 End Class
