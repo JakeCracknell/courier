@@ -8,10 +8,13 @@
             Dim Position As RoutePosition = AASimulation.Agents(i).Position
             If Position IsNot Nothing Then
                 Dim Way As Way = Position.GetCurrentWayPosition.Hop.Way
-                If Way IsNot Nothing Then
+                If Way IsNot Nothing AndAlso lvAgentList.Items(i).SubItems(1).Text <> Way.Name Then
                     lvAgentList.Items(i).SubItems(1).Text = Way.Name
                 End If
-                lvAgentList.Items(i).SubItems(2).Text = Position.GetEndNode.ID
+
+                If lvAgentList.Items(i).SubItems(2).Text <> Position.GetEndNode.ID.ToString Then
+                    lvAgentList.Items(i).SubItems(2).Text = Position.GetEndNode.ID
+                End If
 
             End If
 

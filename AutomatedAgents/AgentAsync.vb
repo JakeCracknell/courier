@@ -66,7 +66,12 @@
             Me.FromNode = FromNode
             Me.ToNode = ToNode
             Me.AdjacencyList = AdjacencyList
+            'Dim WorkerThread As New Threading.Thread(AddressOf Run)
+            'WorkerThread.Start()
             System.Threading.ThreadPool.QueueUserWorkItem(AddressOf Run)
+            'Threading.Tasks.Task.Factory.StartNew(Sub()
+            '                                          Run()
+            '                                      End Sub)
         End Sub
 
         Protected Sub Run()
