@@ -33,18 +33,8 @@
         If Position.RouteCompleted() Then
             SetRouteTo(Map.NodesAdjacencyList.GetRandomNode)
         Else
-            'RoutePosition may be changed here - ByRef!
-            Position.GetNextPosition(FIXED_KM_PER_SECOND)
-
-            'JUST FOR FUN
-            'CurrentNode.Latitude += IIf(Rnd() < 0.5, 0.0001, -0.0001)
-            'CurrentNode.Longitude += IIf(Rnd() < 0.5, 0.0001, -0.0001)
-            'If CurrentWay IsNot Nothing Then
-
-            '    CurrentWay.OneWay = Not CurrentWay.OneWay
-            'End If
-
-            'RoutePosition += 1
+            Position.GetNextPosition(VehicleSize)
+            CurrentSpeedKMH = Position.GetCurrentWay.GetMaxSpeedKMH(VehicleSize)
         End If
 
     End Sub

@@ -28,6 +28,7 @@ Partial Class frmAgentStatus
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.SuspendLayout()
         '
         'tmrAgentListView
@@ -36,7 +37,7 @@ Partial Class frmAgentStatus
         '
         'lvAgentList
         '
-        Me.lvAgentList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3})
+        Me.lvAgentList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3, Me.ColumnHeader4})
         Me.lvAgentList.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lvAgentList.FullRowSelect = True
         Me.lvAgentList.Location = New System.Drawing.Point(0, 0)
@@ -60,6 +61,11 @@ Partial Class frmAgentStatus
         Me.ColumnHeader3.Text = "Destination"
         Me.ColumnHeader3.Width = 110
         '
+        'ColumnHeader4
+        '
+        Me.ColumnHeader4.Text = "Speed (KM/h)"
+        Me.ColumnHeader4.Width = 82
+        '
         'frmAgentStatus
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -78,4 +84,5 @@ Partial Class frmAgentStatus
     Friend WithEvents ColumnHeader1 As System.Windows.Forms.ColumnHeader
     Friend WithEvents ColumnHeader2 As System.Windows.Forms.ColumnHeader
     Friend WithEvents ColumnHeader3 As System.Windows.Forms.ColumnHeader
+    Friend WithEvents ColumnHeader4 As System.Windows.Forms.ColumnHeader
 End Class

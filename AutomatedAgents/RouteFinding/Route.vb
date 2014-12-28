@@ -3,8 +3,13 @@
     Private TotalKM As Double = -1
 
     Public Sub New(ByVal Hops As List(Of Hop))
-        Debug.Assert(Hops IsNot Nothing)
+        Debug.Assert(Hops IsNot Nothing AndAlso Hops.Count >= 1)
+
+        If Hops(0).Way Is Nothing Then
+            Hops.RemoveAt(0)
+        End If
         Me.Hops = Hops
+
     End Sub
 
     'A route of 0

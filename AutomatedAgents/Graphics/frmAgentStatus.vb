@@ -16,6 +16,10 @@
                     lvAgentList.Items(i).SubItems(2).Text = Position.GetEndNode.ID
                 End If
 
+                If lvAgentList.Items(i).SubItems(3).Text <> AASimulation.Agents(i).CurrentSpeedKMH.ToString Then
+                    lvAgentList.Items(i).SubItems(3).Text = AASimulation.Agents(i).CurrentSpeedKMH
+                End If
+
             End If
 
         Next
@@ -25,6 +29,7 @@
         lvAgentList.Items.Clear()
         For i = 0 To Me.AASimulation.Agents.Count - 1
             lvAgentList.Items.Add(i)
+            lvAgentList.Items(i).SubItems.Add("")
             lvAgentList.Items(i).SubItems.Add("")
             lvAgentList.Items(i).SubItems.Add("")
         Next

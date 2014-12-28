@@ -1,10 +1,12 @@
 ﻿Public Class Agent
     Protected Const FIXED_KM_PER_SECOND As Double = 0.01341
 
+    Public CurrentSpeedKMH As Double
     Public Position As RoutePosition
     Protected Map As StreetMap
     Public Color As Color
 
+    Protected VehicleSize As VehicleSize = AutomatedAgents.VehicleSize.CAR
     Protected RoutePosition As Integer = 0
     Protected NodeToRouteTo As Node
 
@@ -32,7 +34,8 @@
             SetRouteTo(Map.NodesAdjacencyList.GetRandomNode)
         Else
             'RoutePosition may be changed here - ByRef!
-            Position.GetNextPosition(FIXED_KM_PER_SECOND)
+            Position.GetNextPosition(VehicleSize)
+            CurrentSpeedKMH = Position.GetCurrentWay.GetMaxSpeedKMH(VehicleSize)
             'HopPosition = New HopPosition(PlannedRoute(RoutePosition).ToNode)
             'HopPosition.Hop.FromNode.VisitNode()
             'CurrentWay = PlannedRoute(RoutePosition).Way

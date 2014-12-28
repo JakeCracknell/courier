@@ -29,7 +29,11 @@
         Me.HopPosition = 0
     End Sub
 
-    'Note this will change JourneyPosition if required. BYREF!!!
+    'Distance to travel based on speed of current way. Close enough for now, as 1 second is not long.
+    Public Sub GetNextPosition(ByVal Vehicle As VehicleSize)
+        GetNextPosition(Route.At(HopPosition).Way.GetMaxSpeedKMH(Vehicle) / 3600)
+    End Sub
+
     Public Sub GetNextPosition(ByVal DistanceIncrementMetres As Double)
         If DistanceIncrementMetres = 0 Then
             Exit Sub
