@@ -51,8 +51,6 @@
                 If Not AlreadyVisitedNodes.Contains(Cell.Node.ID) Then
                     Dim NextAStarTreeNode As New AStarTreeNode(AStarTreeNode, Cell)
 
-                    NextAStarTreeNode.Expand(AdjacencyList, DestinationNode)
-
                     Dim HeuristicCost As Double = GetDistance(Cell.Node, DestinationNode)
                     Dim F_Cost As Double = HeuristicCost + NextAStarTreeNode.TotalCost
                     Do Until Not PriorityQueue.ContainsKey(F_Cost) 'Exception can occur otherwise
@@ -62,8 +60,8 @@
 
                     If BestDistancesToNodes.ContainsKey(Cell.Node.ID) Then
                         Dim CompetingDistance As Double = BestDistancesToNodes(Cell.Node.ID)
-                        If F_Cost < CompetingDistance Then
-                            BestDistancesToNodes(Cell.Node.ID) = F_Cost
+                        If NextAStarTreeNode.TotalCost < CompetingDistance Then
+                            BestDistancesToNodes(Cell.Node.ID) = NextAStarTreeNode.TotalCost
                             PriorityQueue.Add(F_Cost, NextAStarTreeNode)
                         End If
                     Else
@@ -114,10 +112,6 @@
 
         Public Sub New(ByVal OldTree As AStarTreeNode, ByVal LastNodeWay As NodesAdjacencyListCell)
             Me.New(OldTree, New Hop(OldTree.Hop.ToNode, LastNodeWay))
-        End Sub
-
-        Public Sub Expand(ByVal AdjList As NodesAdjacencyList, ByVal StopNode As Node)
-
         End Sub
 
         Public Function GetCurrentNode() As Node

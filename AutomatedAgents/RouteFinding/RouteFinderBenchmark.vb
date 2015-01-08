@@ -21,7 +21,7 @@
 
     Private Class RouteFinderBenchmarkEngine
         Sub RunAsync()
-            Threading.ThreadPool.QueueUserWorkItem(AddressOf ComparativeBenchmark)
+            Threading.ThreadPool.QueueUserWorkItem(AddressOf RunBenchmark)
         End Sub
 
         Protected Sub RunBenchmark()
