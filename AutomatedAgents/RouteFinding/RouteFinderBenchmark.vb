@@ -21,7 +21,7 @@
 
     Private Class RouteFinderBenchmarkEngine
         Sub RunAsync()
-            Threading.ThreadPool.QueueUserWorkItem(AddressOf RunBenchmark)
+            Threading.ThreadPool.QueueUserWorkItem(AddressOf ComparativeBenchmark)
         End Sub
 
         Protected Sub RunBenchmark()
@@ -45,8 +45,8 @@
                 Dim S As Node = AdjacencyList.GetRandomNode
                 Dim D As Node = AdjacencyList.GetRandomNode
 
-                Dim AStar1 As New AStarSearchExpander(S, D, AdjacencyList)
-                Dim AStar2 As New AStarSearch(S, D, AdjacencyList)
+                Dim AStar1 As New AStarSearch(S, D, AdjacencyList)
+                Dim AStar2 As New AStarSearchArrayBased(S, D, AdjacencyList)
 
                 Wins += IIf(AStar1.GetCost < AStar2.GetCost, 1, 0)
                 Draws += IIf(AStar1.GetCost = AStar2.GetCost, 1, 0)

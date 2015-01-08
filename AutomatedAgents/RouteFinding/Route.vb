@@ -5,11 +5,13 @@
     Public Sub New(ByVal Hops As List(Of Hop))
         Debug.Assert(Hops IsNot Nothing AndAlso Hops.Count >= 1)
 
+        'Remove header hop A->A.
         If Hops(0).Way Is Nothing Then
             Hops.RemoveAt(0)
         End If
         Me.Hops = Hops
 
+        Debug.Assert(Hops.Count >= 1)
     End Sub
 
     'A route of 0

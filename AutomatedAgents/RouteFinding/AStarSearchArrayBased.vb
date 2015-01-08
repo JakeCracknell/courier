@@ -1,4 +1,4 @@
-﻿Public Class AStarSearch
+﻿Public Class AStarSearchArrayBased
     Implements RouteFinder
 
     Private SourceNode As Node
@@ -13,9 +13,7 @@
         Me.SourceNode = SourceNode
         Me.DestinationNode = DestinationNode
         Me.AdjacencyList = AdjacencyList
-        If SourceNode <> DestinationNode Then
-            DoAStar()
-        End If
+        DoAStar()
     End Sub
 
     Private Sub DoAStar()
@@ -32,7 +30,7 @@
             Dim AStarTreeNode As AStarTreeNode = PriorityQueue.Values(0)
             PriorityQueue.RemoveAt(0)
             If AStarTreeNode.GetCurrentNode = DestinationNode Then
-                Route = AStarTreeNode.GetRoute
+                Route = New Route(New List(Of Hop)(AStarTreeNode.RouteHops))
                 Cost = AStarTreeNode.TotalCost
                 dEbUgVaRiAbLe = Stopwatch.ElapsedMilliseconds & "ms iterations: " & IterationCount & " metres: " & Cost * 1000
                 Exit Sub
@@ -97,23 +95,23 @@
 
 
     Private Class AStarTreeNode
-        Public Parent As AStarTreeNode
-        Public Hop As Hop
+        Public RouteHops As Hop()
         Public ReadOnly TotalCost As Double
 
         Public Sub New(ByVal StartNode As Node)
-            Hop = New Hop(StartNode, StartNode, Nothing)
+            RouteHops = {New Hop(StartNode, StartNode, Nothing)}
             TotalCost = 0
         End Sub
 
         Public Sub New(ByVal OldTree As AStarTreeNode, ByVal LastHop As Hop)
-            Parent = OldTree
-            Hop = LastHop
+            ReDim RouteHops(OldTree.RouteHops.Length) 'One index larger
+            Array.Copy(OldTree.RouteHops, RouteHops, OldTree.RouteHops.Length)
+            RouteHops(RouteHops.Length - 1) = LastHop
             TotalCost = OldTree.TotalCost + LastHop.GetCost
         End Sub
 
         Public Sub New(ByVal OldTree As AStarTreeNode, ByVal LastNodeWay As NodesAdjacencyListCell)
-            Me.New(OldTree, New Hop(OldTree.Hop.ToNode, LastNodeWay))
+            Me.New(OldTree, New Hop(OldTree.RouteHops.Last.ToNode, LastNodeWay))
         End Sub
 
         Public Sub Expand(ByVal AdjList As NodesAdjacencyList, ByVal StopNode As Node)
@@ -121,17 +119,7 @@
         End Sub
 
         Public Function GetCurrentNode() As Node
-            Return Hop.ToNode
-        End Function
-
-        Public Function GetRoute() As Route
-            Dim Hops As New List(Of Hop)
-            Dim CurrentAStarNode As AStarTreeNode = Me
-            Do
-                Hops.Insert(0, CurrentAStarNode.Hop)
-                CurrentAStarNode = CurrentAStarNode.Parent
-            Loop Until CurrentAStarNode Is Nothing
-            Return New Route(Hops)
+            Return RouteHops.Last.ToNode
         End Function
     End Class
 End Class
