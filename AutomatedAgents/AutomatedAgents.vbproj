@@ -85,6 +85,7 @@
     <Compile Include="OSMData\WayParser.vb" />
     <Compile Include="RouteFinding\AStarSearchExpander.vb" />
     <Compile Include="RouteFinding\AStarSearch.vb" />
+    <Compile Include="RouteFinding\AStarSearchDistanceOnly.vb" />
     <Compile Include="RouteFinding\Route.vb" />
     <Compile Include="RouteFinding\RouteFinderBenchmark.vb" />
     <Compile Include="Simulation\VehicleSize.vb" />

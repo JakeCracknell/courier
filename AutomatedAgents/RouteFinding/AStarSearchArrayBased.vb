@@ -13,7 +13,9 @@
         Me.SourceNode = SourceNode
         Me.DestinationNode = DestinationNode
         Me.AdjacencyList = AdjacencyList
-        DoAStar()
+        If SourceNode <> DestinationNode Then
+            DoAStar()
+        End If
     End Sub
 
     Private Sub DoAStar()
@@ -49,19 +51,16 @@
                 If Not AlreadyVisitedNodes.Contains(Cell.Node.ID) Then
                     Dim NextAStarTreeNode As New AStarTreeNode(AStarTreeNode, Cell)
 
-                    NextAStarTreeNode.Expand(AdjacencyList, DestinationNode)
-
                     Dim HeuristicCost As Double = GetDistance(Cell.Node, DestinationNode)
                     Dim F_Cost As Double = HeuristicCost + NextAStarTreeNode.TotalCost
                     Do Until Not PriorityQueue.ContainsKey(F_Cost) 'Exception can occur otherwise
                         F_Cost += EPSILON
                     Loop
 
-
                     If BestDistancesToNodes.ContainsKey(Cell.Node.ID) Then
                         Dim CompetingDistance As Double = BestDistancesToNodes(Cell.Node.ID)
-                        If F_Cost < CompetingDistance Then
-                            BestDistancesToNodes(Cell.Node.ID) = F_Cost
+                        If NextAStarTreeNode.TotalCost < CompetingDistance Then
+                            BestDistancesToNodes(Cell.Node.ID) = NextAStarTreeNode.TotalCost
                             PriorityQueue.Add(F_Cost, NextAStarTreeNode)
                         End If
                     Else
@@ -81,9 +80,6 @@
 
     End Sub
 
-    Public Function GetCost() As Double Implements RouteFinder.GetCost
-        Return Cost
-    End Function
 
     Public Function GetRoute() As Route Implements RouteFinder.GetRoute
         Return Route

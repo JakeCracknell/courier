@@ -1,6 +1,9 @@
 ﻿Module Utility
     Public dEbUgVaRiAbLe As Object
 
+    'TODO: put this somewhere else:
+    Public Const MAX_POSSIBLE_SPEED_KMH As Integer = 112
+
     Function GetRandomColor() As Color
         Return Color.FromArgb(Rnd() * 255, Rnd() * 255, Rnd() * 255)
     End Function

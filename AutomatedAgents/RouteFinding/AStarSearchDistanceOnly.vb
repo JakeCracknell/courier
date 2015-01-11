@@ -1,4 +1,4 @@
-﻿Public Class AStarSearch
+﻿Public Class AStarSearchDistanceOnly
     Implements RouteFinder
 
     Private SourceNode As Node
@@ -6,8 +6,7 @@
     Private AdjacencyList As NodesAdjacencyList
     Private Route As Route
     Private NodesSearched As New List(Of Node)
-    Private Distance As Double
-    Private EstimatedTime As Double = Integer.MaxValue
+    Private Cost As Double
     Private Const EPSILON As Double = 0.0000001
 
     Sub New(ByVal SourceNode As Node, ByVal DestinationNode As Node, ByVal AdjacencyList As NodesAdjacencyList)
@@ -34,7 +33,8 @@
             PriorityQueue.RemoveAt(0)
             If AStarTreeNode.GetCurrentNode = DestinationNode Then
                 Route = AStarTreeNode.GetRoute
-                dEbUgVaRiAbLe = Stopwatch.ElapsedMilliseconds & "ms iterations: " & IterationCount & " metres: " & Distance * 1000
+                Cost = AStarTreeNode.TotalCost
+                dEbUgVaRiAbLe = Stopwatch.ElapsedMilliseconds & "ms iterations: " & IterationCount & " metres: " & Cost * 1000
                 Exit Sub
             End If
 
@@ -52,7 +52,7 @@
                     Dim NextAStarTreeNode As New AStarTreeNode(AStarTreeNode, Cell)
 
                     'Heuristic cost must not overestimate, must be admissible.
-                    Dim HeuristicCost As Double = GetDistance(Cell.Node, DestinationNode) / MAX_POSSIBLE_SPEED_KMH
+                    Dim HeuristicCost As Double = GetDistance(Cell.Node, DestinationNode)
                     Dim F_Cost As Double = HeuristicCost + NextAStarTreeNode.TotalCost
                     Do Until Not PriorityQueue.ContainsKey(F_Cost) 'Exception can occur otherwise
                         F_Cost += EPSILON
@@ -80,7 +80,6 @@
         Debug.WriteLine("No route found - disconnected graph?")
 
     End Sub
-
 
     Public Function GetRoute() As Route Implements RouteFinder.GetRoute
         'Dim str As String = ""
@@ -115,8 +114,7 @@
         Public Sub New(ByVal OldTree As AStarTreeNode, ByVal LastHop As Hop)
             Parent = OldTree
             Hop = LastHop
-            'TotalCost = OldTree.TotalCost + LastHop.GetCost
-            TotalCost = OldTree.TotalCost + LastHop.GetEstimatedTravelTime
+            TotalCost = OldTree.TotalCost + LastHop.GetCost
         End Sub
 
         Public Sub New(ByVal OldTree As AStarTreeNode, ByVal LastNodeWay As NodesAdjacencyListCell)

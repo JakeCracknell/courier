@@ -1,6 +1,4 @@
 ﻿Public Class Agent
-    Protected Const FIXED_KM_PER_SECOND As Double = 0.01341
-
     Public CurrentSpeedKMH As Double
     Public Position As RoutePosition
     Protected Map As StreetMap

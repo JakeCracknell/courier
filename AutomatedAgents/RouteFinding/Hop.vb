@@ -19,6 +19,10 @@
         Return GetDistance(FromNode, ToNode)
     End Function
 
+    Public Function GetEstimatedTravelTime() As Double
+        Return GetDistance(FromNode, ToNode) / Way.GetMaxSpeedKMH(VehicleSize.CAR)
+    End Function
+
     Public Overrides Function Equals(ByVal obj As Object) As Boolean
         Dim other As Hop = CType(obj, Hop)
         Return FromNode = other.FromNode And ToNode = other.ToNode ' And Way = other.Way

@@ -76,10 +76,6 @@
         Next
     End Sub
 
-    Public Function GetCost() As Double Implements RouteFinder.GetCost
-        Return Cost
-    End Function
-
     Public Function GetRoute() As Route Implements RouteFinder.GetRoute
         Return New Route(HopList)
     End Function

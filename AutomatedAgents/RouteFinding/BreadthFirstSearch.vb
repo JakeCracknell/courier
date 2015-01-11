@@ -15,10 +15,6 @@
         DoBFS()
     End Sub
 
-    Public Function GetCost() As Double Implements RouteFinder.GetCost
-        Return HopList.Count
-    End Function
-
     Public Function GetRoute() As Route Implements RouteFinder.GetRoute
         Return New Route(HopList)
     End Function

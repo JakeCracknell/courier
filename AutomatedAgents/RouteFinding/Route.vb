@@ -1,6 +1,7 @@
 ﻿Public Class Route
     Private Hops As List(Of Hop)
     Private TotalKM As Double = -1
+    Private TotalHours As Double = -1
 
     Public Sub New(ByVal Hops As List(Of Hop))
         Debug.Assert(Hops IsNot Nothing AndAlso Hops.Count >= 1)
@@ -49,5 +50,16 @@
             Next
         End If
         Return TotalKM
+    End Function
+
+    Public Function GetEstimatedHours() As Double
+        'Lazily calculated, as I don't want a heavyweight constructor.
+        If TotalHours < 0 Then
+            TotalHours = 0
+            For Each Hop As Hop In Hops
+                TotalHours += Hop.GetEstimatedTravelTime
+            Next
+        End If
+        Return TotalHours
     End Function
 End Class
