@@ -33,7 +33,9 @@
         If Position.RouteCompleted() Then
             SetRouteTo(Map.NodesAdjacencyList.GetRandomNode)
         Else
-            Position.GetNextPosition(VehicleSize)
+            Dim DistanceTravelled As Double = Position.Move(VehicleSize)
+            TotalKMTravelled += DistanceTravelled
+            DepleteFuel(DistanceTravelled)
             CurrentSpeedKMH = Position.GetCurrentWay.GetMaxSpeedKMH(VehicleSize)
         End If
 
@@ -65,7 +67,7 @@
         End Sub
 
         Protected Sub Run()
-            Dim RouteFinder As RouteFinder = New AStarSearch(FromNode, ToNode, AdjacencyList)
+            Dim RouteFinder As RouteFinder = New AStarSearch(FromNode, ToNode, AdjacencyList, RouteFindingMinimiser)
             PlannedRoute = RouteFinder.GetRoute
             RoutingComplete = True
         End Sub

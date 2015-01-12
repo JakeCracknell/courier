@@ -50,6 +50,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -83,11 +84,13 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="OSMData\WayParser.vb" />
-    <Compile Include="RouteFinding\AStarSearchExpander.vb" />
+    <Compile Include="RouteFinding\DepreceatedRouteFinders\AStarSearchExpander.vb" />
     <Compile Include="RouteFinding\AStarSearch.vb" />
-    <Compile Include="RouteFinding\AStarSearchDistanceOnly.vb" />
+    <Compile Include="RouteFinding\DepreceatedRouteFinders\AStarSearchDistanceOnly.vb" />
     <Compile Include="RouteFinding\Route.vb" />
     <Compile Include="RouteFinding\RouteFinderBenchmark.vb" />
+    <Compile Include="RouteFinding\RouteFindingMinimiser.vb" />
+    <Compile Include="Simulation\AgentNameAssigner.vb" />
     <Compile Include="Simulation\VehicleSize.vb" />
     <Compile Include="Simulation\AASimulation.vb" />
     <Compile Include="Graphics\frmMain.vb">
@@ -108,11 +111,11 @@
     <Compile Include="NodesAdjacencyList\NodesAdjacencyListCell.vb" />
     <Compile Include="NodesAdjacencyList\NodesAdjacencyListRow.vb" />
     <Compile Include="OSMData\OSMFileSystemManager.vb" />
-    <Compile Include="RouteFinding\AStarSearchArrayBased.vb" />
-    <Compile Include="RouteFinding\AStarSearch2Way.vb" />
+    <Compile Include="RouteFinding\DepreceatedRouteFinders\AStarSearchArrayBased.vb" />
+    <Compile Include="RouteFinding\DepreceatedRouteFinders\AStarSearch2Way.vb" />
     <Compile Include="RouteFinding\Hop.vb" />
     <Compile Include="RouteFinding\RouteFinder.vb" />
-    <Compile Include="RouteFinding\BreadthFirstSearch.vb" />
+    <Compile Include="RouteFinding\DepreceatedRouteFinders\BreadthFirstSearch.vb" />
     <Compile Include="RouteFinding\RoutingUtils.vb" />
     <Compile Include="Simulation\SimulationParameters.vb" />
     <Compile Include="StreetMap.vb" />
@@ -167,6 +170,9 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\AgentNames.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

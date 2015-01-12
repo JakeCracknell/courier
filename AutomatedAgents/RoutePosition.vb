@@ -30,9 +30,11 @@
     End Sub
 
     'Distance to travel based on speed of current way. Close enough for now, as 1 second is not long.
-    Public Sub GetNextPosition(ByVal Vehicle As VehicleSize)
-        GetNextPosition(Route.At(HopPosition).Way.GetMaxSpeedKMH(Vehicle) / 3600)
-    End Sub
+    Public Function Move(ByVal Vehicle As VehicleSize) As Double
+        Dim DistanceToTravel As Double = Route.At(HopPosition).Way.GetMaxSpeedKMH(Vehicle) / 3600
+        GetNextPosition(DistanceToTravel)
+        Return DistanceToTravel
+    End Function
 
     Public Sub GetNextPosition(ByVal DistanceIncrementMetres As Double)
         If DistanceIncrementMetres = 0 Then

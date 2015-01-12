@@ -110,7 +110,7 @@
                     SelectionMode = MapSelectionMode.ROUTE_TO
                 Case MapSelectionMode.ROUTE_TO
                     RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
-                    Dim RouteFinder As RouteFinder = New AStarSearch(RouteFromNode, RouteToNode, Map.NodesAdjacencyList)
+                    Dim RouteFinder As RouteFinder = New AStarSearch(RouteFromNode, RouteToNode, Map.NodesAdjacencyList, RouteFindingMinimiser.DISTANCE)
                     If RouteFinder.GetRoute() IsNot Nothing Then
                         SetPictureBox(MapGraphics.DrawRoute(RouteFinder.GetRoute, RouteFinder.GetNodesSearched))
                     Else

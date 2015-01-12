@@ -8,30 +8,34 @@
             Dim Position As RoutePosition = AASimulation.Agents(i).Position
             If Position IsNot Nothing Then
                 Dim Way As Way = Position.GetCurrentWayPosition.Hop.Way
-                If Way IsNot Nothing AndAlso lvAgentList.Items(i).SubItems(1).Text <> Way.Name Then
-                    lvAgentList.Items(i).SubItems(1).Text = Way.Name
-                End If
-
-                If lvAgentList.Items(i).SubItems(2).Text <> Position.GetEndNode.ID.ToString Then
-                    lvAgentList.Items(i).SubItems(2).Text = Position.GetEndNode.ID
-                End If
-
-                If lvAgentList.Items(i).SubItems(3).Text <> AASimulation.Agents(i).CurrentSpeedKMH.ToString Then
-                    lvAgentList.Items(i).SubItems(3).Text = AASimulation.Agents(i).CurrentSpeedKMH
-                End If
-
+                DisplayLVCell(i, cAt, IIf(Way Is Nothing, "", Way.Name))
+                DisplayLVCell(i, cDestination, Position.GetEndNode.ID)
+                DisplayLVCell(i, cKMH, AASimulation.Agents(i).CurrentSpeedKMH)
             End If
 
+            DisplayLVCell(i, cAName, AASimulation.Agents(i).AgentName)
+            DisplayLVCell(i, cLitres, Math.Round(AASimulation.Agents(i).PetroleumLitres, 2))
+            DisplayLVCell(i, cTotalKM, Math.Round(AASimulation.Agents(i).TotalKMTravelled, 1))
+            DisplayLVCell(i, cFuelCost, FormatCurrency(AASimulation.Agents(i).FuelCosts))
         Next
     End Sub
+
+    Private Sub DisplayLVCell(ByVal Row As Integer, ByVal Column As ColumnHeader, ByVal Value As String)
+        If lvAgentList.Items(Row).SubItems(Column.Index).Text <> Value Then
+            lvAgentList.Items(Row).SubItems(Column.Index).Text = Value
+        End If
+    End Sub
+
     Public Sub SetAASimulation(ByVal AASimulation As Object)
         Me.AASimulation = AASimulation
         lvAgentList.Items.Clear()
         For i = 0 To Me.AASimulation.Agents.Count - 1
             lvAgentList.Items.Add(i)
-            lvAgentList.Items(i).SubItems.Add("")
-            lvAgentList.Items(i).SubItems.Add("")
-            lvAgentList.Items(i).SubItems.Add("")
+            lvAgentList.Items(i).UseItemStyleForSubItems = False
+            lvAgentList.Items(i).SubItems(cID.Index).BackColor = Me.AASimulation.Agents(i).Color
+            For j = 0 To lvAgentList.Columns.Count - 2
+                lvAgentList.Items(i).SubItems.Add("")
+            Next
         Next
     End Sub
 End Class

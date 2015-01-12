@@ -1,5 +1,10 @@
 ﻿Public Class Agent
-    Public CurrentSpeedKMH As Double
+    Public Const RouteFindingMinimiser As RouteFindingMinimiser = RouteFindingMinimiser.DISTANCE
+    Public AgentName As String
+    Public PetroleumLitres As Double
+    Public FuelCosts As Double = 0
+    Public CurrentSpeedKMH As Double = 0
+    Public TotalKMTravelled As Double = 0
     Public Position As RoutePosition
     Protected Map As StreetMap
     Public Color As Color
@@ -11,6 +16,8 @@
     Public Sub New(ByVal Map As StreetMap, ByVal Color As Color)
         Me.Map = Map
         Me.Color = Color
+        Me.AgentName = AgentNameAssigner.AssignAgentName()
+        Refuel()
 
         WarpToRandomNode()
     End Sub
@@ -30,20 +37,17 @@
     Public Overridable Sub Move()
         If Position.RouteCompleted Then
             SetRouteTo(Map.NodesAdjacencyList.GetRandomNode)
-        Else
-            'RoutePosition may be changed here - ByRef!
-            Position.GetNextPosition(VehicleSize)
-            CurrentSpeedKMH = Position.GetCurrentWay.GetMaxSpeedKMH(VehicleSize)
-            'HopPosition = New HopPosition(PlannedRoute(RoutePosition).ToNode)
-            'HopPosition.Hop.FromNode.VisitNode()
-            'CurrentWay = PlannedRoute(RoutePosition).Way
-            'RoutePosition += 1
         End If
+
+        Dim DistanceTravelled As Double = Position.Move(VehicleSize)
+        TotalKMTravelled += DistanceTravelled
+        DepleteFuel(DistanceTravelled)
+        CurrentSpeedKMH = Position.GetCurrentWay.GetMaxSpeedKMH(VehicleSize)
     End Sub
 
 
     Public Overridable Sub SetRouteTo(ByVal DestinationNode As Node)
-        Dim RouteFinder As RouteFinder = New AStarSearch(GetCurrentNode, DestinationNode, Map.NodesAdjacencyList)
+        Dim RouteFinder As RouteFinder = New AStarSearch(GetCurrentNode, DestinationNode, Map.NodesAdjacencyList, RouteFindingMinimiser)
         Position = New RoutePosition(RouteFinder.GetRoute)
     End Sub
 
@@ -54,4 +58,24 @@
             Return Map.NodesAdjacencyList.GetRandomNode
         End If
     End Function
+
+    Protected Sub DepleteFuel(ByVal DistanceTravelled As Double)
+        'TODO: make this a major point in the project, fuel economy
+        'Select Case VehicleSize
+        'Case
+        PetroleumLitres -= DistanceTravelled / 17.7
+        'End Select
+        'For now just say fixed KPL. Note 100 mpg = 35.4 kpl
+    End Sub
+
+    Protected Sub Refuel()
+        Select Case VehicleSize
+            Case AutomatedAgents.VehicleSize.CAR
+                PetroleumLitres = 50
+            Case AutomatedAgents.VehicleSize.VAN
+                PetroleumLitres = 75
+            Case AutomatedAgents.VehicleSize.TRUCK_7_5_TONNE
+                PetroleumLitres = 100
+        End Select
+    End Sub
 End Class

@@ -25,10 +25,14 @@ Partial Class frmAgentStatus
         Me.components = New System.ComponentModel.Container()
         Me.tmrAgentListView = New System.Windows.Forms.Timer(Me.components)
         Me.lvAgentList = New System.Windows.Forms.ListView()
-        Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.cID = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.cAName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.cAt = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.cDestination = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.cKMH = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.cLitres = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.cTotalKM = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.cFuelCost = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.SuspendLayout()
         '
         'tmrAgentListView
@@ -37,52 +41,76 @@ Partial Class frmAgentStatus
         '
         'lvAgentList
         '
-        Me.lvAgentList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3, Me.ColumnHeader4})
+        Me.lvAgentList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.cID, Me.cAName, Me.cAt, Me.cDestination, Me.cKMH, Me.cLitres, Me.cTotalKM, Me.cFuelCost})
         Me.lvAgentList.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lvAgentList.FullRowSelect = True
         Me.lvAgentList.Location = New System.Drawing.Point(0, 0)
         Me.lvAgentList.Name = "lvAgentList"
-        Me.lvAgentList.Size = New System.Drawing.Size(509, 509)
+        Me.lvAgentList.Size = New System.Drawing.Size(744, 509)
         Me.lvAgentList.TabIndex = 0
         Me.lvAgentList.UseCompatibleStateImageBehavior = False
         Me.lvAgentList.View = System.Windows.Forms.View.Details
         '
-        'ColumnHeader1
+        'cID
         '
-        Me.ColumnHeader1.Text = "ID"
+        Me.cID.Text = "ID"
+        Me.cID.Width = 36
         '
-        'ColumnHeader2
+        'cAName
         '
-        Me.ColumnHeader2.Text = "Route Position"
-        Me.ColumnHeader2.Width = 116
+        Me.cAName.Text = "Name"
+        Me.cAName.Width = 78
         '
-        'ColumnHeader3
+        'cAt
         '
-        Me.ColumnHeader3.Text = "Destination"
-        Me.ColumnHeader3.Width = 110
+        Me.cAt.Text = "Route Position"
+        Me.cAt.Width = 116
         '
-        'ColumnHeader4
+        'cDestination
         '
-        Me.ColumnHeader4.Text = "Speed (KM/h)"
-        Me.ColumnHeader4.Width = 82
+        Me.cDestination.Text = "Destination"
+        Me.cDestination.Width = 110
+        '
+        'cKMH
+        '
+        Me.cKMH.Text = "Speed (KM/h)"
+        Me.cKMH.Width = 82
+        '
+        'cLitres
+        '
+        Me.cLitres.Text = "Fuel (L)"
+        '
+        'cTotalKM
+        '
+        Me.cTotalKM.Text = "Total Distance (KM)"
+        Me.cTotalKM.Width = 111
+        '
+        'cFuelCost
+        '
+        Me.cFuelCost.Text = "Fuel Costs"
+        Me.cFuelCost.Width = 63
         '
         'frmAgentStatus
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(509, 509)
+        Me.ClientSize = New System.Drawing.Size(744, 509)
         Me.Controls.Add(Me.lvAgentList)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "frmAgentStatus"
-        Me.Text = "frmAgentStatus"
+        Me.Text = "Agent Status"
         Me.TopMost = True
         Me.ResumeLayout(False)
 
     End Sub
     Friend WithEvents tmrAgentListView As System.Windows.Forms.Timer
     Friend WithEvents lvAgentList As System.Windows.Forms.ListView
-    Friend WithEvents ColumnHeader1 As System.Windows.Forms.ColumnHeader
-    Friend WithEvents ColumnHeader2 As System.Windows.Forms.ColumnHeader
-    Friend WithEvents ColumnHeader3 As System.Windows.Forms.ColumnHeader
-    Friend WithEvents ColumnHeader4 As System.Windows.Forms.ColumnHeader
+    Friend WithEvents cID As System.Windows.Forms.ColumnHeader
+    Friend WithEvents cAt As System.Windows.Forms.ColumnHeader
+    Friend WithEvents cDestination As System.Windows.Forms.ColumnHeader
+    Friend WithEvents cKMH As System.Windows.Forms.ColumnHeader
+    Friend WithEvents cAName As System.Windows.Forms.ColumnHeader
+    Friend WithEvents cLitres As System.Windows.Forms.ColumnHeader
+    Friend WithEvents cTotalKM As System.Windows.Forms.ColumnHeader
+    Friend WithEvents cFuelCost As System.Windows.Forms.ColumnHeader
 End Class

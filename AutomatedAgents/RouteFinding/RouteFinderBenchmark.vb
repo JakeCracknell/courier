@@ -29,7 +29,7 @@
             Stopwatch.Start()
             Dim CompletedRoutes As Integer = 0
             Do
-                Dim AStar As New AStarSearch(SourceNode, DestinationNode, AdjacencyList)
+                Dim AStar As New AStarSearch(SourceNode, DestinationNode, AdjacencyList, RouteFindingMinimiser.DISTANCE)
                 CompletedRoutes += 1
             Loop Until Stopwatch.ElapsedMilliseconds > BENCHMARK_TIME_MS
             Dim TotalMS As Integer = Stopwatch.ElapsedMilliseconds
@@ -45,8 +45,8 @@
                 Dim S As Node = AdjacencyList.GetRandomNode
                 Dim D As Node = AdjacencyList.GetRandomNode
 
-                Dim AStar1 As New AStarSearch(S, D, AdjacencyList)
-                Dim AStar2 As New AStarSearchArrayBased(S, D, AdjacencyList)
+                Dim AStar1 As New AStarSearch(S, D, AdjacencyList, RouteFindingMinimiser.DISTANCE)
+                Dim AStar2 As New AStarSearch(S, D, AdjacencyList, RouteFindingMinimiser.TIME_NO_TRAFFIC)
                 Dim AStarRoute1 As Route = AStar1.GetRoute
                 Dim AStarRoute2 As Route = AStar2.GetRoute
                 If AStarRoute1 IsNot Nothing And AStarRoute2 IsNot Nothing Then
@@ -72,8 +72,8 @@
                 Dim S As Node = AdjacencyList.GetRandomNode
                 Dim D As Node = AdjacencyList.GetRandomNode
 
-                Dim AStar1 As New AStarSearch(S, D, AdjacencyList)
-                Dim AStar2 As New AStarSearchArrayBased(S, D, AdjacencyList)
+                Dim AStar1 As New AStarSearch(S, D, AdjacencyList, RouteFindingMinimiser.DISTANCE)
+                Dim AStar2 As New AStarSearch(S, D, AdjacencyList, RouteFindingMinimiser.TIME_NO_TRAFFIC)
                 Dim AStarRoute1 As Route = AStar1.GetRoute
                 Dim AStarRoute2 As Route = AStar2.GetRoute
                 If AStarRoute1 IsNot Nothing And AStarRoute2 IsNot Nothing Then
@@ -90,7 +90,7 @@
             Stopwatch.Start()
             Dim CompletedRoutes As Integer = 0
             Do
-                Dim AStar As New AStarSearch(SourceNode, DestinationNode, AdjacencyList)
+                Dim AStar As New AStarSearch(SourceNode, DestinationNode, AdjacencyList, RouteFindingMinimiser.DISTANCE)
                 CompletedRoutes += 1
             Loop Until Stopwatch.ElapsedMilliseconds > BENCHMARK_TIME_MS / 2
             Dim TotalMS As Integer = Stopwatch.ElapsedMilliseconds
@@ -99,7 +99,7 @@
             Stopwatch1.Start()
             Dim CompletedRoutes1 As Integer = 0
             Do
-                Dim AStar As New AStarSearchDistanceOnly(SourceNode, DestinationNode, AdjacencyList)
+                Dim AStar As New AStarSearch(SourceNode, DestinationNode, AdjacencyList, RouteFindingMinimiser.TIME_NO_TRAFFIC)
                 CompletedRoutes1 += 1
             Loop Until Stopwatch1.ElapsedMilliseconds > BENCHMARK_TIME_MS / 2
             Dim TotalMS1 As Integer = Stopwatch1.ElapsedMilliseconds

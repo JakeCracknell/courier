@@ -105,7 +105,9 @@
         Dim grOverlay As Graphics = Graphics.FromImage(OverlayBitmapCopy)
 
         DrawNodeRectangle(Cursor, grOverlay)
-        grOverlay.DrawLine(Pens.Red, Cursor, NodePoint)
+        Dim POINT_TO_NODE_PEN As New Pen(Brushes.Purple, 1)
+        POINT_TO_NODE_PEN.EndCap = Drawing2D.LineCap.ArrowAnchor
+        grOverlay.DrawLine(POINT_TO_NODE_PEN, Cursor, NodePoint)
 
         Dim MapBitmapCopy As Bitmap = MapBitmapOriginal.Clone
         Dim grMap As Graphics = Graphics.FromImage(MapBitmapCopy)

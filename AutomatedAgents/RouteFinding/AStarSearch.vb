@@ -6,25 +6,20 @@
     Private AdjacencyList As NodesAdjacencyList
     Private Route As Route
     Private NodesSearched As New List(Of Node)
-    Private Distance As Double
-    Private EstimatedTime As Double = Integer.MaxValue
+    Private Minimiser As RouteFindingMinimiser
     Private Const EPSILON As Double = 0.0000001
 
-    Sub New(ByVal SourceNode As Node, ByVal DestinationNode As Node, ByVal AdjacencyList As NodesAdjacencyList)
+    Sub New(ByVal SourceNode As Node, ByVal DestinationNode As Node, ByVal AdjacencyList As NodesAdjacencyList, ByVal Minimiser As RouteFindingMinimiser)
         Me.SourceNode = SourceNode
         Me.DestinationNode = DestinationNode
         Me.AdjacencyList = AdjacencyList
+        Me.Minimiser = Minimiser
         If SourceNode <> DestinationNode Then
             DoAStar()
         End If
     End Sub
 
     Private Sub DoAStar()
-        'For debugging and assessing performance
-        Dim IterationCount As Integer = 0
-        Dim Stopwatch As New Stopwatch
-        Stopwatch.Start()
-
         Dim PriorityQueue As New SortedList(Of Double, AStarTreeNode)
         Dim AlreadyVisitedNodes As New HashSet(Of Long)
         Dim BestDistancesToNodes As New Dictionary(Of Long, Double)
@@ -34,25 +29,28 @@
             PriorityQueue.RemoveAt(0)
             If AStarTreeNode.GetCurrentNode = DestinationNode Then
                 Route = AStarTreeNode.GetRoute
-                dEbUgVaRiAbLe = Stopwatch.ElapsedMilliseconds & "ms iterations: " & IterationCount & " metres: " & Distance * 1000
                 Exit Sub
             End If
 
-            'MapGraphics.DrawRoute(New Route(AStarTreeNode.RouteHops.ToList)).Save("C:\pics\" & IterationCount & ".bmp")
-            IterationCount += 1
-            'Debug.WriteLine(PriorityQueue.Count)
-
-
             NodesSearched.Add(AStarTreeNode.GetCurrentNode)
-            'AlreadyVisitedNodes.UnionWith(AStarTreeNode.NodesSeen)
 
             Dim Row As NodesAdjacencyListRow = AdjacencyList.Rows(AStarTreeNode.GetCurrentNode.ID)
             For Each Cell As NodesAdjacencyListCell In Row.Cells
                 If Not AlreadyVisitedNodes.Contains(Cell.Node.ID) Then
                     Dim NextAStarTreeNode As New AStarTreeNode(AStarTreeNode, Cell)
+                    NextAStarTreeNode.CalculateCost(Minimiser)
 
                     'Heuristic cost must not overestimate, must be admissible.
-                    Dim HeuristicCost As Double = GetDistance(Cell.Node, DestinationNode) / MAX_POSSIBLE_SPEED_KMH
+                    Dim HeuristicCost As Double
+                    Select Case Minimiser
+                        Case RouteFindingMinimiser.DISTANCE
+                            HeuristicCost = GetDistance(Cell.Node, DestinationNode)
+                        Case RouteFindingMinimiser.TIME_NO_TRAFFIC
+                            HeuristicCost = GetDistance(Cell.Node, DestinationNode) / MAX_POSSIBLE_SPEED_KMH
+                        Case RouteFindingMinimiser.TIME_WITH_TRAFFIC 'TODO
+                            HeuristicCost = GetDistance(Cell.Node, DestinationNode) / MAX_POSSIBLE_SPEED_KMH
+                    End Select
+
                     Dim F_Cost As Double = HeuristicCost + NextAStarTreeNode.TotalCost
                     Do Until Not PriorityQueue.ContainsKey(F_Cost) 'Exception can occur otherwise
                         F_Cost += EPSILON
@@ -83,17 +81,6 @@
 
 
     Public Function GetRoute() As Route Implements RouteFinder.GetRoute
-        'Dim str As String = ""
-        'For Each Hop In Route.GetHopList
-        '    str &= Hop.Way.Name & vbTab & Hop.Way.Type & vbTab & Hop.GetCost & vbTab & Hop.Way.GetMaxSpeedKMH(VehicleSize.CAR) & vbTab & Hop.GetEstimatedTravelTime & vbNewLine
-        'Next
-        'str &= vbNewLine
-
-        'For Each Hop In (New AStarSearchArrayBased(SourceNode, DestinationNode, AdjacencyList)).GetRoute.GetHopList
-        '    str &= Hop.Way.Name & vbTab & Hop.Way.Type & vbTab & Hop.GetCost & vbTab & Hop.Way.GetMaxSpeedKMH(VehicleSize.CAR) & vbTab & Hop.GetEstimatedTravelTime & vbNewLine
-        'Next
-
-        'My.Computer.Clipboard.SetText(str)
         Return Route
     End Function
 
@@ -105,7 +92,7 @@
     Private Class AStarTreeNode
         Public Parent As AStarTreeNode
         Public Hop As Hop
-        Public ReadOnly TotalCost As Double
+        Public TotalCost As Double
 
         Public Sub New(ByVal StartNode As Node)
             Hop = New Hop(StartNode, StartNode, Nothing)
@@ -115,12 +102,22 @@
         Public Sub New(ByVal OldTree As AStarTreeNode, ByVal LastHop As Hop)
             Parent = OldTree
             Hop = LastHop
-            'TotalCost = OldTree.TotalCost + LastHop.GetCost
-            TotalCost = OldTree.TotalCost + LastHop.GetEstimatedTravelTime
+            TotalCost = OldTree.TotalCost
         End Sub
 
         Public Sub New(ByVal OldTree As AStarTreeNode, ByVal LastNodeWay As NodesAdjacencyListCell)
             Me.New(OldTree, New Hop(OldTree.Hop.ToNode, LastNodeWay))
+        End Sub
+
+        Public Sub CalculateCost(ByVal Minimiser As RouteFindingMinimiser)
+            Select Case Minimiser
+                Case RouteFindingMinimiser.DISTANCE
+                    TotalCost += Hop.GetCost
+                Case RouteFindingMinimiser.TIME_NO_TRAFFIC
+                    TotalCost += Hop.GetEstimatedTravelTime
+                Case RouteFindingMinimiser.TIME_WITH_TRAFFIC 'TODO
+                    TotalCost += Hop.GetEstimatedTravelTime
+            End Select
         End Sub
 
         Public Function GetCurrentNode() As Node
