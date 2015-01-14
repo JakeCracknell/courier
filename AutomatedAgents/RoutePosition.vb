@@ -63,7 +63,7 @@
     End Sub
 
     Function RouteCompleted() As Boolean
-        Return PercentageTravelled = 1 And HopPosition = Route.HopCount - 1
+        Return Route Is Nothing OrElse (PercentageTravelled = 1 And HopPosition = Route.HopCount - 1)
     End Function
 
 End Class

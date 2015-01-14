@@ -4,6 +4,8 @@
         If AASimulation.Agents.Count <> lvAgentList.Items.Count Then
             SetAASimulation(AASimulation)
         End If
+
+        lvAgentList.BeginUpdate()
         For i = 0 To AASimulation.Agents.Count - 1
             Dim Position As RoutePosition = AASimulation.Agents(i).Position
             If Position IsNot Nothing Then
@@ -13,11 +15,13 @@
                 DisplayLVCell(i, cKMH, AASimulation.Agents(i).CurrentSpeedKMH)
             End If
 
+            DisplayLVCell(i, cVehicle, AASimulation.Agents(i).GetVehicleString())
             DisplayLVCell(i, cAName, AASimulation.Agents(i).AgentName)
             DisplayLVCell(i, cLitres, Math.Round(AASimulation.Agents(i).PetroleumLitres, 2))
             DisplayLVCell(i, cTotalKM, Math.Round(AASimulation.Agents(i).TotalKMTravelled, 1))
             DisplayLVCell(i, cFuelCost, FormatCurrency(AASimulation.Agents(i).FuelCosts))
         Next
+        lvAgentList.EndUpdate()
     End Sub
 
     Private Sub DisplayLVCell(ByVal Row As Integer, ByVal Column As ColumnHeader, ByVal Value As String)

@@ -14,9 +14,13 @@
     Protected NodeToRouteTo As Node
 
     Public Sub New(ByVal Map As StreetMap, ByVal Color As Color)
+        Me.New(Map, Color, AutomatedAgents.VehicleSize.CAR)
+    End Sub
+    Public Sub New(ByVal Map As StreetMap, ByVal Color As Color, ByVal VehicleSize As VehicleSize)
         Me.Map = Map
         Me.Color = Color
         Me.AgentName = AgentNameAssigner.AssignAgentName()
+        Me.VehicleSize = VehicleSize
         Refuel()
 
         WarpToRandomNode()
@@ -35,9 +39,9 @@
     End Sub
 
     Public Overridable Sub Move()
-        If Position.RouteCompleted Then
+        Do Until Not Position.RouteCompleted
             SetRouteTo(Map.NodesAdjacencyList.GetRandomNode)
-        End If
+        Loop
 
         Dim DistanceTravelled As Double = Position.Move(VehicleSize)
         TotalKMTravelled += DistanceTravelled
@@ -48,7 +52,9 @@
 
     Public Overridable Sub SetRouteTo(ByVal DestinationNode As Node)
         Dim RouteFinder As RouteFinder = New AStarSearch(GetCurrentNode, DestinationNode, Map.NodesAdjacencyList, RouteFindingMinimiser)
-        Position = New RoutePosition(RouteFinder.GetRoute)
+        If RouteFinder.GetRoute IsNot Nothing Then
+            Position = New RoutePosition(RouteFinder.GetRoute)
+        End If
     End Sub
 
     Protected Function GetCurrentNode() As Node
@@ -78,4 +84,15 @@
                 PetroleumLitres = 100
         End Select
     End Sub
+
+    Public Function GetVehicleString() As String
+        Select Case VehicleSize
+            Case AutomatedAgents.VehicleSize.CAR
+                Return "Car"
+            Case AutomatedAgents.VehicleSize.VAN
+                Return "Van"
+            Case AutomatedAgents.VehicleSize.TRUCK_7_5_TONNE
+                Return "Truck"
+        End Select
+    End Function
 End Class

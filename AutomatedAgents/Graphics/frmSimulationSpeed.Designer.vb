@@ -71,13 +71,13 @@ Partial Class frmSimulationSpeed
         Me.txtGraphicsRefreshRate.Name = "txtGraphicsRefreshRate"
         Me.txtGraphicsRefreshRate.Size = New System.Drawing.Size(65, 20)
         Me.txtGraphicsRefreshRate.TabIndex = 1
-        Me.txtGraphicsRefreshRate.Text = "50"
+        Me.txtGraphicsRefreshRate.Text = "10"
         '
         'tbSimSpeed
         '
         Me.tbSimSpeed.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tbSimSpeed.Location = New System.Drawing.Point(152, 3)
-        Me.tbSimSpeed.Maximum = 1000
+        Me.tbSimSpeed.Maximum = 10000
         Me.tbSimSpeed.Minimum = 1
         Me.tbSimSpeed.Name = "tbSimSpeed"
         Me.tbSimSpeed.Size = New System.Drawing.Size(143, 23)
@@ -97,7 +97,7 @@ Partial Class frmSimulationSpeed
         Me.tbGraphicsRefreshRate.TabIndex = 3
         Me.tbGraphicsRefreshRate.TickFrequency = 0
         Me.tbGraphicsRefreshRate.TickStyle = System.Windows.Forms.TickStyle.None
-        Me.tbGraphicsRefreshRate.Value = 50
+        Me.tbGraphicsRefreshRate.Value = 10
         '
         'Label1
         '

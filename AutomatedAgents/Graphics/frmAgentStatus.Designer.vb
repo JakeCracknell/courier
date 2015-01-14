@@ -33,6 +33,7 @@ Partial Class frmAgentStatus
         Me.cLitres = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.cTotalKM = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.cFuelCost = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.cVehicle = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.SuspendLayout()
         '
         'tmrAgentListView
@@ -41,7 +42,7 @@ Partial Class frmAgentStatus
         '
         'lvAgentList
         '
-        Me.lvAgentList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.cID, Me.cAName, Me.cAt, Me.cDestination, Me.cKMH, Me.cLitres, Me.cTotalKM, Me.cFuelCost})
+        Me.lvAgentList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.cID, Me.cVehicle, Me.cAName, Me.cAt, Me.cDestination, Me.cKMH, Me.cLitres, Me.cTotalKM, Me.cFuelCost})
         Me.lvAgentList.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lvAgentList.FullRowSelect = True
         Me.lvAgentList.Location = New System.Drawing.Point(0, 0)
@@ -90,6 +91,10 @@ Partial Class frmAgentStatus
         Me.cFuelCost.Text = "Fuel Costs"
         Me.cFuelCost.Width = 63
         '
+        'cVehicle
+        '
+        Me.cVehicle.Text = "Vehicle"
+        '
         'frmAgentStatus
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -113,4 +118,5 @@ Partial Class frmAgentStatus
     Friend WithEvents cLitres As System.Windows.Forms.ColumnHeader
     Friend WithEvents cTotalKM As System.Windows.Forms.ColumnHeader
     Friend WithEvents cFuelCost As System.Windows.Forms.ColumnHeader
+    Friend WithEvents cVehicle As System.Windows.Forms.ColumnHeader
 End Class
