@@ -1,20 +1,20 @@
 ﻿Public Class AStarSearch
     Implements RouteFinder
 
-    Private SourceNode As Node
-    Private DestinationNode As Node
+    Private StartPoint As RoutingPoint
+    Private EndPoint As RoutingPoint
     Private AdjacencyList As NodesAdjacencyList
     Private Route As Route
     Private NodesSearched As New List(Of Node)
     Private Minimiser As RouteFindingMinimiser
     Private Const EPSILON As Double = 0.0000001
 
-    Sub New(ByVal SourceNode As Node, ByVal DestinationNode As Node, ByVal AdjacencyList As NodesAdjacencyList, ByVal Minimiser As RouteFindingMinimiser)
-        Me.SourceNode = SourceNode
-        Me.DestinationNode = DestinationNode
+    Sub New(ByVal StartPoint As RoutingPoint, ByVal EndPoint As RoutingPoint, ByVal AdjacencyList As NodesAdjacencyList, ByVal Minimiser As RouteFindingMinimiser)
+        Me.StartPoint = StartPoint
+        Me.EndPoint = EndPoint
         Me.AdjacencyList = AdjacencyList
         Me.Minimiser = Minimiser
-        If SourceNode <> DestinationNode Then
+        If Not StartPoint.Equals(EndPoint) Then
             DoAStar()
         End If
     End Sub
@@ -23,11 +23,11 @@
         Dim PriorityQueue As New SortedList(Of Double, AStarTreeNode)
         Dim AlreadyVisitedNodes As New HashSet(Of Long)
         Dim BestDistancesToNodes As New Dictionary(Of Long, Double)
-        PriorityQueue.Add(0, New AStarTreeNode(SourceNode))
+        PriorityQueue.Add(0, New AStarTreeNode(StartPoint))
         Do
             Dim AStarTreeNode As AStarTreeNode = PriorityQueue.Values(0)
             PriorityQueue.RemoveAt(0)
-            If AStarTreeNode.GetCurrentNode = DestinationNode Then
+            If AStarTreeNode.GetCurrentNode = EndPoint Then
                 Route = AStarTreeNode.GetRoute
                 Exit Sub
             End If
@@ -44,11 +44,11 @@
                     Dim HeuristicCost As Double
                     Select Case Minimiser
                         Case RouteFindingMinimiser.DISTANCE
-                            HeuristicCost = GetDistance(Cell.Node, DestinationNode)
+                            HeuristicCost = GetDistance(Cell.Node, EndPoint)
                         Case RouteFindingMinimiser.TIME_NO_TRAFFIC
-                            HeuristicCost = GetDistance(Cell.Node, DestinationNode) / MAX_POSSIBLE_SPEED_KMH
+                            HeuristicCost = GetDistance(Cell.Node, EndPoint) / MAX_POSSIBLE_SPEED_KMH
                         Case RouteFindingMinimiser.TIME_WITH_TRAFFIC 'TODO
-                            HeuristicCost = GetDistance(Cell.Node, DestinationNode) / MAX_POSSIBLE_SPEED_KMH
+                            HeuristicCost = GetDistance(Cell.Node, EndPoint) / MAX_POSSIBLE_SPEED_KMH
                     End Select
 
                     Dim F_Cost As Double = HeuristicCost + NextAStarTreeNode.TotalCost
@@ -94,7 +94,7 @@
         Public Hop As Hop
         Public TotalCost As Double
 
-        Public Sub New(ByVal StartNode As Node)
+        Public Sub New(ByVal StartNode As RoutingPoint)
             Hop = New Hop(StartNode, StartNode, Nothing)
             TotalCost = 0
         End Sub
@@ -106,7 +106,7 @@
         End Sub
 
         Public Sub New(ByVal OldTree As AStarTreeNode, ByVal LastNodeWay As NodesAdjacencyListCell)
-            Me.New(OldTree, New Hop(OldTree.Hop.ToNode, LastNodeWay))
+            Me.New(OldTree, New Hop(OldTree.Hop.ToPoint, LastNodeWay))
         End Sub
 
         Public Sub CalculateCost(ByVal Minimiser As RouteFindingMinimiser)
@@ -121,7 +121,7 @@
         End Sub
 
         Public Function GetCurrentNode() As Node
-            Return Hop.ToNode
+            Return Hop.ToPoint
         End Function
 
         Public Function GetRoute() As Route

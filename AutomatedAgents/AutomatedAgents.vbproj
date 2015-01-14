@@ -84,12 +84,11 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="OSMData\WayParser.vb" />
-    <Compile Include="RouteFinding\DepreceatedRouteFinders\AStarSearchExpander.vb" />
     <Compile Include="RouteFinding\AStarSearch.vb" />
-    <Compile Include="RouteFinding\DepreceatedRouteFinders\AStarSearchDistanceOnly.vb" />
     <Compile Include="RouteFinding\Route.vb" />
     <Compile Include="RouteFinding\RouteFinderBenchmark.vb" />
     <Compile Include="RouteFinding\RouteFindingMinimiser.vb" />
+    <Compile Include="RoutingPoint.vb" />
     <Compile Include="Simulation\AgentNameAssigner.vb" />
     <Compile Include="Simulation\VehicleSize.vb" />
     <Compile Include="Simulation\AASimulation.vb" />
@@ -111,11 +110,8 @@
     <Compile Include="NodesAdjacencyList\NodesAdjacencyListCell.vb" />
     <Compile Include="NodesAdjacencyList\NodesAdjacencyListRow.vb" />
     <Compile Include="OSMData\OSMFileSystemManager.vb" />
-    <Compile Include="RouteFinding\DepreceatedRouteFinders\AStarSearchArrayBased.vb" />
-    <Compile Include="RouteFinding\DepreceatedRouteFinders\AStarSearch2Way.vb" />
     <Compile Include="RouteFinding\Hop.vb" />
     <Compile Include="RouteFinding\RouteFinder.vb" />
-    <Compile Include="RouteFinding\DepreceatedRouteFinders\BreadthFirstSearch.vb" />
     <Compile Include="RouteFinding\RoutingUtils.vb" />
     <Compile Include="Simulation\SimulationParameters.vb" />
     <Compile Include="StreetMap.vb" />
@@ -139,7 +135,7 @@
     <Compile Include="Utility.vb" />
     <Compile Include="OSMData\Way.vb" />
     <Compile Include="RoutePosition.vb" />
-    <Compile Include="WayPosition.vb" />
+    <Compile Include="HopPosition.vb" />
     <Compile Include="OSMData\WayType.vb" />
   </ItemGroup>
   <ItemGroup>

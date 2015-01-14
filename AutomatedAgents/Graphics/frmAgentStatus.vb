@@ -9,9 +9,9 @@
         For i = 0 To AASimulation.Agents.Count - 1
             Dim Position As RoutePosition = AASimulation.Agents(i).Position
             If Position IsNot Nothing Then
-                Dim Way As Way = Position.GetCurrentWayPosition.Hop.Way
+                Dim Way As Way = Position.GetCurrentWay
                 DisplayLVCell(i, cAt, IIf(Way Is Nothing, "", Way.Name))
-                DisplayLVCell(i, cDestination, Position.GetEndNode.ID)
+                'DisplayLVCell(i, cDestination, Position.GetEndPoint.ID)
                 DisplayLVCell(i, cKMH, AASimulation.Agents(i).CurrentSpeedKMH)
             End If
 

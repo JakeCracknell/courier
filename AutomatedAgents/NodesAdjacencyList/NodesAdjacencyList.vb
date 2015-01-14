@@ -42,8 +42,18 @@
         Return Node
     End Function
 
-    Function GetRandomNodePosition() As RoutePosition
-        Return Nothing 'TODO
+    Function GetRandomPoint() As HopPosition
+        Dim NodeA, NodeB As Node
+        Dim Way As Way
+        Do
+            Dim RandomRow As NodesAdjacencyListRow = Rows(Int(Rnd() * Rows.Count))
+            Dim RandomCell As NodesAdjacencyListCell = RandomRow.Cells(Int(Rnd() * RandomRow.Cells.Count))
+            NodeA = RandomRow.NodeKey
+            NodeB = RandomCell.Node
+            Way = RandomCell.Way
+        Loop Until NodeA.Connected And NodeB.Connected
+        Dim RandomPercentageTravelled As Double = Rnd()
+        Return New HopPosition(New Hop(NodeA, NodeB, Way), RandomPercentageTravelled)
     End Function
 
     Function GetNearestNode(ByVal Latitude As Double, ByVal Longitude As Double)

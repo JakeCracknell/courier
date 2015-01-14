@@ -39,9 +39,11 @@
 
         Return GetPoint(Lat, Lon)
     End Function
-    Public Function GetPoint(ByVal Node As Node) As Point
-        Return GetPoint(Node.Latitude, Node.Longitude)
+
+    Public Function GetPoint(ByVal RoutingPoint As RoutingPoint) As Point
+        Return GetPoint(RoutingPoint.GetLatitude, RoutingPoint.GetLongitude)
     End Function
+
     Public Function GetPoint(ByVal Latitude As Double, ByVal Longitude As Double) As Point
         Dim X As Integer = (1 - ((Bounds.MaxLongitude - Longitude) / LongLength)) * PanelWidth
         Dim Y As Integer = ((Bounds.MaxLatitude - Latitude) / LatHeight) * PanelHeight

@@ -86,7 +86,7 @@
                            AGENT_DRAW_SIZE, AGENT_DRAW_SIZE)
 
             If ConfigDrawAgentLines Then
-                Dim TargetPoint As Point = CC.GetPoint(Agent.Position.GetEndNode)
+                Dim TargetPoint As Point = CC.GetPoint(Agent.Position.GetEndPoint)
                 Dim Pen As New Pen(Agent.Color)
                 gr.DrawLine(Pen, CurrentPoint, TargetPoint)
             End If
@@ -139,8 +139,8 @@
     '    Return MapBitmapCopy
     'End Function
 
-    Function DrawRouteStart(ByVal Node As Node) As Image
-        Return DrawRoute(New Route(Node), Nothing)
+    Function DrawRouteStart(ByVal Point As RoutingPoint) As Image
+        Return DrawRoute(New Route(Point), Nothing)
     End Function
     Function DrawRoute(ByVal Route As Route) As Image
         Return DrawRoute(Route, Nothing)
@@ -149,8 +149,8 @@
     Function DrawRoute(ByVal Route As Route, ByVal NodesSearched As List(Of Node)) As Image
         Dim grOverlay As Graphics = Graphics.FromImage(MapBitmapOverlay)
 
-        Dim RouteFromNode As Node = Route.GetStartNode
-        Dim NodePoint As Point = CC.GetPoint(RouteFromNode)
+        Dim RouteFromPoint As RoutingPoint = Route.GetStartPoint
+        Dim NodePoint As Point = CC.GetPoint(RouteFromPoint)
         grOverlay.Clear(Color.Transparent)
 
         DrawNodeRectangle(NodePoint, grOverlay)
@@ -164,13 +164,13 @@
                 Next
             End If
 
-            Dim RouteToNode = Route.GetEndNode
+            Dim RouteToNode = Route.GetEndPoint
             NodePoint = CC.GetPoint(RouteToNode)
             DrawNodeRectangle(NodePoint, grOverlay)
 
             For Each Hop As Hop In Route.GetHopList()
-                Dim FromPoint As Point = CC.GetPoint(Hop.FromNode)
-                Dim ToPoint As Point = CC.GetPoint(Hop.ToNode)
+                Dim FromPoint As Point = CC.GetPoint(Hop.FromPoint)
+                Dim ToPoint As Point = CC.GetPoint(Hop.ToPoint)
                 grOverlay.DrawLine(ROUTE_PEN, FromPoint, ToPoint)
             Next
 

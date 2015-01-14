@@ -7,8 +7,8 @@
     Function GetRandomColor() As Color
         Return Color.FromArgb(Rnd() * 255, Rnd() * 255, Rnd() * 255)
     End Function
-    Function GetDistance(ByVal Node1 As Node, ByVal Node2 As Node) As Double
-        Return GetDistance(Node1.Latitude, Node1.Longitude, Node2.Latitude, Node2.Longitude)
+    Function GetDistance(ByVal Node1 As RoutingPoint, ByVal Node2 As RoutingPoint) As Double
+        Return GetDistance(Node1.GetLatitude, Node1.GetLongitude, Node2.GetLatitude, Node2.GetLongitude)
     End Function
     Function GetDistance(ByVal lat1 As Double, ByVal lon1 As Double, ByVal lat2 As Double, ByVal lon2 As Double) As Double
         Dim dDistance As Double

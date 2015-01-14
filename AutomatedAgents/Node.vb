@@ -1,5 +1,6 @@
 ﻿Public Class Node
     Implements IEquatable(Of Node)
+    Implements RoutingPoint
     Public ID As Long
     Public Latitude As Double
     Public Longitude As Double
@@ -26,6 +27,13 @@
     Public Overloads Function Equals(ByVal OtherNode As Node) As Boolean _
         Implements System.IEquatable(Of Node).Equals
         Return Me.ID = OtherNode.ID
+    End Function
+
+    Public Overloads Function GetLongitude() As Double Implements RoutingPoint.GetLongitude
+        Return Longitude
+    End Function
+    Public Overloads Function GetLatitude() As Double Implements RoutingPoint.GetLatitude
+        Return Latitude
     End Function
 
     Public Sub VisitNode()

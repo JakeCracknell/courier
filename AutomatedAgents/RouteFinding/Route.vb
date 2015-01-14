@@ -16,21 +16,21 @@
     End Sub
 
     'A route of 0
-    Public Sub New(ByVal OnlyNode As Node)
+    Public Sub New(ByVal OnlyPoint As RoutingPoint)
         Me.Hops = New List(Of Hop)
-        Me.Hops.Add(New Hop(OnlyNode, OnlyNode, Nothing))
+        Me.Hops.Add(New Hop(OnlyPoint, OnlyPoint, Nothing))
     End Sub
 
     Public Function At(ByVal Index As Integer) As Hop
         Return Hops(Index)
     End Function
 
-    Public Function GetStartNode() As Node
-        Return Hops.First.FromNode
+    Public Function GetStartPoint() As RoutingPoint
+        Return Hops.First.FromPoint
     End Function
 
-    Public Function GetEndNode() As Node
-        Return Hops.Last.ToNode
+    Public Function GetEndPoint() As RoutingPoint
+        Return Hops.Last.ToPoint
     End Function
 
     Public Function GetHopList() As List(Of Hop)

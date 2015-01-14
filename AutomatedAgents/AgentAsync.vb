@@ -41,33 +41,28 @@
 
     End Sub
 
-    Public Overrides Sub SetRouteTo(ByVal DestinationNode As Node)
-        RouteFinder = New AsyncRouteFinder(GetCurrentNode(), DestinationNode, Map.NodesAdjacencyList)
+    Public Overrides Sub SetRouteTo(ByVal DestinationPoint As RoutingPoint)
+        RouteFinder = New AsyncRouteFinder(PointToRouteTo, DestinationPoint, Map.NodesAdjacencyList)
         AwaitingRoute = True
         RoutePosition = 0
     End Sub
 
     Private Class AsyncRouteFinder
-        Private FromNode As Node
-        Private ToNode As Node
+        Private FromPoint As RoutingPoint
+        Private ToPoint As RoutingPoint
         Private AdjacencyList As NodesAdjacencyList
         Public PlannedRoute As Route
         Public RoutingComplete As Boolean = False 'Might have failed
 
-        Public Sub New(ByVal FromNode As Node, ByVal ToNode As Node, ByVal AdjacencyList As NodesAdjacencyList)
-            Me.FromNode = FromNode
-            Me.ToNode = ToNode
+        Public Sub New(ByVal FromPoint As RoutingPoint, ByVal ToPoint As RoutingPoint, ByVal AdjacencyList As NodesAdjacencyList)
+            Me.FromPoint = FromPoint
+            Me.ToPoint = ToPoint
             Me.AdjacencyList = AdjacencyList
-            'Dim WorkerThread As New Threading.Thread(AddressOf Run)
-            'WorkerThread.Start()
             System.Threading.ThreadPool.QueueUserWorkItem(AddressOf Run)
-            'Threading.Tasks.Task.Factory.StartNew(Sub()
-            '                                          Run()
-            '                                      End Sub)
         End Sub
 
         Protected Sub Run()
-            Dim RouteFinder As RouteFinder = New AStarSearch(FromNode, ToNode, AdjacencyList, RouteFindingMinimiser)
+            Dim RouteFinder As RouteFinder = New AStarSearch(FromPoint, ToPoint, AdjacencyList, RouteFindingMinimiser)
             PlannedRoute = RouteFinder.GetRoute
             RoutingComplete = True
         End Sub
