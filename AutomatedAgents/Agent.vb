@@ -39,7 +39,7 @@
     End Sub
 
     Public Overridable Sub Move()
-        Do Until Not Position.RouteCompleted
+        Do Until Position IsNot Nothing AndAlso Not Position.RouteCompleted
             SetRouteTo(Map.NodesAdjacencyList.GetRandomNode)
         Loop
 
