@@ -8,6 +8,41 @@
 
     Sub New(ByVal Hop As Hop, ByVal PercentageTravelled As Double)
         Me.Hop = Hop
+
+        'Coalesce HopPositions.
+        Dim IsHopAPairOfHopPositions As Integer = If(TypeOf Hop.FromPoint Is HopPosition, 1, 0) + If(TypeOf Hop.ToPoint Is HopPosition, 10, 0)
+        Select Case IsHopAPairOfHopPositions
+            Case 0 'A<---------------->B
+                Me.Hop = Hop
+            Case 1 'A----------X<------>B
+                Dim InnerHopPosition As HopPosition = CType(Hop.FromPoint, HopPosition)
+                Dim InnerHop As Hop = InnerHopPosition.Hop
+                Me.Hop = New Hop(InnerHop.FromPoint, InnerHop.ToPoint, InnerHop.Way)
+                PercentageTravelled = PercentageTravelled + _
+                    (1 - PercentageTravelled) * InnerHopPosition.PercentageTravelled
+            Case 10 'A<---------->X------B
+                Dim InnerHopPosition As HopPosition = CType(Hop.ToPoint, HopPosition)
+                Dim InnerHop As Hop = CType(Hop.ToPoint, HopPosition).Hop
+                Me.Hop = New Hop(InnerHop.FromPoint, InnerHop.ToPoint, InnerHop.Way)
+                PercentageTravelled = PercentageTravelled * InnerHopPosition.PercentageTravelled
+            Case 11 'A----X<------>X------B
+                'Assume not like this 'A----X<---B---->X----C and IHP1.% < ICP2.%
+                Dim IHPLeft As HopPosition = CType(Hop.FromPoint, HopPosition)
+                Dim IHPRight As HopPosition = CType(Hop.ToPoint, HopPosition)
+                Dim InnerHop As Hop = IHPLeft.Hop
+                Me.Hop = New Hop(InnerHop.FromPoint, InnerHop.ToPoint, InnerHop.Way)
+                PercentageTravelled = IHPLeft.PercentageTravelled + _
+                    (IHPRight.PercentageTravelled - IHPLeft.PercentageTravelled) * PercentageTravelled
+        End Select
+
+        If TypeOf Hop.FromPoint Is HopPosition Then
+            Dim InnerFrom As HopPosition = Hop.FromPoint
+            Me.Hop = New Hop(InnerFrom.Hop.FromPoint, InnerFrom.Hop.ToPoint, InnerFrom.Hop.Way)
+        ElseIf TypeOf Hop.ToPoint Is HopPosition Then
+            Dim InnerFrom As HopPosition = Hop.ToPoint
+            Me.Hop = New Hop(InnerFrom.Hop.FromPoint, InnerFrom.Hop.ToPoint, InnerFrom.Hop.Way)
+        End If
+
         Me.PercentageTravelled = PercentageTravelled
 
         If Hop.FromPoint.GetLatitude < Hop.ToPoint.GetLatitude Then

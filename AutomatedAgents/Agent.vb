@@ -23,19 +23,7 @@
         Me.VehicleSize = VehicleSize
         Refuel()
 
-        WarpToRandomPoint()
-    End Sub
-
-    Protected Sub WarpToRandomPoint()
-        PointToRouteTo = Map.NodesAdjacencyList.GetRandomPoint
-    End Sub
-
-    Protected Sub MoveRandomly()
-        Dim AdjacentNodes As List(Of NodesAdjacencyListCell) = _
-            Map.NodesAdjacencyList.Rows(Position.GetOldNode.ID).Cells
-        Dim Cell As NodesAdjacencyListCell = _
-            AdjacentNodes(Int(Rnd() * AdjacentNodes.Count))
-        PointToRouteTo = Cell.Node
+        Move()
     End Sub
 
     Public Overridable Sub Move()
@@ -51,19 +39,15 @@
 
 
     Public Overridable Sub SetRouteTo(ByVal DestinationPoint As RoutingPoint)
-        Dim RouteFinder As RouteFinder = New AStarSearch(PointToRouteTo, DestinationPoint, Map.NodesAdjacencyList, RouteFindingMinimiser)
-        If RouteFinder.GetRoute IsNot Nothing Then
-            Position = New RoutePosition(RouteFinder.GetRoute)
-        End If
-    End Sub
+        Dim StartingPoint As RoutingPoint = If(Position IsNot Nothing, Position.GetRoutingPoint, Map.NodesAdjacencyList.GetRandomPoint)
 
-    'Protected Function GetCurrentNode() As Node
-    '    If Position IsNot Nothing AndAlso Position.GetOldNode IsNot Nothing Then
-    '        Return Position.GetOldNode
-    '    Else
-    '        Return Map.NodesAdjacencyList.GetRandomNode
-    '    End If
-    'End Function
+        Dim RouteFinder As RouteFinder = New AStarSearch(StartingPoint, DestinationPoint, Map.NodesAdjacencyList, RouteFindingMinimiser)
+
+        Debug.Assert(RouteFinder IsNot Nothing)
+        'If RouteFinder.GetRoute IsNot Nothing Then
+        Position = New RoutePosition(RouteFinder.GetRoute)
+        'End If
+    End Sub
 
     Protected Sub DepleteFuel(ByVal DistanceTravelled As Double)
         'TODO: make this a major point in the project, fuel economy

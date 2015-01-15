@@ -11,7 +11,6 @@ Class AASimulation
     'Probably just fix the adj/node list as we don't want in final prog
     Sub AddAgent(ByVal Map As StreetMap)
         Dim Agent As New Agent(Map, GetRandomColor)
-        Agent.SetRouteTo(Map.NodesAdjacencyList.GetRandomNode)
         Agents.Add(Agent)
     End Sub
 
