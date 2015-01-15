@@ -36,6 +36,10 @@
         Return Latitude
     End Function
 
+    Public Overloads Function ToString() As String
+        Return ID
+    End Function
+
     Public Sub VisitNode()
         AgentTraffic += 1
         TotalNodesTraffic += 1

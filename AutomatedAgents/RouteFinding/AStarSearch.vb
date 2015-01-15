@@ -72,10 +72,24 @@
 
                     'TODO investigate if I am insane or if it is looking too far
                     'to the side of the map with a*. crete for example!
-
-
                 End If
             Next
+
+            If TypeOf EndPoint Is HopPosition Then
+                Dim EndHopPosition As HopPosition = CType(EndPoint, HopPosition)
+                If EndHopPosition.Hop.FromPoint.Equals(Row.NodeKey) OrElse (EndHopPosition.Hop.ToPoint.Equals(Row.NodeKey) AndAlso Not EndHopPosition.Hop.Way.OneWay) Then
+                    Dim NextAStarTreeNode As New AStarTreeNode(AStarTreeNode, New Hop(Row.NodeKey, EndHopPosition, EndHopPosition.Hop.Way))
+                    NextAStarTreeNode.CalculateCost(Minimiser)
+
+                    '0 heuristic cost.
+                    Dim F_Cost As Double = 0 + NextAStarTreeNode.TotalCost
+                    Do Until Not PriorityQueue.ContainsKey(F_Cost) 'Exception can occur otherwise
+                        F_Cost += EPSILON
+                    Loop
+                    PriorityQueue.Add(F_Cost, NextAStarTreeNode)
+                End If
+            End If
+
         Loop Until PriorityQueue.Count = 0
 
         Debug.WriteLine("No route found - disconnected graph?")

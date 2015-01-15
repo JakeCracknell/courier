@@ -76,10 +76,12 @@
         Dim Way As Way
         Do
             Dim RandomRow As NodesAdjacencyListRow = Rows.Values(Int(Rnd() * Rows.Count))
-            Dim RandomCell As NodesAdjacencyListCell = RandomRow.Cells(Int(Rnd() * RandomRow.Cells.Count))
-            NodeA = RandomRow.NodeKey
-            NodeB = RandomCell.Node
-            Way = RandomCell.Way
+            If RandomRow.Cells.Count > 0 Then
+                Dim RandomCell As NodesAdjacencyListCell = RandomRow.Cells(Int(Rnd() * RandomRow.Cells.Count))
+                NodeA = RandomRow.NodeKey
+                NodeB = RandomCell.Node
+                Way = RandomCell.Way
+            End If
         Loop Until NodeA.Connected And NodeB.Connected
         Dim RandomPercentageTravelled As Double = Rnd()
         Return New HopPosition(New Hop(NodeA, NodeB, Way), RandomPercentageTravelled)
