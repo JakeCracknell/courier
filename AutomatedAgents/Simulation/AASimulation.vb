@@ -10,7 +10,7 @@ Class AASimulation
     'TODO: Need to fix the case where the route is null due to disconnected grpah
     'Probably just fix the adj/node list as we don't want in final prog
     Sub AddAgent(ByVal Map As StreetMap)
-        Dim Agent As New Agent(Map, GetRandomColor)
+        Dim Agent As New AgentAsync(Map, GetRandomColor)
         Agents.Add(Agent)
     End Sub
 

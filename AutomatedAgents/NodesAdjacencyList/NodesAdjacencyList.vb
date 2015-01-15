@@ -82,7 +82,7 @@
                 NodeB = RandomCell.Node
                 Way = RandomCell.Way
             End If
-        Loop Until NodeA.Connected And NodeB.Connected
+        Loop Until NodeA IsNot Nothing AndAlso NodeB IsNot Nothing AndAlso NodeA.Connected AndAlso NodeB.Connected
         Dim RandomPercentageTravelled As Double = Rnd()
         Return New HopPosition(New Hop(NodeA, NodeB, Way), RandomPercentageTravelled)
     End Function

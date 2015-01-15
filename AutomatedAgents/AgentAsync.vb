@@ -18,20 +18,20 @@
                 Else
                     'This handles the case where the agent tried to route to a disconnected subgraph
                     'What about when it was placed on a small disconnected subgraph - stuck!
-                    SetRouteTo(Map.NodesAdjacencyList.GetRandomNode)
+                    SetRouteTo(Map.NodesAdjacencyList.GetRandomPoint)
                     Exit Sub
                 End If
 
                 TicksWaited = 0
             Else
-                'Skip a turn if still waiting on GPS
+                'Skip a turn if still waiting on route
                 TicksWaited += 1
                 Exit Sub
             End If
         End If
 
-        If Position.RouteCompleted() Then
-            SetRouteTo(Map.NodesAdjacencyList.GetRandomNode)
+        If Position Is Nothing OrElse Position.RouteCompleted() Then
+            SetRouteTo(Map.NodesAdjacencyList.GetRandomPoint)
         Else
             Dim DistanceTravelled As Double = Position.Move(VehicleSize)
             TotalKMTravelled += DistanceTravelled
@@ -42,7 +42,8 @@
     End Sub
 
     Public Overrides Sub SetRouteTo(ByVal DestinationPoint As RoutingPoint)
-        RouteFinder = New AsyncRouteFinder(PointToRouteTo, DestinationPoint, Map.NodesAdjacencyList)
+        Dim StartingPoint As RoutingPoint = If(Position IsNot Nothing, Position.GetRoutingPoint, Map.NodesAdjacencyList.GetRandomPoint)
+        RouteFinder = New AsyncRouteFinder(StartingPoint, DestinationPoint, Map.NodesAdjacencyList)
         AwaitingRoute = True
         RoutePosition = 0
     End Sub

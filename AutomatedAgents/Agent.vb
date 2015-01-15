@@ -11,7 +11,6 @@
 
     Protected VehicleSize As VehicleSize = AutomatedAgents.VehicleSize.CAR
     Protected RoutePosition As Integer = 0
-    Protected PointToRouteTo As RoutingPoint
 
     Public Sub New(ByVal Map As StreetMap, ByVal Color As Color)
         Me.New(Map, Color, AutomatedAgents.VehicleSize.CAR)
@@ -27,6 +26,7 @@
     End Sub
 
     Public Overridable Sub Move()
+        'AASim started or route completed
         Do Until Position IsNot Nothing AndAlso Not Position.RouteCompleted
             SetRouteTo(Map.NodesAdjacencyList.GetRandomPoint)
         Loop

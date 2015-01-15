@@ -21,7 +21,15 @@
 
     Private Class RouteFinderBenchmarkEngine
         Sub RunAsync()
-            Threading.ThreadPool.QueueUserWorkItem(AddressOf ComparativeBenchmarkAlgorithmSpeed)
+            Threading.ThreadPool.QueueUserWorkItem(AddressOf RunBenchmark)
+        End Sub
+
+        Protected Sub Test()
+            Dim Point1 As HopPosition = AdjacencyList.GetRandomPoint
+            Dim Point2 As New HopPosition(New Hop(Point1.Hop.FromPoint, Point1.Hop.ToPoint, Point1.Hop.Way), Point1.PercentageTravelled / 2)
+
+            Dim AStar As New AStarSearch(Point1, Point2, AdjacencyList, RouteFindingMinimiser.DISTANCE)
+            MsgBox(AStar.GetRoute.GetHopList.Count)
         End Sub
 
         Protected Sub RunBenchmark()

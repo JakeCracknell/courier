@@ -6,55 +6,56 @@
 
     Private Longitude, Latitude As Double
 
-    Sub New(ByVal Hop As Hop, ByVal PercentageTravelled As Double)
-        Me.Hop = Hop
+    Sub New(ByVal _Hop As Hop, ByVal _PercentageTravelled As Double)
+        Me.Hop = _Hop
 
         'Coalesce HopPositions.
-        Dim IsHopAPairOfHopPositions As Integer = If(TypeOf Hop.FromPoint Is HopPosition, 1, 0) + If(TypeOf Hop.ToPoint Is HopPosition, 10, 0)
+        Dim IsHopAPairOfHopPositions As Integer = If(TypeOf _Hop.FromPoint Is HopPosition, 1, 0) + If(TypeOf _Hop.ToPoint Is HopPosition, 10, 0)
         Select Case IsHopAPairOfHopPositions
             Case 0 'A<---------------->B
-                Me.Hop = Hop
+                Me.Hop = _Hop
             Case 1 'A----------X<------>B
-                Dim InnerHopPosition As HopPosition = CType(Hop.FromPoint, HopPosition)
+                Dim InnerHopPosition As HopPosition = CType(_Hop.FromPoint, HopPosition)
                 Dim InnerHop As Hop = InnerHopPosition.Hop
                 Me.Hop = New Hop(InnerHop.FromPoint, InnerHop.ToPoint, InnerHop.Way)
-                PercentageTravelled = PercentageTravelled + _
-                    (1 - PercentageTravelled) * InnerHopPosition.PercentageTravelled
+                Me.PercentageTravelled = _PercentageTravelled + _
+                    (1 - _PercentageTravelled) * InnerHopPosition.PercentageTravelled
             Case 10 'A<---------->X------B
-                Dim InnerHopPosition As HopPosition = CType(Hop.ToPoint, HopPosition)
-                Dim InnerHop As Hop = CType(Hop.ToPoint, HopPosition).Hop
+                Dim InnerHopPosition As HopPosition = CType(_Hop.ToPoint, HopPosition)
+                Dim InnerHop As Hop = CType(_Hop.ToPoint, HopPosition).Hop
                 Me.Hop = New Hop(InnerHop.FromPoint, InnerHop.ToPoint, InnerHop.Way)
-                PercentageTravelled = PercentageTravelled * InnerHopPosition.PercentageTravelled
+                Me.PercentageTravelled = _PercentageTravelled * InnerHopPosition.PercentageTravelled
             Case 11 'A----X<------>X------B
+                'Note this was never called in testing, probably because of the coalescing above.
                 'Assume not like this 'A----X<---B---->X----C and IHP1.% < ICP2.%
-                Dim IHPLeft As HopPosition = CType(Hop.FromPoint, HopPosition)
-                Dim IHPRight As HopPosition = CType(Hop.ToPoint, HopPosition)
+                Dim IHPLeft As HopPosition = CType(_Hop.FromPoint, HopPosition)
+                Dim IHPRight As HopPosition = CType(_Hop.ToPoint, HopPosition)
                 Dim InnerHop As Hop = IHPLeft.Hop
                 Me.Hop = New Hop(InnerHop.FromPoint, InnerHop.ToPoint, InnerHop.Way)
-                PercentageTravelled = IHPLeft.PercentageTravelled + _
-                    (IHPRight.PercentageTravelled - IHPLeft.PercentageTravelled) * PercentageTravelled
+                Me.PercentageTravelled = IHPLeft.PercentageTravelled + _
+                    (IHPRight.PercentageTravelled - IHPLeft.PercentageTravelled) * _PercentageTravelled
         End Select
 
-        If TypeOf Hop.FromPoint Is HopPosition Then
-            Dim InnerFrom As HopPosition = Hop.FromPoint
+        If TypeOf _Hop.FromPoint Is HopPosition Then
+            Dim InnerFrom As HopPosition = _Hop.FromPoint
             Me.Hop = New Hop(InnerFrom.Hop.FromPoint, InnerFrom.Hop.ToPoint, InnerFrom.Hop.Way)
-        ElseIf TypeOf Hop.ToPoint Is HopPosition Then
-            Dim InnerFrom As HopPosition = Hop.ToPoint
+        ElseIf TypeOf _Hop.ToPoint Is HopPosition Then
+            Dim InnerFrom As HopPosition = _Hop.ToPoint
             Me.Hop = New Hop(InnerFrom.Hop.FromPoint, InnerFrom.Hop.ToPoint, InnerFrom.Hop.Way)
         End If
 
-        Me.PercentageTravelled = PercentageTravelled
+        Me.PercentageTravelled = _PercentageTravelled
 
-        If Hop.FromPoint.GetLatitude < Hop.ToPoint.GetLatitude Then
-            Latitude = Hop.FromPoint.GetLatitude + (Hop.ToPoint.GetLatitude - Hop.FromPoint.GetLatitude) * PercentageTravelled
+        If _Hop.FromPoint.GetLatitude < _Hop.ToPoint.GetLatitude Then
+            Latitude = _Hop.FromPoint.GetLatitude + (_Hop.ToPoint.GetLatitude - _Hop.FromPoint.GetLatitude) * _PercentageTravelled
         Else
-            Latitude = Hop.ToPoint.GetLatitude + (Hop.FromPoint.GetLatitude - Hop.ToPoint.GetLatitude) * (1 - PercentageTravelled)
+            Latitude = _Hop.ToPoint.GetLatitude + (_Hop.FromPoint.GetLatitude - _Hop.ToPoint.GetLatitude) * (1 - _PercentageTravelled)
         End If
 
-        If Hop.FromPoint.GetLongitude < Hop.ToPoint.GetLongitude Then
-            Longitude = Hop.FromPoint.GetLongitude + (Hop.ToPoint.GetLongitude - Hop.FromPoint.GetLongitude) * PercentageTravelled
+        If _Hop.FromPoint.GetLongitude < _Hop.ToPoint.GetLongitude Then
+            Longitude = _Hop.FromPoint.GetLongitude + (_Hop.ToPoint.GetLongitude - _Hop.FromPoint.GetLongitude) * _PercentageTravelled
         Else
-            Longitude = Hop.ToPoint.GetLongitude + (Hop.FromPoint.GetLongitude - Hop.ToPoint.GetLongitude) * (1 - PercentageTravelled)
+            Longitude = _Hop.ToPoint.GetLongitude + (_Hop.FromPoint.GetLongitude - _Hop.ToPoint.GetLongitude) * (1 - _PercentageTravelled)
         End If
     End Sub
 

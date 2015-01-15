@@ -15,8 +15,23 @@
         Me.AdjacencyList = AdjacencyList
         Me.Minimiser = Minimiser
         If Not StartPoint.Equals(EndPoint) Then
+            If TypeOf StartPoint Is HopPosition AndAlso TypeOf EndPoint Is HopPosition Then
+                'Handle case where destination on same hop. o/w would have to route to end of hop and come back.
+                Dim HP1 As HopPosition = StartPoint
+                Dim HP2 As HopPosition = EndPoint
+                If HP1.Hop.Way.Equals(HP2.Hop.Way) Then
+                    Dim OneHopList As New List(Of Hop)(1)
+                    OneHopList.Add(New Hop(HP1, HP2, HP1.Hop.Way))
+                    Route = New Route(OneHopList)
+                    Return
+                End If
+            End If
             DoAStar()
+        Else
+            Console.Beep()
         End If
+
+        'WHAT HAPPENS IF I ALLOW 0 LENGTH ROUTES? IN THE SAME WYA I ALLOW HP1->HP2?
     End Sub
 
     Private Sub DoAStar()
