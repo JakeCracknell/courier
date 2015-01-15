@@ -47,10 +47,12 @@
                 Exit Sub
             End If
 
-            Dim CurrentPoint As Object = AStarTreeNode.GetCurrentPoint
+            Dim CurrentPoint As RoutingPoint = AStarTreeNode.GetCurrentPoint
             If TypeOf CurrentPoint Is Node Then
                 NodesSearched.Add(CurrentPoint)
             End If
+
+
 
             Dim Row As NodesAdjacencyListRow = AdjacencyList.GetRow(CurrentPoint)
             For Each Cell As NodesAdjacencyListCell In Row.Cells

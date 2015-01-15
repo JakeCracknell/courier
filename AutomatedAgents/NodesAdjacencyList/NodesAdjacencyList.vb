@@ -17,33 +17,19 @@
         End If
     End Sub
 
-    'Public Function GetRow(ByVal RoutingPoint As RoutingPoint) As NodesAdjacencyListRow
-    '    If TypeOf RoutingPoint Is Node Then
-    '        Dim Node As Node = RoutingPoint
-    '        Return Rows(Node.ID)
-    '    Else
-    '        Dim HopPosition As HopPosition = RoutingPoint
-    '        Dim R As New NodesAdjacencyListRow(Nothing)
-    '        R.AddCell(New NodesAdjacencyListCell(HopPosition.Hop.ToPoint, HopPosition.Hop.Way))
-    '        If Not HopPosition.Hop.Way.OneWay Then
-    '            R.AddCell(New NodesAdjacencyListCell(HopPosition.Hop.FromPoint, HopPosition.Hop.Way))
-    '        End If
-    '        Return R
-    '    End If
-    'End Function
-
-    Public Function GetRow(ByVal Node As Node) As NodesAdjacencyListRow
-        Return Rows(Node.ID)
-    End Function
-
-    'Returns transient row, rooted at the midpoint between two connected nodes.
-    Public Function GetRow(ByVal HopPosition As HopPosition) As NodesAdjacencyListRow
-        Dim R As New NodesAdjacencyListRow(Nothing)
-        R.AddCell(New NodesAdjacencyListCell(HopPosition.Hop.ToPoint, HopPosition.Hop.Way))
-        If Not HopPosition.Hop.Way.OneWay Then
-            R.AddCell(New NodesAdjacencyListCell(HopPosition.Hop.FromPoint, HopPosition.Hop.Way))
+    Public Function GetRow(ByVal RoutingPoint As RoutingPoint) As NodesAdjacencyListRow
+        If TypeOf RoutingPoint Is Node Then
+            Dim Node As Node = RoutingPoint
+            Return Rows(Node.ID)
+        Else
+            Dim HopPosition As HopPosition = RoutingPoint
+            Dim R As New NodesAdjacencyListRow(Nothing)
+            R.AddCell(New NodesAdjacencyListCell(HopPosition.Hop.ToPoint, HopPosition.Hop.Way))
+            If Not HopPosition.Hop.Way.OneWay Then
+                R.AddCell(New NodesAdjacencyListCell(HopPosition.Hop.FromPoint, HopPosition.Hop.Way))
+            End If
+            Return R
         End If
-        Return R
     End Function
 
     Public Sub AddNodesWay(ByVal Node1 As Node, ByVal Node2 As Node, ByVal Way As Way)
