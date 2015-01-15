@@ -23,11 +23,11 @@
         Me.VehicleSize = VehicleSize
         Refuel()
 
-        WarpToRandomNode()
+        WarpToRandomPoint()
     End Sub
 
-    Protected Sub WarpToRandomNode()
-        PointToRouteTo = Map.NodesAdjacencyList.GetRandomNode
+    Protected Sub WarpToRandomPoint()
+        PointToRouteTo = Map.NodesAdjacencyList.GetRandomPoint
     End Sub
 
     Protected Sub MoveRandomly()
@@ -40,7 +40,7 @@
 
     Public Overridable Sub Move()
         Do Until Position IsNot Nothing AndAlso Not Position.RouteCompleted
-            SetRouteTo(Map.NodesAdjacencyList.GetRandomNode)
+            SetRouteTo(Map.NodesAdjacencyList.GetRandomPoint)
         Loop
 
         Dim DistanceTravelled As Double = Position.Move(VehicleSize)

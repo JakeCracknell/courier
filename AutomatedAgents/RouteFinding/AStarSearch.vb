@@ -27,14 +27,17 @@
         Do
             Dim AStarTreeNode As AStarTreeNode = PriorityQueue.Values(0)
             PriorityQueue.RemoveAt(0)
-            If AStarTreeNode.GetCurrentNode = EndPoint Then
+            If AStarTreeNode.GetCurrentPoint.Equals(EndPoint) Then
                 Route = AStarTreeNode.GetRoute
                 Exit Sub
             End If
 
-            NodesSearched.Add(AStarTreeNode.GetCurrentNode)
+            Dim CurrentPoint As Object = AStarTreeNode.GetCurrentPoint
+            If TypeOf CurrentPoint Is Node Then
+                NodesSearched.Add(CurrentPoint)
+            End If
 
-            Dim Row As NodesAdjacencyListRow = AdjacencyList.Rows(AStarTreeNode.GetCurrentNode.ID)
+            Dim Row As NodesAdjacencyListRow = AdjacencyList.GetRow(CurrentPoint)
             For Each Cell As NodesAdjacencyListCell In Row.Cells
                 If Not AlreadyVisitedNodes.Contains(Cell.Node.ID) Then
                     Dim NextAStarTreeNode As New AStarTreeNode(AStarTreeNode, Cell)
@@ -120,7 +123,7 @@
             End Select
         End Sub
 
-        Public Function GetCurrentNode() As Node
+        Public Function GetCurrentPoint() As RoutingPoint
             Return Hop.ToPoint
         End Function
 

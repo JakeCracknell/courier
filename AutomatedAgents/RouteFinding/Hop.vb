@@ -9,7 +9,7 @@
         Me.Way = Way
     End Sub
 
-    Public Sub New(ByVal FromNode As Node, ByVal Cell As NodesAdjacencyListCell)
+    Public Sub New(ByVal FromNode As RoutingPoint, ByVal Cell As NodesAdjacencyListCell)
         Me.FromPoint = FromNode
         Me.ToPoint = Cell.Node
         Me.Way = Cell.Way

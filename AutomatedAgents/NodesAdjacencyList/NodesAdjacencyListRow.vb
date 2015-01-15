@@ -10,7 +10,7 @@
     Public Sub AddCell(ByVal Cell As NodesAdjacencyListCell)
         'Believe it or not, some ways go like A,B,C,D,D,E,F...
         '2951577727 on way: http://www.openstreetmap.org/way/291688733
-        If NodeKey.ID <> Cell.Node.ID Then
+        If Not Cell.Node.Equals(NodeKey) Then
             Cells.Add(Cell)
         End If
     End Sub

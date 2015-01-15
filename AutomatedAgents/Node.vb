@@ -26,7 +26,7 @@
 
     Public Overloads Function Equals(ByVal OtherNode As Node) As Boolean _
         Implements System.IEquatable(Of Node).Equals
-        Return Me.ID = OtherNode.ID
+        Return OtherNode IsNot Nothing AndAlso Me.ID = OtherNode.ID
     End Function
 
     Public Overloads Function GetLongitude() As Double Implements RoutingPoint.GetLongitude

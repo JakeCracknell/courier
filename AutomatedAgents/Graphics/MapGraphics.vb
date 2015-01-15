@@ -79,7 +79,7 @@
 
     Sub DrawAgent(ByVal Agent As Agent, ByVal gr As Graphics)
         If Agent.Position IsNot Nothing Then
-            Dim CurrentPoint As Point = CC.GetPoint(Agent.Position)
+            Dim CurrentPoint As Point = CC.GetPoint(Agent.Position.GetRoutingPoint)
             Dim Brush As New SolidBrush(Agent.Color)
             gr.FillEllipse(Brush, CInt(CurrentPoint.X - AGENT_DRAW_SIZE / 2), _
                            CInt(CurrentPoint.Y - AGENT_DRAW_SIZE / 2), _
