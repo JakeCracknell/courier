@@ -34,7 +34,7 @@
         If RoutePlan.Count > 1 AndAlso Position.RouteCompleted Then
             RoutePlan.RemoveAt(0)
             Position = New RoutePosition(RoutePlan(0))
-        Else
+        ElseIf RoutePlan.Count < 4 Then
             FetchJob()
         End If
 
