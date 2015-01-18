@@ -36,6 +36,7 @@
         Dim Loader As OSMLoader = New OSMLoader(FileName)
         Map = Loader.CreateMap()
         AASimulation = New AASimulation()
+        AASimulation.InitialiseDispatcher(Map)
         MapGraphics.Resize(picMap.Width, picMap.Height, Map.Bounds)
         SetPictureBox(MapGraphics.DrawMap(Map))
         tmrAgents.Start()

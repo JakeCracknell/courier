@@ -31,9 +31,15 @@
 
     'Distance to travel based on speed of current way. Close enough for now, as 1 second is not long.
     Public Function Move(ByVal Vehicle As VehicleSize) As Double
-        Dim DistanceToTravel As Double = Route.At(HopIndex).Way.GetMaxSpeedKMH(Vehicle) / 3600
-        GetNextPosition(DistanceToTravel)
-        Return DistanceToTravel
+        Dim Way As Way = Route.At(HopIndex).Way
+        If Way IsNot Nothing Then
+            Dim DistanceToTravel As Double = Way.GetMaxSpeedKMH(Vehicle) / 3600
+            GetNextPosition(DistanceToTravel)
+            Return DistanceToTravel
+        Else
+            PercentageTravelled = 1
+            Return 0
+        End If
     End Function
 
     Public Sub GetNextPosition(ByVal DistanceIncrementMetres As Double)
@@ -64,6 +70,15 @@
 
     Function RouteCompleted() As Boolean
         Return Route Is Nothing OrElse (PercentageTravelled = 1 And HopIndex = Route.HopCount - 1)
+    End Function
+
+    Function GetCurrentSpeed(VehicleSize As VehicleSize) As Double
+        Dim Way As Way = GetCurrentWay()
+        If Way IsNot Nothing Then
+            Return Way.GetMaxSpeedKMH(VehicleSize)
+        Else
+            Return 0
+        End If
     End Function
 
 End Class

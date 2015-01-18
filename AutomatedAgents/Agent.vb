@@ -9,6 +9,8 @@
     Protected Map As StreetMap
     Public Color As Color
 
+    Public RoutePlan As New List(Of Route)
+
     Protected VehicleSize As VehicleSize = AutomatedAgents.VehicleSize.CAR
     Protected RoutePosition As Integer = 0
 
@@ -22,31 +24,41 @@
         Me.VehicleSize = VehicleSize
         Refuel()
 
-        Move()
+        Dim NullRoute As Route = New Route(Map.NodesAdjacencyList.GetRandomPoint)
+        Position = New RoutePosition(NullRoute)
+        RoutePlan.Add(NullRoute)
+        Position.Move(VehicleSize)
     End Sub
 
     Public Overridable Sub Move()
-        'AASim started or route completed
-        Do Until Position IsNot Nothing AndAlso Not Position.RouteCompleted
-            SetRouteTo(Map.NodesAdjacencyList.GetRandomPoint)
-        Loop
+        If RoutePlan.Count > 1 AndAlso Position.RouteCompleted Then
+            RoutePlan.RemoveAt(0)
+            Position = New RoutePosition(RoutePlan(0))
+        Else
+            FetchJob()
+        End If
 
-        Dim DistanceTravelled As Double = Position.Move(VehicleSize)
-        TotalKMTravelled += DistanceTravelled
-        DepleteFuel(DistanceTravelled)
-        CurrentSpeedKMH = Position.GetCurrentWay.GetMaxSpeedKMH(VehicleSize)
+        'If RoutePlan.Count = 0 Then
+        '    FetchJob()
+        'End If
+
+        If RoutePlan.Count > 0 Then
+            Dim DistanceTravelled As Double = Position.Move(VehicleSize)
+            TotalKMTravelled += DistanceTravelled
+            DepleteFuel(DistanceTravelled)
+            CurrentSpeedKMH = Position.GetCurrentSpeed(VehicleSize)
+        End If
+
     End Sub
 
 
     Public Overridable Sub SetRouteTo(ByVal DestinationPoint As RoutingPoint)
-        Dim StartingPoint As RoutingPoint = If(Position IsNot Nothing, Position.GetRoutingPoint, Map.NodesAdjacencyList.GetRandomPoint)
+        Dim StartingPoint As RoutingPoint = RoutePlan.Last.GetEndPoint
 
         Dim RouteFinder As RouteFinder = New AStarSearch(StartingPoint, DestinationPoint, Map.NodesAdjacencyList, RouteFindingMinimiser)
-
         Debug.Assert(RouteFinder IsNot Nothing)
-        'If RouteFinder.GetRoute IsNot Nothing Then
-        Position = New RoutePosition(RouteFinder.GetRoute)
-        'End If
+
+        RoutePlan.Add(RouteFinder.GetRoute)
     End Sub
 
     Protected Sub DepleteFuel(ByVal DistanceTravelled As Double)
@@ -80,4 +92,12 @@
         End Select
         Return ""
     End Function
+
+    Private Sub FetchJob()
+        If NoticeBoard.WaitingJobs.Count > 0 Then
+            SetRouteTo(NoticeBoard.WaitingJobs(0).PickupPosition)
+            NoticeBoard.WaitingJobs.RemoveAt(0)
+        End If
+    End Sub
+
 End Class

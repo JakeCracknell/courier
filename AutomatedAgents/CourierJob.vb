@@ -6,6 +6,7 @@
     Public Priority As Double
 
     Sub New(ByVal PickupPosition As HopPosition, ByVal DeliveryPosition As HopPosition)
+        Debug.WriteLine(PickupPosition.Hop.Way.Name & " -> " & DeliveryPosition.Hop.Way.Name)
         Me.PickupPosition = PickupPosition
         Me.DeliveryPosition = DeliveryPosition
     End Sub
