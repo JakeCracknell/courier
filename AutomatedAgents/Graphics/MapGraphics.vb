@@ -156,7 +156,7 @@
         DrawNodeRectangle(NodePoint, grOverlay)
         grOverlay.DrawString("FROM", OVERLAY_FONT, Brushes.Black, NodePoint)
 
-        If Route.HopCount > 1 Then
+        If Route.HopCount > 0 Then
             If NodesSearched IsNot Nothing Then
                 For Each N As Node In NodesSearched
                     Dim Point As Point = CC.GetPoint(N)

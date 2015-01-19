@@ -111,13 +111,15 @@
                     SelectionMode = MapSelectionMode.ROUTE_TO
                 Case MapSelectionMode.ROUTE_TO
                     RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
-                    Dim RouteFinder As RouteFinder = New AStarSearch(RouteFromNode, RouteToNode, Map.NodesAdjacencyList, RouteFindingMinimiser.DISTANCE)
-                    If RouteFinder.GetRoute() IsNot Nothing Then
-                        SetPictureBox(MapGraphics.DrawRoute(RouteFinder.GetRoute, RouteFinder.GetNodesSearched))
-                    Else
-                        SetPictureBox(MapGraphics.DrawQuestionMark(MapMousePosition))
+                    If Not RouteFromNode.Equals(RouteToNode) Then
+                        Dim RouteFinder As RouteFinder = New AStarSearch(RouteFromNode, RouteToNode, Map.NodesAdjacencyList, RouteFindingMinimiser.DISTANCE)
+                        If RouteFinder.GetRoute() IsNot Nothing Then
+                            SetPictureBox(MapGraphics.DrawRoute(RouteFinder.GetRoute, RouteFinder.GetNodesSearched))
+                        Else
+                            SetPictureBox(MapGraphics.DrawQuestionMark(MapMousePosition))
+                        End If
+                        SelectionMode = MapSelectionMode.NONE
                     End If
-                    SelectionMode = MapSelectionMode.NONE
                 Case MapSelectionMode.AGENTS_ALL_ROUTE_TO
                     RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
                     For Each Agent In AASimulation.Agents
@@ -199,7 +201,7 @@
     End Sub
 
     Private Sub SpeedToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SpeedToolStripMenuItem.Click
-        frmSimulationSpeed.Show()
+        frmParameters.Show()
     End Sub
 
     Private Sub BenchmarkToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BenchmarkToolStripMenuItem.Click

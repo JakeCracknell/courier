@@ -11,7 +11,7 @@
             If Position IsNot Nothing Then
                 Dim Way As Way = Position.GetCurrentWay
                 DisplayLVCell(i, cAt, If(Way IsNot Nothing, Way.Name, ""))
-                DisplayLVCell(i, cDestination, Position.GetEndPoint.ToString)
+                'DisplayLVCell(i, cDestination, Position.GetEndPoint.ToString)
                 DisplayLVCell(i, cKMH, AASimulation.Agents(i).CurrentSpeedKMH)
             End If
 

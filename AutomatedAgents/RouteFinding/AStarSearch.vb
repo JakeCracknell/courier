@@ -28,6 +28,7 @@
             End If
             DoAStar()
         Else
+            'Routing from A to A.
             Console.Beep()
         End If
 

@@ -100,10 +100,10 @@
       <DependentUpon>frmMain.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Graphics\frmSimulationSpeed.Designer.vb">
-      <DependentUpon>frmSimulationSpeed.vb</DependentUpon>
+    <Compile Include="Graphics\frmParameters.Designer.vb">
+      <DependentUpon>frmParameters.vb</DependentUpon>
     </Compile>
-    <Compile Include="Graphics\frmSimulationSpeed.vb">
+    <Compile Include="Graphics\frmParameters.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Graphics\MapGraphics.vb" />
@@ -146,8 +146,8 @@
     <EmbeddedResource Include="Graphics\frmMain.resx">
       <DependentUpon>frmMain.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Graphics\frmSimulationSpeed.resx">
-      <DependentUpon>frmSimulationSpeed.vb</DependentUpon>
+    <EmbeddedResource Include="Graphics\frmParameters.resx">
+      <DependentUpon>frmParameters.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
