@@ -58,8 +58,9 @@
     End Function
 
     Function GetRandomPoint() As HopPosition
-        Dim NodeA, NodeB As Node
-        Dim Way As Way
+        Dim NodeA As Node = Nothing
+        Dim NodeB As Node = Nothing
+        Dim Way As Way = Nothing
         Do
             Dim RandomRow As NodesAdjacencyListRow = Rows.Values(Int(Rnd() * Rows.Count))
             If RandomRow.Cells.Count > 0 Then

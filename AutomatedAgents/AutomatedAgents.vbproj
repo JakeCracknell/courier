@@ -71,13 +71,14 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Agent.vb" />
-    <Compile Include="Bounds.vb" />
+    <Compile Include="Agents\Agent.vb" />
+    <Compile Include="Agents\Strategies\AgentStrategy.vb" />
+    <Compile Include="Geography\Bounds.vb" />
     <Compile Include="Centralised\NoticeBoard.vb" />
     <Compile Include="Centralised\SimpleDispatcher.vb" />
-    <Compile Include="CoordinateConverter.vb" />
-    <Compile Include="AgentAsync.vb" />
-    <Compile Include="CourierJob.vb" />
+    <Compile Include="Graphics\CoordinateConverter.vb" />
+    <Compile Include="Agents\AgentAsync.vb" />
+    <Compile Include="Simulation\CourierJob.vb" />
     <Compile Include="Graphics\frmAgentStatus.Designer.vb">
       <DependentUpon>frmAgentStatus.vb</DependentUpon>
     </Compile>
@@ -89,8 +90,8 @@
     <Compile Include="RouteFinding\Route.vb" />
     <Compile Include="RouteFinding\RouteFinderBenchmark.vb" />
     <Compile Include="RouteFinding\RouteFindingMinimiser.vb" />
-    <Compile Include="RoutingPoint.vb" />
-    <Compile Include="Simulation\AgentNameAssigner.vb" />
+    <Compile Include="Geography\RoutingPoint.vb" />
+    <Compile Include="Agents\AgentNameAssigner.vb" />
     <Compile Include="Simulation\VehicleSize.vb" />
     <Compile Include="Simulation\AASimulation.vb" />
     <Compile Include="Graphics\frmMain.vb">
@@ -115,7 +116,7 @@
     <Compile Include="RouteFinding\RouteFinder.vb" />
     <Compile Include="RouteFinding\RoutingUtils.vb" />
     <Compile Include="Simulation\SimulationParameters.vb" />
-    <Compile Include="StreetMap.vb" />
+    <Compile Include="OSMData\StreetMap.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -131,12 +132,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Node.vb" />
+    <Compile Include="Geography\Node.vb" />
     <Compile Include="OSMData\OSMLoader.vb" />
     <Compile Include="Utility.vb" />
-    <Compile Include="OSMData\Way.vb" />
-    <Compile Include="RoutePosition.vb" />
-    <Compile Include="HopPosition.vb" />
+    <Compile Include="Geography\Way.vb" />
+    <Compile Include="Geography\RoutePosition.vb" />
+    <Compile Include="Geography\HopPosition.vb" />
     <Compile Include="OSMData\WayType.vb" />
   </ItemGroup>
   <ItemGroup>
