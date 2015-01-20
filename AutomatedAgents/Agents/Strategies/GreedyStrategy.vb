@@ -1,6 +1,7 @@
 ﻿Public Class GreedyStrategy
     Implements AgentStrategy
 
+    Private Const MAX_JOBS As Integer = 10
     Private Const RouteFindingMinimiser As RouteFindingMinimiser = RouteFindingMinimiser.DISTANCE
     Private Jobs As List(Of CourierJob)
     Private Map As StreetMap
@@ -11,10 +12,12 @@
     End Sub
 
     Public Sub UpdatePosition(ByRef Position As RoutePosition) Implements AgentStrategy.UpdatePosition
-        'Get a job if available.
-        Dim NewJob As CourierJob = NoticeBoard.GetJob
-        If NewJob IsNot Nothing Then
-            Jobs.Add(NewJob)
+        'Get a job if there is room and one is available.
+        If Jobs.Count < MAX_JOBS Then
+            Dim NewJob As CourierJob = NoticeBoard.GetJob
+            If NewJob IsNot Nothing Then
+                Jobs.Add(NewJob)
+            End If
         End If
 
         'Do nothing if there are no jobs allocated.
@@ -32,8 +35,23 @@
                 Jobs.RemoveAt(0)
             Else
                 'Set a course for the next job.
+                MoveUpClosestJob(Position)
                 Position = New RoutePosition(New AStarSearch(Position.GetRoutingPoint, Jobs(0).PickupPosition, Map.NodesAdjacencyList, RouteFindingMinimiser).GetRoute)
             End If
+        End If
+    End Sub
+
+    Private Sub MoveUpClosestJob(ByVal Position As RoutePosition)
+        If Jobs.Count > 1 Then
+            Dim Distances As New List(Of Integer)(Jobs.Count - 1)
+            For i = 0 To Jobs.Count - 1
+                Distances.Add(New AStarSearch(Position.GetRoutingPoint, Jobs(i).PickupPosition, Map.NodesAdjacencyList, RouteFindingMinimiser).GetRoute.GetKM)
+            Next
+
+            Dim IndexOfBest As Integer = Distances.IndexOf(Distances.Min)
+            Dim BestJob As CourierJob = Jobs(IndexOfBest)
+            Jobs.RemoveAt(IndexOfBest)
+            Jobs.Insert(0, BestJob)
         End If
     End Sub
 End Class

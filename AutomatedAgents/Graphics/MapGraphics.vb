@@ -97,7 +97,6 @@
         gr.DrawRectangle(Pens.Red, Point.X - 5, Point.Y - 5, 10, 10)
     End Sub
 
-    'Called many times - unsuccessfulyl tried to optimise the v costly line grMap.DrawImage(OverlayBitmapCopy, 0, 0)
     Function DrawHighlightedNode(ByVal Node As Node, ByVal Cursor As Point) As Image
         Dim NodePoint As Point = CC.GetPoint(Node)
 
@@ -117,27 +116,6 @@
         grOverlay.Dispose()
         Return MapBitmapCopy
     End Function
-    'Function DrawHighlightedNode(ByVal Node As Node, ByVal Cursor As Point) As Image
-    '    Dim NodePoint As Point = CC.GetPoint(Node)
-
-    '    Dim OverlayBitmapCopy As Bitmap = MapBitmapOverlay.Clone
-    '    Dim grOverlay As Graphics = Graphics.FromImage(OverlayBitmapCopy)
-
-    '    grOverlay.DrawRectangle(Pens.Red, NodePoint.X - 5, NodePoint.Y - 5, 10, 10)
-    '    grOverlay.DrawLine(Pens.Yellow, Cursor, NodePoint)
-
-    '    Dim MapBitmapCopy As Bitmap = MapBitmapOriginal.Clone
-    '    Dim grMap As Graphics = Graphics.FromImage(MapBitmapCopy)
-
-    '    Dim rect As New Rectangle(NodePoint.X, NodePoint.X, Cursor.X, Cursor.Y)
-    '    rect.Inflate(5, 5)
-
-    '    grMap.DrawImage(OverlayBitmapCopy, rect, rect, GraphicsUnit.Pixel)
-    '    OverlayBitmapCopy.Dispose()
-    '    grMap.Dispose()
-    '    grOverlay.Dispose()
-    '    Return MapBitmapCopy
-    'End Function
 
     Function DrawRouteStart(ByVal Point As RoutingPoint) As Image
         Return DrawRoute(New Route(Point), Nothing)
@@ -199,14 +177,14 @@
         For Each Agent As Agent In Agents
             DrawAgent(Agent, grOverlay)
             If Agent.AssignedJobs.Count > 0 Then
-                Dim pt1 As Point = CC.GetPoint(Agent.AssignedJobs(0).PickupPosition)
-                Dim pt2 As Point = CC.GetPoint(Agent.AssignedJobs(0).DeliveryPosition)
-
-                grOverlay.FillRectangle(Brushes.Red, pt1.X - 5, pt1.Y - 5, 10, 10)
-
-                grOverlay.FillRectangle(Brushes.Red, pt2.X - 5, pt2.Y - 5, 10, 10)
-                ROUTE_PEN.EndCap = Drawing2D.LineCap.ArrowAnchor
-                grOverlay.DrawLine(ROUTE_PEN, pt1, pt2)
+                Dim PickupPt As Point = CC.GetPoint(Agent.AssignedJobs(0).PickupPosition)
+                Dim DropOffPt As Point = CC.GetPoint(Agent.AssignedJobs(0).DeliveryPosition)
+                Dim Brush As New SolidBrush(Agent.Color)
+                grOverlay.FillRectangle(Brush, PickupPt.X - 5, PickupPt.Y - 5, 10, 10)
+                grOverlay.FillRectangle(Brush, DropOffPt.X - 5, DropOffPt.Y - 5, 10, 10)
+                Dim Pen As New Pen(New SolidBrush(Agent.Color), 3)
+                Pen.EndCap = Drawing2D.LineCap.Triangle
+                grOverlay.DrawLine(Pen, PickupPt, DropOffPt)
             End If
         Next
 
