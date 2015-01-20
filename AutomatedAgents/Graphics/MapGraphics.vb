@@ -188,11 +188,26 @@
         Return MapBitmapCopy
     End Function
 
-    Function DrawAgents(ByVal Agents As List(Of Agent)) As Image
+    Function DrawOverlay(ByVal Agents As List(Of Agent), ByVal UnpickedJobs As List(Of CourierJob)) As Image
         Dim OverlayBitmapCopy As Bitmap = MapBitmapOriginal.Clone
         Dim grOverlay As Graphics = Graphics.FromImage(OverlayBitmapCopy)
+
+        For Each Job As CourierJob In UnpickedJobs
+            DrawNodeRectangle(CC.GetPoint(Job.PickupPosition), grOverlay)
+        Next
+
         For Each Agent As Agent In Agents
             DrawAgent(Agent, grOverlay)
+            If Agent.AssignedJobs.Count > 0 Then
+                Dim pt1 As Point = CC.GetPoint(Agent.AssignedJobs(0).PickupPosition)
+                Dim pt2 As Point = CC.GetPoint(Agent.AssignedJobs(0).DeliveryPosition)
+
+                grOverlay.FillRectangle(Brushes.Red, pt1.X - 5, pt1.Y - 5, 10, 10)
+
+                grOverlay.FillRectangle(Brushes.Red, pt2.X - 5, pt2.Y - 5, 10, 10)
+                ROUTE_PEN.EndCap = Drawing2D.LineCap.ArrowAnchor
+                grOverlay.DrawLine(ROUTE_PEN, pt1, pt2)
+            End If
         Next
 
         Dim MapBitmapCopy As Bitmap = MapBitmapOriginal.Clone
@@ -217,4 +232,5 @@
         grOverlay.Dispose()
         Return MapBitmapCopy
     End Function
+
 End Module

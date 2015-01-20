@@ -8,7 +8,7 @@
     Sub Tick()
         If Rnd() < DispatchRatePerHour / 3600 Then
             Dim Job As New CourierJob(Map.NodesAdjacencyList.GetRandomPoint, Map.NodesAdjacencyList.GetRandomPoint)
-            NoticeBoard.WaitingJobs.Add(Job)
+            NoticeBoard.AddJob(Job)
         End If
     End Sub
 

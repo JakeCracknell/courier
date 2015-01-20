@@ -73,7 +73,7 @@
             For i = 1 To Math.Max(1, SimulationParameters.SimulationSpeed / (1000 / SimulationParameters.DisplayRefreshSpeed))
                 SimulationStateChanged = SimulationStateChanged Or AASimulation.Tick()
             Next
-            SetPictureBox(MapGraphics.DrawAgents(AASimulation.Agents))
+            SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, NoticeBoard.GetUnpickedJobs()))
         End If
         tmrAgents.Interval = SimulationParameters.DisplayRefreshSpeed
     End Sub
@@ -171,6 +171,7 @@
 
     Private Sub ResetToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetToolStripMenuItem.Click
         AASimulation = New AASimulation()
+        AASimulation.InitialiseDispatcher(Map)
         SetPictureBox(MapGraphics.DrawMap(Map))
     End Sub
 

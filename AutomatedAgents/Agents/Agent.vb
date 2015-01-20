@@ -9,10 +9,13 @@
     Protected Map As StreetMap
     Public Color As Color
 
-    Public RoutePlan As New List(Of Route)
+    'Public RoutePlan As New List(Of Route)
+
+    Public AssignedJobs As New List(Of CourierJob)
 
     Protected VehicleSize As VehicleSize = AutomatedAgents.VehicleSize.CAR
     Protected RoutePosition As Integer = 0
+    Protected Strategy As AgentStrategy
 
     Public Sub New(ByVal Map As StreetMap, ByVal Color As Color)
         Me.New(Map, Color, AutomatedAgents.VehicleSize.CAR)
@@ -22,43 +25,48 @@
         Me.Color = Color
         Me.AgentName = AgentNameAssigner.AssignAgentName()
         Me.VehicleSize = VehicleSize
+        Strategy = New GreedyStrategy(Map, AssignedJobs)
         Refuel()
 
         Dim NullRoute As Route = New Route(Map.NodesAdjacencyList.GetRandomPoint)
         Position = New RoutePosition(NullRoute)
-        RoutePlan.Add(NullRoute)
+        'RoutePlan.Add(NullRoute)
         Position.Move(VehicleSize)
     End Sub
 
     Public Overridable Sub Move()
-        If RoutePlan.Count > 1 AndAlso Position.RouteCompleted Then
-            RoutePlan.RemoveAt(0)
-            Position = New RoutePosition(RoutePlan(0))
-        ElseIf RoutePlan.Count < 4 Then
-            FetchJob()
-        End If
+        'Reroutes if needed. In the simple case, when a waypoint is reached
+        Strategy.UpdatePosition(Position)
 
-        'If RoutePlan.Count = 0 Then
-        '    FetchJob()
-        'End If
-
-        If RoutePlan.Count > 0 Then
+        If Not Position.RouteCompleted Then
             Dim DistanceTravelled As Double = Position.Move(VehicleSize)
+            CurrentSpeedKMH = Position.GetCurrentSpeed(VehicleSize)
             TotalKMTravelled += DistanceTravelled
             DepleteFuel(DistanceTravelled)
-            CurrentSpeedKMH = Position.GetCurrentSpeed(VehicleSize)
         End If
+
+        'If Position.RouteCompleted Then
+        '    Dim CurrentJob As CourierJob = If(AssignedJobs.Count > 0, AssignedJobs(0), Nothing)
+        '    If CurrentJob IsNot Nothing Then
+        '        If CurrentJob.Status = JobStatus.PENDING_PICKUP Then
+        '            CurrentJob.Status = JobStatus.PENDING_DELIVERY
+        '        ElseIf CurrentJob.Status = JobStatus.PENDING_DELIVERY Then
+        '            CurrentJob.Status = JobStatus.COMPLETED
+        '        End If
+        '    End If
+        'End If
+
 
     End Sub
 
 
     Public Overridable Sub SetRouteTo(ByVal DestinationPoint As RoutingPoint)
-        Dim StartingPoint As RoutingPoint = RoutePlan.Last.GetEndPoint
+        'Dim StartingPoint As RoutingPoint = RoutePlan.Last.GetEndPoint
 
-        Dim RouteFinder As RouteFinder = New AStarSearch(StartingPoint, DestinationPoint, Map.NodesAdjacencyList, RouteFindingMinimiser)
-        Debug.Assert(RouteFinder IsNot Nothing)
+        'Dim RouteFinder As RouteFinder = New AStarSearch(StartingPoint, DestinationPoint, Map.NodesAdjacencyList, RouteFindingMinimiser)
+        'Debug.Assert(RouteFinder IsNot Nothing)
 
-        RoutePlan.Add(RouteFinder.GetRoute)
+        'RoutePlan.Add(RouteFinder.GetRoute)
     End Sub
 
     Protected Sub DepleteFuel(ByVal DistanceTravelled As Double)
@@ -93,11 +101,11 @@
         Return ""
     End Function
 
-    Private Sub FetchJob()
-        If NoticeBoard.WaitingJobs.Count > 0 Then
-            SetRouteTo(NoticeBoard.WaitingJobs(0).PickupPosition)
-            NoticeBoard.WaitingJobs.RemoveAt(0)
-        End If
-    End Sub
+    'Private Sub FetchJob()
+    '    If NoticeBoard.WaitingJobs.Count > 0 Then
+    '        SetRouteTo(NoticeBoard.WaitingJobs(0).PickupPosition)
+    '        NoticeBoard.WaitingJobs.RemoveAt(0)
+    '    End If
+    'End Sub
 
 End Class

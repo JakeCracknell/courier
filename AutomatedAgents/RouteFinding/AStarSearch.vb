@@ -19,7 +19,9 @@
                 'Handle case where destination on same hop. o/w would have to route to end of hop and come back.
                 Dim HP1 As HopPosition = StartPoint
                 Dim HP2 As HopPosition = EndPoint
-                If HP1.Hop.Way.Equals(HP2.Hop.Way) Then
+
+                'Note DO NOT compare on Way, as they are long.
+                If HP1.IsOnSameHop(HP2) Then
                     Dim OneHopList As New List(Of Hop)(1)
                     OneHopList.Add(New Hop(HP1, HP2, HP1.Hop.Way))
                     Route = New Route(OneHopList)

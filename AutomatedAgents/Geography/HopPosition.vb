@@ -69,7 +69,17 @@
 
     Public Overloads Function Equals(ByVal Other As HopPosition) As Boolean _
             Implements System.IEquatable(Of HopPosition).Equals
+        Debug.WriteLine(PercentageTravelled & " = " & Other.PercentageTravelled)
         Return PercentageTravelled = Other.PercentageTravelled AndAlso Hop.Equals(Other.Hop)
     End Function
 
+    Public Function IsOnSameHop(ByVal Other As HopPosition) As Boolean
+        Return (Hop.FromPoint.Equals(Other.Hop.FromPoint) AndAlso Hop.ToPoint.Equals(Other.Hop.ToPoint)) OrElse _
+                   (Hop.FromPoint.Equals(Other.Hop.ToPoint) AndAlso Hop.ToPoint.Equals(Other.Hop.FromPoint))
+    End Function
+
+    Public Function ApproximatelyEquals(ByVal Other As HopPosition) As Boolean
+        Debug.WriteLine(GetDistance(Me, Other))
+        Return IsOnSameHop(Other) And GetDistance(Me, Other) < 0.001
+    End Function
 End Class

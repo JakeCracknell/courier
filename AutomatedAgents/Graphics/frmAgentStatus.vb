@@ -15,7 +15,7 @@
                 DisplayLVCell(i, cKMH, AASimulation.Agents(i).CurrentSpeedKMH)
             End If
 
-            DisplayLVCell(i, cJobs, AASimulation.Agents(i).RoutePlan.Count)
+            DisplayLVCell(i, cJobs, AASimulation.Agents(i).AssignedJobs.Count)
             DisplayLVCell(i, cVehicle, AASimulation.Agents(i).GetVehicleString())
             DisplayLVCell(i, cAName, AASimulation.Agents(i).AgentName)
             DisplayLVCell(i, cLitres, Math.Round(AASimulation.Agents(i).PetroleumLitres, 2))

@@ -73,6 +73,7 @@
   <ItemGroup>
     <Compile Include="Agents\Agent.vb" />
     <Compile Include="Agents\Strategies\AgentStrategy.vb" />
+    <Compile Include="Agents\Strategies\GreedyStrategy.vb" />
     <Compile Include="Geography\Bounds.vb" />
     <Compile Include="Centralised\NoticeBoard.vb" />
     <Compile Include="Centralised\SimpleDispatcher.vb" />
@@ -92,6 +93,7 @@
     <Compile Include="RouteFinding\RouteFindingMinimiser.vb" />
     <Compile Include="Geography\RoutingPoint.vb" />
     <Compile Include="Agents\AgentNameAssigner.vb" />
+    <Compile Include="Simulation\JobStatus.vb" />
     <Compile Include="Simulation\VehicleSize.vb" />
     <Compile Include="Simulation\AASimulation.vb" />
     <Compile Include="Graphics\frmMain.vb">

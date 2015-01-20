@@ -21,6 +21,7 @@ Class AASimulation
             Modified = True
         Next
         Dispatcher.Tick()
+        NoticeBoard.Tidy()
         Return Modified
     End Function
 
