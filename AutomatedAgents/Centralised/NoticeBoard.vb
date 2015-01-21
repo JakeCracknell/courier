@@ -1,31 +1,37 @@
 ﻿Module NoticeBoard
-    Private WaitingJobs As New List(Of CourierJob)
-    Private UnpickedJobs As New List(Of CourierJob)
-    Private PickedJobs As New List(Of CourierJob)
-    Private CompletedJobs As New List(Of CourierJob)
+    Property UnallocatedJobs As New List(Of CourierJob)
+    Property UnpickedJobs As New List(Of CourierJob)
+    Property PickedJobs As New List(Of CourierJob)
+
+    Property IncompleteJobs As New List(Of CourierJob)
+    Property CompletedJobs As New List(Of CourierJob)
 
     Function AreJobsWaiting() As Boolean
-        Return WaitingJobs.Count > 0
+        Return UnallocatedJobs.Count > 0
     End Function
 
     Function GetJob() As CourierJob
-        If WaitingJobs.Count > 0 Then
-            Dim Job As CourierJob = WaitingJobs(0)
+        If UnallocatedJobs.Count > 0 Then
+            Dim Job As CourierJob = UnallocatedJobs(0)
             Job.Status = JobStatus.PENDING_PICKUP
-            WaitingJobs.RemoveAt(0)
+            UnallocatedJobs.RemoveAt(0)
             UnpickedJobs.Add(Job)
             Return Job
         End If
         Return Nothing
     End Function
 
-    Function AddJob(ByVal Job As CourierJob)
-        WaitingJobs.Add(Job)
-        Return True
-    End Function
+    'Allocate one particular job
+    Sub AllocateJob(ByVal Job As CourierJob)
+        UnallocatedJobs.Remove(Job)
+        Job.Status = JobStatus.PENDING_PICKUP
+        UnpickedJobs.Add(Job)
+    End Sub
 
-    Function GetUnpickedJobs() As List(Of CourierJob)
-        Return UnpickedJobs
+    Function AddJob(ByVal Job As CourierJob)
+        IncompleteJobs.Add(Job)
+        UnallocatedJobs.Add(Job)
+        Return True
     End Function
 
     Sub Tidy()
@@ -33,6 +39,7 @@
             Dim Job As CourierJob = PickedJobs(i)
             If Job.Status = JobStatus.COMPLETED Then
                 CompletedJobs.Add(Job)
+                IncompleteJobs.Remove(Job)
                 PickedJobs.Remove(Job)
             End If
         Next

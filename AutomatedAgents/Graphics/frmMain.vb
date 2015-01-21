@@ -73,7 +73,7 @@
             For i = 1 To Math.Max(1, SimulationParameters.SimulationSpeed / (1000 / SimulationParameters.DisplayRefreshSpeed))
                 SimulationStateChanged = SimulationStateChanged Or AASimulation.Tick()
             Next
-            SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, NoticeBoard.GetUnpickedJobs()))
+            SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, NoticeBoard.IncompleteJobs))
         End If
         tmrAgents.Interval = SimulationParameters.DisplayRefreshSpeed
     End Sub

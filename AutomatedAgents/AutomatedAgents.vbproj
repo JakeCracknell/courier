@@ -73,12 +73,15 @@
   <ItemGroup>
     <Compile Include="Agents\Agent.vb" />
     <Compile Include="Agents\Strategies\AgentStrategy.vb" />
+    <Compile Include="Agents\Strategies\NearestNeighbourStrategy.vb" />
     <Compile Include="Agents\Strategies\GreedyStrategy.vb" />
+    <Compile Include="Agents\Strategies\LazyStrategy.vb" />
     <Compile Include="Geography\Bounds.vb" />
     <Compile Include="Centralised\NoticeBoard.vb" />
     <Compile Include="Centralised\SimpleDispatcher.vb" />
     <Compile Include="Graphics\CoordinateConverter.vb" />
     <Compile Include="Agents\AgentAsync.vb" />
+    <Compile Include="RouteFinding\NearestNeighbourSolver.vb" />
     <Compile Include="Simulation\CourierJob.vb" />
     <Compile Include="Graphics\frmAgentStatus.Designer.vb">
       <DependentUpon>frmAgentStatus.vb</DependentUpon>

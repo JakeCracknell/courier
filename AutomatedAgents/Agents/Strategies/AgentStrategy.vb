@@ -1,4 +1,4 @@
 ﻿Public Interface AgentStrategy
-    Sub UpdatePosition(ByRef OldPosition As RoutePosition)
+    Sub UpdatePosition(ByRef Position As RoutePosition)
 
 End Interface

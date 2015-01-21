@@ -1,6 +1,8 @@
 ﻿Public Class HopPosition
     Implements IEquatable(Of HopPosition)
     Implements RoutingPoint
+
+    Private Const APPROXIMATElY_EQUALS_EPSILON As Double = 0.001
     Public Hop As Hop
     Public PercentageTravelled As Double
 
@@ -79,7 +81,6 @@
     End Function
 
     Public Function ApproximatelyEquals(ByVal Other As HopPosition) As Boolean
-        Debug.WriteLine(GetDistance(Me, Other))
-        Return IsOnSameHop(Other) And GetDistance(Me, Other) < 0.001
+        Return IsOnSameHop(Other) And GetDistance(Me, Other) < APPROXIMATElY_EQUALS_EPSILON
     End Function
 End Class
