@@ -5,11 +5,26 @@
         Public Job As CourierJob
     End Class
 
+    Private Map As StreetMap = Nothing
+    Private Minimiser As RouteFindingMinimiser = Nothing
+
     Property NNCost As Double = 0
     Property PointList As List(Of HopPosition)
     Property JobList As List(Of CourierJob)
 
+    'Use this constructor to use straight line distance. Up to 100x faster than AStar.
+    Sub New(ByVal Start As RoutingPoint, ByVal Jobs As List(Of CourierJob))
+        RunAlgorithm(Start, Jobs)
+    End Sub
+
+    'Use this constructor to run AStar on each pair. More optimal.
     Sub New(ByVal Start As RoutingPoint, ByVal Jobs As List(Of CourierJob), ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser)
+        Me.Map = Map
+        Me.Minimiser = Minimiser
+        RunAlgorithm(Start, Jobs)
+    End Sub
+
+    Sub RunAlgorithm(ByVal Start As RoutingPoint, ByVal Jobs As List(Of CourierJob))
         Dim WayPoints As New List(Of WayPoint)
         For Each Job In Jobs
             Select Case Job.Status
@@ -37,7 +52,14 @@
             Dim ClosestCost As Double = Double.MaxValue
             For Each WP As WayPoint In WayPoints
                 If WP.Predecessor Is Nothing OrElse ReorderedWayPoints.Contains(WP.Predecessor) Then
-                    Dim Cost As Double = New AStarSearch(LastPoint, WP.Position, Map.NodesAdjacencyList, Minimiser).GetRoute.GetKM
+                    Dim Cost As Double
+
+                    If Map IsNot Nothing Then
+                        Cost = New AStarSearch(LastPoint, WP.Position, Map.NodesAdjacencyList, Minimiser).GetRoute.GetKM
+                    Else
+                        Cost = GetDistance(LastPoint, WP.Position)
+                    End If
+
                     If ClosestCost > Cost Then
                         ClosestCost = Cost
                         ClosestNeighbour = WP
@@ -56,8 +78,5 @@
             PointList.Add(WP.Position)
             JobList.Add(WP.Job)
         Next
-
-
     End Sub
-
 End Class
