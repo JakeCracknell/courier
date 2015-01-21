@@ -1,4 +1,4 @@
-﻿Public Class NearestNeighbourStrategy
+﻿Public Class NearestNeighbourEuclidianStrategy
     Implements AgentStrategy
     Private Const RouteFindingMinimiser As RouteFindingMinimiser = RouteFindingMinimiser.DISTANCE
     Private Const MARGINAL_COST_ACCEPTANCE_COEFFICIENT As Double = 10
@@ -45,7 +45,7 @@
             End If
         End If
 
-      
+
     End Sub
 
     Sub GetOneJob(ByVal Position As RoutePosition)
@@ -54,10 +54,11 @@
             Dim BestJob As CourierJob = Nothing
             Dim BestCost As Double = Double.MaxValue
             For Each Job As CourierJob In UnallocatedJobs
-                Dim TotalCost As Double = New AStarSearch(Position.GetRoutingPoint, Job.PickupPosition, Map.NodesAdjacencyList, RouteFindingMinimiser).GetRoute.GetKM
+                'Cost of getting to pickup position. no longer looks at dropoff
+                Dim Cost As Double = GetDistance(Position.GetRoutingPoint, Job.PickupPosition)
 
-                If BestCost > TotalCost Then
-                    BestCost = TotalCost
+                If BestCost > Cost Then
+                    BestCost = Cost
                     BestJob = Job
                 End If
             Next
@@ -73,17 +74,6 @@
         End If
     End Sub
 
-    'Private Function CalculatePlannedRouteDistances(ByVal Route As List(Of HopPosition))
-    '    If Route.Count >= 2 Then
-    '        Dim RouteCosts As New List(Of Double)(Route.Count - 2)
-    '        For i = 0 To Route.Count - 2
-    '            RouteCosts(i) = New AStarSearch(Route(i), Route(i + 1), Map.NodesAdjacencyList, RouteFindingMinimiser).GetRoute.GetKM
-    '        Next
-    '        Return RouteCosts
-    '    End If
-    '    Return New List(Of Double)
-    'End Function
-
     Sub GetGoodJobs(ByVal Position As RoutePosition)
         Dim UnallocatedJobs As List(Of CourierJob) = NoticeBoard.UnallocatedJobs
         If UnallocatedJobs.Count = 0 OrElse UnallocatedJobs.Last.Equals(LastJobConsidered) Then
@@ -91,34 +81,25 @@
             Exit Sub
         End If
 
-        Dim CurrentRouteDistance As Double = New NearestNeighbourSolver(Position.GetRoutingPoint, Jobs, Map, RouteFindingMinimiser).NNCost
-        Dim LowestMarginalCost As Double = Double.MaxValue
-        Dim BestNewPlannedRoute As List(Of HopPosition) = Nothing
-        Dim BestNewPlannedJobRoute As List(Of CourierJob) = Nothing
-        Dim BestJobToAllocate As CourierJob = Nothing
-        For Each Job As CourierJob In UnallocatedJobs
+        Dim CurrentRouteDistance As Double = New NearestNeighbourSolver(Position.GetRoutingPoint, Jobs).NNCost
+        For i = UnallocatedJobs.Count - 1 To 0 Step -1
+            Dim Job As CourierJob = UnallocatedJobs(i)
             Dim JobsToPlan As New List(Of CourierJob)(Jobs.Count)
             JobsToPlan.AddRange(Jobs)
             JobsToPlan.Add(Job)
-            Dim NNS As New NearestNeighbourSolver(Position.GetRoutingPoint, JobsToPlan, Map, RouteFindingMinimiser)
+            Dim NNS As New NearestNeighbourSolver(Position.GetRoutingPoint, JobsToPlan)
             Dim MarginalCost As Double = NNS.NNCost - CurrentRouteDistance
-            If LowestMarginalCost > MarginalCost Then
-                LowestMarginalCost = MarginalCost
-                BestNewPlannedRoute = NNS.PointList
-                BestNewPlannedJobRoute = NNS.JobList
-                BestJobToAllocate = Job
+
+            If MarginalCost * MARGINAL_COST_ACCEPTANCE_COEFFICIENT < CurrentRouteDistance Then
+                NoticeBoard.AllocateJob(Job)
+                Jobs.Add(Job)
+                PlannedRoute = NNS.PointList
+                PlannedJobRoute = NNS.JobList
             End If
 
         Next
 
-        If LowestMarginalCost * MARGINAL_COST_ACCEPTANCE_COEFFICIENT < CurrentRouteDistance Then
-            NoticeBoard.AllocateJob(BestJobToAllocate)
-            Jobs.Add(BestJobToAllocate)
-            PlannedRoute = BestNewPlannedRoute
-            PlannedJobRoute = BestNewPlannedJobRoute
-        Else
-            'Used to prevent rechecking unless new jobs appear
-            LastJobConsidered = UnallocatedJobs.Last
-        End If
+        LastJobConsidered = If(UnallocatedJobs.Count > 0, UnallocatedJobs.Last, Nothing)
+
     End Sub
 End Class

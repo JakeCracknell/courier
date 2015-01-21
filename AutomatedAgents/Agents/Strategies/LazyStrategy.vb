@@ -19,12 +19,12 @@
 
         'If a route somewhere has just been completed...
         If Position.RouteCompleted Then
-            If Jobs(0).PickupPosition.ApproximatelyEquals(Position.GetRoutingPoint) Then
-                Position = New RoutePosition(New AStarSearch(Position.GetRoutingPoint, Jobs(0).DeliveryPosition, Map.NodesAdjacencyList, RouteFindingMinimiser).GetRoute)
-                Jobs(0).Status = JobStatus.PENDING_DELIVERY
-            ElseIf Jobs(0).DeliveryPosition.ApproximatelyEquals(Position.GetRoutingPoint) Then
+            If Jobs(0).DeliveryPosition.ApproximatelyEquals(Position.GetRoutingPoint) Then
                 Jobs(0).Status = JobStatus.COMPLETED
                 Jobs.RemoveAt(0)
+            ElseIf Jobs(0).PickupPosition.ApproximatelyEquals(Position.GetRoutingPoint) Then
+                Position = New RoutePosition(New AStarSearch(Position.GetRoutingPoint, Jobs(0).DeliveryPosition, Map.NodesAdjacencyList, RouteFindingMinimiser).GetRoute)
+                Jobs(0).Status = JobStatus.PENDING_DELIVERY
             Else
                 Position = New RoutePosition(New AStarSearch(Position.GetRoutingPoint, Jobs(0).PickupPosition, Map.NodesAdjacencyList, RouteFindingMinimiser).GetRoute)
             End If

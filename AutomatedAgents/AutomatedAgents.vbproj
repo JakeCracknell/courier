@@ -73,7 +73,8 @@
   <ItemGroup>
     <Compile Include="Agents\Agent.vb" />
     <Compile Include="Agents\Strategies\AgentStrategy.vb" />
-    <Compile Include="Agents\Strategies\NearestNeighbourStrategy.vb" />
+    <Compile Include="Agents\Strategies\NearestNeighbourEuclidianStrategy.vb" />
+    <Compile Include="Agents\Strategies\NearestNeighbourAStarStrategy.vb" />
     <Compile Include="Agents\Strategies\GreedyStrategy.vb" />
     <Compile Include="Agents\Strategies\LazyStrategy.vb" />
     <Compile Include="Geography\Bounds.vb" />
