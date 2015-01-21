@@ -35,6 +35,7 @@ Class AASimulation
 
     Sub InitialiseDispatcher(ByVal Map As StreetMap)
         Dispatcher = New SimpleDispatcher(Map)
+        NoticeBoard.Clear()
     End Sub
 
     Sub StartSimulation()

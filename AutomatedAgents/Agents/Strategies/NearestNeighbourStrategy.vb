@@ -27,16 +27,18 @@
 
         'If a route somewhere has just been completed...
         If Position.RouteCompleted Then
-            Select Case PlannedJobRoute(0).Status
-                Case JobStatus.PENDING_PICKUP
-                    PlannedJobRoute(0).Status = JobStatus.PENDING_DELIVERY
-                Case JobStatus.PENDING_DELIVERY
-                    PlannedJobRoute(0).Status = JobStatus.COMPLETED
-                    Jobs.Remove(PlannedJobRoute(0))
-            End Select
+            If Position.GetRoutingPoint.ApproximatelyEquals(PlannedRoute(0)) Then
+                Select Case PlannedJobRoute(0).Status
+                    Case JobStatus.PENDING_PICKUP
+                        PlannedJobRoute(0).Status = JobStatus.PENDING_DELIVERY
+                    Case JobStatus.PENDING_DELIVERY
+                        PlannedJobRoute(0).Status = JobStatus.COMPLETED
+                        Jobs.Remove(PlannedJobRoute(0))
+                End Select
 
-            PlannedJobRoute.RemoveAt(0)
-            PlannedRoute.RemoveAt(0)
+                PlannedJobRoute.RemoveAt(0)
+                PlannedRoute.RemoveAt(0)
+            End If
 
             If PlannedRoute.Count > 0 Then
                 Position = New RoutePosition(New AStarSearch(Position.GetRoutingPoint, PlannedRoute(0), Map.NodesAdjacencyList, RouteFindingMinimiser).GetRoute)
@@ -113,7 +115,6 @@
             NoticeBoard.AllocateJob(BestJobToAllocate)
             Jobs.Add(BestJobToAllocate)
             PlannedRoute = BestNewPlannedRoute
-            'PlannedRouteCost = CurrentRouteDistance + LowestMarginalCost
             PlannedJobRoute = BestNewPlannedJobRoute
         Else
             'Used to prevent rechecking unless new jobs appear

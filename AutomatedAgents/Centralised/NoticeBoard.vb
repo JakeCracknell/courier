@@ -53,4 +53,12 @@
         Next
     End Sub
 
+    Sub Clear()
+        UnallocatedJobs.Clear()
+        UnpickedJobs.Clear()
+        PickedJobs.Clear()
+        IncompleteJobs.Clear()
+        CompletedJobs.Clear()
+    End Sub
+
 End Module

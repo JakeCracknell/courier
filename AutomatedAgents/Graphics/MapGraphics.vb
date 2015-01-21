@@ -176,16 +176,20 @@
 
         For Each Agent As Agent In Agents
             DrawAgent(Agent, grOverlay)
-            If Agent.AssignedJobs.Count > 0 Then
-                Dim PickupPt As Point = CC.GetPoint(Agent.AssignedJobs(0).PickupPosition)
-                Dim DropOffPt As Point = CC.GetPoint(Agent.AssignedJobs(0).DeliveryPosition)
+            For Each Job As CourierJob In Agent.AssignedJobs
+                Dim PickupPt As Point = CC.GetPoint(Job.PickupPosition)
+                Dim DropOffPt As Point = CC.GetPoint(Job.DeliveryPosition)
                 Dim Brush As New SolidBrush(Agent.Color)
-                grOverlay.FillRectangle(Brush, PickupPt.X - 5, PickupPt.Y - 5, 10, 10)
-                grOverlay.FillRectangle(Brush, DropOffPt.X - 5, DropOffPt.Y - 5, 10, 10)
+                If Job.Status = JobStatus.PENDING_PICKUP Then
+                    grOverlay.FillRectangle(Brush, PickupPt.X - 5, PickupPt.Y - 5, 10, 10)
+                ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
+                    grOverlay.FillRectangle(Brush, DropOffPt.X - 5, DropOffPt.Y - 5, 10, 10)
+                End If
                 Dim Pen As New Pen(New SolidBrush(Agent.Color), 3)
                 Pen.EndCap = Drawing2D.LineCap.Triangle
                 grOverlay.DrawLine(Pen, PickupPt, DropOffPt)
-            End If
+            Next
+
         Next
 
         Dim MapBitmapCopy As Bitmap = MapBitmapOriginal.Clone
