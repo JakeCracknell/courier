@@ -83,6 +83,8 @@
     <Compile Include="Graphics\CoordinateConverter.vb" />
     <Compile Include="Agents\AgentAsync.vb" />
     <Compile Include="RouteFinding\NearestNeighbourSolver.vb" />
+    <Compile Include="Simulation\AAPlayground.vb" />
+    <Compile Include="Simulation\AASimulation.vb" />
     <Compile Include="Simulation\CourierJob.vb" />
     <Compile Include="Graphics\frmAgentStatus.Designer.vb">
       <DependentUpon>frmAgentStatus.vb</DependentUpon>
@@ -99,7 +101,7 @@
     <Compile Include="Agents\AgentNameAssigner.vb" />
     <Compile Include="Simulation\JobStatus.vb" />
     <Compile Include="Simulation\VehicleSize.vb" />
-    <Compile Include="Simulation\AASimulation.vb" />
+    <Compile Include="Simulation\AACourierSimulation.vb" />
     <Compile Include="Graphics\frmMain.vb">
       <SubType>Form</SubType>
     </Compile>

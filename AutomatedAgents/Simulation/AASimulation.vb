@@ -1,37 +1,28 @@
-﻿
-Class AASimulation
+﻿Public Class AASimulation
+
     Property Agents As New List(Of Agent)
     Property IsRunning As Boolean = False
-    Property Dispatcher As SimpleDispatcher
 
-    Private Time As TimeSpan
-    Private TIME_INCREMENT As TimeSpan = TimeSpan.FromSeconds(1)
+    Protected Time As TimeSpan
+    Protected TIME_INCREMENT As TimeSpan = TimeSpan.FromSeconds(1)
 
-    Sub AddAgent(ByVal Map As StreetMap)
+    Overridable Sub AddAgent(ByVal Map As StreetMap)
         Dim Agent As New Agent(Map, GetRandomColor)
         Agents.Add(Agent)
     End Sub
 
     'Returns whether the state has changed.
-    Function Tick() As Boolean
-        Time = Time.Add(TIME_INCREMENT)
-        Dim Modified As Boolean = True
+    Overridable Function Tick() As Boolean
+       Time = Time.Add(TIME_INCREMENT)
 
-        'Iterate through agents in semi-random order
-        Dim MidIndex As Integer = Int(Rnd() * Agents.Count)
-        For i = MidIndex To Agents.Count - 1
-            Agents(i).Move()
-        Next
-        For i = 0 To MidIndex - 1
-            Agents(i).Move()
+        For Each Agent As Agent In Agents
+            Agent.Move()
         Next
 
-        Dispatcher.Tick()
-        NoticeBoard.Tidy()
-        Return Modified
+        Return True
     End Function
 
-    Function GetSimulationTime() As String
+    Function GetTimeString() As String
         If IsRunning Then
             Return Time.ToString
         Else
@@ -39,15 +30,10 @@ Class AASimulation
         End If
     End Function
 
-    Sub InitialiseDispatcher(ByVal Map As StreetMap)
-        Dispatcher = New SimpleDispatcher(Map)
-        NoticeBoard.Clear()
-    End Sub
-
-    Sub StartSimulation()
+    Sub Start()
         IsRunning = True
     End Sub
-    Sub StopSimulation()
+    Sub Pause()
         IsRunning = False
     End Sub
 End Class

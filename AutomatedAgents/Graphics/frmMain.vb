@@ -5,7 +5,7 @@
     Private Const AGENT_TSMI_TEXT_PREFIX As String = "Add "
     Private AGENT_TSMI_AMOUNTS() As Integer = {1, 5, 10, 50, 100, 500, 1000, 5000, 10000}
 
-    Private AASimulation As New AASimulation
+    Private AASimulation As AASimulation
 
     'On form load, add menu items to load each som file, spawn agents.
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -31,12 +31,12 @@
     End Sub
 
     Private Sub LoadToolStripMenuItem_Click(sender As Object, e As EventArgs)
+        AASimulation = Nothing 'Cancels previous sims/playgrounds if any.
+
         Dim FileName As String = CType(sender, ToolStripMenuItem).Text.Replace(LOAD_TSMI_TEXT_PREFIX, "")
         FileName = OSMFileSystemManager.GetFilePathFromName(FileName)
         Dim Loader As OSMLoader = New OSMLoader(FileName)
         Map = Loader.CreateMap()
-        AASimulation = New AASimulation()
-        AASimulation.InitialiseDispatcher(Map)
         MapGraphics.Resize(picMap.Width, picMap.Height, Map.Bounds)
         SetPictureBox(MapGraphics.DrawMap(Map))
         tmrAgents.Start()
@@ -55,19 +55,19 @@
 
 
     Private Sub AgentToolStripMenuItem_Click(sender As Object, e As EventArgs)
-        If Map IsNot Nothing Then
+        If Map IsNot Nothing AndAlso AASimulation IsNot Nothing Then
             Dim Amount As Integer = CInt(CType(sender, ToolStripMenuItem).Text.Replace(AGENT_TSMI_TEXT_PREFIX, ""))
             For i = 1 To Amount
                 AASimulation.AddAgent(Map)
             Next
         Else
-            MsgBox("Map is not loaded")
+            MsgBox("Map is not loaded or simulation has not started")
         End If
     End Sub
 
 
     Private Sub tmrAgents_Tick(sender As Object, e As EventArgs) Handles tmrAgents.Tick
-        If AASimulation.IsRunning Then
+        If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
             SelectionMode = MapSelectionMode.AGENTS_ALL_ROUTE_TO
             Dim SimulationStateChanged As Boolean = False
             For i = 1 To Math.Max(1, SimulationParameters.SimulationSpeed / (1000 / SimulationParameters.DisplayRefreshSpeed))
@@ -158,20 +158,35 @@
         lblLoadStatus.Text = FormatNumber(KB, 0) & " K"
     End Sub
     Private Sub ShowTime()
-        lblTime.Text = "Time: " & AASimulation.GetSimulationTime
+        If AASimulation IsNot Nothing Then
+            lblTime.Text = "Time: " & AASimulation.GetTimeString
+        End If
     End Sub
 
-    Private Sub StartToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles StartToolStripMenuItem.Click
-        AASimulation.StartSimulation()
+    Private Sub StartToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles StartSimulationToolStripMenuItem.Click
+        If Map IsNot Nothing Then
+            If AASimulation Is Nothing OrElse AASimulation.GetType <> GetType(AACourierSimulation) Then
+                AASimulation = New AACourierSimulation(Map)
+            End If
+            AASimulation.Start()
+        End If
+    End Sub
+
+    Private Sub StartPlaygroundToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles StartPlaygroundToolStripMenuItem.Click
+        If Map IsNot Nothing Then
+            If AASimulation Is Nothing OrElse AASimulation.GetType <> GetType(AAPlayground) Then
+                AASimulation = New AAPlayground()
+            End If
+            AASimulation.Start()
+        End If
     End Sub
 
     Private Sub StopToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles StopToolStripMenuItem.Click
-        AASimulation.StopSimulation()
+        AASimulation.Pause()
     End Sub
 
     Private Sub ResetToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetToolStripMenuItem.Click
-        AASimulation = New AASimulation()
-        AASimulation.InitialiseDispatcher(Map)
+        AASimulation = Nothing
         SetPictureBox(MapGraphics.DrawMap(Map))
     End Sub
 
@@ -218,4 +233,6 @@
             frmAgentStatus.SetAASimulation(AASimulation)
         End If
     End Sub
+
+  
 End Class

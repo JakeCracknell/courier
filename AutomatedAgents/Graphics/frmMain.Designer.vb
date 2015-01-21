@@ -31,6 +31,7 @@ Partial Class frmMain
         Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
         Me.FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AgentsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AgentStatusToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RouteTestingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RouteFromToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BenchmarkToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -41,14 +42,14 @@ Partial Class frmMain
         Me.NodesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AgentRoutesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SimulationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.StartToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.StartSimulationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StopToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ResetToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SpeedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.tmrAgents = New System.Windows.Forms.Timer(Me.components)
         Me.picMap = New System.Windows.Forms.PictureBox()
         Me.tmrStatus = New System.Windows.Forms.Timer(Me.components)
-        Me.AgentStatusToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.StartPlaygroundToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.picMap, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -108,6 +109,12 @@ Partial Class frmMain
         Me.AgentsToolStripMenuItem.Size = New System.Drawing.Size(56, 20)
         Me.AgentsToolStripMenuItem.Text = "Agents"
         '
+        'AgentStatusToolStripMenuItem
+        '
+        Me.AgentStatusToolStripMenuItem.Name = "AgentStatusToolStripMenuItem"
+        Me.AgentStatusToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.AgentStatusToolStripMenuItem.Text = "Agent Status..."
+        '
         'RouteTestingToolStripMenuItem
         '
         Me.RouteTestingToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RouteFromToolStripMenuItem, Me.BenchmarkToolStripMenuItem})
@@ -118,13 +125,13 @@ Partial Class frmMain
         'RouteFromToolStripMenuItem
         '
         Me.RouteFromToolStripMenuItem.Name = "RouteFromToolStripMenuItem"
-        Me.RouteFromToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.RouteFromToolStripMenuItem.Size = New System.Drawing.Size(145, 22)
         Me.RouteFromToolStripMenuItem.Text = "Route From..."
         '
         'BenchmarkToolStripMenuItem
         '
         Me.BenchmarkToolStripMenuItem.Name = "BenchmarkToolStripMenuItem"
-        Me.BenchmarkToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.BenchmarkToolStripMenuItem.Size = New System.Drawing.Size(145, 22)
         Me.BenchmarkToolStripMenuItem.Text = "Benchmark"
         '
         'ViewToolStripMenuItem
@@ -175,33 +182,33 @@ Partial Class frmMain
         '
         'SimulationToolStripMenuItem
         '
-        Me.SimulationToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StartToolStripMenuItem, Me.StopToolStripMenuItem, Me.ResetToolStripMenuItem, Me.SpeedToolStripMenuItem})
+        Me.SimulationToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StartSimulationToolStripMenuItem, Me.StartPlaygroundToolStripMenuItem, Me.StopToolStripMenuItem, Me.ResetToolStripMenuItem, Me.SpeedToolStripMenuItem})
         Me.SimulationToolStripMenuItem.Name = "SimulationToolStripMenuItem"
         Me.SimulationToolStripMenuItem.Size = New System.Drawing.Size(76, 20)
         Me.SimulationToolStripMenuItem.Text = "Simulation"
         '
-        'StartToolStripMenuItem
+        'StartSimulationToolStripMenuItem
         '
-        Me.StartToolStripMenuItem.Name = "StartToolStripMenuItem"
-        Me.StartToolStripMenuItem.Size = New System.Drawing.Size(115, 22)
-        Me.StartToolStripMenuItem.Text = "Start"
+        Me.StartSimulationToolStripMenuItem.Name = "StartSimulationToolStripMenuItem"
+        Me.StartSimulationToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
+        Me.StartSimulationToolStripMenuItem.Text = "Start Simulation"
         '
         'StopToolStripMenuItem
         '
         Me.StopToolStripMenuItem.Name = "StopToolStripMenuItem"
-        Me.StopToolStripMenuItem.Size = New System.Drawing.Size(115, 22)
+        Me.StopToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
         Me.StopToolStripMenuItem.Text = "Stop"
         '
         'ResetToolStripMenuItem
         '
         Me.ResetToolStripMenuItem.Name = "ResetToolStripMenuItem"
-        Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(115, 22)
+        Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
         Me.ResetToolStripMenuItem.Text = "Reset"
         '
         'SpeedToolStripMenuItem
         '
         Me.SpeedToolStripMenuItem.Name = "SpeedToolStripMenuItem"
-        Me.SpeedToolStripMenuItem.Size = New System.Drawing.Size(115, 22)
+        Me.SpeedToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
         Me.SpeedToolStripMenuItem.Text = "Speed..."
         '
         'tmrAgents
@@ -221,11 +228,11 @@ Partial Class frmMain
         '
         Me.tmrStatus.Enabled = True
         '
-        'AgentStatusToolStripMenuItem
+        'StartPlaygroundToolStripMenuItem
         '
-        Me.AgentStatusToolStripMenuItem.Name = "AgentStatusToolStripMenuItem"
-        Me.AgentStatusToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-        Me.AgentStatusToolStripMenuItem.Text = "Agent Status..."
+        Me.StartPlaygroundToolStripMenuItem.Name = "StartPlaygroundToolStripMenuItem"
+        Me.StartPlaygroundToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
+        Me.StartPlaygroundToolStripMenuItem.Text = "Start Playground"
         '
         'frmMain
         '
@@ -264,7 +271,7 @@ Partial Class frmMain
     Friend WithEvents NodesToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents RoadsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents SimulationToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents StartToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents StartSimulationToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents StopToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ResetToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents AgentRoutesToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
@@ -273,5 +280,6 @@ Partial Class frmMain
     Friend WithEvents SpeedToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents BenchmarkToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents AgentStatusToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents StartPlaygroundToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class

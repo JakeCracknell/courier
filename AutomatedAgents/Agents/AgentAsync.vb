@@ -2,7 +2,7 @@
     Inherits Agent
 
     Private RouteFinder As AsyncRouteFinder
-    Private AwaitingRoute As Boolean = True
+    Private AwaitingRoute As Boolean = False
     Private TicksWaited As Integer = 0
 
     Public Sub New(ByVal Map As StreetMap, ByVal Color As Color)
