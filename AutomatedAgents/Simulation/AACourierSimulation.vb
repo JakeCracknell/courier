@@ -6,6 +6,7 @@
     Sub New(ByVal Map As StreetMap)
         Dispatcher = New SimpleDispatcher(Map)
         NoticeBoard.Clear()
+        NoticeBoard.DepotPoint = Map.NodesAdjacencyList.GetRandomPoint
     End Sub
 
     'Returns whether the state has changed.

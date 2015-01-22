@@ -9,8 +9,6 @@
     Protected Map As StreetMap
     Public Color As Color
 
-    'Public RoutePlan As New List(Of Route)
-
     Public AssignedJobs As New List(Of CourierJob)
 
     Protected VehicleSize As VehicleSize = AutomatedAgents.VehicleSize.CAR

@@ -4,4 +4,5 @@ Public Enum JobStatus
     PENDING_PICKUP 'An agent has taken the job and has yet to pick it up
     PENDING_DELIVERY 'May be delivery attempted, but refused.
     COMPLETED 'Packaged delivered
+    CANCELLED 'Due to failed pickup or no agents available.
 End Enum

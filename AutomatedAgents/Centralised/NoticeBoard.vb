@@ -1,10 +1,15 @@
 ﻿Module NoticeBoard
+
+    Property DepotPoint As HopPosition
+
     Property UnallocatedJobs As New List(Of CourierJob)
     Property UnpickedJobs As New List(Of CourierJob)
     Property PickedJobs As New List(Of CourierJob)
 
     Property IncompleteJobs As New List(Of CourierJob)
     Property CompletedJobs As New List(Of CourierJob)
+
+    Property JobRevenue As Decimal = 0
 
     Function AreJobsWaiting() As Boolean
         Return UnallocatedJobs.Count > 0
@@ -35,9 +40,19 @@
     End Function
 
     Sub Tidy()
+        For i = UnallocatedJobs.Count - 1 To 0 Step -1
+            Dim Job As CourierJob = UnallocatedJobs(i)
+            If Job.Status = JobStatus.CANCELLED Then
+                CompletedJobs.Add(Job)
+                UnallocatedJobs.Remove(Job)
+            End If
+        Next
+
         For i = PickedJobs.Count - 1 To 0 Step -1
             Dim Job As CourierJob = PickedJobs(i)
             If Job.Status = JobStatus.COMPLETED Then
+                JobRevenue += Job.CustomerFee
+                Debug.WriteLine(JobRevenue)
                 CompletedJobs.Add(Job)
                 IncompleteJobs.Remove(Job)
                 PickedJobs.Remove(Job)
@@ -48,6 +63,10 @@
             Dim Job As CourierJob = UnpickedJobs(i)
             If Job.Status = JobStatus.PENDING_DELIVERY Then
                 PickedJobs.Add(Job)
+                UnpickedJobs.Remove(Job)
+            End If
+            If Job.Status = JobStatus.CANCELLED Then
+                CompletedJobs.Add(Job)
                 UnpickedJobs.Remove(Job)
             End If
         Next
