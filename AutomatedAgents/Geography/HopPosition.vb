@@ -1,6 +1,6 @@
 ﻿Public Class HopPosition
     Implements IEquatable(Of HopPosition)
-    Implements RoutingPoint
+    Implements IPoint
 
     Private Const APPROXIMATElY_EQUALS_EPSILON As Double = 0.001
     Public Hop As Hop
@@ -61,11 +61,11 @@
         End If
     End Sub
 
-    Function GetLatitude() As Double Implements RoutingPoint.GetLatitude
+    Function GetLatitude() As Double Implements IPoint.GetLatitude
         Return Latitude
     End Function
 
-    Function GetLongitude() As Double Implements RoutingPoint.GetLongitude
+    Function GetLongitude() As Double Implements IPoint.GetLongitude
         Return Longitude
     End Function
 

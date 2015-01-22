@@ -1,15 +1,15 @@
 ﻿Public Class AStarSearch
-    Implements RouteFinder
+    Implements IRouteFinder
 
-    Private StartPoint As RoutingPoint
-    Private EndPoint As RoutingPoint
+    Private StartPoint As IPoint
+    Private EndPoint As IPoint
     Private AdjacencyList As NodesAdjacencyList
     Private Route As Route
     Private NodesSearched As New List(Of Node)
     Private Minimiser As RouteFindingMinimiser
     Private Const EPSILON As Double = 0.0000001
 
-    Sub New(ByVal StartPoint As RoutingPoint, ByVal EndPoint As RoutingPoint, ByVal AdjacencyList As NodesAdjacencyList, ByVal Minimiser As RouteFindingMinimiser)
+    Sub New(ByVal StartPoint As IPoint, ByVal EndPoint As IPoint, ByVal AdjacencyList As NodesAdjacencyList, ByVal Minimiser As RouteFindingMinimiser)
         Me.StartPoint = StartPoint
         Me.EndPoint = EndPoint
         Me.AdjacencyList = AdjacencyList
@@ -50,7 +50,7 @@
                 Exit Sub
             End If
 
-            Dim CurrentPoint As RoutingPoint = AStarTreeNode.GetCurrentPoint
+            Dim CurrentPoint As IPoint = AStarTreeNode.GetCurrentPoint
             If TypeOf CurrentPoint Is Node Then
                 NodesSearched.Add(CurrentPoint)
             End If
@@ -117,11 +117,11 @@
     End Sub
 
 
-    Public Function GetRoute() As Route Implements RouteFinder.GetRoute
+    Public Function GetRoute() As Route Implements IRouteFinder.GetRoute
         Return Route
     End Function
 
-    Public Function GetNodesSearched() As List(Of Node) Implements RouteFinder.GetNodesSearched
+    Public Function GetNodesSearched() As List(Of Node) Implements IRouteFinder.GetNodesSearched
         Return NodesSearched
     End Function
 
@@ -131,7 +131,7 @@
         Public Hop As Hop
         Public TotalCost As Double
 
-        Public Sub New(ByVal StartNode As RoutingPoint)
+        Public Sub New(ByVal StartNode As IPoint)
             Hop = New Hop(StartNode, StartNode, Nothing)
             TotalCost = 0
         End Sub
@@ -157,7 +157,7 @@
             End Select
         End Sub
 
-        Public Function GetCurrentPoint() As RoutingPoint
+        Public Function GetCurrentPoint() As IPoint
             Return Hop.ToPoint
         End Function
 

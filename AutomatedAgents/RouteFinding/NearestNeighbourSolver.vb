@@ -1,7 +1,7 @@
 ﻿Public Class NearestNeighbourSolver
     Class WayPoint
         Public Predecessor As WayPoint
-        Public Position As RoutingPoint
+        Public Position As IPoint
         Public Job As CourierJob
     End Class
 
@@ -13,18 +13,18 @@
     Property JobList As List(Of CourierJob)
 
     'Use this constructor to use straight line distance. Up to 100x faster than AStar.
-    Sub New(ByVal Start As RoutingPoint, ByVal Jobs As List(Of CourierJob))
+    Sub New(ByVal Start As IPoint, ByVal Jobs As List(Of CourierJob))
         RunAlgorithm(Start, Jobs)
     End Sub
 
     'Use this constructor to run AStar on each pair. More optimal.
-    Sub New(ByVal Start As RoutingPoint, ByVal Jobs As List(Of CourierJob), ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser)
+    Sub New(ByVal Start As IPoint, ByVal Jobs As List(Of CourierJob), ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser)
         Me.Map = Map
         Me.Minimiser = Minimiser
         RunAlgorithm(Start, Jobs)
     End Sub
 
-    Sub RunAlgorithm(ByVal Start As RoutingPoint, ByVal Jobs As List(Of CourierJob))
+    Sub RunAlgorithm(ByVal Start As IPoint, ByVal Jobs As List(Of CourierJob))
         Dim WayPoints As New List(Of WayPoint)
         For Each Job In Jobs
             Select Case Job.Status
@@ -45,7 +45,7 @@
 
 
         Dim ReorderedWayPoints As New List(Of WayPoint)
-        Dim LastPoint As RoutingPoint = Start
+        Dim LastPoint As IPoint = Start
 
         Do Until WayPoints.Count = 0
             Dim ClosestNeighbour As WayPoint = WayPoints(0)

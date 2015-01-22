@@ -1,4 +1,4 @@
-﻿Public Class AASimulation
+﻿Public MustInherit Class AASimulation
 
     Property Agents As New List(Of Agent)
     Property IsRunning As Boolean = False
@@ -13,7 +13,7 @@
 
     'Returns whether the state has changed.
     Overridable Function Tick() As Boolean
-       Time = Time.Add(TIME_INCREMENT)
+        Time = Time.Add(TIME_INCREMENT)
 
         For Each Agent As Agent In Agents
             Agent.Move()

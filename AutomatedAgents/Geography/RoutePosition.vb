@@ -15,7 +15,7 @@
         Return Route.At(HopIndex).Way
     End Function
 
-    Public Function GetEndPoint() As RoutingPoint
+    Public Function GetEndPoint() As IPoint
         Return Route.GetEndPoint
     End Function
 

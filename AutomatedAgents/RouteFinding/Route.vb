@@ -16,7 +16,7 @@
     End Sub
 
     'A route of 0
-    Public Sub New(ByVal OnlyPoint As RoutingPoint)
+    Public Sub New(ByVal OnlyPoint As IPoint)
         Me.Hops = New List(Of Hop)
         Me.Hops.Add(New Hop(OnlyPoint, OnlyPoint, Nothing))
     End Sub
@@ -25,11 +25,11 @@
         Return Hops(Index)
     End Function
 
-    Public Function GetStartPoint() As RoutingPoint
+    Public Function GetStartPoint() As IPoint
         Return Hops.First.FromPoint
     End Function
 
-    Public Function GetEndPoint() As RoutingPoint
+    Public Function GetEndPoint() As IPoint
         Return Hops.Last.ToPoint
     End Function
 

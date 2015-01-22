@@ -1,6 +1,6 @@
 ﻿Public Class Node
     Implements IEquatable(Of Node)
-    Implements RoutingPoint
+    Implements IPoint
     Public ID As Long
     Public Latitude As Double
     Public Longitude As Double
@@ -29,10 +29,10 @@
         Return OtherNode IsNot Nothing AndAlso Me.ID = OtherNode.ID
     End Function
 
-    Public Overloads Function GetLongitude() As Double Implements RoutingPoint.GetLongitude
+    Public Overloads Function GetLongitude() As Double Implements IPoint.GetLongitude
         Return Longitude
     End Function
-    Public Overloads Function GetLatitude() As Double Implements RoutingPoint.GetLatitude
+    Public Overloads Function GetLatitude() As Double Implements IPoint.GetLatitude
         Return Latitude
     End Function
 

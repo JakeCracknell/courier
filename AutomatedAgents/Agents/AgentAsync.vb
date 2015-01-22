@@ -41,21 +41,21 @@
 
     End Sub
 
-    Public Overrides Sub SetRouteTo(ByVal DestinationPoint As RoutingPoint)
-        Dim StartingPoint As RoutingPoint = If(Position IsNot Nothing, Position.GetRoutingPoint, Map.NodesAdjacencyList.GetRandomPoint)
+    Public Overrides Sub SetRouteTo(ByVal DestinationPoint As IPoint)
+        Dim StartingPoint As IPoint = If(Position IsNot Nothing, Position.GetRoutingPoint, Map.NodesAdjacencyList.GetRandomPoint)
         RouteFinder = New AsyncRouteFinder(StartingPoint, DestinationPoint, Map.NodesAdjacencyList)
         AwaitingRoute = True
         RoutePosition = 0
     End Sub
 
     Private Class AsyncRouteFinder
-        Private FromPoint As RoutingPoint
-        Private ToPoint As RoutingPoint
+        Private FromPoint As IPoint
+        Private ToPoint As IPoint
         Private AdjacencyList As NodesAdjacencyList
         Public PlannedRoute As Route
         Public RoutingComplete As Boolean = False 'Might have failed
 
-        Public Sub New(ByVal FromPoint As RoutingPoint, ByVal ToPoint As RoutingPoint, ByVal AdjacencyList As NodesAdjacencyList)
+        Public Sub New(ByVal FromPoint As IPoint, ByVal ToPoint As IPoint, ByVal AdjacencyList As NodesAdjacencyList)
             Me.FromPoint = FromPoint
             Me.ToPoint = ToPoint
             Me.AdjacencyList = AdjacencyList
@@ -63,7 +63,7 @@
         End Sub
 
         Protected Sub Run()
-            Dim RouteFinder As RouteFinder = New AStarSearch(FromPoint, ToPoint, AdjacencyList, RouteFindingMinimiser)
+            Dim RouteFinder As IRouteFinder = New AStarSearch(FromPoint, ToPoint, AdjacencyList, RouteFindingMinimiser)
             PlannedRoute = RouteFinder.GetRoute
             RoutingComplete = True
         End Sub

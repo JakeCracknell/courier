@@ -117,7 +117,7 @@
         Return MapBitmapCopy
     End Function
 
-    Function DrawRouteStart(ByVal Point As RoutingPoint) As Image
+    Function DrawRouteStart(ByVal Point As IPoint) As Image
         Return DrawRoute(New Route(Point), Nothing)
     End Function
     Function DrawRoute(ByVal Route As Route) As Image
@@ -127,7 +127,7 @@
     Function DrawRoute(ByVal Route As Route, ByVal NodesSearched As List(Of Node)) As Image
         Dim grOverlay As Graphics = Graphics.FromImage(MapBitmapOverlay)
 
-        Dim RouteFromPoint As RoutingPoint = Route.GetStartPoint
+        Dim RouteFromPoint As IPoint = Route.GetStartPoint
         Dim NodePoint As Point = CC.GetPoint(RouteFromPoint)
         grOverlay.Clear(Color.Transparent)
 

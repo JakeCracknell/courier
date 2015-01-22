@@ -1,5 +1,5 @@
 ﻿Public Class LazyStrategy
-    Implements AgentStrategy
+    Implements IAgentStrategy
     Private Const RouteFindingMinimiser As RouteFindingMinimiser = RouteFindingMinimiser.DISTANCE
     Private Jobs As List(Of CourierJob)
     Private Map As StreetMap
@@ -9,7 +9,7 @@
         Jobs = _Jobs
     End Sub
 
-    Public Sub UpdatePosition(ByRef Position As RoutePosition) Implements AgentStrategy.UpdatePosition
+    Public Sub UpdatePosition(ByRef Position As RoutePosition) Implements IAgentStrategy.UpdatePosition
 
         'Do nothing if there are no jobs allocated.
         If Jobs.Count = 0 Then

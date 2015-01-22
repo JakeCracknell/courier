@@ -40,7 +40,7 @@
         Return GetPoint(Lat, Lon)
     End Function
 
-    Public Function GetPoint(ByVal RoutingPoint As RoutingPoint) As Point
+    Public Function GetPoint(ByVal RoutingPoint As IPoint) As Point
         Return GetPoint(RoutingPoint.GetLatitude, RoutingPoint.GetLongitude)
     End Function
 

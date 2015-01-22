@@ -17,7 +17,7 @@
         End If
     End Sub
 
-    Public Function GetRow(ByVal RoutingPoint As RoutingPoint) As NodesAdjacencyListRow
+    Public Function GetRow(ByVal RoutingPoint As IPoint) As NodesAdjacencyListRow
         If TypeOf RoutingPoint Is Node Then
             Dim Node As Node = RoutingPoint
             Return Rows(Node.ID)

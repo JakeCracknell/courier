@@ -15,7 +15,7 @@
 
     Protected VehicleSize As VehicleSize = AutomatedAgents.VehicleSize.CAR
     Protected RoutePosition As Integer = 0
-    Protected Strategy As AgentStrategy
+    Protected Strategy As IAgentStrategy
 
     Public Sub New(ByVal Map As StreetMap, ByVal Color As Color)
         Me.New(Map, Color, AutomatedAgents.VehicleSize.CAR)
@@ -60,7 +60,7 @@
     End Sub
 
 
-    Public Overridable Sub SetRouteTo(ByVal DestinationPoint As RoutingPoint)
+    Public Overridable Sub SetRouteTo(ByVal DestinationPoint As IPoint)
         'Dim StartingPoint As RoutingPoint = RoutePlan.Last.GetEndPoint
 
         'Dim RouteFinder As RouteFinder = New AStarSearch(StartingPoint, DestinationPoint, Map.NodesAdjacencyList, RouteFindingMinimiser)

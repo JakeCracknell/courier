@@ -1,5 +1,5 @@
 ﻿Public Class NearestNeighbourEuclidianStrategy
-    Implements AgentStrategy
+    Implements IAgentStrategy
     Private Const RouteFindingMinimiser As RouteFindingMinimiser = RouteFindingMinimiser.DISTANCE
     Private Const MARGINAL_COST_ACCEPTANCE_COEFFICIENT As Double = 10
 
@@ -15,7 +15,7 @@
         Jobs = _Jobs
     End Sub
 
-    Public Sub UpdatePosition(ByRef Position As RoutePosition) Implements AgentStrategy.UpdatePosition
+    Public Sub UpdatePosition(ByRef Position As RoutePosition) Implements IAgentStrategy.UpdatePosition
 
         'Do nothing if there are no jobs allocated.
         If Jobs.Count = 0 Then

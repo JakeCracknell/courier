@@ -1,5 +1,5 @@
 ﻿Public Class GreedyStrategy
-    Implements AgentStrategy
+    Implements IAgentStrategy
 
     Private Const MAX_JOBS As Integer = 10
     Private Const RouteFindingMinimiser As RouteFindingMinimiser = RouteFindingMinimiser.DISTANCE
@@ -11,7 +11,7 @@
         Jobs = _Jobs
     End Sub
 
-    Public Sub UpdatePosition(ByRef Position As RoutePosition) Implements AgentStrategy.UpdatePosition
+    Public Sub UpdatePosition(ByRef Position As RoutePosition) Implements IAgentStrategy.UpdatePosition
         'Get a job if there is room and one is available.
         If Jobs.Count < MAX_JOBS Then
             Dim NewJob As CourierJob = NoticeBoard.GetJob
