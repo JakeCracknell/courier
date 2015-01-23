@@ -28,16 +28,33 @@
         'If a route somewhere has just been completed...
         If Position.RouteCompleted Then
             If Position.GetRoutingPoint.ApproximatelyEquals(PlannedRoute(0)) Then
-                Select Case PlannedJobRoute(0).Status
+                Dim Job As CourierJob = PlannedJobRoute(0)
+                Select Case Job.Status
                     Case JobStatus.PENDING_PICKUP
-                        PlannedJobRoute(0).Status = JobStatus.PENDING_DELIVERY
+                        Dim TimeToWait As Integer = Job.Collect()
+                        If Job.Status = JobStatus.CANCELLED Then
+                            PlannedRoute.RemoveAt(0)
+                            PlannedJobRoute.RemoveAt(0)
+                            Dim DeliveryIndex As Integer = PlannedJobRoute.IndexOf(Job)
+                            PlannedJobRoute.RemoveAt(DeliveryIndex)
+                            PlannedRoute.RemoveAt(DeliveryIndex)
+                            Jobs.Remove(Job)
+                        ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
+                            PlannedJobRoute.RemoveAt(0)
+                            PlannedRoute.RemoveAt(0)
+                        End If
                     Case JobStatus.PENDING_DELIVERY
-                        PlannedJobRoute(0).Status = JobStatus.COMPLETED
-                        Jobs.Remove(PlannedJobRoute(0))
+                        Dim TimeToWait As Integer = Job.Deliver()
+                        If Job.Status = JobStatus.COMPLETED Then
+                            PlannedJobRoute.RemoveAt(0)
+                            PlannedRoute.RemoveAt(0)
+                            Jobs.Remove(Job)
+                        ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then 'Depot
+                            PlannedRoute(0) = Job.DeliveryPosition
+                            RecalculateRoute()
+                        End If
                 End Select
 
-                PlannedJobRoute.RemoveAt(0)
-                PlannedRoute.RemoveAt(0)
             End If
 
             If PlannedRoute.Count > 0 Then
@@ -101,5 +118,9 @@
 
         LastJobConsidered = If(UnallocatedJobs.Count > 0, UnallocatedJobs.Last, Nothing)
 
+    End Sub
+
+    Private Sub RecalculateRoute()
+        'TODO
     End Sub
 End Class

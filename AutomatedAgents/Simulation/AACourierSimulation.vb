@@ -1,9 +1,10 @@
 ﻿Class AACourierSimulation
     Inherits AASimulation
 
-    Private Dispatcher As SimpleDispatcher
+    Private Dispatcher As IDispatcher
 
     Sub New(ByVal Map As StreetMap)
+        'Dispatcher = New SingleDispatcher(Map)
         Dispatcher = New SimpleDispatcher(Map)
         NoticeBoard.Clear()
         NoticeBoard.DepotPoint = Map.NodesAdjacencyList.GetRandomPoint
@@ -27,5 +28,10 @@
         NoticeBoard.Tidy()
         Return Modified
     End Function
+
+    Protected Overrides Sub Finalize()
+        MyBase.Finalize()
+        NoticeBoard.Clear()
+    End Sub
 
 End Class

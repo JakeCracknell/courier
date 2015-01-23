@@ -77,6 +77,7 @@
     <Compile Include="Agents\Strategies\NearestNeighbourAStarStrategy.vb" />
     <Compile Include="Agents\Strategies\GreedyStrategy.vb" />
     <Compile Include="Agents\Strategies\LazyStrategy.vb" />
+    <Compile Include="Centralised\IDispatcher.vb" />
     <Compile Include="Geography\Bounds.vb" />
     <Compile Include="Centralised\NoticeBoard.vb" />
     <Compile Include="Centralised\SimpleDispatcher.vb" />
@@ -100,6 +101,7 @@
     <Compile Include="Geography\IPoint.vb" />
     <Compile Include="Agents\AgentNameAssigner.vb" />
     <Compile Include="Simulation\JobStatus.vb" />
+    <Compile Include="Centralised\SingleDispatcher.vb" />
     <Compile Include="Simulation\VehicleSize.vb" />
     <Compile Include="Simulation\AACourierSimulation.vb" />
     <Compile Include="Graphics\frmMain.vb">
