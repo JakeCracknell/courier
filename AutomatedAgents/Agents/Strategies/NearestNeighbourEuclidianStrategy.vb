@@ -51,7 +51,7 @@
                             Jobs.Remove(Job)
                         ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then 'Depot
                             PlannedRoute(0) = Job.DeliveryPosition
-                            RecalculateRoute()
+                            RecalculateRoute(Position)
                         End If
                 End Select
 
@@ -120,7 +120,9 @@
 
     End Sub
 
-    Private Sub RecalculateRoute()
-        'TODO
+    Private Sub RecalculateRoute(ByVal Position As RoutePosition)
+        Dim NNS As New NearestNeighbourSolver(Position.GetRoutingPoint, Jobs)
+        PlannedRoute = NNS.PointList
+        PlannedJobRoute = NNS.JobList
     End Sub
 End Class

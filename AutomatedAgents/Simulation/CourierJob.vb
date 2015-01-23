@@ -4,8 +4,8 @@
     Private Const DEFAULT_FEE_DISTANCE_MULTIPLIER As Double = 0.2
 
     'http://www.greenlogistics.org.uk/SiteResources/e6f341e0-125e-4f21-864a-97ebbafdbee2_JE-LRN%20-%20Failed%20deliveries%20-%20Presentation.pdf
-    Private Const PROBABILITY_COLLECTION_SUCCESS As Double = 1 ' 0.99
-    Private Const PROBABILITY_DELIVERY_SUCCESS As Double = 1 '0.9
+    Private Const PROBABILITY_COLLECTION_SUCCESS As Double = 0.99
+    Private Const PROBABILITY_DELIVERY_SUCCESS As Double = 0.9
 
     Private Const CUSTOMER_WAIT_TIME_MIN As Integer = 20 ' 20 sekonds
     Private Const CUSTOMER_WAIT_TIME_MAX As Integer = 120 ' 2 minutes
@@ -44,14 +44,18 @@
         Return CUSTOMER_WAIT_TIME_MAX
     End Function
     Function Deliver() As Integer
-        If Rnd() < PROBABILITY_DELIVERY_SUCCESS Then
+        If DeliveryPosition.Equals(NoticeBoard.DepotPoint) Then
+            Status = JobStatus.COMPLETED
+            Return CUSTOMER_WAIT_TIME_MIN
+        ElseIf Rnd() < PROBABILITY_DELIVERY_SUCCESS Then
             Status = JobStatus.COMPLETED
             Return GenerateRandomWaitTime()
+        Else
+            Status = JobStatus.PENDING_DELIVERY
+            DeliveryPosition = NoticeBoard.DepotPoint
+            Deadline = Long.MaxValue
+            Return CUSTOMER_WAIT_TIME_MAX
         End If
-        Status = JobStatus.PENDING_DELIVERY
-        DeliveryPosition = NoticeBoard.DepotPoint
-        Deadline = Long.MaxValue
-        Return CUSTOMER_WAIT_TIME_MAX
     End Function
 
 

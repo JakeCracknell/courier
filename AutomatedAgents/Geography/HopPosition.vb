@@ -71,7 +71,6 @@
 
     Public Overloads Function Equals(ByVal Other As HopPosition) As Boolean _
             Implements System.IEquatable(Of HopPosition).Equals
-        Debug.WriteLine(PercentageTravelled & " = " & Other.PercentageTravelled)
         Return PercentageTravelled = Other.PercentageTravelled AndAlso Hop.Equals(Other.Hop)
     End Function
 

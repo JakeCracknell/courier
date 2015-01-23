@@ -43,6 +43,7 @@
         For i = UnallocatedJobs.Count - 1 To 0 Step -1
             Dim Job As CourierJob = UnallocatedJobs(i)
             If Job.Status = JobStatus.CANCELLED Then
+                IncompleteJobs.Remove(Job)
                 CompletedJobs.Add(Job)
                 UnallocatedJobs.Remove(Job)
             End If
@@ -66,6 +67,9 @@
                 UnpickedJobs.Remove(Job)
             End If
             If Job.Status = JobStatus.CANCELLED Then
+                JobRevenue += Job.CustomerFee
+                Debug.WriteLine(JobRevenue)
+                IncompleteJobs.Remove(Job)
                 CompletedJobs.Add(Job)
                 UnpickedJobs.Remove(Job)
             End If
