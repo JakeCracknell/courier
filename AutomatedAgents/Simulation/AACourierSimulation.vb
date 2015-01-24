@@ -4,8 +4,8 @@
     Private Dispatcher As IDispatcher
 
     Sub New(ByVal Map As StreetMap)
+        Dispatcher = New SimpleDispatcher(Map)
         'Dispatcher = New SingleDispatcher(Map)
-        Dispatcher = New SingleDispatcher(Map)
         NoticeBoard.Clear()
         NoticeBoard.DepotPoint = Map.NodesAdjacencyList.GetRandomPoint
     End Sub

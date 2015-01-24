@@ -53,7 +53,7 @@
             Dim Job As CourierJob = PickedJobs(i)
             If Job.Status = JobStatus.COMPLETED Then
                 JobRevenue += Job.CustomerFee
-                Debug.WriteLine(JobRevenue)
+                'Debug.WriteLine(JobRevenue)
                 CompletedJobs.Add(Job)
                 IncompleteJobs.Remove(Job)
                 PickedJobs.Remove(Job)
@@ -68,7 +68,7 @@
             End If
             If Job.Status = JobStatus.CANCELLED Then
                 JobRevenue += Job.CustomerFee
-                Debug.WriteLine(JobRevenue)
+                'Debug.WriteLine(JobRevenue)
                 IncompleteJobs.Remove(Job)
                 CompletedJobs.Add(Job)
                 UnpickedJobs.Remove(Job)

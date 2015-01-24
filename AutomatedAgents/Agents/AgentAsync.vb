@@ -45,7 +45,6 @@
         Dim StartingPoint As IPoint = If(Position IsNot Nothing, Position.GetRoutingPoint, Map.NodesAdjacencyList.GetRandomPoint)
         RouteFinder = New AsyncRouteFinder(StartingPoint, DestinationPoint, Map.NodesAdjacencyList)
         AwaitingRoute = True
-        RoutePosition = 0
     End Sub
 
     Private Class AsyncRouteFinder

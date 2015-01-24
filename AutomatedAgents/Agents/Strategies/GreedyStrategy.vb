@@ -2,56 +2,53 @@
     Implements IAgentStrategy
 
     Private Const MAX_JOBS As Integer = 10
-    Private Const RouteFindingMinimiser As RouteFindingMinimiser = RouteFindingMinimiser.DISTANCE
-    Private Jobs As List(Of CourierJob)
-    Private Map As StreetMap
+    Private Agent As Agent
 
-    Public Sub New(ByVal _Map As StreetMap, ByVal _Jobs As List(Of CourierJob))
-        Map = _Map
-        Jobs = _Jobs
+    Public Sub New(ByVal Agent As Agent)
+        Me.Agent = Agent
     End Sub
 
-    Public Sub Run(ByRef Position As RoutePosition, ByRef Delayer As Delayer) Implements IAgentStrategy.Run
+    Public Sub Run() Implements IAgentStrategy.Run
         'Get a job if there is room and one is available.
-        If Jobs.Count < MAX_JOBS Then
+        If Agent.AssignedJobs.Count < MAX_JOBS Then
             Dim NewJob As CourierJob = NoticeBoard.GetJob
             If NewJob IsNot Nothing Then
-                Jobs.Add(NewJob)
+                Agent.AssignedJobs.Add(NewJob)
             End If
         End If
 
         'Do nothing if there are no jobs allocated.
-        If Jobs.Count = 0 Then
+        If Agent.AssignedJobs.Count = 0 Then
             Exit Sub
         End If
 
         'If a route somewhere has just been completed...
-        If Position.RouteCompleted Then
-            If Jobs(0).PickupPosition.ApproximatelyEquals(Position.GetRoutingPoint) Then
-                Position = New RoutePosition(New AStarSearch(Position.GetRoutingPoint, Jobs(0).DeliveryPosition, Map.NodesAdjacencyList, RouteFindingMinimiser).GetRoute)
-                Jobs(0).Status = JobStatus.PENDING_DELIVERY
-            ElseIf Jobs(0).DeliveryPosition.ApproximatelyEquals(Position.GetRoutingPoint) Then
-                Jobs(0).Status = JobStatus.COMPLETED
-                Jobs.RemoveAt(0)
+        If Agent.Position.RouteCompleted Then
+            If Agent.AssignedJobs(0).PickupPosition.ApproximatelyEquals(Agent.Position.GetRoutingPoint) Then
+                Agent.Position = New RoutePosition(New AStarSearch(Agent.Position.GetRoutingPoint, Agent.AssignedJobs(0).DeliveryPosition, Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute)
+                Agent.AssignedJobs(0).Status = JobStatus.PENDING_DELIVERY
+            ElseIf Agent.AssignedJobs(0).DeliveryPosition.ApproximatelyEquals(Agent.Position.GetRoutingPoint) Then
+                Agent.AssignedJobs(0).Status = JobStatus.COMPLETED
+                Agent.AssignedJobs.RemoveAt(0)
             Else
                 'Set a course for the next job.
-                MoveUpClosestJob(Position)
-                Position = New RoutePosition(New AStarSearch(Position.GetRoutingPoint, Jobs(0).PickupPosition, Map.NodesAdjacencyList, RouteFindingMinimiser).GetRoute)
+                MoveUpClosestJob(Agent.Position)
+                Agent.Position = New RoutePosition(New AStarSearch(Agent.Position.GetRoutingPoint, Agent.AssignedJobs(0).PickupPosition, Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute)
             End If
         End If
     End Sub
 
     Private Sub MoveUpClosestJob(ByVal Position As RoutePosition)
-        If Jobs.Count > 1 Then
-            Dim Distances As New List(Of Integer)(Jobs.Count - 1)
-            For i = 0 To Jobs.Count - 1
-                Distances.Add(New AStarSearch(Position.GetRoutingPoint, Jobs(i).PickupPosition, Map.NodesAdjacencyList, RouteFindingMinimiser).GetRoute.GetKM)
+        If Agent.AssignedJobs.Count > 1 Then
+            Dim Distances As New List(Of Integer)(Agent.AssignedJobs.Count - 1)
+            For i = 0 To Agent.AssignedJobs.Count - 1
+                Distances.Add(New AStarSearch(Position.GetRoutingPoint, Agent.AssignedJobs(i).PickupPosition, Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute.GetKM)
             Next
 
             Dim IndexOfBest As Integer = Distances.IndexOf(Distances.Min)
-            Dim BestJob As CourierJob = Jobs(IndexOfBest)
-            Jobs.RemoveAt(IndexOfBest)
-            Jobs.Insert(0, BestJob)
+            Dim BestJob As CourierJob = Agent.AssignedJobs(IndexOfBest)
+            Agent.AssignedJobs.RemoveAt(IndexOfBest)
+            Agent.AssignedJobs.Insert(0, BestJob)
         End If
     End Sub
 End Class

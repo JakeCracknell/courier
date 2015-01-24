@@ -3,6 +3,7 @@
         Public Predecessor As WayPoint
         Public Position As IPoint
         Public Job As CourierJob
+        Public VolumeDelta As Double
     End Class
 
     Private Map As StreetMap = Nothing
@@ -13,32 +14,35 @@
     Property JobList As List(Of CourierJob)
 
     'Use this constructor to use straight line distance. Up to 100x faster than AStar.
-    Sub New(ByVal Start As IPoint, ByVal Jobs As List(Of CourierJob))
-        RunAlgorithm(Start, Jobs)
+    Sub New(ByVal Start As IPoint, ByVal Jobs As List(Of CourierJob), ByVal VehicleCapacityLeft As Double)
+        RunAlgorithm(Start, Jobs, VehicleCapacityLeft)
     End Sub
 
     'Use this constructor to run AStar on each pair. More optimal.
-    Sub New(ByVal Start As IPoint, ByVal Jobs As List(Of CourierJob), ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser)
+    Sub New(ByVal Start As IPoint, ByVal Jobs As List(Of CourierJob), ByVal VehicleCapacityLeft As Double, ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser)
         Me.Map = Map
         Me.Minimiser = Minimiser
-        RunAlgorithm(Start, Jobs)
+        RunAlgorithm(Start, Jobs, VehicleCapacityLeft)
     End Sub
 
-    Sub RunAlgorithm(ByVal Start As IPoint, ByVal Jobs As List(Of CourierJob))
+    Sub RunAlgorithm(ByVal Start As IPoint, ByVal Jobs As List(Of CourierJob), ByVal CapacityLeft As Double)
         Dim WayPoints As New List(Of WayPoint)
         For Each Job In Jobs
             Select Case Job.Status
                 Case JobStatus.PENDING_PICKUP, JobStatus.UNALLOCATED
                     Dim WayPointColl As New WayPoint With {.Position = Job.PickupPosition, _
-                                                                                          .Job = Job}
+                                                          .Job = Job, _
+                                                          .VolumeDelta = Job.CubicMetres}
                     Dim WayPointDel As New WayPoint With {.Position = Job.DeliveryPosition, _
-                                                                                        .Predecessor = WayPointColl, _
-                                                                                        .Job = Job}
+                                                          .Predecessor = WayPointColl, _
+                                                          .Job = Job, _
+                                                          .VolumeDelta = -Job.CubicMetres}
                     WayPoints.Add(WayPointColl)
                     WayPoints.Add(WayPointDel)
                 Case JobStatus.PENDING_DELIVERY
                     Dim WayPointDel As New WayPoint With {.Position = Job.DeliveryPosition, _
-                                                                                        .Job = Job}
+                                                          .Job = Job, _
+                                                          .VolumeDelta = -Job.CubicMetres}
                     WayPoints.Add(WayPointDel)
             End Select
         Next
@@ -48,10 +52,12 @@
         Dim LastPoint As IPoint = Start
 
         Do Until WayPoints.Count = 0
-            Dim ClosestNeighbour As WayPoint = WayPoints(0)
+            Dim ClosestNeighbour As WayPoint = Nothing
             Dim ClosestCost As Double = Double.MaxValue
             For Each WP As WayPoint In WayPoints
-                If WP.Predecessor Is Nothing OrElse ReorderedWayPoints.Contains(WP.Predecessor) Then
+                If (WP.Predecessor Is Nothing OrElse _
+                    ReorderedWayPoints.Contains(WP.Predecessor)) AndAlso _
+                    CapacityLeft - WP.VolumeDelta > 0 Then
                     Dim Cost As Double
 
                     If Map IsNot Nothing Then
@@ -66,10 +72,17 @@
                     End If
                 End If
             Next
-            WayPoints.Remove(ClosestNeighbour)
-            ReorderedWayPoints.Add(ClosestNeighbour)
-            LastPoint = ClosestNeighbour.Position
-            NNCost += ClosestCost
+            If ClosestNeighbour IsNot Nothing Then
+                WayPoints.Remove(ClosestNeighbour)
+                ReorderedWayPoints.Add(ClosestNeighbour)
+                LastPoint = ClosestNeighbour.Position
+                NNCost += ClosestCost
+                CapacityLeft -= ClosestNeighbour.VolumeDelta
+            Else
+                'Ran out of space or time - cannot route.
+                Exit Sub
+            End If
+
         Loop
 
         PointList = New List(Of HopPosition)(ReorderedWayPoints.Count - 1)

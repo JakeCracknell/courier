@@ -6,14 +6,14 @@
     Public CurrentSpeedKMH As Double = 0
     Public TotalKMTravelled As Double = 0
     Public Position As RoutePosition
-    Protected Map As StreetMap
+    Public Map As StreetMap
     Public Color As Color
 
     Public AssignedJobs As New List(Of CourierJob)
     Public Delayer As New Delayer(0)
 
-    Protected VehicleSize As VehicleSize = AutomatedAgents.VehicleSize.CAR
-    Protected RoutePosition As Integer = 0
+    Public VehicleSize As VehicleSize = AutomatedAgents.VehicleSize.CAR
+    Public VehicleCapacityUsed As Double = 0
     Protected Strategy As IAgentStrategy
 
     Public Sub New(ByVal Map As StreetMap, ByVal Color As Color)
@@ -24,7 +24,7 @@
         Me.Color = Color
         Me.AgentName = AgentNameAssigner.AssignAgentName()
         Me.VehicleSize = VehicleSize
-        Strategy = New NearestNeighbourEuclidianStrategy(Map, AssignedJobs)
+        Strategy = New NearestNeighbourEuclidianStrategy(Me)
         Refuel()
 
         Dim NullRoute As Route = New Route(Map.NodesAdjacencyList.GetRandomPoint)
@@ -35,13 +35,15 @@
 
     Public Overridable Sub Move()
         'Reroutes if needed. In the simple case, when a waypoint is reached
-        Strategy.Run(Position, Delayer)
+        Strategy.Run()
 
         If Not Position.RouteCompleted And Delayer.Tick() Then
             Dim DistanceTravelled As Double = Position.Move(VehicleSize)
             CurrentSpeedKMH = Position.GetCurrentSpeed(VehicleSize)
             TotalKMTravelled += DistanceTravelled
             DepleteFuel(DistanceTravelled)
+        Else
+            CurrentSpeedKMH = 0
         End If
     End Sub
 
@@ -87,4 +89,23 @@
         Return ""
     End Function
 
+    Public Function GetVehicleMaxCapacity() As Double
+        Select Case VehicleSize
+            Case AutomatedAgents.VehicleSize.CAR
+                Return 1
+            Case AutomatedAgents.VehicleSize.VAN
+                Return 2
+            Case AutomatedAgents.VehicleSize.TRUCK_7_5_TONNE
+                Return 8
+        End Select
+        Return Double.MaxValue
+    End Function
+
+    Public Function GetVehicleCapacityPercentage() As Double
+        Return VehicleCapacityUsed / GetVehicleMaxCapacity()
+    End Function
+
+    Public Function GetVehicleCapacityLeft() As Double
+        Return GetVehicleMaxCapacity() - VehicleCapacityUsed
+    End Function
 End Class
