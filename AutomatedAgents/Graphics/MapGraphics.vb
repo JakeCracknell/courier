@@ -1,13 +1,18 @@
 ﻿Module MapGraphics
     Private BG_COLOR As Color = Color.White
     Private Const AGENT_DRAW_SIZE As Integer = 10
+    Private Const SPECIAL_NODE_DRAW_SIZE As Integer = 10
     Private OVERLAY_FONT As New Font("TimesNewRoman", 12)
     Private ERROR_FONT As New Font("TimesNewRoman", 36, FontStyle.Bold)
+    Private DEPOT_FONT As New Font("TimesNewRoman", 7)
+    Private CENTRED_STRING_FORMAT As New StringFormat With {.LineAlignment = StringAlignment.Center, .Alignment = StringAlignment.Center}
     Private ROUTE_PEN As New Pen(New SolidBrush(Color.Gold), 3)
     Private ROAD_THIN_PEN As New Pen(New SolidBrush(Color.Black), 1)
     Private ROAD_THICK_PEN_OUTER As New Pen(New SolidBrush(Color.Black), 5)
     Private ROAD_THICK_PEN_INNER_TWOWAY As New Pen(New SolidBrush(Color.White), 3)
     Private ROAD_THICK_PEN_INNER_ONEWAY As New Pen(New SolidBrush(Color.Red), 3)
+    Private DELIVERY_FAIL_CROSS_PEN As New Pen(New SolidBrush(Color.Black), 2)
+    Private DEPOT_THICK_PEN As New Pen(Brushes.Black, 2)
     Private Const ROUTE_TO_LABEL_FORMAT As String = "TO ({0} hops, {1} km)"
 
     Private MapBitmapOriginal As Bitmap
@@ -74,16 +79,35 @@
             Next
         End If
 
+        DrawDepot(gr)
+
         Return MapBitmapOriginal.Clone
     End Function
+
+    Sub DrawDepot(ByVal gr As Graphics)
+        If NoticeBoard.DepotPoint IsNot Nothing Then
+            Dim DepotPoint As Point = CC.GetPoint(NoticeBoard.DepotPoint)
+            Dim Len2 As Integer = SPECIAL_NODE_DRAW_SIZE \ 2
+            gr.FillRectangle(Brushes.White, DepotPoint.X - Len2, _
+                             DepotPoint.Y - Len2, _
+                             SPECIAL_NODE_DRAW_SIZE, SPECIAL_NODE_DRAW_SIZE)
+
+            gr.DrawRectangle(DEPOT_THICK_PEN, DepotPoint.X - Len2, _
+                             DepotPoint.Y - Len2, _
+                             SPECIAL_NODE_DRAW_SIZE, SPECIAL_NODE_DRAW_SIZE)
+            DepotPoint.Offset(0, 0)
+            gr.DrawString("D", DEPOT_FONT, Brushes.Black, DepotPoint, CENTRED_STRING_FORMAT)
+        End If
+    End Sub
 
     Sub DrawAgent(ByVal Agent As Agent, ByVal gr As Graphics)
         If Agent.Position IsNot Nothing Then
             Dim CurrentPoint As Point = CC.GetPoint(Agent.Position.GetRoutingPoint)
             Dim Brush As New SolidBrush(Agent.Color)
-            gr.FillEllipse(Brush, CInt(CurrentPoint.X - AGENT_DRAW_SIZE / 2), _
+            gr.FillPie(Brush, CInt(CurrentPoint.X - AGENT_DRAW_SIZE / 2), _
                            CInt(CurrentPoint.Y - AGENT_DRAW_SIZE / 2), _
-                           AGENT_DRAW_SIZE, AGENT_DRAW_SIZE)
+                           AGENT_DRAW_SIZE, AGENT_DRAW_SIZE, 0, _
+                           CSng(Agent.Delayer.GetPercentage * 360))
 
             If ConfigDrawAgentLines Then
                 Dim TargetPoint As Point = CC.GetPoint(Agent.Position.GetEndPoint)
@@ -94,7 +118,10 @@
     End Sub
 
     Private Sub DrawNodeRectangle(ByVal Point As Point, ByVal gr As Graphics)
-        gr.DrawRectangle(Pens.Red, Point.X - 5, Point.Y - 5, 10, 10)
+        Dim Len2 As Integer = SPECIAL_NODE_DRAW_SIZE \ 2
+        gr.DrawRectangle(Pens.Red, Point.X - Len2, Point.Y - Len2, _
+                         SPECIAL_NODE_DRAW_SIZE, _
+                         SPECIAL_NODE_DRAW_SIZE)
     End Sub
 
     Function DrawHighlightedNode(ByVal Node As Node, ByVal Cursor As Point) As Image
@@ -170,24 +197,41 @@
         Dim OverlayBitmapCopy As Bitmap = MapBitmapOriginal.Clone
         Dim grOverlay As Graphics = Graphics.FromImage(OverlayBitmapCopy)
 
+        DrawDepot(grOverlay)
+
         For Each Job As CourierJob In UnpickedJobs
             DrawNodeRectangle(CC.GetPoint(Job.PickupPosition), grOverlay)
         Next
 
         For Each Agent As Agent In Agents
+            Dim AgentIsWaiting As Boolean = Agent.Delayer.IsWaiting
+
             DrawAgent(Agent, grOverlay)
             For Each Job As CourierJob In Agent.AssignedJobs
                 Dim PickupPt As Point = CC.GetPoint(Job.PickupPosition)
-                Dim DropOffPt As Point = CC.GetPoint(Job.DeliveryPosition)
+                Dim DropOffPt As Point = CC.GetPoint(Job.OriginalDeliveryPosition)
                 Dim Brush As New SolidBrush(Agent.Color)
+                Dim RoutePen As New Pen(New SolidBrush(Agent.Color), 3)
+                RoutePen.EndCap = Drawing2D.LineCap.ArrowAnchor
+
+                Dim Len2 As Integer = SPECIAL_NODE_DRAW_SIZE \ 2
                 If Job.Status = JobStatus.PENDING_PICKUP Then
-                    grOverlay.FillRectangle(Brush, PickupPt.X - 5, PickupPt.Y - 5, 10, 10)
+                    DrawNodeRectangle(PickupPt, grOverlay)
                 ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
-                    grOverlay.FillRectangle(Brush, DropOffPt.X - 5, DropOffPt.Y - 5, 10, 10)
+                    If AgentIsWaiting Then
+                        DrawNodeRectangle(CC.GetPoint(Job.PickupPosition), grOverlay)
+                    End If
+                    If Job.DeliveryPosition.Equals(Job.OriginalDeliveryPosition) Then
+                        grOverlay.FillRectangle(Brush, DropOffPt.X - 5, DropOffPt.Y - 5, 10, 10)
+                    Else
+                        'If rerouted to depot
+                        grOverlay.DrawLine(DELIVERY_FAIL_CROSS_PEN, DropOffPt.X - 5, DropOffPt.Y - 5, DropOffPt.X + 5, DropOffPt.Y + 5)
+                        grOverlay.DrawLine(DELIVERY_FAIL_CROSS_PEN, DropOffPt.X - 5, DropOffPt.Y + 5, DropOffPt.X + 5, DropOffPt.Y - 5)
+                        grOverlay.DrawLine(RoutePen, DropOffPt, CC.GetPoint(Job.DeliveryPosition))
+                    End If
                 End If
-                Dim Pen As New Pen(New SolidBrush(Agent.Color), 3)
-                Pen.EndCap = Drawing2D.LineCap.Triangle
-                grOverlay.DrawLine(Pen, PickupPt, DropOffPt)
+
+                grOverlay.DrawLine(RoutePen, PickupPt, DropOffPt)
             Next
 
         Next

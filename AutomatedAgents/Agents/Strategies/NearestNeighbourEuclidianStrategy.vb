@@ -15,7 +15,7 @@
         Jobs = _Jobs
     End Sub
 
-    Public Sub UpdatePosition(ByRef Position As RoutePosition) Implements IAgentStrategy.UpdatePosition
+    Public Sub Run(ByRef Position As RoutePosition, ByRef Delayer As Delayer) Implements IAgentStrategy.Run
 
         'Do nothing if there are no jobs allocated.
         If Jobs.Count = 0 Then
@@ -31,7 +31,7 @@
                 Dim Job As CourierJob = PlannedJobRoute(0)
                 Select Case Job.Status
                     Case JobStatus.PENDING_PICKUP
-                        Dim TimeToWait As Integer = Job.Collect()
+                        Delayer = New Delayer(Job.Collect())
                         If Job.Status = JobStatus.CANCELLED Then
                             PlannedRoute.RemoveAt(0)
                             PlannedJobRoute.RemoveAt(0)
@@ -44,7 +44,7 @@
                             PlannedRoute.RemoveAt(0)
                         End If
                     Case JobStatus.PENDING_DELIVERY
-                        Dim TimeToWait As Integer = Job.Deliver()
+                        Delayer = New Delayer(Job.Deliver())
                         If Job.Status = JobStatus.COMPLETED Then
                             PlannedJobRoute.RemoveAt(0)
                             PlannedRoute.RemoveAt(0)

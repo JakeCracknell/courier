@@ -10,6 +10,7 @@
     Public Color As Color
 
     Public AssignedJobs As New List(Of CourierJob)
+    Public Delayer As New Delayer(0)
 
     Protected VehicleSize As VehicleSize = AutomatedAgents.VehicleSize.CAR
     Protected RoutePosition As Integer = 0
@@ -34,27 +35,14 @@
 
     Public Overridable Sub Move()
         'Reroutes if needed. In the simple case, when a waypoint is reached
-        Strategy.UpdatePosition(Position)
+        Strategy.Run(Position, Delayer)
 
-        If Not Position.RouteCompleted Then
+        If Not Position.RouteCompleted And Delayer.Tick() Then
             Dim DistanceTravelled As Double = Position.Move(VehicleSize)
             CurrentSpeedKMH = Position.GetCurrentSpeed(VehicleSize)
             TotalKMTravelled += DistanceTravelled
             DepleteFuel(DistanceTravelled)
         End If
-
-        'If Position.RouteCompleted Then
-        '    Dim CurrentJob As CourierJob = If(AssignedJobs.Count > 0, AssignedJobs(0), Nothing)
-        '    If CurrentJob IsNot Nothing Then
-        '        If CurrentJob.Status = JobStatus.PENDING_PICKUP Then
-        '            CurrentJob.Status = JobStatus.PENDING_DELIVERY
-        '        ElseIf CurrentJob.Status = JobStatus.PENDING_DELIVERY Then
-        '            CurrentJob.Status = JobStatus.COMPLETED
-        '        End If
-        '    End If
-        'End If
-
-
     End Sub
 
 
@@ -98,12 +86,5 @@
         End Select
         Return ""
     End Function
-
-    'Private Sub FetchJob()
-    '    If NoticeBoard.WaitingJobs.Count > 0 Then
-    '        SetRouteTo(NoticeBoard.WaitingJobs(0).PickupPosition)
-    '        NoticeBoard.WaitingJobs.RemoveAt(0)
-    '    End If
-    'End Sub
 
 End Class

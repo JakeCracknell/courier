@@ -27,7 +27,7 @@
         Dim c As Double = 2.0 * Math.Asin(Math.Sqrt(a))
 
         ' Distance.
-        Const kEarthRadiusKms As Double = 6376.5
+        Const kEarthRadiusKms As Double = 6371
         dDistance = kEarthRadiusKms * c
 
         Return dDistance

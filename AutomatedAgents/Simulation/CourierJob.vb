@@ -5,13 +5,14 @@
 
     'http://www.greenlogistics.org.uk/SiteResources/e6f341e0-125e-4f21-864a-97ebbafdbee2_JE-LRN%20-%20Failed%20deliveries%20-%20Presentation.pdf
     Private Const PROBABILITY_COLLECTION_SUCCESS As Double = 0.99
-    Private Const PROBABILITY_DELIVERY_SUCCESS As Double = 0.9
+    Private Const PROBABILITY_DELIVERY_SUCCESS As Double = 0.5
 
     Private Const CUSTOMER_WAIT_TIME_MIN As Integer = 20 ' 20 sekonds
     Private Const CUSTOMER_WAIT_TIME_MAX As Integer = 120 ' 2 minutes
 
     Public PickupPosition As HopPosition
     Public DeliveryPosition As HopPosition
+    Public ReadOnly OriginalDeliveryPosition As HopPosition
     Public Deadline As Long
     Public CubicMetres As Double
     Public CustomerFee As Decimal
@@ -20,6 +21,7 @@
     Sub New(ByVal PickupPosition As HopPosition, ByVal DeliveryPosition As HopPosition, ByVal Size As Double, ByVal Fee As Decimal)
         Me.PickupPosition = PickupPosition
         Me.DeliveryPosition = DeliveryPosition
+        Me.OriginalDeliveryPosition = DeliveryPosition
         Me.CubicMetres = Size
         Me.CustomerFee = Math.Round(Fee, 2)
     End Sub

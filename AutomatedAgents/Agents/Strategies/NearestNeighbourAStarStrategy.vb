@@ -15,7 +15,7 @@
         Jobs = _Jobs
     End Sub
 
-    Public Sub UpdatePosition(ByRef Position As RoutePosition) Implements IAgentStrategy.UpdatePosition
+    Public Sub Run(ByRef Position As RoutePosition, ByRef Delayer As Delayer) Implements IAgentStrategy.Run
 
         'Do nothing if there are no jobs allocated.
         If Jobs.Count = 0 Then

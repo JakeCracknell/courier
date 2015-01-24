@@ -1,4 +1,4 @@
 ﻿Public Interface IAgentStrategy
-    Sub UpdatePosition(ByRef Position As RoutePosition)
+    Sub Run(ByRef Position As RoutePosition, ByRef Delayer As Delayer)
 
 End Interface
