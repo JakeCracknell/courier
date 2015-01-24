@@ -121,10 +121,12 @@
                         SelectionMode = MapSelectionMode.NONE
                     End If
                 Case MapSelectionMode.AGENTS_ALL_ROUTE_TO
-                    RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
-                    For Each Agent In AASimulation.Agents
-                        Agent.SetRouteTo(RouteToNode)
-                    Next
+                    If AASimulation IsNot Nothing AndAlso AASimulation.Agents IsNot Nothing Then
+                        RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
+                        For Each Agent In AASimulation.Agents
+                            Agent.SetRouteTo(RouteToNode)
+                        Next
+                    End If
             End Select
         End If
     End Sub
@@ -182,7 +184,9 @@
     End Sub
 
     Private Sub StopToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles StopToolStripMenuItem.Click
-        AASimulation.Pause()
+        If AASimulation IsNot Nothing Then
+            AASimulation.Pause()
+        End If
     End Sub
 
     Private Sub ResetToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetToolStripMenuItem.Click

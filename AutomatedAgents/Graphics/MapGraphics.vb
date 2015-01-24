@@ -13,7 +13,7 @@
     Private ROAD_THICK_PEN_INNER_ONEWAY As New Pen(New SolidBrush(Color.Red), 3)
     Private DELIVERY_FAIL_CROSS_PEN As New Pen(New SolidBrush(Color.Black), 2)
     Private DEPOT_THICK_PEN As New Pen(Brushes.Black, 2)
-    Private Const ROUTE_TO_LABEL_FORMAT As String = "TO ({0} hops, {1} km)"
+    Private Const ROUTE_TO_LABEL_FORMAT As String = "TO ({0} hops, {1} km, {2} min)"
 
     Private MapBitmapOriginal As Bitmap
     Private MapBitmapOverlay As Bitmap
@@ -179,7 +179,8 @@
                 grOverlay.DrawLine(ROUTE_PEN, FromPoint, ToPoint)
             Next
 
-            Dim ToLabel As String = String.Format(ROUTE_TO_LABEL_FORMAT, Route.HopCount, Math.Round(Route.GetKM, 1))
+            Dim ToLabel As String = String.Format(ROUTE_TO_LABEL_FORMAT, Route.HopCount, _
+                    Math.Round(Route.GetKM, 1), Math.Round(Route.GetEstimatedHours * 60, 1))
             grOverlay.DrawString(ToLabel, OVERLAY_FONT, Brushes.Black, NodePoint)
 
 

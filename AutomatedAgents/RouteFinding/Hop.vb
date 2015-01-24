@@ -20,7 +20,11 @@
     End Function
 
     Public Function GetEstimatedTravelTime() As Double
-        Return GetDistance(FromPoint, ToPoint) / Way.GetMaxSpeedKMH(VehicleSize.CAR)
+        If Way IsNot Nothing Then
+            Return GetDistance(FromPoint, ToPoint) / Way.GetMaxSpeedKMH(VehicleSize.CAR)
+        Else
+            Return 0
+        End If
     End Function
 
     Public Overrides Function Equals(ByVal obj As Object) As Boolean

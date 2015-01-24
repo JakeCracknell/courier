@@ -1,6 +1,7 @@
 ﻿Public Class NearestNeighbourEuclidianStrategy
     Implements IAgentStrategy
     Private Const MARGINAL_COST_ACCEPTANCE_COEFFICIENT As Double = 10
+    Private Const EUCLIDIAN_TO_ACTUAL_DISTANCE_COEFFICIENT As Double = 1.26
 
     Private LastJobConsidered As CourierJob = Nothing
 
@@ -13,7 +14,7 @@
     End Sub
 
     Public Sub Run() Implements IAgentStrategy.Run
-        Debug.WriteLine(Agent.GetVehicleCapacityPercentage)
+
         'Do nothing if there are no jobs allocated.
         If Agent.AssignedJobs.Count = 0 Then
             GetOneJob()
@@ -71,23 +72,35 @@
             Dim BestJob As CourierJob = Nothing
             Dim BestCost As Double = Double.MaxValue
             For Each Job As CourierJob In UnallocatedJobs
-                'Cost of getting to pickup position. no longer looks at dropoff
-                Dim Cost As Double = GetDistance(Agent.Position.GetRoutingPoint, Job.PickupPosition)
+                'Cost of getting to pickup position determines pick
+                'Ensure it can be delivered on time.
+                Dim GetToPickupCost As Double = GetDistance(Agent.Position.GetRoutingPoint, Job.PickupPosition)
+                Dim GetToDropoffCost As Double = GetDistance(Job.PickupPosition, Job.DeliveryPosition)
+                Dim Time As TimeSpan = TimeSpan.FromHours((GetToPickupCost + GetToDropoffCost) * _
+                                        EUCLIDIAN_TO_ACTUAL_DISTANCE_COEFFICIENT / Agent.GetAverageKMH) + _
+                                        TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
 
-                If BestCost > Cost Then
-                    BestCost = Cost
+                If BestCost > GetToPickupCost And NoticeBoard.CurrentTime + Time < Job.Deadline Then
+                    'Debug.WriteLine("I think I will have minutes spare:" & (Job.Deadline - (NoticeBoard.CurrentTime + Time)).TotalMinutes)
+
+                    BestCost = GetToPickupCost
                     BestJob = Job
                 End If
             Next
 
-            NoticeBoard.AllocateJob(BestJob)
+            'Maybe there were unallocated jobs, but they are all too
+            'far away to fulfil in time!
+            If BestJob IsNot Nothing Then
+                NoticeBoard.AllocateJob(BestJob)
 
-            Agent.AssignedJobs.Add(BestJob)
-            PlannedJobRoute.Add(BestJob)
-            PlannedJobRoute.Add(BestJob)
-            PlannedRoute.Add(BestJob.PickupPosition)
-            PlannedRoute.Add(BestJob.DeliveryPosition)
-            LastJobConsidered = Nothing
+                Agent.AssignedJobs.Add(BestJob)
+                PlannedJobRoute.Add(BestJob)
+                PlannedJobRoute.Add(BestJob)
+                PlannedRoute.Add(BestJob.PickupPosition)
+                PlannedRoute.Add(BestJob.DeliveryPosition)
+                LastJobConsidered = Nothing
+            End If
+
         End If
     End Sub
 
@@ -105,14 +118,19 @@
             JobsToPlan.AddRange(Agent.AssignedJobs)
             JobsToPlan.Add(Job)
             Dim NNS As New NearestNeighbourSolver(Position.GetRoutingPoint, JobsToPlan, Agent.GetVehicleCapacityLeft)
-            Dim MarginalCost As Double = NNS.NNCost - CurrentRouteDistance
 
-            If MarginalCost * MARGINAL_COST_ACCEPTANCE_COEFFICIENT < CurrentRouteDistance Then
-                NoticeBoard.AllocateJob(Job)
-                Agent.AssignedJobs.Add(Job)
-                PlannedRoute = NNS.PointList
-                PlannedJobRoute = NNS.JobList
+            If NNS.PointList IsNot Nothing Then
+                'A route exists that conforms to deadlines and vehicle capacity
+                Dim MarginalCost As Double = NNS.NNCost - CurrentRouteDistance
+                If MarginalCost * MARGINAL_COST_ACCEPTANCE_COEFFICIENT < CurrentRouteDistance Then
+                    'The route only marginally inconveniences the agent/current customers.
+                    NoticeBoard.AllocateJob(Job)
+                    Agent.AssignedJobs.Add(Job)
+                    PlannedRoute = NNS.PointList
+                    PlannedJobRoute = NNS.JobList
+                End If
             End If
+            
 
         Next
 

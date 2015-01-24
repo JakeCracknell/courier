@@ -13,6 +13,7 @@
     'Returns whether the state has changed.
     Public Overrides Function Tick() As Boolean
         Time = Time.Add(TIME_INCREMENT)
+        NoticeBoard.CurrentTime = Time
         Dim Modified As Boolean = True
 
         'Iterate through agents in semi-random order
@@ -25,7 +26,7 @@
         Next
 
         Dispatcher.Tick()
-        NoticeBoard.Tidy()
+        NoticeBoard.Tick()
         Return Modified
     End Function
 

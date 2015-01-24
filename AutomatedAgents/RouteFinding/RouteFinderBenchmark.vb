@@ -3,6 +3,9 @@
         "{0} routes found in {1} ms." & vbNewLine & "{2} ms each, on average"
     Private Const COMPARATIVE_BENCHMARK_MSGBOX_FORMAT As String = _
         "Against Basic A*, the alternative algorithm scored:" & vbNewLine & "{0} better" & vbNewLine & "{1} the same" & vbNewLine & "{2} worse"
+    Private Const COMPARE_DISTANCE_MSGBOX_FORMAT As String = _
+        "The actual street distance was on average {0}x greater than straight-line"
+
     Private Const BENCHMARK_TIME_MS As Integer = 5000
 
     Private SourceNode As Node
@@ -21,7 +24,7 @@
 
     Private Class RouteFinderBenchmarkEngine
         Sub RunAsync()
-            Threading.ThreadPool.QueueUserWorkItem(AddressOf RunBenchmark)
+            Threading.ThreadPool.QueueUserWorkItem(AddressOf CompareEuclidianVSAStarKM)
         End Sub
 
         Protected Sub Test()
@@ -29,6 +32,7 @@
             Dim Point2 As New HopPosition(New Hop(Point1.Hop.FromPoint, Point1.Hop.ToPoint, Point1.Hop.Way), Point1.PercentageTravelled / 2)
 
             Dim AStar As New AStarSearch(Point1, Point2, AdjacencyList, RouteFindingMinimiser.DISTANCE)
+
             MsgBox(AStar.GetRoute.GetHopList.Count)
         End Sub
 
@@ -44,6 +48,20 @@
             MsgBox(String.Format(BENCHMARK_MSGBOX_FORMAT, CompletedRoutes, TotalMS, TotalMS / CompletedRoutes))
         End Sub
 
+        Protected Sub CompareEuclidianVSAStarKM()
+            Dim EuclidianTotal, AStarTotal As Double
+            Dim Stopwatch As New Stopwatch
+            Stopwatch.Start()
+            Do
+                Dim S As IPoint = AdjacencyList.GetRandomPoint
+                Dim D As IPoint = AdjacencyList.GetRandomPoint
+
+                AStarTotal += New AStarSearch(S, D, AdjacencyList, RouteFindingMinimiser.DISTANCE).GetRoute.GetKM
+                EuclidianTotal += GetDistance(S, D)
+
+            Loop Until Stopwatch.ElapsedMilliseconds > BENCHMARK_TIME_MS
+            MsgBox(String.Format(COMPARE_DISTANCE_MSGBOX_FORMAT, AStarTotal / EuclidianTotal))
+        End Sub
 
         Protected Sub ComparativeBenchmarkKM()
             Dim Wins, Draws, Losses As Integer

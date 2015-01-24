@@ -1,10 +1,12 @@
 ﻿Public Class Agent
+    Private Const DEFAULT_KMH As Double = 48
     Public Const RouteFindingMinimiser As RouteFindingMinimiser = RouteFindingMinimiser.DISTANCE
     Public AgentName As String
     Public PetroleumLitres As Double
     Public FuelCosts As Double = 0
     Public CurrentSpeedKMH As Double = 0
     Public TotalKMTravelled As Double = 0
+    Public TotalDrivingTime As Integer = 0
     Public Position As RoutePosition
     Public Map As StreetMap
     Public Color As Color
@@ -34,6 +36,10 @@
     End Sub
 
     Public Overridable Sub Move()
+        If VehicleCapacityUsed > GetVehicleMaxCapacity() Then
+            Throw New OverflowException
+        End If
+
         'Reroutes if needed. In the simple case, when a waypoint is reached
         Strategy.Run()
 
@@ -41,6 +47,7 @@
             Dim DistanceTravelled As Double = Position.Move(VehicleSize)
             CurrentSpeedKMH = Position.GetCurrentSpeed(VehicleSize)
             TotalKMTravelled += DistanceTravelled
+            TotalDrivingTime += 1
             DepleteFuel(DistanceTravelled)
         Else
             CurrentSpeedKMH = 0
@@ -107,5 +114,13 @@
 
     Public Function GetVehicleCapacityLeft() As Double
         Return GetVehicleMaxCapacity() - VehicleCapacityUsed
+    End Function
+
+    Public Function GetAverageKMH() As Double
+        'Returns average driving speed (not influenced by "waiting")
+        'If the agent has not driven at all, returns 48 kmh.
+        Return If(TotalDrivingTime > 0, _
+                  TotalKMTravelled * 3600 / TotalDrivingTime,
+                    DEFAULT_KMH)
     End Function
 End Class

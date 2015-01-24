@@ -1,4 +1,5 @@
 ﻿Module NoticeBoard
+    'Private Const START_DATE As Date = Date.Parse("2015-01-01 00:00:00")
 
     Property DepotPoint As HopPosition
 
@@ -8,8 +9,10 @@
 
     Property IncompleteJobs As New List(Of CourierJob)
     Property CompletedJobs As New List(Of CourierJob)
+    Property FailedJobs As New List(Of CourierJob)
 
     Property JobRevenue As Decimal = 0
+    Public CurrentTime As TimeSpan
 
     Function AreJobsWaiting() As Boolean
         Return UnallocatedJobs.Count > 0
@@ -39,12 +42,12 @@
         Return True
     End Function
 
-    Sub Tidy()
+    Sub Tick()
         For i = UnallocatedJobs.Count - 1 To 0 Step -1
             Dim Job As CourierJob = UnallocatedJobs(i)
-            If Job.Status = JobStatus.CANCELLED Then
+            If Job.Status = JobStatus.CANCELLED OrElse Job.Deadline < CurrentTime Then
                 IncompleteJobs.Remove(Job)
-                CompletedJobs.Add(Job)
+                FailedJobs.Add(Job)
                 UnallocatedJobs.Remove(Job)
             End If
         Next
