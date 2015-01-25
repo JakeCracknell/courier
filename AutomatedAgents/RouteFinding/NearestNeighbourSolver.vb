@@ -64,14 +64,14 @@
                     Dim ExtraTime As New TimeSpan
                     If Map IsNot Nothing Then
                         Dim AStar As New AStarSearch(LastPoint, WP.Position, Map.NodesAdjacencyList, Minimiser)
-                        Cost += AStar.GetRoute.GetKM
+                        Cost = AStar.GetRoute.GetKM
                         ExtraTime += TimeSpan.FromHours(AStar.GetRoute.GetEstimatedHours()) 'TODO: vehicle type
                     Else
                         Cost = GetDistance(LastPoint, WP.Position)
                         ExtraTime += TimeSpan.FromHours(Cost / 48) ' Agent.GetAverageKMH)
                     End If
 
-                    If Time > WP.Job.Deadline Then 'TODO: or run out of fuel!
+                    If WP.Job.Deadline - Time < DEADLINE_PLANNING_REDUNDANCY_TIME Then 'TODO: or run out of fuel!
                         'If any job cannot be delivered in time (e.g. this one)
                         'and assuming optimal route up to this point
                         'This route has failed, so short circuit out of here
@@ -96,6 +96,7 @@
                 LastPoint = ClosestNeighbour.Position
                 NNCost += ClosestCost
                 CapacityLeft -= ClosestNeighbour.VolumeDelta
+                Time += ClosestExtraTime
             Else
                 'Ran out of vehicle space - cannot route.
                 Exit Sub

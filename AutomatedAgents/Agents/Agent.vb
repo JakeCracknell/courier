@@ -26,7 +26,7 @@
         Me.Color = Color
         Me.AgentName = AgentNameAssigner.AssignAgentName()
         Me.VehicleSize = VehicleSize
-        Strategy = New NearestNeighbourEuclidianStrategy(Me)
+        Strategy = New NearestNeighbourAStarStrategy(Me)
         Refuel()
 
         Dim NullRoute As Route = New Route(Map.NodesAdjacencyList.GetRandomPoint)

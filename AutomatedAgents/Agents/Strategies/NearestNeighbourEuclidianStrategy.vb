@@ -21,7 +21,7 @@
             Exit Sub
         End If
 
-        GetGoodJobs(Agent.Position)
+        GetGoodJobs()
 
         'If a route somewhere has just been completed...
         If Agent.Position.RouteCompleted Then
@@ -80,9 +80,7 @@
                                         EUCLIDIAN_TO_ACTUAL_DISTANCE_COEFFICIENT / Agent.GetAverageKMH) + _
                                         TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
 
-                If BestCost > GetToPickupCost And NoticeBoard.CurrentTime + Time < Job.Deadline Then
-                    'Debug.WriteLine("I think I will have minutes spare:" & (Job.Deadline - (NoticeBoard.CurrentTime + Time)).TotalMinutes)
-
+                If BestCost > GetToPickupCost AndAlso Job.Deadline - (NoticeBoard.CurrentTime + Time) > DEADLINE_PLANNING_REDUNDANCY_TIME Then
                     BestCost = GetToPickupCost
                     BestJob = Job
                 End If
@@ -100,25 +98,24 @@
                 PlannedRoute.Add(BestJob.DeliveryPosition)
                 LastJobConsidered = Nothing
             End If
-
         End If
     End Sub
 
-    Sub GetGoodJobs(ByVal Position As RoutePosition)
+    Sub GetGoodJobs()
         Dim UnallocatedJobs As List(Of CourierJob) = NoticeBoard.UnallocatedJobs
         If UnallocatedJobs.Count = 0 OrElse UnallocatedJobs.Last.Equals(LastJobConsidered) Then
             'Exit if no new jobs added to noticeboard
             Exit Sub
         End If
 
-        Dim CurrentRouteDistance As Double = New NearestNeighbourSolver(Position.GetRoutingPoint, Agent.AssignedJobs, Agent.GetVehicleCapacityLeft).NNCost
+        Dim CurrentRouteDistance As Double = New NearestNeighbourSolver(Agent.Position.GetRoutingPoint, Agent.AssignedJobs, Agent.GetVehicleCapacityLeft).NNCost
         For i = UnallocatedJobs.Count - 1 To 0 Step -1
             Dim Job As CourierJob = UnallocatedJobs(i)
             Dim JobsToPlan As New List(Of CourierJob)(Agent.AssignedJobs.Count)
             JobsToPlan.AddRange(Agent.AssignedJobs)
             JobsToPlan.Add(Job)
-            Dim NNS As New NearestNeighbourSolver(Position.GetRoutingPoint, JobsToPlan, Agent.GetVehicleCapacityLeft)
 
+            Dim NNS As New NearestNeighbourSolver(Agent.Position.GetRoutingPoint, JobsToPlan, Agent.GetVehicleCapacityLeft)
             If NNS.PointList IsNot Nothing Then
                 'A route exists that conforms to deadlines and vehicle capacity
                 Dim MarginalCost As Double = NNS.NNCost - CurrentRouteDistance
@@ -130,8 +127,6 @@
                     PlannedJobRoute = NNS.JobList
                 End If
             End If
-            
-
         Next
 
         LastJobConsidered = If(UnallocatedJobs.Count > 0, UnallocatedJobs.Last, Nothing)

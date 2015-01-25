@@ -4,17 +4,17 @@
     Private Const DEFAULT_FEE_DISTANCE_MULTIPLIER As Double = 0.2
 
     'http://www.greenlogistics.org.uk/SiteResources/e6f341e0-125e-4f21-864a-97ebbafdbee2_JE-LRN%20-%20Failed%20deliveries%20-%20Presentation.pdf
-    Private Const PROBABILITY_COLLECTION_SUCCESS As Double = 1 '0.99
-    Private Const PROBABILITY_DELIVERY_SUCCESS As Double = 1 '0.9
+    Private Const PROBABILITY_COLLECTION_SUCCESS As Double = 0.99
+    Private Const PROBABILITY_DELIVERY_SUCCESS As Double = 0.9
 
     Private Const CUSTOMER_WAIT_TIME_MIN As Integer = 20 ' 20 sekonds
-    Private Const CUSTOMER_WAIT_TIME_MAX As Integer = 20 ' 2 minutes
+    Private Const CUSTOMER_WAIT_TIME_MAX As Integer = 2 * 60 ' 2 minutes
     Public Const CUSTOMER_WAIT_TIME_AVG As Integer = _
         (CUSTOMER_WAIT_TIME_MAX + CUSTOMER_WAIT_TIME_MIN) / 2
 
     'TODO: refactor and use System.Date instead
     Private Const DEADLINE_OFFSET_MIN As Integer = 30 * 60 ' 30 minutes
-    Private Const DEADLINE_OFFSET_MAX As Integer = 30 * 60 ' 30 minutes
+    Private Const DEADLINE_OFFSET_MAX As Integer = 5 * 60 * 60 ' 5 hours
     Private Const DEADLINE_TO_DEPOT As Integer = 60 * 60 * 24 ' 24 hours
 
     Public PickupPosition As HopPosition
@@ -61,8 +61,8 @@
             Return CUSTOMER_WAIT_TIME_MIN
         ElseIf Rnd() < PROBABILITY_DELIVERY_SUCCESS Then
             Status = JobStatus.COMPLETED
-            Debug.WriteLine(String.Format("With {0} minutes to spare!", (Deadline - NoticeBoard.CurrentTime).TotalMinutes))
             If Deadline < NoticeBoard.CurrentTime Then
+                Debug.WriteLine("Minutes late: " & (NoticeBoard.CurrentTime - Deadline).TotalMinutes)
                 FullRefund()
             End If
             Return GenerateRandomWaitTime()
@@ -81,6 +81,7 @@
         CustomerFee = Math.Min(DEFAULT_FEE_BASE, CustomerFee)
     End Sub
 
+    'Full refund if the deadline is missed.
     Private Sub FullRefund()
         CustomerFee = 0
     End Sub
