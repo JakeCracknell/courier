@@ -8,6 +8,10 @@
 
     Public ReadOnly TotalTime As Integer
 
+    Sub New()
+        Me.New(0)
+    End Sub
+
     Sub New(ByVal TimeToWait As Integer)
         _TimeLeft = TimeToWait
         TotalTime = TimeToWait

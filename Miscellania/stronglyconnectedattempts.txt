@@ -1,0 +1,184 @@
+
+    Sub RemoveDisconnectedComponents()
+        Dim t As New Stopwatch
+        t.Start()
+        LowestUnusedIndex = 0
+        Stack = New Stack(Of Node)
+        Components = New List(Of HashSet(Of Node))
+
+        For Each N In Rows.Values
+            If N.NodeKey.Index < 0 Then
+                StrongConnect(N)
+            End If
+        Next
+
+        Dim LargestComponent As New HashSet(Of Node)
+        For Each Component As HashSet(Of Node) In Components
+            Debug.WriteLine(Component.ToString & ": " & Component.Count)
+            If Component.Count > LargestComponent.Count Then
+                LargestComponent = Component
+            End If
+        Next
+
+        For Each Node As Node In LargestComponent
+            Node.Connected = True
+        Next
+
+        Debug.WriteLine(Rows.Count - LargestComponent.Count & " nodes pruned, in " & t.ElapsedMilliseconds & " ms")
+    End Sub
+
+    Dim LowestUnusedIndex As Integer = 0
+    Dim Stack As Stack(Of Node)
+    Dim Components As List(Of HashSet(Of Node))
+    Sub StrongConnect(ByVal Node As NodesAdjacencyListRow)
+        Node.NodeKey.Index = LowestUnusedIndex
+        Node.NodeKey.LowLink = LowestUnusedIndex
+        LowestUnusedIndex += 1
+        Stack.Push(Node.NodeKey)
+
+        For Each AdjacentCell As NodesAdjacencyListCell In Node.Cells
+            If AdjacentCell.Node.Index < 0 Then
+                StrongConnect(Rows(AdjacentCell.Node.ID))
+                Node.NodeKey.LowLink = Math.Min(Node.NodeKey.LowLink, AdjacentCell.Node.LowLink)
+            ElseIf Stack.Contains(AdjacentCell.Node) Then
+                Node.NodeKey.LowLink = Math.Min(Node.NodeKey.LowLink, AdjacentCell.Node.Index) 'TODO: this correct?
+            End If
+        Next
+
+        If Node.NodeKey.LowLink = Node.NodeKey.Index Then
+            Dim NewComponent As New HashSet(Of Node)
+            Dim PrevNode As Node = Nothing
+            Do
+                PrevNode = Stack.Pop
+                NewComponent.Add(PrevNode)
+            Loop Until Node.NodeKey = PrevNode
+            Components.Add(NewComponent)
+        End If
+    End Sub
+
+    Sub RemoveDisconnectedComponentsOLD()
+        Dim t As New Stopwatch
+        t.Start()
+        Dim FullyExploredNodes As New HashSet(Of Node)
+        Dim DFSStack As New Stack(Of NodesAdjacencyListRow)
+        Dim DFSStackIDs As New HashSet(Of Long)
+        Dim VerifiedNodes As New HashSet(Of Node)
+
+        'Starting from a random node, run DFS and discover all connected nodes
+        'that are reachable somehow from this node.
+        Dim RandomStartRow As NodesAdjacencyListRow = Rows.Values(Int(Rnd() * Rows.Count))
+        DFSStack.Push(RandomStartRow)
+        VerifiedNodes.Add(RandomStartRow.NodeKey)
+        Do
+            Dim CurrentRow As NodesAdjacencyListRow = DFSStack.Peek
+            For Each AdjacentCell As NodesAdjacencyListCell In CurrentRow.Cells
+                If Not DFSStackIDs.Contains(AdjacentCell.Node.ID) AndAlso _
+                        Not FullyExploredNodes.Contains(AdjacentCell.Node) Then
+                    DFSStack.Push(Rows(AdjacentCell.Node.ID))
+                    DFSStackIDs.Add(AdjacentCell.Node.ID)
+                    Continue Do
+                End If
+            Next
+
+            DFSStack.Pop()
+            DFSStackIDs.Remove(CurrentRow.NodeKey.ID)
+            FullyExploredNodes.Add(CurrentRow.NodeKey)
+        Loop Until DFSStack.Count = 0
+
+        Dim UnverifiedNodes As New HashSet(Of Node)
+        Dim NodesToPrune As New List(Of Node)
+        UnverifiedNodes = New HashSet(Of Node)(FullyExploredNodes)
+        UnverifiedNodes.ExceptWith(VerifiedNodes)
+
+        'For each node discovered, verify them using a DFS to any known verified node.
+        'Remove any that cannot find its way. This sections out inescapable node clusters.
+        For Each Node As Node In UnverifiedNodes
+            If Not VerifiedNodes.Contains(Node) Then
+                'VerifiedNodes will be modified, as paths are found
+                If Not DFSToAny(Node, VerifiedNodes, Me) Then
+                    NodesToPrune.Add(Node)
+                End If
+            End If
+        Next
+
+        'Remove any disconnected components - those not found by the first DFS.
+        For Each Row As NodesAdjacencyListRow In Rows.Values
+            If Not FullyExploredNodes.Contains(Row.NodeKey) Then
+                NodesToPrune.Add(Row.NodeKey)
+            End If
+        Next
+
+        For Each NodeToPrune In NodesToPrune
+            'All I am going to do for now. Complex to remove from Adj list and not necessary.
+            NodeToPrune.Connected = False
+
+            'Could do more
+            Rows(NodeToPrune.ID).Cells.Clear()
+        Next
+        Debug.WriteLine(NodesToPrune.Count & " nodes pruned, in " & t.ElapsedMilliseconds & " ms")
+    End Sub
+
+
+
+
+
+
+
+
+
+
+    
+    Dim StackS As Stack(Of Node)
+    Dim StackB As Stack(Of Integer)
+    Dim StackIndices As Dictionary(Of Node, Integer)
+    Dim ComponentNumber As Integer = 0
+    Sub RemoveDisconnectedComponents()
+        Dim t As New Stopwatch
+        t.Start()
+
+        StackS = New Stack(Of Node)
+        StackB = New Stack(Of Integer)
+        StackIndices = New Dictionary(Of Node, Integer)
+
+        For Each R As NodesAdjacencyListRow In Rows.Values
+            StackIndices.Add(R.NodeKey, 0)
+        Next
+        ComponentNumber = Rows.Count
+        For Each R As NodesAdjacencyListRow In Rows.Values
+            If StackIndices(R.NodeKey) = 0 Then
+                RemoveDisconnectedComponentsDFS(R.NodeKey)
+            End If
+        Next
+
+        Dim MostConnected As Integer = (From item As Integer In StackIndices.Values
+                                       Group item By item Into g()
+                                       Order By g.Count Descending
+                                       Select g.key).First()
+        Debug.WriteLine(MostConnected)
+
+        Debug.WriteLine(Rows.Count - 0 & " nodes pruned, in " & t.ElapsedMilliseconds & " ms")
+    End Sub
+
+    Sub RemoveDisconnectedComponentsDFS(ByVal Node As Node)
+        StackS.Push(Node)
+        StackIndices(Node) = StackS.Count
+        StackB.Push(StackS.Count)
+
+        For Each Cell As NodesAdjacencyListCell In Rows(Node.ID).Cells
+            If StackIndices(Cell.Node) = 0 Then
+                RemoveDisconnectedComponentsDFS(Cell.Node)
+            Else
+                While StackIndices(Cell.Node) < StackB.Peek
+                    StackB.Pop()
+                End While
+            End If
+        Next
+
+        If StackIndices(Node) = StackB.Peek Then
+            StackB.Pop()
+            ComponentNumber += 1
+            While StackIndices(Node) <= StackS.Count
+                StackIndices(StackS.Pop) = ComponentNumber
+            End While
+        End If
+    End Sub

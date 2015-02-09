@@ -12,7 +12,7 @@
     Public Color As Color
 
     Public AssignedJobs As New List(Of CourierJob)
-    Public Delayer As New Delayer(0)
+    Public Delayer As New Delayer
 
     Public VehicleSize As VehicleSize = AutomatedAgents.VehicleSize.CAR
     Public VehicleCapacityUsed As Double = 0
@@ -26,7 +26,7 @@
         Me.Color = Color
         Me.AgentName = AgentNameAssigner.AssignAgentName()
         Me.VehicleSize = VehicleSize
-        Strategy = New NearestNeighbourAStarStrategy(Me)
+        Strategy = New ContractNetStrategy(Me)
         Refuel()
 
         Dim NullRoute As Route = New Route(Map.NodesAdjacencyList.GetRandomPoint)
@@ -37,7 +37,8 @@
 
     Public Overridable Sub Move()
         If VehicleCapacityUsed > GetVehicleMaxCapacity() Then
-            Throw New OverflowException
+            'Throw New OverflowException
+            Debug.WriteLine("Vehicle is too full by: " & GetVehicleCapacityPercentage() & "%")
         End If
 
         'Reroutes if needed. In the simple case, when a waypoint is reached

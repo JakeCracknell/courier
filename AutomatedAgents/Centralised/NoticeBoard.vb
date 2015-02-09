@@ -14,6 +14,9 @@
     Property JobRevenue As Decimal = 0
     Public CurrentTime As TimeSpan
 
+    'For CNP Only
+    Public AvailableContractors As New List(Of ContractNetContractor)
+
     Function AreJobsWaiting() As Boolean
         Return UnallocatedJobs.Count > 0
     End Function
@@ -39,10 +42,33 @@
     Function AddJob(ByVal Job As CourierJob)
         IncompleteJobs.Add(Job)
         UnallocatedJobs.Add(Job)
+        For Each Contractor As ContractNetContractor In AvailableContractors
+            Contractor.AnnounceJob(Job)
+        Next
         Return True
     End Function
 
     Sub Tick()
+        If AvailableContractors.Count > 0 AndAlso UnallocatedJobs.Count > 0 Then
+            Dim Winner As ContractNetContractor = Nothing
+            Dim BestBid As Double = Double.MaxValue
+            For Each Contractor As ContractNetContractor In AvailableContractors
+                Debug.Write(Contractor.GetBid & ",")
+                If Contractor.GetBid <> ContractNetContractor.NO_BID AndAlso _
+                    Contractor.GetBid < BestBid Then
+                    BestBid = Contractor.GetBid
+                    Winner = Contractor
+                End If
+            Next
+            If Winner IsNot Nothing Then
+                Debug.WriteLine(Winner.GetBid)
+                Winner.AwardJob()
+            Else
+                Debug.WriteLine("Could not find a contractor for job")
+                UnallocatedJobs(0).Status = JobStatus.CANCELLED
+            End If
+        End If
+
         For i = UnallocatedJobs.Count - 1 To 0 Step -1
             Dim Job As CourierJob = UnallocatedJobs(i)
             If Job.Status = JobStatus.CANCELLED OrElse Job.Deadline < CurrentTime Then
@@ -85,6 +111,7 @@
         PickedJobs.Clear()
         IncompleteJobs.Clear()
         CompletedJobs.Clear()
+        AvailableContractors.Clear()
     End Sub
 
 End Module

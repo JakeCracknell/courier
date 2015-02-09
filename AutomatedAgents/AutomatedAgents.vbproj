@@ -72,6 +72,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Agents\Agent.vb" />
+    <Compile Include="Agents\ContractNetContractor.vb" />
+    <Compile Include="Agents\Strategies\ContractNetStrategy.vb" />
     <Compile Include="Agents\Delayer.vb" />
     <Compile Include="Agents\Strategies\IAgentStrategy.vb" />
     <Compile Include="Agents\Strategies\NearestNeighbourEuclidianStrategy.vb" />

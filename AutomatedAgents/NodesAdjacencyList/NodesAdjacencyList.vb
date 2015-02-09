@@ -159,7 +159,12 @@
             'Could do more
             Rows(NodeToPrune.ID).Cells.Clear()
         Next
+
         Debug.WriteLine(NodesToPrune.Count & " nodes pruned, in " & t.ElapsedMilliseconds & " ms")
     End Sub
+
+
+
+
 
 End Class

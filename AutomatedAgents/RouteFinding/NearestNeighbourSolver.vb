@@ -25,7 +25,7 @@
         RunAlgorithm(Start, Jobs, VehicleCapacityLeft)
     End Sub
 
-    Sub RunAlgorithm(ByVal Start As IPoint, ByVal Jobs As List(Of CourierJob), ByVal CapacityLeft As Double)
+    Private Sub RunAlgorithm(ByVal Start As IPoint, ByVal Jobs As List(Of CourierJob), ByVal CapacityLeft As Double)
         Dim WayPoints As New List(Of WayPoint)
         For Each Job In Jobs
             Select Case Job.Status

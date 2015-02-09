@@ -15,7 +15,7 @@
     'TODO: refactor and use System.Date instead
     Private Const DEADLINE_OFFSET_MIN As Integer = 30 * 60 ' 30 minutes
     Private Const DEADLINE_OFFSET_MAX As Integer = 5 * 60 * 60 ' 5 hours
-    Private Const DEADLINE_TO_DEPOT As Integer = 60 * 60 * 24 ' 24 hours
+    Private Const DEADLINE_TO_DEPOT As Integer = 60 * 60 * 12 ' 12 hours
 
     Public PickupPosition As HopPosition
     Public DeliveryPosition As HopPosition

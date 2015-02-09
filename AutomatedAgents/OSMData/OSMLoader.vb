@@ -38,6 +38,9 @@ Public Class OSMLoader
             End If
         Next
 
+        Debug.WriteLine("Nodes: " & Map.Nodes.Count)
+        Debug.WriteLine("Ways: " & Map.Ways.Count)
+
         Node.TotalNodesTraffic = 1
 
         '.NETs garbage collector will not dispose the XML document

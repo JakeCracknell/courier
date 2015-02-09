@@ -2,6 +2,7 @@
     Implements IAgentStrategy
     Private Const MARGINAL_COST_ACCEPTANCE_COEFFICIENT As Double = 10
     Private Const EUCLIDIAN_TO_ACTUAL_DISTANCE_COEFFICIENT As Double = 1.26
+    Private Const MAX_JOB_ALLOCATION As Integer = 20
 
     Private LastJobConsidered As CourierJob = Nothing
 
@@ -21,7 +22,9 @@
             Exit Sub
         End If
 
-        GetGoodJobs()
+        If Agent.AssignedJobs.Count < MAX_JOB_ALLOCATION Then
+            GetGoodJobs()
+        End If
 
         'If a route somewhere has just been completed...
         If Agent.Position.RouteCompleted Then
@@ -135,9 +138,16 @@
 
     Private Sub RecalculateRoute(ByVal Position As RoutePosition)
         Dim NNS As New NearestNeighbourSolver(Position.GetRoutingPoint, Agent.AssignedJobs, Agent.GetVehicleCapacityLeft)
-        Debug.Assert(NNS.PointList IsNot Nothing)
-
-        PlannedRoute = NNS.PointList
-        PlannedJobRoute = NNS.JobList
+        If NNS.PointList IsNot Nothing Then
+            PlannedRoute = NNS.PointList
+            PlannedJobRoute = NNS.JobList
+        Else
+            'Shows that NNS is not very versatile. Happens when vehicle is behind schedule.
+            'Only called when depot waypoint is added so just bump this back to the end.
+            PlannedRoute.Add(PlannedRoute(0))
+            PlannedRoute.RemoveAt(0)
+            PlannedJobRoute.Add(PlannedJobRoute(0))
+            PlannedJobRoute.RemoveAt(0)
+        End If
     End Sub
 End Class
