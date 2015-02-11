@@ -1,4 +1,7 @@
 ﻿Module RoutingUtils
+    'Used to keep AStarSearch instances to prevent recomputing
+    Public RouteCache As New Dictionary(Of IPoint, Dictionary(Of IPoint, AStarSearch))
+
     Function DFSToAny(ByVal StartNode As Node, ByRef Destinations As HashSet(Of Node), ByVal AdjList As NodesAdjacencyList) As Boolean
         Dim Stack As New Stack(Of NodesAdjacencyListRow)
         Dim StackIDs As New HashSet(Of Long)

@@ -62,4 +62,8 @@
         End If
         Return TotalHours
     End Function
+
+    Public Function GetEstimatedTime() As TimeSpan
+        Return TimeSpan.FromHours(GetEstimatedHours())
+    End Function
 End Class

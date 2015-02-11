@@ -1,11 +1,4 @@
 ﻿Public Class NearestNeighbourSolver
-    Class WayPoint
-        Public Predecessor As WayPoint
-        Public Position As IPoint
-        Public Job As CourierJob
-        Public VolumeDelta As Double
-    End Class
-
     Private Map As StreetMap = Nothing
     Private Minimiser As RouteFindingMinimiser = Nothing
 
@@ -26,26 +19,7 @@
     End Sub
 
     Private Sub RunAlgorithm(ByVal Start As IPoint, ByVal Jobs As List(Of CourierJob), ByVal CapacityLeft As Double)
-        Dim WayPoints As New List(Of WayPoint)
-        For Each Job In Jobs
-            Select Case Job.Status
-                Case JobStatus.PENDING_PICKUP, JobStatus.UNALLOCATED
-                    Dim WayPointColl As New WayPoint With {.Position = Job.PickupPosition, _
-                                                          .Job = Job, _
-                                                          .VolumeDelta = Job.CubicMetres}
-                    Dim WayPointDel As New WayPoint With {.Position = Job.DeliveryPosition, _
-                                                          .Predecessor = WayPointColl, _
-                                                          .Job = Job, _
-                                                          .VolumeDelta = -Job.CubicMetres}
-                    WayPoints.Add(WayPointColl)
-                    WayPoints.Add(WayPointDel)
-                Case JobStatus.PENDING_DELIVERY
-                    Dim WayPointDel As New WayPoint With {.Position = Job.DeliveryPosition, _
-                                                          .Job = Job, _
-                                                          .VolumeDelta = -Job.CubicMetres}
-                    WayPoints.Add(WayPointDel)
-            End Select
-        Next
+        Dim WayPoints As List(Of WayPoint) = WayPoint.CreateWayPointList(Jobs)
 
         Dim Time As TimeSpan = NoticeBoard.CurrentTime
         Dim ReorderedWayPoints As New List(Of WayPoint)
@@ -80,7 +54,7 @@
 
                     'The expected wait time should not make THIS job late
                     'but it should be factored in to the route in general
-                    ExtraTime += TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
+                    ExtraTime += TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
 
 
                     If ClosestCost > Cost Then

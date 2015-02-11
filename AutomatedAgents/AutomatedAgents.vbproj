@@ -86,7 +86,10 @@
     <Compile Include="Centralised\SimpleDispatcher.vb" />
     <Compile Include="Graphics\CoordinateConverter.vb" />
     <Compile Include="Agents\AgentAsync.vb" />
-    <Compile Include="RouteFinding\NearestNeighbourSolver.vb" />
+    <Compile Include="VehicleRoutingProblem\ATSPSolver.vb" />
+    <Compile Include="VehicleRoutingProblem\ListPermutator.vb" />
+    <Compile Include="VehicleRoutingProblem\NearestNeighbourSolver.vb" />
+    <Compile Include="VehicleRoutingProblem\WayPoint.vb" />
     <Compile Include="Simulation\AAPlayground.vb" />
     <Compile Include="Simulation\AASimulation.vb" />
     <Compile Include="Simulation\CourierJob.vb" />
@@ -185,6 +188,7 @@
   <ItemGroup>
     <Content Include="Resources\AgentNames.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

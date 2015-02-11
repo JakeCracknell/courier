@@ -7,8 +7,8 @@
     Private Const PROBABILITY_COLLECTION_SUCCESS As Double = 0.99
     Private Const PROBABILITY_DELIVERY_SUCCESS As Double = 0.9
 
-    Private Const CUSTOMER_WAIT_TIME_MIN As Integer = 20 ' 20 sekonds
-    Private Const CUSTOMER_WAIT_TIME_MAX As Integer = 2 * 60 ' 2 minutes
+    Public Const CUSTOMER_WAIT_TIME_MIN As Integer = 20 ' 20 sekonds
+    Public Const CUSTOMER_WAIT_TIME_MAX As Integer = 2 * 60 ' 2 minutes
     Public Const CUSTOMER_WAIT_TIME_AVG As Integer = _
         (CUSTOMER_WAIT_TIME_MAX + CUSTOMER_WAIT_TIME_MIN) / 2
 
