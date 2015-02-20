@@ -28,5 +28,6 @@
 
             Next
         End If
+        Return Nothing
     End Function
 End Module

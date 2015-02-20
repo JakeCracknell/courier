@@ -61,7 +61,7 @@
             For Each Cell As NodesAdjacencyListCell In Row.Cells
                 If Not AlreadyVisitedNodes.Contains(Cell.Node.ID) Then
                     Dim NextAStarTreeNode As New AStarTreeNode(AStarTreeNode, Cell)
-                    NextAStarTreeNode.CalculateCost(Minimiser)
+                    NextAStarTreeNode.CalculateCost(Cell.Distance, Minimiser)
 
                     'Heuristic cost must not overestimate, must be admissible.
                     Dim HeuristicCost As Double
@@ -99,7 +99,7 @@
                 Dim EndHopPosition As HopPosition = CType(EndPoint, HopPosition)
                 If EndHopPosition.Hop.FromPoint.Equals(Row.NodeKey) OrElse (EndHopPosition.Hop.ToPoint.Equals(Row.NodeKey) AndAlso Not EndHopPosition.Hop.Way.OneWay) Then
                     Dim NextAStarTreeNode As New AStarTreeNode(AStarTreeNode, New Hop(Row.NodeKey, EndHopPosition, EndHopPosition.Hop.Way))
-                    NextAStarTreeNode.CalculateCost(Minimiser)
+                    NextAStarTreeNode.CalculateCost(GetDistance(Row.NodeKey, EndHopPosition), Minimiser)
 
                     '0 heuristic cost.
                     Dim F_Cost As Double = 0 + NextAStarTreeNode.TotalCost
@@ -146,10 +146,10 @@
             Me.New(OldTree, New Hop(OldTree.Hop.ToPoint, LastNodeWay))
         End Sub
 
-        Public Sub CalculateCost(ByVal Minimiser As RouteFindingMinimiser)
+        Public Sub CalculateCost(ByVal Distance As Double, ByVal Minimiser As RouteFindingMinimiser)
             Select Case Minimiser
                 Case RouteFindingMinimiser.DISTANCE
-                    TotalCost += Hop.GetCost
+                    TotalCost += Distance 'Hop.GetCost
                 Case RouteFindingMinimiser.TIME_NO_TRAFFIC
                     TotalCost += Hop.GetEstimatedTravelTime
                 Case RouteFindingMinimiser.TIME_WITH_TRAFFIC 'TODO
@@ -170,5 +170,6 @@
             Loop Until CurrentAStarNode Is Nothing
             Return New Route(Hops)
         End Function
+
     End Class
 End Class

@@ -3,7 +3,7 @@ Class ContractNetStrategy
     Implements IAgentStrategy
 
     Private Agent As Agent
-    Private Contractor As New ContractNetContractor
+    Private Contractor As ContractNetContractor
 
     Private LastJobConsidered As CourierJob = Nothing
 
@@ -12,7 +12,7 @@ Class ContractNetStrategy
 
     Public Sub New(ByVal Agent As Agent)
         Me.Agent = Agent
-        Contractor = New ContractNetContractor
+        Contractor = New ContractNetContractor(Agent)
         NoticeBoard.AvailableContractors.Add(Contractor)
     End Sub
 
@@ -22,7 +22,6 @@ Class ContractNetStrategy
             Agent.AssignedJobs.Add(NewJob)
             RecalculateRoute()
         End If
-        Contractor.PlaceBid(Agent)
 
         If Agent.AssignedJobs.Count = 0 Then
             Exit Sub

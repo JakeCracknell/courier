@@ -52,6 +52,7 @@
             DepleteFuel(DistanceTravelled)
         Else
             CurrentSpeedKMH = 0
+            'Idle strategy?
         End If
     End Sub
 

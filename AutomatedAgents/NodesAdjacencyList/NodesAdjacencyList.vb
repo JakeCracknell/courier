@@ -24,9 +24,9 @@
         Else
             Dim HopPosition As HopPosition = RoutingPoint
             Dim R As New NodesAdjacencyListRow(Nothing)
-            R.AddCell(New NodesAdjacencyListCell(HopPosition.Hop.ToPoint, HopPosition.Hop.Way))
+            R.AddCell(New NodesAdjacencyListCell(HopPosition.Hop.ToPoint, HopPosition.Hop.Way, HopPosition.Hop.GetCost))
             If Not HopPosition.Hop.Way.OneWay Then
-                R.AddCell(New NodesAdjacencyListCell(HopPosition.Hop.FromPoint, HopPosition.Hop.Way))
+                R.AddCell(New NodesAdjacencyListCell(HopPosition.Hop.FromPoint, HopPosition.Hop.Way, HopPosition.Hop.GetCost))
             End If
             Return R
         End If
@@ -35,7 +35,7 @@
     Public Sub AddNodesWay(ByVal Node1 As Node, ByVal Node2 As Node, ByVal Way As Way)
         Dim Row As NodesAdjacencyListRow = AddNodeEmpty(Node1)
 
-        Dim Cell As New NodesAdjacencyListCell(Node2, Way)
+        Dim Cell As New NodesAdjacencyListCell(Node2, Way, GetDistance(Node1, Node2))
         Row.AddCell(Cell)
     End Sub
 

@@ -17,8 +17,8 @@
         Dim Modified As Boolean = True
 
         'Moved here for CNP
-        NoticeBoard.Tick()
         Dispatcher.Tick()
+        NoticeBoard.Tick()
 
         'Iterate through agents in semi-random order
         Dim MidIndex As Integer = Int(Rnd() * Agents.Count)
