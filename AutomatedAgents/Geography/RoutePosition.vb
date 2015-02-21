@@ -19,7 +19,7 @@
         Return Route.GetEndPoint
     End Function
 
-    Public Function GetRoutingPoint() As HopPosition
+    Public Function GetPoint() As HopPosition
         Return New HopPosition(Route.At(HopIndex), PercentageTravelled)
     End Function
 

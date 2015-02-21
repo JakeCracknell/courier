@@ -24,16 +24,16 @@
 
         'If a route somewhere has just been completed...
         If Agent.Position.RouteCompleted Then
-            If Agent.AssignedJobs(0).PickupPosition.ApproximatelyEquals(Agent.Position.GetRoutingPoint) Then
-                Agent.Position = New RoutePosition(New AStarSearch(Agent.Position.GetRoutingPoint, Agent.AssignedJobs(0).DeliveryPosition, Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute)
+            If Agent.AssignedJobs(0).PickupPosition.ApproximatelyEquals(Agent.Position.GetPoint) Then
+                Agent.Position = New RoutePosition(New AStarSearch(Agent.Position.GetPoint, Agent.AssignedJobs(0).DeliveryPosition, Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute)
                 Agent.AssignedJobs(0).Status = JobStatus.PENDING_DELIVERY
-            ElseIf Agent.AssignedJobs(0).DeliveryPosition.ApproximatelyEquals(Agent.Position.GetRoutingPoint) Then
+            ElseIf Agent.AssignedJobs(0).DeliveryPosition.ApproximatelyEquals(Agent.Position.GetPoint) Then
                 Agent.AssignedJobs(0).Status = JobStatus.COMPLETED
                 Agent.AssignedJobs.RemoveAt(0)
             Else
                 'Set a course for the next job.
                 MoveUpClosestJob(Agent.Position)
-                Agent.Position = New RoutePosition(New AStarSearch(Agent.Position.GetRoutingPoint, Agent.AssignedJobs(0).PickupPosition, Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute)
+                Agent.Position = New RoutePosition(New AStarSearch(Agent.Position.GetPoint, Agent.AssignedJobs(0).PickupPosition, Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute)
             End If
         End If
     End Sub
@@ -42,7 +42,7 @@
         If Agent.AssignedJobs.Count > 1 Then
             Dim Distances As New List(Of Integer)(Agent.AssignedJobs.Count - 1)
             For i = 0 To Agent.AssignedJobs.Count - 1
-                Distances.Add(New AStarSearch(Position.GetRoutingPoint, Agent.AssignedJobs(i).PickupPosition, Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute.GetKM)
+                Distances.Add(New AStarSearch(Position.GetPoint, Agent.AssignedJobs(i).PickupPosition, Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute.GetKM)
             Next
 
             Dim IndexOfBest As Integer = Distances.IndexOf(Distances.Min)

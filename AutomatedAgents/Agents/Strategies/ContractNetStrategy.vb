@@ -29,7 +29,7 @@ Class ContractNetStrategy
 
         'If a route somewhere has just been completed...
         If Agent.Position.RouteCompleted Then
-            If Agent.Position.GetRoutingPoint.ApproximatelyEquals(PlannedRoute(0)) Then
+            If Agent.Position.GetPoint.ApproximatelyEquals(PlannedRoute(0)) Then
                 Dim Job As CourierJob = PlannedJobRoute(0)
                 Select Case Job.Status
                     Case JobStatus.PENDING_PICKUP
@@ -62,17 +62,18 @@ Class ContractNetStrategy
 
             End If
 
+            Debug.WriteLine(PlannedRoute.Count & " " & PlannedJobRoute.Count)
             If PlannedRoute.Count > 0 Then
-                Agent.Position = New RoutePosition(New AStarSearch(Agent.Position.GetRoutingPoint, PlannedRoute(0), Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute)
+                Agent.Position = New RoutePosition(New AStarSearch(Agent.Position.GetPoint, PlannedRoute(0), Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute)
             End If
         End If
     End Sub
 
     Private Sub RecalculateRoute()
-        Dim NNS As New NearestNeighbourSolver(Agent.Position.GetRoutingPoint, Agent.AssignedJobs, Agent.GetVehicleCapacityLeft)
-        If NNS.PointList IsNot Nothing Then
-            PlannedRoute = NNS.PointList
-            PlannedJobRoute = NNS.JobList
+        Dim RIS As RouteInsertionSolver = Contractor.Solver
+        If RIS.PointList IsNot Nothing Then
+            PlannedRoute = RIS.PointList
+            PlannedJobRoute = RIS.JobList
         Else
             'Shows that NNS is not very versatile. Happens when vehicle is behind schedule.
             'Only called when depot waypoint is added so just bump this back to the end.

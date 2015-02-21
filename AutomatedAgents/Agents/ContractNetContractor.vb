@@ -5,6 +5,9 @@
     Private CurrentBid As Double = NO_BID
     Private AwardedJob As CourierJob = Nothing
     Private Agent As Agent
+    Private TentativeSolver As RouteInsertionSolver = Nothing
+
+    Property Solver As RouteInsertionSolver = Nothing
 
     Sub New(ByVal Agent As Agent)
         Me.Agent = Agent
@@ -20,34 +23,25 @@
     End Sub
 
     Sub PlaceBid()
-        If JobToReview Is Nothing OrElse Agent.AssignedJobs.Count > 3 Then
+        If JobToReview Is Nothing Then
             Exit Sub
         End If
 
         Dim CurrentDrivingCost As Double = 0
-        If Agent.AssignedJobs.Count > 0 Then
-            CurrentDrivingCost = New TSPSolver( _
-                                        Agent.Position.GetRoutingPoint, _
-                                        Agent.AssignedJobs, _
-                                        Agent.GetVehicleCapacityLeft, _
-                                        Agent.Map, Agent.RouteFindingMinimiser) _
-                                        .RouteCost
+        If Solver IsNot Nothing Then
+            Debug.Write(Solver.RouteCost & " -> ")
+            Solver.Reevaluate(Agent.Position.GetPoint)
+            CurrentDrivingCost = Solver.RouteCost
+            Debug.WriteLine(CurrentDrivingCost)
         End If
 
+        TentativeSolver = New RouteInsertionSolver(Agent.Position.GetPoint, Solver, JobToReview, Agent.GetVehicleCapacityLeft, Agent.Map, Agent.RouteFindingMinimiser)
 
-        Dim JobsToPlan As New List(Of CourierJob)(Agent.AssignedJobs.Count)
-        JobsToPlan.AddRange(Agent.AssignedJobs)
-        JobsToPlan.Add(JobToReview)
-        Dim Solver As New TSPSolver(Agent.Position.GetRoutingPoint, _
-                                              JobsToPlan, Agent.GetVehicleCapacityLeft, _
-                                              Agent.Map, Agent.RouteFindingMinimiser)
-
-        If Solver.PointList Is Nothing Then
+        If TentativeSolver.PointList Is Nothing Then
             'Impossible to fit into schedule
-            'stopped deving here
             CurrentBid = NO_BID
         Else
-            CurrentBid = Solver.RouteCost - CurrentDrivingCost
+            CurrentBid = TentativeSolver.RouteCost - CurrentDrivingCost
         End If
 
         JobToBeAwarded = JobToReview
@@ -61,6 +55,7 @@
     End Function
 
     Function CollectJob() As CourierJob
+        Solver = TentativeSolver
         Dim Temp As CourierJob = AwardedJob
         AwardedJob = Nothing
         Return Temp

@@ -1,6 +1,6 @@
 ﻿Module ListPermutator
     Private PermList As Object
-    Function GetAllPermutations(Of T)(ByVal Values As List(Of T))
+    Function GetAllPermutations(Of T)(ByVal Values As List(Of T)) As List(Of List(Of T))
         PermList = New List(Of List(Of T))
         GetAllPermutations(New List(Of T), Values)
         Return PermList
@@ -29,5 +29,20 @@
             Next
         End If
         Return Nothing
+    End Function
+
+    'complexity = .5(n+2)(n+1). if insertion is optimal, note this sums to 1/6n(n^2+6n+11). TSP by insetion?
+    Function GetAllListDoubleInsertions(Of T)(ByVal InitialList As List(Of T), ByVal A As T, ByVal B As T) As List(Of List(Of T))
+        Dim Permutations As New List(Of List(Of T))
+        For AInsertionPoint = 0 To InitialList.Count
+            For BInsertionPoint = AInsertionPoint To InitialList.Count
+                Dim List As New List(Of T)(InitialList.Count + 2)
+                List.AddRange(InitialList)
+                List.Insert(BInsertionPoint, B)
+                List.Insert(AInsertionPoint, A)
+                Permutations.Add(List)
+            Next
+        Next
+        Return Permutations
     End Function
 End Module

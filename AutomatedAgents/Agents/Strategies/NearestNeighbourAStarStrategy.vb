@@ -28,7 +28,7 @@
 
         'If a route somewhere has just been completed...
         If Agent.Position.RouteCompleted Then
-            If Agent.Position.GetRoutingPoint.ApproximatelyEquals(PlannedRoute(0)) Then
+            If Agent.Position.GetPoint.ApproximatelyEquals(PlannedRoute(0)) Then
                 Dim Job As CourierJob = PlannedJobRoute(0)
                 Select Case Job.Status
                     Case JobStatus.PENDING_PICKUP
@@ -62,7 +62,7 @@
             End If
 
             If PlannedRoute.Count > 0 Then
-                Agent.Position = New RoutePosition(New AStarSearch(Agent.Position.GetRoutingPoint, PlannedRoute(0), Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute)
+                Agent.Position = New RoutePosition(New AStarSearch(Agent.Position.GetPoint, PlannedRoute(0), Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute)
             End If
         End If
 
@@ -77,7 +77,7 @@
             For Each Job As CourierJob In UnallocatedJobs
                 'Cost of getting to pickup position determines pick
                 'Ensure it can be delivered on time.
-                Dim RouteToPickup As Route = New AStarSearch(Agent.Position.GetRoutingPoint, Job.PickupPosition, Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute
+                Dim RouteToPickup As Route = New AStarSearch(Agent.Position.GetPoint, Job.PickupPosition, Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute
                 Dim RouteToDropoff As Route = New AStarSearch(Job.PickupPosition, Job.DeliveryPosition, Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute
 
                 Dim GetToPickupCost As Double = RouteToPickup.GetKM
@@ -112,14 +112,14 @@
             Exit Sub
         End If
 
-        Dim CurrentRouteDistance As Double = New NearestNeighbourSolver(Agent.Position.GetRoutingPoint, Agent.AssignedJobs, Agent.GetVehicleCapacityLeft, Agent.Map, Agent.RouteFindingMinimiser).NNCost
+        Dim CurrentRouteDistance As Double = New NearestNeighbourSolver(Agent.Position.GetPoint, Agent.AssignedJobs, Agent.GetVehicleCapacityLeft, Agent.Map, Agent.RouteFindingMinimiser).NNCost
         For i = UnallocatedJobs.Count - 1 To 0 Step -1
             Dim Job As CourierJob = UnallocatedJobs(i)
             Dim JobsToPlan As New List(Of CourierJob)(Agent.AssignedJobs.Count)
             JobsToPlan.AddRange(Agent.AssignedJobs)
             JobsToPlan.Add(Job)
 
-            Dim NNS As New NearestNeighbourSolver(Agent.Position.GetRoutingPoint, JobsToPlan, Agent.GetVehicleCapacityLeft, Agent.Map, Agent.RouteFindingMinimiser)
+            Dim NNS As New NearestNeighbourSolver(Agent.Position.GetPoint, JobsToPlan, Agent.GetVehicleCapacityLeft, Agent.Map, Agent.RouteFindingMinimiser)
             If NNS.PointList IsNot Nothing Then
                 'A route exists that conforms to deadlines and vehicle capacity
                 Dim MarginalCost As Double = NNS.NNCost - CurrentRouteDistance
@@ -138,7 +138,7 @@
     End Sub
 
     Private Sub RecalculateRoute(ByVal Position As RoutePosition)
-        Dim NNS As New NearestNeighbourSolver(Position.GetRoutingPoint, Agent.AssignedJobs, Agent.GetVehicleCapacityLeft)
+        Dim NNS As New NearestNeighbourSolver(Position.GetPoint, Agent.AssignedJobs, Agent.GetVehicleCapacityLeft)
         If NNS.PointList IsNot Nothing Then
             PlannedRoute = NNS.PointList
             PlannedJobRoute = NNS.JobList

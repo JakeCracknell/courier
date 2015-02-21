@@ -16,14 +16,14 @@
 
         'If a route somewhere has just been completed...
         If Agent.Position.RouteCompleted Then
-            If Agent.AssignedJobs(0).DeliveryPosition.ApproximatelyEquals(Agent.Position.GetRoutingPoint) Then
+            If Agent.AssignedJobs(0).DeliveryPosition.ApproximatelyEquals(Agent.Position.GetPoint) Then
                 Agent.AssignedJobs(0).Status = JobStatus.COMPLETED
                 Agent.AssignedJobs.RemoveAt(0)
-            ElseIf Agent.AssignedJobs(0).PickupPosition.ApproximatelyEquals(Agent.Position.GetRoutingPoint) Then
-                Agent.Position = New RoutePosition(New AStarSearch(Agent.Position.GetRoutingPoint, Agent.AssignedJobs(0).DeliveryPosition, Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute)
+            ElseIf Agent.AssignedJobs(0).PickupPosition.ApproximatelyEquals(Agent.Position.GetPoint) Then
+                Agent.Position = New RoutePosition(New AStarSearch(Agent.Position.GetPoint, Agent.AssignedJobs(0).DeliveryPosition, Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute)
                 Agent.AssignedJobs(0).Status = JobStatus.PENDING_DELIVERY
             Else
-                Agent.Position = New RoutePosition(New AStarSearch(Agent.Position.GetRoutingPoint, Agent.AssignedJobs(0).PickupPosition, Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute)
+                Agent.Position = New RoutePosition(New AStarSearch(Agent.Position.GetPoint, Agent.AssignedJobs(0).PickupPosition, Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute)
             End If
         End If
     End Sub
@@ -34,7 +34,7 @@
             Dim BestJob As CourierJob = Nothing
             Dim BestCost As Double = Double.MaxValue
             For Each Job As CourierJob In UnallocatedJobs
-                Dim TotalCost As Double = New AStarSearch(Position.GetRoutingPoint, Job.PickupPosition, Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute.GetKM '+ GetDistance(Job.PickupPosition, Job.DeliveryPosition)
+                Dim TotalCost As Double = New AStarSearch(Position.GetPoint, Job.PickupPosition, Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser).GetRoute.GetKM '+ GetDistance(Job.PickupPosition, Job.DeliveryPosition)
 
                 If BestCost > TotalCost Then
                     BestCost = TotalCost

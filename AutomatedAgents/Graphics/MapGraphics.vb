@@ -102,7 +102,7 @@
 
     Sub DrawAgent(ByVal Agent As Agent, ByVal gr As Graphics)
         If Agent.Position IsNot Nothing Then
-            Dim CurrentPoint As Point = CC.GetPoint(Agent.Position.GetRoutingPoint)
+            Dim CurrentPoint As Point = CC.GetPoint(Agent.Position.GetPoint)
             Dim Brush As New SolidBrush(Agent.Color)
             gr.FillPie(Brush, CInt(CurrentPoint.X - AGENT_DRAW_SIZE / 2), _
                            CInt(CurrentPoint.Y - AGENT_DRAW_SIZE / 2), _

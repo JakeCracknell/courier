@@ -42,7 +42,7 @@
     End Sub
 
     Public Overrides Sub SetRouteTo(ByVal DestinationPoint As IPoint)
-        Dim StartingPoint As IPoint = If(Position IsNot Nothing, Position.GetRoutingPoint, Map.NodesAdjacencyList.GetRandomPoint)
+        Dim StartingPoint As IPoint = If(Position IsNot Nothing, Position.GetPoint, Map.NodesAdjacencyList.GetRandomPoint)
         RouteFinder = New AsyncRouteFinder(StartingPoint, DestinationPoint, Map.NodesAdjacencyList)
         AwaitingRoute = True
     End Sub
