@@ -1,4 +1,6 @@
 ﻿Public Class RouteInsertionSolver
+    Private Const SECONDS_PER_KM_STRAIGHTLINE As Double = 55.987558 '40 mph
+
     Private Map As StreetMap = Nothing
     Private Minimiser As RouteFindingMinimiser = Nothing
     Private WayPointList As List(Of WayPoint) = Nothing
@@ -51,31 +53,59 @@
                 End If
             Next
 
-            'Calculate routes now
+            'Retrieve pre-computed routes
             Dim AStarRoutes(Route.Count - 1) As Route
             Dim LastPoint As IPoint = Start
             For i = 0 To Route.Count - 1
                 Dim IntermDict As Dictionary(Of IPoint, Route) = Nothing
                 If Not RouteCache.TryGetValue(LastPoint, IntermDict) OrElse _
                     Not IntermDict.TryGetValue(Route(i).Position, AStarRoutes(i)) Then
-                    AStarRoutes(i) = New AStarSearch(LastPoint, Route(i).Position, Map.NodesAdjacencyList, Minimiser).GetRoute
-                    If Not RouteCache.ContainsKey(LastPoint) Then
-                        RouteCache.Add(LastPoint, New Dictionary(Of IPoint, Route))
-                    End If
-                    RouteCache(LastPoint).Add(Route(i).Position, AStarRoutes(i))
+                    'Missing routes computed later on...
                 End If
                 LastPoint = Route(i).Position
             Next
 
-            'Ensure it meets all the deadlines
+            'Ensure it meets all the deadlines - first estimate
             Dim TimeAdded As TimeSpan = NoticeBoard.CurrentTime 'Safe/cloned
-            For i = 0 To Route.Count - 2
-                TimeAdded += AStarRoutes(i).GetEstimatedTime + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+            For i = 0 To Route.Count - 1
+                If AStarRoutes(i) IsNot Nothing Then
+                    TimeAdded += AStarRoutes(i).GetEstimatedTime + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+                Else
+                    LastPoint = If(i = 0, Start, Route(i - 1).Position)
+                    TimeAdded += TimeSpan.FromSeconds(HaversineDistance(LastPoint, Route(i).Position) * SECONDS_PER_KM_STRAIGHTLINE + CourierJob.CUSTOMER_WAIT_TIME_MAX)
+                End If
                 If Route(i).Job.Deadline < TimeAdded Then
                     GoTo FailedPermutation
                 End If
             Next
             'End waiting time is ignored, as it counts as on time even if < 2 min to spare.
+
+            'Actually calculate new A* route
+            For i = 0 To AStarRoutes.Count - 1
+                If AStarRoutes(i) Is Nothing Then
+                    LastPoint = If(i = 0, Start, Route(i - 1).Position)
+                    'Hottest line ever!
+                    AStarRoutes(i) = New AStarSearch(LastPoint, Route(i).Position, Map.NodesAdjacencyList, Minimiser).GetRoute
+                    SyncLock RouteCache
+                        If Not RouteCache.ContainsKey(LastPoint) Then
+                            RouteCache.Add(LastPoint, New Dictionary(Of IPoint, Route))
+                        End If
+                        If Not RouteCache(LastPoint).ContainsKey(Route(i).Position) Then
+                            RouteCache(LastPoint).Add(Route(i).Position, AStarRoutes(i))
+                        End If
+                    End SyncLock
+
+                End If
+            Next
+
+            'Recompute time - properly this time!
+            TimeAdded = NoticeBoard.CurrentTime 'Safe/cloned
+            For i = 0 To Route.Count - 1
+                TimeAdded += AStarRoutes(i).GetEstimatedTime + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+                If Route(i).Job.Deadline < TimeAdded Then
+                    GoTo FailedPermutation
+                End If
+            Next
 
             'Fuel TODO
 
@@ -109,55 +139,5 @@ FailedPermutation:
             Return Nothing
         End If
     End Function
-    ''So so so so unverified
-    'Public Sub Reevaluate(ByVal NewStart As HopPosition)
-    '    If WayPointList Is Nothing Then
-    '        Exit Sub
-    '    End If
-
-    '    'Trim any completed waypoints.
-    '    Do
-    '        If WayPointList(0).Job.Status <> WayPointList(0).DefinedStatus Then
-    '            WayPointList.RemoveAt(0)
-    '            PointList.RemoveAt(0)
-    '            JobList.RemoveAt(0)
-    '            Select Case Minimiser
-    '                Case RouteFindingMinimiser.TIME_NO_TRAFFIC, RouteFindingMinimiser.TIME_WITH_TRAFFIC 'ooh dear not exact
-    '                    RouteCost = RouteCost - AStarList(0).GetRoute.GetEstimatedHours
-    '                Case RouteFindingMinimiser.DISTANCE
-    '                    RouteCost = RouteCost - AStarList(0).GetRoute.GetKM
-    '            End Select
-    '            AStarList.RemoveAt(0)
-    '        Else
-    '            Exit Do
-    '        End If
-    '    Loop Until WayPointList.Count = 0
-
-    '    Select Case Minimiser
-    '        Case RouteFindingMinimiser.TIME_NO_TRAFFIC, RouteFindingMinimiser.TIME_WITH_TRAFFIC 'ooh dear not exact
-    '            RouteCost = RouteCost - AStarList(0).GetRoute.GetEstimatedHours + New AStarSearch(NewStart, WayPointList(0).Position, Map.NodesAdjacencyList, Minimiser).GetRoute.GetEstimatedHours
-    '        Case RouteFindingMinimiser.DISTANCE
-    '            RouteCost = RouteCost - AStarList(0).GetRoute.GetKM + New AStarSearch(NewStart, WayPointList(0).Position, Map.NodesAdjacencyList, Minimiser).GetRoute.GetKM
-    '    End Select
-    'End Sub
-
-    'Private Function ExtractWayPointsFromOldSolver(ByVal OldSolver As RouteInsertionSolver)
-    '    If OldSolver Is Nothing OrElse OldSolver.WayPointList Is Nothing Then
-    '        Return New List(Of WayPoint)
-    '    End If
-
-    '    'Trim any completed waypoints.
-    '    Dim OldWayPoints As List(Of WayPoint) = OldSolver.WayPointList
-    '    Do
-    '        If OldWayPoints(0).Job.Status <> OldWayPoints(0).DefinedStatus Then
-    '            OldWayPoints.RemoveAt(0)
-    '        Else
-    '            Exit Do
-    '        End If
-    '    Loop Until OldWayPoints.Count = 0
-
-    '    Return OldWayPoints
-    'End Function
-
 
 End Class

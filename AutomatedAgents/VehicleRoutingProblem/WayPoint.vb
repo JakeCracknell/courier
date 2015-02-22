@@ -60,4 +60,8 @@ Public Class WayPoint
 
         Return WayPoints
     End Function
+
+    Public Overrides Function ToString() As String
+        Return Position.ToString & " [" & VolumeDelta & "]"
+    End Function
 End Class

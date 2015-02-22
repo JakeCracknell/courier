@@ -51,6 +51,7 @@
                     End If
                     RouteCache(LastPoint).Add(Route(i).Position, AStarRoutes(i))
                 End If
+                LastPoint = Route(i).Position
             Next
 
             'Ensure it meets all the deadlines

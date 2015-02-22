@@ -43,14 +43,44 @@ Public Class OSMLoader
 
         Node.TotalNodesTraffic = 1
 
-        '.NETs garbage collector will not dispose the XML document
-        'until a while later. SW London = 1GB -> 200MB after GC
-
         Map.NodesAdjacencyList.RemoveDisconnectedComponents()
+
+        'Find fuel locations
+        For Each xItem As XmlElement In xNodes
+            Dim xTags As XmlNodeList = xItem.GetElementsByTagName("tag")
+            For Each xTag As XmlElement In xTags
+                Dim AttributeName As String = xTag.GetAttribute("k")
+                If AttributeName = "amenity" Then
+                    Dim ValueName As String = xTag.GetAttribute("v")
+                    If ValueName = "fuel" Then
+                        Dim NodeRef As Long = xItem.GetAttribute("id")
+                        Dim Node As Node = NodeHashMap(NodeRef)
+                        Map.FuelNodes.Add(Map.NodesAdjacencyList.GetNearestNode(Node.Latitude, Node.Longitude))
+                    End If
+                End If
+            Next
+        Next
+        For Each xItem As XmlElement In xWays
+            Dim xTags As XmlNodeList = xItem.GetElementsByTagName("tag")
+            For Each xTag As XmlElement In xTags
+                Dim AttributeName As String = xTag.GetAttribute("k")
+                If AttributeName = "amenity" Then
+                    Dim ValueName As String = xTag.GetAttribute("v")
+                    If ValueName = "fuel" Then
+                        Dim xNd As XmlElement = xItem.SelectSingleNode("nd")
+                        Dim NodeRef As Long = xNd.GetAttribute("ref")
+                        Dim Node As Node = NodeHashMap(NodeRef)
+                        Map.FuelNodes.Add(Map.NodesAdjacencyList.GetNearestNode(Node.Latitude, Node.Longitude))
+                    End If
+                End If
+            Next
+        Next
 
         Return Map
     End Function
 
+    Function BuildFuelLocationList(ByVal XDoc As XmlDocument) As List(Of Node)
 
+    End Function
 
 End Class

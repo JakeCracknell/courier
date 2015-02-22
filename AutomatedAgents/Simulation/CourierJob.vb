@@ -36,10 +36,10 @@
     Sub New(ByVal PickupPosition As HopPosition, ByVal DeliveryPosition As HopPosition, ByVal Size As Double)
         Me.New(PickupPosition, DeliveryPosition, Size, _
             DEFAULT_FEE_BASE + _
-            GetDistance(PickupPosition, DeliveryPosition) * _
+            HaversineDistance(PickupPosition, DeliveryPosition) * _
             DEFAULT_FEE_DISTANCE_MULTIPLIER,
                     NoticeBoard.CurrentTime.Add( _
-                    TimeSpan.FromSeconds(DEADLINE_OFFSET_MAX)))
+                    TimeSpan.FromSeconds(DEADLINE_OFFSET_MIN)))
     End Sub
 
     'These functions return the time taken to collect/deliver. If the customer
@@ -47,6 +47,7 @@
     'It fails and is cancelled with partial
     'refund given or rerouted to the depot at some time (no deadline).
     Function Collect() As Integer
+        Debug.Assert(Status = JobStatus.PENDING_PICKUP)
         If Rnd() < PROBABILITY_COLLECTION_SUCCESS Then
             Status = JobStatus.PENDING_DELIVERY
             Return GenerateRandomWaitTime()
@@ -56,12 +57,15 @@
         Return CUSTOMER_WAIT_TIME_MAX
     End Function
     Function Deliver() As Integer
+        Debug.Assert(Status = JobStatus.PENDING_DELIVERY)
+
         If DeliveryPosition.Equals(NoticeBoard.DepotPoint) Then
             Status = JobStatus.COMPLETED
             Return CUSTOMER_WAIT_TIME_MIN
         ElseIf Rnd() < PROBABILITY_DELIVERY_SUCCESS Then
             Status = JobStatus.COMPLETED
             If Deadline < NoticeBoard.CurrentTime Then
+                'Still happens occasionally.
                 Debug.WriteLine("Minutes late: " & (NoticeBoard.CurrentTime - Deadline).TotalMinutes)
                 FullRefund()
             End If
@@ -88,5 +92,9 @@
 
     Private Function GenerateRandomWaitTime()
         Return New Random().Next(CUSTOMER_WAIT_TIME_MIN, CUSTOMER_WAIT_TIME_MAX)
+    End Function
+
+    Public Overrides Function ToString() As String
+        Return "{" & Math.Round(CubicMetres, 2) & "} " & PickupPosition.ToString & "->" & DeliveryPosition.ToString
     End Function
 End Class

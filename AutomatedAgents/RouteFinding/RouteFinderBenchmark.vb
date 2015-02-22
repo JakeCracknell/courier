@@ -57,7 +57,7 @@
                 Dim D As IPoint = AdjacencyList.GetRandomPoint
 
                 AStarTotal += New AStarSearch(S, D, AdjacencyList, RouteFindingMinimiser.DISTANCE).GetRoute.GetKM
-                EuclidianTotal += GetDistance(S, D)
+                EuclidianTotal += HaversineDistance(S, D)
 
             Loop Until Stopwatch.ElapsedMilliseconds > BENCHMARK_TIME_MS
             MsgBox(String.Format(COMPARE_DISTANCE_MSGBOX_FORMAT, AStarTotal / EuclidianTotal))
@@ -81,7 +81,6 @@
                     Losses += IIf(AStarRoute1.GetKM > AStarRoute2.GetKM, 1, 0)
 
                     If AStarRoute1.GetKM > AStarRoute2.GetKM * 1.3 Then
-                        Debug.WriteLine(AStarRoute1.GetKM / AStarRoute2.GetKM)
                         MapGraphics.DrawRoute(AStarRoute1).Save("C:\pics\" & Stopwatch.ElapsedMilliseconds & "A.bmp")
                         MapGraphics.DrawRoute(AStarRoute2).Save("C:\pics\" & Stopwatch.ElapsedMilliseconds & "B.bmp")
                     End If

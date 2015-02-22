@@ -67,11 +67,11 @@
                     Dim HeuristicCost As Double
                     Select Case Minimiser
                         Case RouteFindingMinimiser.DISTANCE
-                            HeuristicCost = GetDistance(Cell.Node, EndPoint)
+                            HeuristicCost = HaversineDistance(Cell.Node, EndPoint)
                         Case RouteFindingMinimiser.TIME_NO_TRAFFIC
-                            HeuristicCost = GetDistance(Cell.Node, EndPoint) / MAX_POSSIBLE_SPEED_KMH
+                            HeuristicCost = HaversineDistance(Cell.Node, EndPoint) / MAX_POSSIBLE_SPEED_KMH
                         Case RouteFindingMinimiser.TIME_WITH_TRAFFIC 'TODO
-                            HeuristicCost = GetDistance(Cell.Node, EndPoint) / MAX_POSSIBLE_SPEED_KMH
+                            HeuristicCost = HaversineDistance(Cell.Node, EndPoint) / MAX_POSSIBLE_SPEED_KMH
                     End Select
 
                     Dim F_Cost As Double = HeuristicCost + NextAStarTreeNode.TotalCost
@@ -99,7 +99,7 @@
                 Dim EndHopPosition As HopPosition = CType(EndPoint, HopPosition)
                 If EndHopPosition.Hop.FromPoint.Equals(Row.NodeKey) OrElse (EndHopPosition.Hop.ToPoint.Equals(Row.NodeKey) AndAlso Not EndHopPosition.Hop.Way.OneWay) Then
                     Dim NextAStarTreeNode As New AStarTreeNode(AStarTreeNode, New Hop(Row.NodeKey, EndHopPosition, EndHopPosition.Hop.Way))
-                    NextAStarTreeNode.CalculateCost(GetDistance(Row.NodeKey, EndHopPosition), Minimiser)
+                    NextAStarTreeNode.CalculateCost(HaversineDistance(Row.NodeKey, EndHopPosition), Minimiser)
 
                     '0 heuristic cost.
                     Dim F_Cost As Double = 0 + NextAStarTreeNode.TotalCost

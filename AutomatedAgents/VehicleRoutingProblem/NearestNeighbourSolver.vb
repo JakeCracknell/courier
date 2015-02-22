@@ -41,7 +41,7 @@
                         Cost = AStar.GetRoute.GetKM
                         ExtraTime += TimeSpan.FromHours(AStar.GetRoute.GetEstimatedHours()) 'TODO: vehicle type
                     Else
-                        Cost = GetDistance(LastPoint, WP.Position)
+                        Cost = HaversineDistance(LastPoint, WP.Position)
                         ExtraTime += TimeSpan.FromHours(Cost / 48) ' Agent.GetAverageKMH)
                     End If
 

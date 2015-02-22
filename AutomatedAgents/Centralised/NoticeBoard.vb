@@ -42,20 +42,22 @@
     Function AddJob(ByVal Job As CourierJob)
         IncompleteJobs.Add(Job)
         UnallocatedJobs.Add(Job)
-        'Parallel.ForEach(Of ContractNetContractor)(AvailableContractors,
-        '    Sub(Contractor)
-        '        Contractor.AnnounceJob(Job)
-        '        Contractor.PlaceBid()
-        '    End Sub)
-        For Each Contractor As ContractNetContractor In AvailableContractors
-            Contractor.AnnounceJob(Job)
-            Contractor.PlaceBid()
-        Next
+        Parallel.ForEach(Of ContractNetContractor)(AvailableContractors,
+            Sub(Contractor)
+                Contractor.AnnounceJob(Job)
+                Contractor.PlaceBid()
+            End Sub)
+        'For Each Contractor As ContractNetContractor In AvailableContractors
+        '    Contractor.AnnounceJob(Job)
+        '    Contractor.PlaceBid()
+        'Next
         Return True
     End Function
 
     Sub AwardJobs()
         If AvailableContractors.Count > 0 AndAlso UnallocatedJobs.Count > 0 Then
+            Dim JobOffered As CourierJob = UnallocatedJobs(0)
+
             Dim Winner As ContractNetContractor = Nothing
             Dim BestBid As Double = Double.MaxValue
             For Each Contractor As ContractNetContractor In AvailableContractors
@@ -69,10 +71,11 @@
             Debug.WriteLine("")
             If Winner IsNot Nothing Then
                 Winner.AwardJob()
-                AllocateJob(UnallocatedJobs(0))
+                AllocateJob(JobOffered)
+                JobOffered.CustomerFee = BestBid
             Else
                 Debug.WriteLine("Could not find a contractor for job")
-                UnallocatedJobs(0).Status = JobStatus.CANCELLED
+                JobOffered.Status = JobStatus.CANCELLED
             End If
         End If
     End Sub

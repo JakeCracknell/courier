@@ -24,9 +24,9 @@
         Else
             Dim HopPosition As HopPosition = RoutingPoint
             Dim R As New NodesAdjacencyListRow(Nothing)
-            R.AddCell(New NodesAdjacencyListCell(HopPosition.Hop.ToPoint, HopPosition.Hop.Way, HopPosition.Hop.GetCost))
+            R.AddCell(New NodesAdjacencyListCell(HopPosition.Hop.ToPoint, HopPosition.Hop.Way, HopPosition.Hop.GetDistance))
             If Not HopPosition.Hop.Way.OneWay Then
-                R.AddCell(New NodesAdjacencyListCell(HopPosition.Hop.FromPoint, HopPosition.Hop.Way, HopPosition.Hop.GetCost))
+                R.AddCell(New NodesAdjacencyListCell(HopPosition.Hop.FromPoint, HopPosition.Hop.Way, HopPosition.Hop.GetDistance))
             End If
             Return R
         End If
@@ -35,7 +35,7 @@
     Public Sub AddNodesWay(ByVal Node1 As Node, ByVal Node2 As Node, ByVal Way As Way)
         Dim Row As NodesAdjacencyListRow = AddNodeEmpty(Node1)
 
-        Dim Cell As New NodesAdjacencyListCell(Node2, Way, GetDistance(Node1, Node2))
+        Dim Cell As New NodesAdjacencyListCell(Node2, Way, HaversineDistance(Node1, Node2))
         Row.AddCell(Cell)
     End Sub
 
@@ -86,7 +86,7 @@
         For Each Row As NodesAdjacencyListRow In Rows.Values
             Dim Node As Node = Row.NodeKey
             If Node.Connected Then
-                Dim Distance As Double = GetDistance(Node.Latitude, Node.Longitude, Latitude, Longitude)
+                Dim Distance As Double = HaversineDistance(Node.Latitude, Node.Longitude, Latitude, Longitude)
                 If Distance < BestDistance Then
                     BestNode = Node
                     BestDistance = Distance

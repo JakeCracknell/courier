@@ -24,15 +24,10 @@
     End Sub
 
     'Agent has made progress on its plan, perhaps completing waypoints.
-    Public Sub Update(ByVal RoutePosition As RoutePosition)
+    Public Sub Update(ByVal RoutePosition As RoutePosition, ByVal RecalculateFirstAStar As Boolean)
         If WayPoints.Count > 0 Then
-            'If RoutePosition.GetPoint.ApproximatelyEquals(WayPoints(0).Position) Then
-            '    Routes.RemoveAt(0)
-            '    WayPoints.RemoveAt(0)
-            'End If
-
-            If WayPoints.Count > 0 Then
-                StartPoint = RoutePosition.GetPoint
+            StartPoint = RoutePosition.GetPoint
+            If RecalculateFirstAStar Then
                 Dim AStar As New AStarSearch(StartPoint, WayPoints(0).Position, Map.NodesAdjacencyList, Minimiser)
                 Routes(0) = AStar.GetRoute
             End If
@@ -40,7 +35,8 @@
     End Sub
 
     Public Function UpdateAndGetCost(ByVal RoutePosition As RoutePosition)
-        Update(RoutePosition)
+        Update(RoutePosition, True)
+
         Dim TotalCost As Double = 0
         Select Case Minimiser
             Case RouteFindingMinimiser.DISTANCE
@@ -71,6 +67,8 @@
     End Sub
 
     Public Sub InsertWayPointOptimally(ByVal WayPoint As WayPoint)
+        'Update(True)
+
         Dim RIS As New RouteInsertionSolver(Me, WayPoint)
         Dim NewPlan As CourierPlan = RIS.GetPlan()
         If NewPlan IsNot Nothing Then

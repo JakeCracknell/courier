@@ -13,7 +13,6 @@
     Public Delayer As New Delayer
 
     Public VehicleSize As VehicleSize = AutomatedAgents.VehicleSize.CAR
-    Public VehicleCapacityUsed As Double = 0
     Public Plan As CourierPlan
     Protected Strategy As IAgentStrategy
 
@@ -31,14 +30,16 @@
         Dim NullRoute As Route = New Route(Map.NodesAdjacencyList.GetRandomPoint)
         Position = New RoutePosition(NullRoute)
 
-        Plan = New CourierPlan(Position.GetPoint, Map, RouteFindingMinimiser, GetVehicleCapacityLeft)
+        Plan = New CourierPlan(Position.GetPoint, Map, RouteFindingMinimiser, GetVehicleMaxCapacity)
         Position.Move(VehicleSize)
     End Sub
 
     Public Overridable Sub Move()
-        If VehicleCapacityUsed > GetVehicleMaxCapacity() Then
+        If Plan.CapacityLeft > GetVehicleMaxCapacity() Then
             'Throw New OverflowException
-            Debug.WriteLine("Vehicle is too full by: " & GetVehicleCapacityPercentage() & "%")
+            Debug.WriteLine("Vehicle is too full by: " & GetVehicleCapacityPercentage() * 100 & "%")
+        Else
+            'Debug.WriteLine(AgentName & " [" & "".PadRight((1 - Plan.CapacityLeft) * 60, "#") & "".PadRight(Plan.CapacityLeft * 60, " ") & "]")
         End If
 
         'Reroutes if needed. In the simple case, when a waypoint is reached
@@ -111,11 +112,11 @@
     End Function
 
     Public Function GetVehicleCapacityPercentage() As Double
-        Return VehicleCapacityUsed / GetVehicleMaxCapacity()
+        Return 1 - Plan.CapacityLeft / GetVehicleMaxCapacity()
     End Function
 
     Public Function GetVehicleCapacityLeft() As Double
-        Return GetVehicleMaxCapacity() - VehicleCapacityUsed
+        Return Plan.CapacityLeft
     End Function
 
     Public Function GetAverageKMH() As Double

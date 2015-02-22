@@ -50,7 +50,7 @@
         Dim PercentageTravelledTemp As Double = PercentageTravelled
         Dim DistanceLeftTemp As Double = DistanceIncrementMetres
         Do
-            Dim FullHopDistance As Double = Route.At(HopIndex).GetCost
+            Dim FullHopDistance As Double = Route.At(HopIndex).GetDistance
             Dim NextHopDistance As Double = FullHopDistance * (1 - PercentageTravelledTemp)
             If NextHopDistance > DistanceLeftTemp Then
                 PercentageTravelled = PercentageTravelledTemp + DistanceLeftTemp / FullHopDistance

@@ -7,10 +7,10 @@
     Function GetRandomColor() As Color
         Return Color.FromArgb(Rnd() * 255, Rnd() * 255, Rnd() * 255)
     End Function
-    Function GetDistance(ByVal Node1 As IPoint, ByVal Node2 As IPoint) As Double
-        Return GetDistance(Node1.GetLatitude, Node1.GetLongitude, Node2.GetLatitude, Node2.GetLongitude)
+    Function HaversineDistance(ByVal Node1 As IPoint, ByVal Node2 As IPoint) As Double
+        Return HaversineDistance(Node1.GetLatitude, Node1.GetLongitude, Node2.GetLatitude, Node2.GetLongitude)
     End Function
-    Function GetDistance(ByVal lat1 As Double, ByVal lon1 As Double, ByVal lat2 As Double, ByVal lon2 As Double) As Double
+    Function HaversineDistance(ByVal lat1 As Double, ByVal lon1 As Double, ByVal lat2 As Double, ByVal lon2 As Double) As Double
         Dim dDistance As Double
         Dim dLat1InRad As Double = lat1 * (Math.PI / 180.0)
         Dim dLong1InRad As Double = lon1 * (Math.PI / 180.0)

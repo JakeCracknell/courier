@@ -80,6 +80,10 @@
     End Function
 
     Public Function ApproximatelyEquals(ByVal Other As HopPosition) As Boolean
-        Return IsOnSameHop(Other) And GetDistance(Me, Other) < APPROXIMATElY_EQUALS_EPSILON
+        Return IsOnSameHop(Other) And HaversineDistance(Me, Other) < APPROXIMATElY_EQUALS_EPSILON
+    End Function
+
+    Public Overrides Function ToString() As String
+        Return Hop.Way.Name
     End Function
 End Class

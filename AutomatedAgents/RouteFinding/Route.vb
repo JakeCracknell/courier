@@ -46,7 +46,7 @@
         If TotalKM < 0 Then
             TotalKM = 0
             For Each Hop As Hop In Hops
-                TotalKM += Hop.GetCost
+                TotalKM += Hop.GetDistance
             Next
         End If
         Return TotalKM
