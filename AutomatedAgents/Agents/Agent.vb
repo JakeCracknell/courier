@@ -10,12 +10,11 @@
     Public Position As RoutePosition
     Public Map As StreetMap
     Public Color As Color
-
-    Public AssignedJobs As New List(Of CourierJob)
     Public Delayer As New Delayer
 
     Public VehicleSize As VehicleSize = AutomatedAgents.VehicleSize.CAR
     Public VehicleCapacityUsed As Double = 0
+    Public Plan As CourierPlan
     Protected Strategy As IAgentStrategy
 
     Public Sub New(ByVal Map As StreetMap, ByVal Color As Color)
@@ -31,7 +30,8 @@
 
         Dim NullRoute As Route = New Route(Map.NodesAdjacencyList.GetRandomPoint)
         Position = New RoutePosition(NullRoute)
-        'RoutePlan.Add(NullRoute)
+
+        Plan = New CourierPlan(Position.GetPoint, Map, RouteFindingMinimiser, GetVehicleCapacityLeft)
         Position.Move(VehicleSize)
     End Sub
 

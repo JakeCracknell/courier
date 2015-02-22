@@ -208,32 +208,53 @@
             Dim AgentIsWaiting As Boolean = Agent.Delayer.IsWaiting
 
             DrawAgent(Agent, grOverlay)
-            For Each Job As CourierJob In Agent.AssignedJobs
-                Dim PickupPt As Point = CC.GetPoint(Job.PickupPosition)
-                Dim DropOffPt As Point = CC.GetPoint(Job.OriginalDeliveryPosition)
-                Dim Brush As New SolidBrush(Agent.Color)
+            If False Then
+                'Dim Brush As New SolidBrush(Agent.Color)
+                'Dim RoutePen As New Pen(New SolidBrush(Agent.Color), 3)
+                'RoutePen.EndCap = Drawing2D.LineCap.ArrowAnchor
+                'For Each Job As CourierJob In Agent.AssignedJobs
+                '    Dim PickupPt As Point = CC.GetPoint(Job.PickupPosition)
+                '    Dim DropOffPt As Point = CC.GetPoint(Job.OriginalDeliveryPosition)
+
+                '    Dim Len2 As Integer = SPECIAL_NODE_DRAW_SIZE \ 2
+                '    If Job.Status = JobStatus.PENDING_PICKUP Then
+                '        DrawNodeRectangle(PickupPt, grOverlay)
+                '    ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
+                '        If AgentIsWaiting Then
+                '            DrawNodeRectangle(CC.GetPoint(Job.PickupPosition), grOverlay)
+                '        End If
+                '        If Job.DeliveryPosition.Equals(Job.OriginalDeliveryPosition) Then
+                '            grOverlay.FillRectangle(Brush, DropOffPt.X - 5, DropOffPt.Y - 5, 10, 10)
+                '        Else
+                '            'If rerouted to depot
+                '            grOverlay.DrawLine(DELIVERY_FAIL_CROSS_PEN, DropOffPt.X - 5, DropOffPt.Y - 5, DropOffPt.X + 5, DropOffPt.Y + 5)
+                '            grOverlay.DrawLine(DELIVERY_FAIL_CROSS_PEN, DropOffPt.X - 5, DropOffPt.Y + 5, DropOffPt.X + 5, DropOffPt.Y - 5)
+                '            grOverlay.DrawLine(RoutePen, DropOffPt, CC.GetPoint(Job.DeliveryPosition))
+                '        End If
+                '    End If
+
+                '    grOverlay.DrawLine(RoutePen, PickupPt, DropOffPt)
+                'Next
+            ElseIf False Then
                 Dim RoutePen As New Pen(New SolidBrush(Agent.Color), 3)
-                RoutePen.EndCap = Drawing2D.LineCap.ArrowAnchor
+                Dim LastPoint As Point = CC.GetPoint(Agent.Position.GetPoint)
+                For Each WP As WayPoint In Agent.Plan.WayPoints
+                    Dim Point As Point = CC.GetPoint(WP.Position)
+                    grOverlay.DrawLine(RoutePen, LastPoint, Point)
+                    LastPoint = Point
+                Next
+            Else
+                Dim RoutePen As New Pen(New SolidBrush(Agent.Color), 3)
+                Dim LastPoint As Point = CC.GetPoint(Agent.Position.GetPoint)
+                For Each Route As Route In Agent.Plan.Routes
+                    For Each Hop As Hop In Route.GetHopList
+                        Dim FromPoint As Point = CC.GetPoint(Hop.FromPoint)
+                        Dim ToPoint As Point = CC.GetPoint(Hop.ToPoint)
+                        grOverlay.DrawLine(RoutePen, FromPoint, ToPoint)
+                    Next
+                Next
+            End If
 
-                Dim Len2 As Integer = SPECIAL_NODE_DRAW_SIZE \ 2
-                If Job.Status = JobStatus.PENDING_PICKUP Then
-                    DrawNodeRectangle(PickupPt, grOverlay)
-                ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
-                    If AgentIsWaiting Then
-                        DrawNodeRectangle(CC.GetPoint(Job.PickupPosition), grOverlay)
-                    End If
-                    If Job.DeliveryPosition.Equals(Job.OriginalDeliveryPosition) Then
-                        grOverlay.FillRectangle(Brush, DropOffPt.X - 5, DropOffPt.Y - 5, 10, 10)
-                    Else
-                        'If rerouted to depot
-                        grOverlay.DrawLine(DELIVERY_FAIL_CROSS_PEN, DropOffPt.X - 5, DropOffPt.Y - 5, DropOffPt.X + 5, DropOffPt.Y + 5)
-                        grOverlay.DrawLine(DELIVERY_FAIL_CROSS_PEN, DropOffPt.X - 5, DropOffPt.Y + 5, DropOffPt.X + 5, DropOffPt.Y - 5)
-                        grOverlay.DrawLine(RoutePen, DropOffPt, CC.GetPoint(Job.DeliveryPosition))
-                    End If
-                End If
-
-                grOverlay.DrawLine(RoutePen, PickupPt, DropOffPt)
-            Next
 
         Next
 

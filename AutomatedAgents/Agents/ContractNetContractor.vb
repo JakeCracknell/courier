@@ -29,19 +29,18 @@
 
         Dim CurrentDrivingCost As Double = 0
         If Solver IsNot Nothing Then
-            Debug.Write(Solver.RouteCost & " -> ")
-            Solver.Reevaluate(Agent.Position.GetPoint)
-            CurrentDrivingCost = Solver.RouteCost
+            Debug.Write("Cost after updating plan: " & Solver.RouteCost & " -> ")
+            CurrentDrivingCost = Agent.Plan.UpdateAndGetCost(Agent.Position)
             Debug.WriteLine(CurrentDrivingCost)
         End If
 
-        TentativeSolver = New RouteInsertionSolver(Agent.Position.GetPoint, Solver, JobToReview, Agent.GetVehicleCapacityLeft, Agent.Map, Agent.RouteFindingMinimiser)
+        TentativeSolver = New RouteInsertionSolver(Agent.Plan, JobToReview)
 
-        If TentativeSolver.PointList Is Nothing Then
+        If TentativeSolver.GetPlan Is Nothing Then
             'Impossible to fit into schedule
             CurrentBid = NO_BID
         Else
-            CurrentBid = TentativeSolver.RouteCost - CurrentDrivingCost
+            CurrentBid = TentativeSolver.RouteCost
         End If
 
         JobToBeAwarded = JobToReview

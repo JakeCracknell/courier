@@ -73,13 +73,15 @@
   <ItemGroup>
     <Compile Include="Agents\Agent.vb" />
     <Compile Include="Agents\ContractNetContractor.vb" />
+    <Compile Include="Agents\CourierPlan.vb" />
     <Compile Include="Agents\Strategies\ContractNetStrategy.vb" />
     <Compile Include="Agents\Delayer.vb" />
     <Compile Include="Agents\Strategies\IAgentStrategy.vb" />
-    <Compile Include="Agents\Strategies\NearestNeighbourEuclidianStrategy.vb" />
-    <Compile Include="Agents\Strategies\NearestNeighbourAStarStrategy.vb" />
-    <Compile Include="Agents\Strategies\GreedyStrategy.vb" />
-    <Compile Include="Agents\Strategies\LazyStrategy.vb" />
+    <None Include="Agents\Strategies\NearestNeighbourEuclidianStrategy.vb" />
+    <None Include="Agents\Strategies\NearestNeighbourAStarStrategy.vb" />
+    <None Include="Agents\Strategies\GreedyStrategy.vb" />
+    <None Include="Agents\Strategies\LazyStrategy.vb" />
+    <Compile Include="Centralised\DebuggingDispatcher.vb" />
     <Compile Include="Centralised\IDispatcher.vb" />
     <Compile Include="Geography\Bounds.vb" />
     <Compile Include="Centralised\NoticeBoard.vb" />

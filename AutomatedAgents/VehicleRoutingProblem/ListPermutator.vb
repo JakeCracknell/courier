@@ -45,4 +45,14 @@
         Next
         Return Permutations
     End Function
+    Function GetAllListSingleInsertions(Of T)(ByVal InitialList As List(Of T), ByVal A As T) As List(Of List(Of T))
+        Dim Permutations As New List(Of List(Of T))
+        For AInsertionPoint = 0 To InitialList.Count
+            Dim List As New List(Of T)(InitialList.Count + 2)
+            List.AddRange(InitialList)
+            List.Insert(AInsertionPoint, A)
+            Permutations.Add(List)
+        Next
+        Return Permutations
+    End Function
 End Module

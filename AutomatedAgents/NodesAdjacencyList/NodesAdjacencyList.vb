@@ -57,6 +57,12 @@
         Return Node
     End Function
 
+    Function GetPointByNodeID(ByVal NodeID As Long) As HopPosition
+        Dim Row As NodesAdjacencyListRow = Rows(NodeID)
+        Dim Hop As New Hop(Row.NodeKey, Row.Cells(0))
+        Return New HopPosition(Hop, 0.5)
+    End Function
+
     Function GetRandomPoint() As HopPosition
         Dim NodeA As Node = Nothing
         Dim NodeB As Node = Nothing

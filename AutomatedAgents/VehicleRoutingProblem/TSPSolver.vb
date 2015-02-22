@@ -39,15 +39,15 @@
             Next
 
             'Calculate routes now
-            Dim AStarRoutes(Route.Count - 2) As AStarSearch
+            Dim AStarRoutes(Route.Count - 1) As Route
             Dim LastPoint As IPoint = Start
-            For i = 0 To Route.Count - 2
-                Dim IntermDict As Dictionary(Of IPoint, AStarSearch) = Nothing
+            For i = 0 To Route.Count - 1
+                Dim IntermDict As Dictionary(Of IPoint, Route) = Nothing
                 If Not RouteCache.TryGetValue(LastPoint, IntermDict) OrElse _
                     Not IntermDict.TryGetValue(Route(i).Position, AStarRoutes(i)) Then
-                    AStarRoutes(i) = New AStarSearch(LastPoint, Route(i).Position, Map.NodesAdjacencyList, Minimiser)
+                    AStarRoutes(i) = New AStarSearch(LastPoint, Route(i).Position, Map.NodesAdjacencyList, Minimiser).GetRoute
                     If Not RouteCache.ContainsKey(LastPoint) Then
-                        RouteCache.Add(LastPoint, New Dictionary(Of IPoint, AStarSearch))
+                        RouteCache.Add(LastPoint, New Dictionary(Of IPoint, Route))
                     End If
                     RouteCache(LastPoint).Add(Route(i).Position, AStarRoutes(i))
                 End If
@@ -56,7 +56,7 @@
             'Ensure it meets all the deadlines
             Dim TimeAdded As TimeSpan = NoticeBoard.CurrentTime 'Safe/cloned
             For i = 0 To Route.Count - 2
-                TimeAdded += AStarRoutes(i).GetRoute().GetEstimatedTime + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+                TimeAdded += AStarRoutes(i).GetEstimatedTime + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
                 If Route(i).Job.Deadline < TimeAdded Then
                     Continue For
                 End If
@@ -71,8 +71,8 @@
                 Case RouteFindingMinimiser.TIME_NO_TRAFFIC, RouteFindingMinimiser.TIME_WITH_TRAFFIC
                     Cost = TimeAdded.TotalMilliseconds
                 Case RouteFindingMinimiser.DISTANCE
-                    For Each AStar As AStarSearch In AStarRoutes
-                        Cost += AStar.GetRoute.GetKM
+                    For Each R As Route In AStarRoutes
+                        Cost += R.GetKM
                     Next
             End Select
             If Cost < BestRouteCost Then

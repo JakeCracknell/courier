@@ -37,8 +37,6 @@
         UnallocatedJobs.Remove(Job)
         Job.Status = JobStatus.PENDING_PICKUP
         UnpickedJobs.Add(Job)
-
-
     End Sub
 
     Function AddJob(ByVal Job As CourierJob)
@@ -71,7 +69,7 @@
             Debug.WriteLine("")
             If Winner IsNot Nothing Then
                 Winner.AwardJob()
-                UnallocatedJobs.RemoveAt(0)
+                AllocateJob(UnallocatedJobs(0))
             Else
                 Debug.WriteLine("Could not find a contractor for job")
                 UnallocatedJobs(0).Status = JobStatus.CANCELLED

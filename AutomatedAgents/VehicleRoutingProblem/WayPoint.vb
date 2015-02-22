@@ -1,5 +1,5 @@
 ﻿
-Class WayPoint
+Public Class WayPoint
     Public Predecessor As WayPoint
     Public Position As IPoint
     Public Job As CourierJob

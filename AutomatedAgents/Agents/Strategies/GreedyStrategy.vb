@@ -51,4 +51,8 @@
             Agent.AssignedJobs.Insert(0, BestJob)
         End If
     End Sub
+
+    Public Function GetRoutes() As List(Of HopPosition) Implements IAgentStrategy.GetRoutes
+        Return Nothing
+    End Function
 End Class

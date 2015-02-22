@@ -150,4 +150,8 @@
             PlannedJobRoute.RemoveAt(0)
         End If
     End Sub
+
+    Public Function GetRoutes() As List(Of HopPosition) Implements IAgentStrategy.GetRoutes
+        Return PlannedRoute
+    End Function
 End Class
