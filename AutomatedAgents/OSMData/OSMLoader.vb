@@ -79,8 +79,4 @@ Public Class OSMLoader
         Return Map
     End Function
 
-    Function BuildFuelLocationList(ByVal XDoc As XmlDocument) As List(Of Node)
-
-    End Function
-
 End Class

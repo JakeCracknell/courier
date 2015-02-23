@@ -62,19 +62,17 @@
             Dim BestBid As Double = Double.MaxValue
             For Each Contractor As ContractNetContractor In AvailableContractors
                 Dim Bid As Double = Contractor.GetBid
-                Debug.Write(Bid & ",")
                 If Bid <> ContractNetContractor.NO_BID AndAlso Bid < BestBid Then
                     BestBid = Bid
                     Winner = Contractor
                 End If
             Next
-            Debug.WriteLine("")
             If Winner IsNot Nothing Then
                 Winner.AwardJob()
                 AllocateJob(JobOffered)
                 JobOffered.CustomerFee = BestBid
             Else
-                Debug.WriteLine("Could not find a contractor for job")
+                'Debug.WriteLine("Could not find a contractor for job")
                 JobOffered.Status = JobStatus.CANCELLED
             End If
         End If
