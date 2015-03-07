@@ -55,7 +55,7 @@
 
     'Forces a complete replan
     'TODO: perhaps this could try to connect two disjoint route lists in different ways.
-    'DO NOT USE THIS FOR TESTING AND PLACING BIDS.
+    'Perhaps auction off jobs?
     Public Sub Replan(Optional AdditionalJob As CourierJob = Nothing)
         Throw New NotImplementedException
         'For i = WayPoints.Count - 1 To 0 Step -1

@@ -39,7 +39,7 @@
             HaversineDistance(PickupPosition, DeliveryPosition) * _
             DEFAULT_FEE_DISTANCE_MULTIPLIER,
                     NoticeBoard.CurrentTime.Add( _
-                    TimeSpan.FromSeconds(DEADLINE_OFFSET_MIN)))
+                    TimeSpan.FromSeconds(DEADLINE_OFFSET_MIN + ((DEADLINE_OFFSET_MAX - DEADLINE_OFFSET_MIN) * Rnd()))))
     End Sub
 
     'These functions return the time taken to collect/deliver. If the customer

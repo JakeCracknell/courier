@@ -1,12 +1,20 @@
 ﻿Module Utility
-    Public dEbUgVaRiAbLe As Object
+    Private SequentialColours() As Color = {Color.Blue, Color.Green, Color.Red, Color.Yellow, Color.Pink, Color.Purple, Color.Orange, Color.Brown, Color.Black, Color.Beige, Color.Violet}
+    Private SequentialColoursIndex As Integer = 0
 
-    'TODO: put this somewhere else:
-    Public Const MAX_POSSIBLE_SPEED_KMH As Integer = 112
-
+    Function GetSequentialColor() As Color
+        If SequentialColoursIndex < SequentialColours.Length Then
+            Dim Color As Color = SequentialColours(SequentialColoursIndex)
+            SequentialColoursIndex += 1
+            Return Color
+        Else
+            Return GetRandomColor()
+        End If
+    End Function
     Function GetRandomColor() As Color
         Return Color.FromArgb(Rnd() * 255, Rnd() * 255, Rnd() * 255)
     End Function
+
     Function HaversineDistance(ByVal Node1 As IPoint, ByVal Node2 As IPoint) As Double
         Return HaversineDistance(Node1.GetLatitude, Node1.GetLongitude, Node2.GetLatitude, Node2.GetLongitude)
     End Function

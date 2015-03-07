@@ -45,36 +45,38 @@ Public Class OSMLoader
 
         Map.NodesAdjacencyList.RemoveDisconnectedComponents()
 
-        'Find fuel locations
-        For Each xItem As XmlElement In xNodes
-            Dim xTags As XmlNodeList = xItem.GetElementsByTagName("tag")
-            For Each xTag As XmlElement In xTags
-                Dim AttributeName As String = xTag.GetAttribute("k")
-                If AttributeName = "amenity" Then
-                    Dim ValueName As String = xTag.GetAttribute("v")
-                    If ValueName = "fuel" Then
-                        Dim NodeRef As Long = xItem.GetAttribute("id")
-                        Dim Node As Node = NodeHashMap(NodeRef)
-                        Map.FuelNodes.Add(Map.NodesAdjacencyList.GetNearestNode(Node.Latitude, Node.Longitude))
-                    End If
-                End If
-            Next
-        Next
-        For Each xItem As XmlElement In xWays
-            Dim xTags As XmlNodeList = xItem.GetElementsByTagName("tag")
-            For Each xTag As XmlElement In xTags
-                Dim AttributeName As String = xTag.GetAttribute("k")
-                If AttributeName = "amenity" Then
-                    Dim ValueName As String = xTag.GetAttribute("v")
-                    If ValueName = "fuel" Then
-                        Dim xNd As XmlElement = xItem.SelectSingleNode("nd")
-                        Dim NodeRef As Long = xNd.GetAttribute("ref")
-                        Dim Node As Node = NodeHashMap(NodeRef)
-                        Map.FuelNodes.Add(Map.NodesAdjacencyList.GetNearestNode(Node.Latitude, Node.Longitude))
-                    End If
-                End If
-            Next
-        Next
+        ''Find fuel locations
+        'For Each xItem As XmlElement In xNodes
+        '    Dim xTags As XmlNodeList = xItem.GetElementsByTagName("tag")
+        '    For Each xTag As XmlElement In xTags
+        '        Dim AttributeName As String = xTag.GetAttribute("k")
+        '        If AttributeName = "amenity" Then
+        '            Dim ValueName As String = xTag.GetAttribute("v")
+        '            If ValueName = "fuel" Then
+        '                Dim NodeRef As Long = xItem.GetAttribute("id")
+        '                Dim Node As Node = NodeHashMap(NodeRef)
+        '                Map.FuelNodes.Add(Map.NodesAdjacencyList.GetNearestNode(Node.Latitude, Node.Longitude))
+        '            End If
+        '        End If
+        '    Next
+        'Next
+        'For Each xItem As XmlElement In xWays
+        '    Dim xTags As XmlNodeList = xItem.GetElementsByTagName("tag")
+        '    For Each xTag As XmlElement In xTags
+        '        Dim AttributeName As String = xTag.GetAttribute("k")
+        '        If AttributeName = "amenity" Then
+        '            Dim ValueName As String = xTag.GetAttribute("v")
+        '            If ValueName = "fuel" Then
+        '                Dim xNd As XmlElement = xItem.SelectSingleNode("nd")
+        '                Dim NodeRef As Long = xNd.GetAttribute("ref")
+        '                Dim Node As Node = NodeHashMap(NodeRef)
+        '                Map.FuelNodes.Add(Map.NodesAdjacencyList.GetNearestNode(Node.Latitude, Node.Longitude))
+        '            End If
+        '        End If
+        '    Next
+        'Next
+        Debug.WriteLine("Fuels: " & Map.FuelNodes.Count)
+
 
         Return Map
     End Function

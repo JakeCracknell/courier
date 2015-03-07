@@ -7,7 +7,7 @@
     Protected TIME_INCREMENT As TimeSpan = TimeSpan.FromSeconds(1)
 
     Overridable Sub AddAgent(ByVal Map As StreetMap)
-        Dim Agent As New Agent(Map, GetRandomColor)
+        Dim Agent As New Agent(Map, GetSequentialColor)
         Agents.Add(Agent)
     End Sub
 

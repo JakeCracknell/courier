@@ -2,7 +2,7 @@
     Inherits AASimulation
 
     Public Overrides Sub AddAgent(ByVal Map As StreetMap)
-        Dim Agent As New AgentAsync(Map, GetRandomColor)
+        Dim Agent As New AgentAsync(Map, GetSequentialColor)
         Agents.Add(Agent)
     End Sub
 
