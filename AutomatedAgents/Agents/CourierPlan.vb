@@ -95,4 +95,22 @@
         Return WP
     End Function
 
+    'TODO: broken
+    Sub ExtractCancelled()
+        Dim LastPoint As HopPosition = StartPoint
+        Dim Index As Integer = 0
+        Do While Index < WayPoints.Count
+            If WayPoints(Index).Job.Status = JobStatus.CANCELLED Then
+                WayPoints.RemoveAt(Index)
+                Routes.RemoveAt(Index)
+                If Index >= Routes.Count Then
+                    Exit Sub
+                End If
+                Routes(Index) = New AStarSearch(LastPoint, WayPoints(Index).Position, Map.NodesAdjacencyList, Minimiser).GetRoute
+            End If
+            LastPoint = WayPoints(Index).Position
+            Index += 1
+        Loop
+    End Sub
+
 End Class

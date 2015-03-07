@@ -33,7 +33,7 @@ Class ContractNetStrategy
                     Case JobStatus.PENDING_PICKUP
                         Agent.Delayer = New Delayer(Job.Collect())
                         If Job.Status = JobStatus.CANCELLED Then
-                            Agent.Plan.Replan()
+                            Agent.Plan.ExtractCancelled()
                         ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
                             Agent.Plan.CapacityLeft -= Job.CubicMetres
                         End If

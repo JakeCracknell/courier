@@ -85,7 +85,7 @@
     <Compile Include="Centralised\IDispatcher.vb" />
     <Compile Include="Geography\Bounds.vb" />
     <Compile Include="Centralised\NoticeBoard.vb" />
-    <Compile Include="Centralised\SimpleDispatcher.vb" />
+    <Compile Include="Geography\SimpleDispatcher.vb" />
     <Compile Include="Graphics\CoordinateConverter.vb" />
     <Compile Include="Agents\AgentAsync.vb" />
     <Compile Include="VehicleRoutingProblem\RouteInsertionSolver.vb" />
