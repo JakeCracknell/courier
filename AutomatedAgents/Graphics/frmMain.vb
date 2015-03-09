@@ -240,6 +240,31 @@
 
   
     Private Sub AgentPlansToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AgentPlansToolStripMenuItem.Click
-        MapGraphics.ConfigDrawAgentRoutes = AgentPlansToolStripMenuItem.Checked
+        MapGraphics.ConfigDrawAgentRoutes = -1
+        JobViewToolStripMenuItem.Checked = False
+        LineViewToolStripMenuItem.Checked = False
+        RouteFromToolStripMenuItem.Checked = False
+    End Sub
+
+    Private Sub JobViewToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles JobViewToolStripMenuItem.Click
+        MapGraphics.ConfigDrawAgentRoutes = If(JobViewToolStripMenuItem.Checked, 0, -1)
+        LineViewToolStripMenuItem.Checked = False
+        RouteFromToolStripMenuItem.Checked = False
+    End Sub
+
+    Private Sub LineViewToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LineViewToolStripMenuItem.Click
+        MapGraphics.ConfigDrawAgentRoutes = If(LineViewToolStripMenuItem.Checked, 1, -1)
+        JobViewToolStripMenuItem.Checked = False
+        RouteFromToolStripMenuItem.Checked = False
+    End Sub
+
+    Private Sub RouteViewToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RouteViewToolStripMenuItem.Click
+        MapGraphics.ConfigDrawAgentRoutes = If(RouteViewToolStripMenuItem.Checked, 2, -1)
+        JobViewToolStripMenuItem.Checked = False
+        LineViewToolStripMenuItem.Checked = False
+    End Sub
+
+    Private Sub DepotsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DepotsToolStripMenuItem.Click
+        MapGraphics.ConfigDrawDepots = DepotsToolStripMenuItem.Checked
     End Sub
 End Class

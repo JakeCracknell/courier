@@ -5,7 +5,7 @@
 
     'http://www.greenlogistics.org.uk/SiteResources/e6f341e0-125e-4f21-864a-97ebbafdbee2_JE-LRN%20-%20Failed%20deliveries%20-%20Presentation.pdf
     Private Const PROBABILITY_COLLECTION_SUCCESS As Double = 0.99
-    Private Const PROBABILITY_DELIVERY_SUCCESS As Double = 0.1 '0.9
+    Private Const PROBABILITY_DELIVERY_SUCCESS As Double = 0.9 '0.1 '0.9
 
     Public Const CUSTOMER_WAIT_TIME_MIN As Integer = 20 ' 20 sekonds
     Public Const CUSTOMER_WAIT_TIME_MAX As Integer = 2 * 60 ' 2 minutes
