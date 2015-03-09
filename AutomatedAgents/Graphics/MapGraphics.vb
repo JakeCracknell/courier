@@ -25,6 +25,7 @@
     Public ConfigDrawRoads As Integer = 1
     Public ConfigDrawAgentLines As Boolean = True
     Public ConfigDrawNodeLabels As Boolean = False
+    Public ConfigDrawAgentRoutes As Integer = 1
 
     Sub Resize(ByVal _Width As Integer, ByVal _Height As Integer, ByVal Bounds As Bounds)
         Width = _Width
@@ -84,6 +85,28 @@
         Return MapBitmapOriginal.Clone
     End Function
 
+    Sub DrawTriangle(ByVal gr As Graphics, ByVal Point As Point, ByVal Upwards As Boolean)
+        Dim y1 As Integer = Point.Y - AGENT_DRAW_SIZE \ 2
+        Dim y2 As Integer = Point.Y + AGENT_DRAW_SIZE \ 2
+        Dim x1 As Integer = Point.X - AGENT_DRAW_SIZE \ 2
+        Dim x2 As Integer = Point.X + AGENT_DRAW_SIZE \ 2
+        
+        Dim gp As New Drawing2D.GraphicsPath(Drawing2D.FillMode.Alternate)
+        If Upwards Then
+            Dim ptsArray As PointF() = {New Point(x1, y1), New Point(x2, y1), _
+                                    New Point(Point.X, y2), New Point(x1, y1)}
+            gp.AddLines(ptsArray)
+        Else
+            Dim ptsArray As PointF() = {New Point(x1, y2), New Point(x2, y2), _
+                                    New Point(Point.X, y1), New Point(x1, y2)}
+            gp.AddLines(ptsArray)
+
+        End If
+        gp.CloseFigure()
+        gr.FillPath(Brushes.Red, gp)
+        'gr.DrawLines(Pens.Black, ptsArray)
+    End Sub
+
     Sub DrawDepot(ByVal gr As Graphics)
         If NoticeBoard.DepotPoint IsNot Nothing Then
             Dim DepotPoint As Point = CC.GetPoint(NoticeBoard.DepotPoint)
@@ -101,8 +124,8 @@
     End Sub
 
     Sub DrawAgent(ByVal Agent As Agent, ByVal gr As Graphics)
-        If Agent.Position IsNot Nothing Then
-            Dim CurrentPoint As Point = CC.GetPoint(Agent.Position.GetPoint)
+        If Agent.Plan.RoutePosition IsNot Nothing Then
+            Dim CurrentPoint As Point = CC.GetPoint(Agent.Plan.RoutePosition.GetPoint)
             Dim Brush As New SolidBrush(Agent.Color)
             gr.FillPie(Brush, CInt(CurrentPoint.X - AGENT_DRAW_SIZE / 2), _
                            CInt(CurrentPoint.Y - AGENT_DRAW_SIZE / 2), _
@@ -110,7 +133,7 @@
                            CSng(Agent.Delayer.GetPercentage * 360))
 
             If ConfigDrawAgentLines Then
-                Dim TargetPoint As Point = CC.GetPoint(Agent.Position.GetEndPoint)
+                Dim TargetPoint As Point = CC.GetPoint(Agent.Plan.RoutePosition.GetEndPoint)
                 Dim Pen As New Pen(Agent.Color)
                 gr.DrawLine(Pen, CurrentPoint, TargetPoint)
             End If
@@ -208,44 +231,40 @@
             Dim AgentIsWaiting As Boolean = Agent.Delayer.IsWaiting
 
             DrawAgent(Agent, grOverlay)
-            If False Then
-                'Dim Brush As New SolidBrush(Agent.Color)
-                'Dim RoutePen As New Pen(New SolidBrush(Agent.Color), 3)
-                'RoutePen.EndCap = Drawing2D.LineCap.ArrowAnchor
-                'For Each Job As CourierJob In Agent.AssignedJobs
-                '    Dim PickupPt As Point = CC.GetPoint(Job.PickupPosition)
-                '    Dim DropOffPt As Point = CC.GetPoint(Job.OriginalDeliveryPosition)
-
-                '    Dim Len2 As Integer = SPECIAL_NODE_DRAW_SIZE \ 2
-                '    If Job.Status = JobStatus.PENDING_PICKUP Then
-                '        DrawNodeRectangle(PickupPt, grOverlay)
-                '    ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
-                '        If AgentIsWaiting Then
-                '            DrawNodeRectangle(CC.GetPoint(Job.PickupPosition), grOverlay)
-                '        End If
-                '        If Job.DeliveryPosition.Equals(Job.OriginalDeliveryPosition) Then
-                '            grOverlay.FillRectangle(Brush, DropOffPt.X - 5, DropOffPt.Y - 5, 10, 10)
-                '        Else
-                '            'If rerouted to depot
-                '            grOverlay.DrawLine(DELIVERY_FAIL_CROSS_PEN, DropOffPt.X - 5, DropOffPt.Y - 5, DropOffPt.X + 5, DropOffPt.Y + 5)
-                '            grOverlay.DrawLine(DELIVERY_FAIL_CROSS_PEN, DropOffPt.X - 5, DropOffPt.Y + 5, DropOffPt.X + 5, DropOffPt.Y - 5)
-                '            grOverlay.DrawLine(RoutePen, DropOffPt, CC.GetPoint(Job.DeliveryPosition))
-                '        End If
-                '    End If
-
-                '    grOverlay.DrawLine(RoutePen, PickupPt, DropOffPt)
-                'Next
-            ElseIf False Then
+            If True Then
+                Dim Brush As New SolidBrush(Agent.Color)
                 Dim RoutePen As New Pen(New SolidBrush(Agent.Color), 3)
-                Dim LastPoint As Point = CC.GetPoint(Agent.Position.GetPoint)
+                RoutePen.EndCap = Drawing2D.LineCap.ArrowAnchor
+                For Each WP As WayPoint In Agent.Plan.WayPoints
+                    Dim Point As Point = CC.GetPoint(WP.Position)
+                    DrawTriangle(grOverlay, Point, WP.VolumeDelta < 0)
+                    If WP.Predecessor IsNot Nothing Then
+                        Dim FromPoint As Point = CC.GetPoint(WP.Predecessor.Position)
+                        grOverlay.DrawLine(RoutePen, FromPoint, Point)
+                    End If
+                    '        If Job.DeliveryPosition.Equals(Job.OriginalDeliveryPosition) Then
+                    '            grOverlay.FillRectangle(Brush, DropOffPt.X - 5, DropOffPt.Y - 5, 10, 10)
+                    '        Else
+                    '            'If rerouted to depot
+                    '            grOverlay.DrawLine(DELIVERY_FAIL_CROSS_PEN, DropOffPt.X - 5, DropOffPt.Y - 5, DropOffPt.X + 5, DropOffPt.Y + 5)
+                    '            grOverlay.DrawLine(DELIVERY_FAIL_CROSS_PEN, DropOffPt.X - 5, DropOffPt.Y + 5, DropOffPt.X + 5, DropOffPt.Y - 5)
+                    '            grOverlay.DrawLine(RoutePen, DropOffPt, CC.GetPoint(Job.DeliveryPosition))
+                    '        End If
+                    '        End If
+
+                    'grOverlay.DrawLine(RoutePen, PickupPt, DropOffPt)
+                Next
+            ElseIf ConfigDrawAgentRoutes = 1 Then 'Simple straight lines for whole plan
+                Dim RoutePen As New Pen(New SolidBrush(Agent.Color), 3)
+                Dim LastPoint As Point = CC.GetPoint(Agent.Plan.RoutePosition.GetPoint)
                 For Each WP As WayPoint In Agent.Plan.WayPoints
                     Dim Point As Point = CC.GetPoint(WP.Position)
                     grOverlay.DrawLine(RoutePen, LastPoint, Point)
                     LastPoint = Point
                 Next
-            Else
+            ElseIf ConfigDrawAgentRoutes = 2 Then 'Complex routes for whole plan
                 Dim RoutePen As New Pen(New SolidBrush(Agent.Color), 3)
-                Dim LastPoint As Point = CC.GetPoint(Agent.Position.GetPoint)
+                Dim LastPoint As Point = CC.GetPoint(Agent.Plan.RoutePosition.GetPoint)
                 For Each Route As Route In Agent.Plan.Routes
                     For Each Hop As Hop In Route.GetHopList
                         Dim FromPoint As Point = CC.GetPoint(Hop.FromPoint)

@@ -86,6 +86,9 @@
                     LastPoint = If(i = 0, Start, Route(i - 1).Position)
                     'Hottest line ever!
                     AStarRoutes(i) = New AStarSearch(LastPoint, Route(i).Position, Map.NodesAdjacencyList, Minimiser).GetRoute
+                    If AStarRoutes(i) Is Nothing Then
+                        GoTo FailedPermutation
+                    End If
                     SyncLock RouteCache
                         If Not RouteCache.ContainsKey(LastPoint) Then
                             RouteCache.Add(LastPoint, New Dictionary(Of IPoint, Route))

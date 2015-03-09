@@ -6,25 +6,23 @@
     Property Map As StreetMap
     Property Minimiser As RouteFindingMinimiser
     Property CapacityLeft As Double = 0
-
-    Public Sub New(ByVal StartPoint As HopPosition, ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser, ByVal CapacityLeft As Double, ByVal WayPoints As List(Of WayPoint), ByVal RouteList As List(Of Route))
-        Me.StartPoint = StartPoint
-        Me.Map = Map
-        Me.Minimiser = Minimiser
-        Me.CapacityLeft = CapacityLeft
-        Me.WayPoints = WayPoints
-        Me.Routes = RouteList
-    End Sub
+    Property RoutePosition As RoutePosition
 
     Public Sub New(ByVal StartPoint As HopPosition, ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser, ByVal CapacityLeft As Double)
         Me.StartPoint = StartPoint
         Me.Map = Map
         Me.Minimiser = Minimiser
         Me.CapacityLeft = CapacityLeft
+        RoutePosition = New RoutePosition(New Route(StartPoint))
+    End Sub
+    Public Sub New(ByVal StartPoint As HopPosition, ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser, ByVal CapacityLeft As Double, ByVal WayPoints As List(Of WayPoint), ByVal RouteList As List(Of Route))
+        Me.New(StartPoint, Map, Minimiser, CapacityLeft)
+        Me.WayPoints = WayPoints
+        Me.Routes = RouteList
     End Sub
 
     'Agent has made progress on its plan, perhaps completing waypoints.
-    Public Sub Update(ByVal RoutePosition As RoutePosition, ByVal RecalculateFirstAStar As Boolean)
+    Public Sub Update(ByVal RecalculateFirstAStar As Boolean)
         If WayPoints.Count > 0 Then
             StartPoint = RoutePosition.GetPoint
             If RecalculateFirstAStar Then
@@ -34,8 +32,8 @@
         End If
     End Sub
 
-    Public Function UpdateAndGetCost(ByVal RoutePosition As RoutePosition)
-        Update(RoutePosition, True)
+    Public Function UpdateAndGetCost()
+        Update(True)
 
         Dim TotalCost As Double = 0
         Select Case Minimiser
@@ -82,7 +80,7 @@
 
     End Sub
 
-    Public Function FirstWayPointReached(ByVal RoutePosition As RoutePosition) As Boolean
+    Public Function FirstWayPointReached() As Boolean
         Return RoutePosition.GetPoint.ApproximatelyEquals(WayPoints(0).Position)
     End Function
 
@@ -95,7 +93,6 @@
         Return WP
     End Function
 
-    'TODO: broken
     Sub ExtractCancelled()
         Dim LastPoint As HopPosition = StartPoint
         Dim Index As Integer = 0

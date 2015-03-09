@@ -23,11 +23,11 @@ Class ContractNetStrategy
             Exit Sub
         End If
 
-        Agent.Plan.Update(Agent.Position, False)
+        Agent.Plan.Update(False)
 
         'If a route somewhere has just been completed...
-        If Agent.Position.RouteCompleted Then
-            If Agent.Plan.FirstWayPointReached(Agent.Position) Then
+        If Agent.Plan.RoutePosition.RouteCompleted Then
+            If Agent.Plan.FirstWayPointReached() Then
                 Dim Job As CourierJob = Agent.Plan.RemoveFirstWayPoint().Job
                 Select Case Job.Status
                     Case JobStatus.PENDING_PICKUP
@@ -43,6 +43,10 @@ Class ContractNetStrategy
                             Agent.Plan.CapacityLeft += Job.CubicMetres
                         ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
                             'Fail -> Depot
+                            Dim DepotWaypoint As New WayPoint() With {.DefinedStatus = JobStatus.PENDING_DELIVERY, _
+                                                                      .Job = Job, .Position = Job.DeliveryPosition, _
+                                                                      .VolumeDelta = Job.CubicMetres}
+                            Agent.Plan.InsertWayPointOptimally(DepotWaypoint)
                             'PlannedRoute(0) = Job.DeliveryPosition
                             'Agent.Plan.Replan()
                         End If
@@ -51,7 +55,7 @@ Class ContractNetStrategy
             End If
 
             If Agent.Plan.Routes.Count > 0 Then
-                Agent.Position = New RoutePosition(Agent.Plan.Routes(0))
+                Agent.Plan.RoutePosition = New RoutePosition(Agent.Plan.Routes(0))
             End If
         End If
     End Sub

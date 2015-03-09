@@ -13,7 +13,7 @@
         If AwaitingRoute Then
             If RouteFinder IsNot Nothing AndAlso RouteFinder.RoutingComplete Then
                 If RouteFinder.PlannedRoute IsNot Nothing Then
-                    Position = New RoutePosition(RouteFinder.PlannedRoute)
+                    Plan.RoutePosition = New RoutePosition(RouteFinder.PlannedRoute)
                     AwaitingRoute = False
                 Else
                     'This handles the case where the agent tried to route to a disconnected subgraph
@@ -30,19 +30,19 @@
             End If
         End If
 
-        If Position Is Nothing OrElse Position.RouteCompleted() Then
+        If Plan.RoutePosition Is Nothing OrElse Plan.RoutePosition.RouteCompleted() Then
             SetRouteTo(Map.NodesAdjacencyList.GetRandomPoint)
         Else
-            Dim DistanceTravelled As Double = Position.Move(VehicleSize)
+            Dim DistanceTravelled As Double = Plan.RoutePosition.Move(VehicleSize)
             TotalKMTravelled += DistanceTravelled
             DepleteFuel(DistanceTravelled)
-            CurrentSpeedKMH = Position.GetCurrentWay.GetMaxSpeedKMH(VehicleSize)
+            CurrentSpeedKMH = Plan.RoutePosition.GetCurrentWay.GetMaxSpeedKMH(VehicleSize)
         End If
 
     End Sub
 
     Public Overrides Sub SetRouteTo(ByVal DestinationPoint As IPoint)
-        Dim StartingPoint As IPoint = If(Position IsNot Nothing, Position.GetPoint, Map.NodesAdjacencyList.GetRandomPoint)
+        Dim StartingPoint As IPoint = If(Plan.RoutePosition IsNot Nothing, Plan.RoutePosition.GetPoint, Map.NodesAdjacencyList.GetRandomPoint)
         RouteFinder = New AsyncRouteFinder(StartingPoint, DestinationPoint, Map.NodesAdjacencyList)
         AwaitingRoute = True
     End Sub

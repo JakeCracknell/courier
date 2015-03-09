@@ -30,11 +30,9 @@
             End If
             DoAStar()
         Else
-            'Routing from A to A.
-            Console.Beep()
+            'Routing from A to A. This is acceptable 
+            Route = New Route(StartPoint)
         End If
-
-        'WHAT HAPPENS IF I ALLOW 0 LENGTH ROUTES? IN THE SAME WYA I ALLOW HP1->HP2?
     End Sub
 
     Private Sub DoAStar()

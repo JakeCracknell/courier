@@ -29,7 +29,7 @@
 
         Dim CurrentDrivingCost As Double = 0
         If Solver IsNot Nothing Then
-            CurrentDrivingCost = Agent.Plan.UpdateAndGetCost(Agent.Position)
+            CurrentDrivingCost = Agent.Plan.UpdateAndGetCost()
         End If
 
         TentativeSolver = New RouteInsertionSolver(Agent.Plan, JobToReview)

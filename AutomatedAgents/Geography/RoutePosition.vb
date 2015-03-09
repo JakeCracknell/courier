@@ -72,7 +72,7 @@
         Return Route Is Nothing OrElse (PercentageTravelled = 1 And HopIndex = Route.HopCount - 1)
     End Function
 
-    Function GetCurrentSpeed(VehicleSize As VehicleSize) As Double
+    Function GetCurrentSpeed(ByVal VehicleSize As VehicleSize) As Double
         Dim Way As Way = GetCurrentWay()
         If Way IsNot Nothing Then
             Return Way.GetMaxSpeedKMH(VehicleSize)

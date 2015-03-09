@@ -7,7 +7,7 @@
 
         lvAgentList.BeginUpdate()
         For i = 0 To AASimulation.Agents.Count - 1
-            Dim Position As RoutePosition = AASimulation.Agents(i).Position
+            Dim Position As RoutePosition = AASimulation.Agents(i).Plan.RoutePosition
             If Position IsNot Nothing Then
                 Dim Way As Way = Position.GetCurrentWay
                 DisplayLVCell(i, cAt, If(Way IsNot Nothing, Way.Name, ""))

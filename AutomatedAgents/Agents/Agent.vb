@@ -7,7 +7,6 @@
     Public CurrentSpeedKMH As Double = 0
     Public TotalKMTravelled As Double = 0
     Public TotalDrivingTime As Integer = 0
-    Public Position As RoutePosition
     Public Map As StreetMap
     Public Color As Color
     Public Delayer As New Delayer
@@ -27,27 +26,25 @@
         Strategy = New ContractNetStrategy(Me)
         Refuel()
 
-        Dim NullRoute As Route = New Route(Map.NodesAdjacencyList.GetRandomPoint)
-        Position = New RoutePosition(NullRoute)
-
-        Plan = New CourierPlan(Position.GetPoint, Map, RouteFindingMinimiser, GetVehicleMaxCapacity)
-        Position.Move(VehicleSize)
+        Plan = New CourierPlan(Map.NodesAdjacencyList.GetRandomPoint, Map, RouteFindingMinimiser, GetVehicleMaxCapacity)
+        Plan.RoutePosition.Move(VehicleSize)
     End Sub
 
     Public Overridable Sub Move()
         If Plan.CapacityLeft > GetVehicleMaxCapacity() Then
             'Throw New OverflowException
             Debug.WriteLine("Vehicle is too full by: " & GetVehicleCapacityPercentage() * 100 & "%")
-        Else
+        ElseIf Plan.WayPoints.Count = 0 AndAlso Plan.CapacityLeft <> GetVehicleMaxCapacity() Then
+            Debug.WriteLine("Capacity left is non-empty, but vehicle is empty: " & Plan.CapacityLeft)
             'Debug.WriteLine(AgentName & " [" & "".PadRight((1 - Plan.CapacityLeft) * 60, "#") & "".PadRight(Plan.CapacityLeft * 60, " ") & "]")
         End If
 
         'Reroutes if needed. In the simple case, when a waypoint is reached
         Strategy.Run()
 
-        If Not Position.RouteCompleted And Delayer.Tick() Then
-            Dim DistanceTravelled As Double = Position.Move(VehicleSize)
-            CurrentSpeedKMH = Position.GetCurrentSpeed(VehicleSize)
+        If Not Plan.RoutePosition.RouteCompleted And Delayer.Tick() Then
+            Dim DistanceTravelled As Double = Plan.RoutePosition.Move(VehicleSize)
+            CurrentSpeedKMH = Plan.RoutePosition.GetCurrentSpeed(VehicleSize)
             TotalKMTravelled += DistanceTravelled
             TotalDrivingTime += 1
             DepleteFuel(DistanceTravelled)

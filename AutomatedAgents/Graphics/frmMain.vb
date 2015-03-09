@@ -239,4 +239,7 @@
     End Sub
 
   
+    Private Sub AgentPlansToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AgentPlansToolStripMenuItem.Click
+        MapGraphics.ConfigDrawAgentRoutes = AgentPlansToolStripMenuItem.Checked
+    End Sub
 End Class
