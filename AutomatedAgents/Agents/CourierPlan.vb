@@ -110,4 +110,9 @@
         Loop
     End Sub
 
+    Function GetCurrentJobs() As List(Of CourierJob)
+        Return (From W In WayPoints
+               Where W.DefinedStatus = JobStatus.PENDING_DELIVERY
+               Select W.Job).ToList
+    End Function
 End Class

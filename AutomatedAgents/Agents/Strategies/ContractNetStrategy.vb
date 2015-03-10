@@ -40,6 +40,7 @@ Class ContractNetStrategy
                     Case JobStatus.PENDING_DELIVERY
                         Agent.Delayer = New Delayer(Job.Deliver())
                         If Job.Status = JobStatus.COMPLETED Then
+                            Agent.TotalCompletedJobs += 1
                             Agent.Plan.CapacityLeft += Job.CubicMetres
                         ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
                             'Fail -> Depot

@@ -1,28 +1,37 @@
 ﻿Public Class frmAgentStatus
     Private AASimulation As AASimulation
     Private Sub tmrAgentListView_Tick(sender As Object, e As EventArgs) Handles tmrAgentListView.Tick
-        If AASimulation.Agents.Count <> lvAgentList.Items.Count Then
-            SetAASimulation(AASimulation)
-        End If
-
-        lvAgentList.BeginUpdate()
-        For i = 0 To AASimulation.Agents.Count - 1
-            Dim Position As RoutePosition = AASimulation.Agents(i).Plan.RoutePosition
-            If Position IsNot Nothing Then
-                Dim Way As Way = Position.GetCurrentWay
-                DisplayLVCell(i, cAt, If(Way IsNot Nothing, Way.Name, ""))
-                'DisplayLVCell(i, cDestination, Position.GetEndPoint.ToString)
-                DisplayLVCell(i, cKMH, AASimulation.Agents(i).CurrentSpeedKMH)
+        Try
+            If AASimulation.Agents.Count <> lvAgentList.Items.Count Then
+                SetAASimulation(AASimulation)
             End If
 
-            DisplayLVCell(i, cJobs, AASimulation.Agents(i).Plan.WayPoints.Count)
-            DisplayLVCell(i, cVehicle, AASimulation.Agents(i).GetVehicleString())
-            DisplayLVCell(i, cAName, AASimulation.Agents(i).AgentName)
-            DisplayLVCell(i, cLitres, Math.Round(AASimulation.Agents(i).PetroleumLitres, 2))
-            DisplayLVCell(i, cTotalKM, Math.Round(AASimulation.Agents(i).TotalKMTravelled, 1))
-            DisplayLVCell(i, cFuelCost, FormatCurrency(AASimulation.Agents(i).FuelCosts))
-        Next
-        lvAgentList.EndUpdate()
+            lvAgentList.BeginUpdate()
+            For i = 0 To AASimulation.Agents.Count - 1
+                Dim Agent As Agent = AASimulation.Agents(i)
+                Dim Position As RoutePosition = Agent.Plan.RoutePosition
+                If Position IsNot Nothing Then
+                    Dim Way As Way = Position.GetCurrentWay
+                    DisplayLVCell(i, cAt, If(Way IsNot Nothing, Way.Name, ""))
+                    DisplayLVCell(i, cDestination, Position.GetEndPoint.ToString)
+                    DisplayLVCell(i, cKMH, Agent.CurrentSpeedKMH)
+                End If
+
+                DisplayLVCell(i, cJobs, Agent.Plan.WayPoints.Count)
+                DisplayLVCell(i, cVehicle, Agent.GetVehicleString())
+                DisplayLVCell(i, cAName, Agent.AgentName)
+                DisplayLVCell(i, cLitres, Math.Round(Agent.PetroleumLitres, 2))
+                DisplayLVCell(i, cTotalKM, Math.Round(Agent.TotalKMTravelled, 1))
+                DisplayLVCell(i, cFuelCost, FormatCurrency(Agent.FuelCosts))
+                DisplayLVCell(i, cCapacity, Math.Round(100 * Agent.GetVehicleCapacityPercentage, 1) & "%")
+                DisplayLVCell(i, cCompletedJobs, Agent.TotalCompletedJobs)
+            Next
+            lvAgentList.EndUpdate()
+        Catch ex As Exception
+            Debug.WriteLine(ex.ToString)
+            'TODO SOME SORT OF NULLPOINTER CAN HAPPEN HERE?
+        End Try
+
     End Sub
 
     Private Sub DisplayLVCell(ByVal Row As Integer, ByVal Column As ColumnHeader, ByVal Value As String)

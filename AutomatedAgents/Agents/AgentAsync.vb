@@ -31,6 +31,7 @@
         End If
 
         If Plan.RoutePosition Is Nothing OrElse Plan.RoutePosition.RouteCompleted() Then
+            TotalCompletedJobs += 1
             SetRouteTo(Map.NodesAdjacencyList.GetRandomPoint)
         Else
             Dim DistanceTravelled As Double = Plan.RoutePosition.Move(VehicleSize)

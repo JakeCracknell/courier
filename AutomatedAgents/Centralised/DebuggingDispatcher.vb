@@ -17,7 +17,7 @@
             Dim Railwayside As HopPosition = Map.NodesAdjacencyList.GetPointByNodeID(30947897)
 
 
-            Dim Job As New CourierJob(RosslynAve, Railwayside, 0.01)
+            Dim Job As New CourierJob(RosslynAve, Railwayside)
             NoticeBoard.AddJob(Job)
         End If
     End Sub

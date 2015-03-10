@@ -46,5 +46,15 @@
         Return Math.Sqrt((lat1 - lat2) ^ 2 + (lon1 - lon2) ^ 2) * 111.2
     End Function
 
-    
+    Public Function Gaussian(Optional mu As Double = 0, Optional sigma As Double = 1) As Double
+        Dim r As New Random
+        Dim u1 = r.NextDouble()
+        Dim u2 = r.NextDouble()
+
+        Dim rand_std_normal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2)
+
+        Dim rand_normal = mu + sigma * rand_std_normal
+
+        Return rand_normal
+    End Function
 End Module

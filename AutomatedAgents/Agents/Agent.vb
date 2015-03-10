@@ -7,6 +7,7 @@
     Public CurrentSpeedKMH As Double = 0
     Public TotalKMTravelled As Double = 0
     Public TotalDrivingTime As Integer = 0
+    Public TotalCompletedJobs As Integer = 0
     Public Map As StreetMap
     Public Color As Color
     Public Delayer As New Delayer

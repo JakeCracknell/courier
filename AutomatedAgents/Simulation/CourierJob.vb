@@ -2,19 +2,11 @@
     'By default £2 + 20p/km
     Private Const DEFAULT_FEE_BASE As Double = 2
     Private Const DEFAULT_FEE_DISTANCE_MULTIPLIER As Double = 0.2
-
-    'http://www.greenlogistics.org.uk/SiteResources/e6f341e0-125e-4f21-864a-97ebbafdbee2_JE-LRN%20-%20Failed%20deliveries%20-%20Presentation.pdf
-    Private Const PROBABILITY_COLLECTION_SUCCESS As Double = 0.99
-    Private Const PROBABILITY_DELIVERY_SUCCESS As Double = 0.9 '0.1 '0.9
-
     Public Const CUSTOMER_WAIT_TIME_MIN As Integer = 20 ' 20 sekonds
     Public Const CUSTOMER_WAIT_TIME_MAX As Integer = 2 * 60 ' 2 minutes
     Public Const CUSTOMER_WAIT_TIME_AVG As Integer = _
         (CUSTOMER_WAIT_TIME_MAX + CUSTOMER_WAIT_TIME_MIN) / 2
 
-    'TODO: refactor and use System.Date instead
-    Private Const DEADLINE_OFFSET_MIN As Integer = 30 * 60 ' 30 minutes
-    Private Const DEADLINE_OFFSET_MAX As Integer = 5 * 60 * 60 ' 5 hours
     Private Const DEADLINE_TO_DEPOT As Integer = 60 * 60 * 12 ' 12 hours
 
     Public PickupPosition As HopPosition
@@ -33,13 +25,14 @@
         Me.CustomerFee = Math.Round(Fee, 2)
         Me.Deadline = Deadline
     End Sub
-    Sub New(ByVal PickupPosition As HopPosition, ByVal DeliveryPosition As HopPosition, ByVal Size As Double)
-        Me.New(PickupPosition, DeliveryPosition, Size, _
+    Sub New(ByVal PickupPosition As HopPosition, ByVal DeliveryPosition As HopPosition)
+        Me.New(PickupPosition, DeliveryPosition, _
+               Math.Max(SimulationParameters.CubicMetresMin, Gaussian(SimulationParameters.CubicMetresAverage)), _
             DEFAULT_FEE_BASE + _
             HaversineDistance(PickupPosition, DeliveryPosition) * _
             DEFAULT_FEE_DISTANCE_MULTIPLIER,
                     NoticeBoard.CurrentTime.Add( _
-                    TimeSpan.FromSeconds(DEADLINE_OFFSET_MIN + ((DEADLINE_OFFSET_MAX - DEADLINE_OFFSET_MIN) * Rnd()))))
+                    TimeSpan.FromMinutes(Gaussian(SimulationParameters.DeadlineAverage))))
     End Sub
 
     'These functions return the time taken to collect/deliver. If the customer
@@ -48,7 +41,7 @@
     'refund given or rerouted to the depot at some time (no deadline).
     Function Collect() As Integer
         Debug.Assert(Status = JobStatus.PENDING_PICKUP)
-        If Rnd() < PROBABILITY_COLLECTION_SUCCESS Then
+        If Rnd() > SimulationParameters.ProbPickupFail Then
             Status = JobStatus.PENDING_DELIVERY
             Return GenerateRandomWaitTime()
         End If
@@ -62,7 +55,7 @@
         If DeliveryPosition.Equals(NoticeBoard.DepotPoint) Then
             Status = JobStatus.COMPLETED
             Return CUSTOMER_WAIT_TIME_MIN
-        ElseIf Rnd() < PROBABILITY_DELIVERY_SUCCESS Then
+        ElseIf Rnd() > SimulationParameters.ProbDeliveryFail Then
             Status = JobStatus.COMPLETED
             If Deadline < NoticeBoard.CurrentTime Then
                 'Still happens occasionally.
@@ -90,6 +83,7 @@
         CustomerFee = 0
     End Sub
 
+    'Uniform distribution
     Private Function GenerateRandomWaitTime()
         Return New Random().Next(CUSTOMER_WAIT_TIME_MIN, CUSTOMER_WAIT_TIME_MAX)
     End Function

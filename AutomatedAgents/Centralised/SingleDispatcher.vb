@@ -10,8 +10,7 @@ Class SingleDispatcher
     Sub Tick() Implements IDispatcher.Tick
         If NoticeBoard.IncompleteJobs.Count = 0 Then
             Dim Job As New CourierJob(Map.NodesAdjacencyList.GetRandomPoint, _
-                                   Map.NodesAdjacencyList.GetRandomPoint, _
-                                   Rnd() * 0.5)
+                                   Map.NodesAdjacencyList.GetRandomPoint)
             NoticeBoard.AddJob(Job)
         End If
     End Sub

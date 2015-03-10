@@ -44,17 +44,17 @@ Partial Class frmParameters
         Me.TextBox6 = New System.Windows.Forms.TextBox()
         Me.TrackBar6 = New System.Windows.Forms.TrackBar()
         Me.Label8 = New System.Windows.Forms.Label()
-        Me.TextBox5 = New System.Windows.Forms.TextBox()
-        Me.TrackBar5 = New System.Windows.Forms.TrackBar()
+        Me.txtFailedDelivery = New System.Windows.Forms.TextBox()
+        Me.tbFailedDelivery = New System.Windows.Forms.TrackBar()
         Me.Label7 = New System.Windows.Forms.Label()
-        Me.TextBox4 = New System.Windows.Forms.TextBox()
-        Me.TrackBar4 = New System.Windows.Forms.TrackBar()
+        Me.txtFailedPickup = New System.Windows.Forms.TextBox()
+        Me.tbFailedPickup = New System.Windows.Forms.TrackBar()
         Me.Label6 = New System.Windows.Forms.Label()
-        Me.TextBox3 = New System.Windows.Forms.TextBox()
-        Me.TrackBar3 = New System.Windows.Forms.TrackBar()
+        Me.txtCubicMetres = New System.Windows.Forms.TextBox()
+        Me.tbCubicMetres = New System.Windows.Forms.TrackBar()
         Me.Label5 = New System.Windows.Forms.Label()
-        Me.TextBox2 = New System.Windows.Forms.TextBox()
-        Me.TrackBar2 = New System.Windows.Forms.TrackBar()
+        Me.txtDeadlines = New System.Windows.Forms.TextBox()
+        Me.tbDeadlines = New System.Windows.Forms.TrackBar()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.txtDispatchRate = New System.Windows.Forms.TextBox()
         Me.tbDispatchRate = New System.Windows.Forms.TrackBar()
@@ -73,10 +73,10 @@ Partial Class frmParameters
         CType(Me.TrackBar8, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TrackBar7, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TrackBar6, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.TrackBar5, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.TrackBar4, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.TrackBar3, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.TrackBar2, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.tbFailedDelivery, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.tbFailedPickup, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.tbCubicMetres, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.tbDeadlines, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbDispatchRate, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbSimSpeed, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbGraphicsRefreshRate, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -109,17 +109,17 @@ Partial Class frmParameters
         Me.TableLayoutPanel1.Controls.Add(Me.TextBox6, 2, 7)
         Me.TableLayoutPanel1.Controls.Add(Me.TrackBar6, 1, 7)
         Me.TableLayoutPanel1.Controls.Add(Me.Label8, 0, 7)
-        Me.TableLayoutPanel1.Controls.Add(Me.TextBox5, 2, 6)
-        Me.TableLayoutPanel1.Controls.Add(Me.TrackBar5, 1, 6)
+        Me.TableLayoutPanel1.Controls.Add(Me.txtFailedDelivery, 2, 6)
+        Me.TableLayoutPanel1.Controls.Add(Me.tbFailedDelivery, 1, 6)
         Me.TableLayoutPanel1.Controls.Add(Me.Label7, 0, 6)
-        Me.TableLayoutPanel1.Controls.Add(Me.TextBox4, 2, 5)
-        Me.TableLayoutPanel1.Controls.Add(Me.TrackBar4, 1, 5)
+        Me.TableLayoutPanel1.Controls.Add(Me.txtFailedPickup, 2, 5)
+        Me.TableLayoutPanel1.Controls.Add(Me.tbFailedPickup, 1, 5)
         Me.TableLayoutPanel1.Controls.Add(Me.Label6, 0, 5)
-        Me.TableLayoutPanel1.Controls.Add(Me.TextBox3, 2, 4)
-        Me.TableLayoutPanel1.Controls.Add(Me.TrackBar3, 1, 4)
+        Me.TableLayoutPanel1.Controls.Add(Me.txtCubicMetres, 2, 4)
+        Me.TableLayoutPanel1.Controls.Add(Me.tbCubicMetres, 1, 4)
         Me.TableLayoutPanel1.Controls.Add(Me.Label5, 0, 4)
-        Me.TableLayoutPanel1.Controls.Add(Me.TextBox2, 2, 3)
-        Me.TableLayoutPanel1.Controls.Add(Me.TrackBar2, 1, 3)
+        Me.TableLayoutPanel1.Controls.Add(Me.txtDeadlines, 2, 3)
+        Me.TableLayoutPanel1.Controls.Add(Me.tbDeadlines, 1, 3)
         Me.TableLayoutPanel1.Controls.Add(Me.Label4, 0, 3)
         Me.TableLayoutPanel1.Controls.Add(Me.txtDispatchRate, 2, 2)
         Me.TableLayoutPanel1.Controls.Add(Me.tbDispatchRate, 1, 2)
@@ -375,26 +375,25 @@ Partial Class frmParameters
         Me.Label8.Text = "Graphics Refresh Rate (ms)"
         Me.Label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'TextBox5
+        'txtFailedDelivery
         '
-        Me.TextBox5.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TextBox5.Location = New System.Drawing.Point(301, 171)
-        Me.TextBox5.Name = "TextBox5"
-        Me.TextBox5.Size = New System.Drawing.Size(65, 20)
-        Me.TextBox5.TabIndex = 20
+        Me.txtFailedDelivery.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.txtFailedDelivery.Location = New System.Drawing.Point(301, 171)
+        Me.txtFailedDelivery.Name = "txtFailedDelivery"
+        Me.txtFailedDelivery.Size = New System.Drawing.Size(65, 20)
+        Me.txtFailedDelivery.TabIndex = 20
         '
-        'TrackBar5
+        'tbFailedDelivery
         '
-        Me.TrackBar5.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TrackBar5.Location = New System.Drawing.Point(152, 171)
-        Me.TrackBar5.Maximum = 5000
-        Me.TrackBar5.Minimum = 10
-        Me.TrackBar5.Name = "TrackBar5"
-        Me.TrackBar5.Size = New System.Drawing.Size(143, 22)
-        Me.TrackBar5.TabIndex = 19
-        Me.TrackBar5.TickFrequency = 0
-        Me.TrackBar5.TickStyle = System.Windows.Forms.TickStyle.None
-        Me.TrackBar5.Value = 10
+        Me.tbFailedDelivery.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tbFailedDelivery.Location = New System.Drawing.Point(152, 171)
+        Me.tbFailedDelivery.Maximum = 100
+        Me.tbFailedDelivery.Name = "tbFailedDelivery"
+        Me.tbFailedDelivery.Size = New System.Drawing.Size(143, 22)
+        Me.tbFailedDelivery.TabIndex = 19
+        Me.tbFailedDelivery.TickFrequency = 0
+        Me.tbFailedDelivery.TickStyle = System.Windows.Forms.TickStyle.None
+        Me.tbFailedDelivery.Value = 10
         '
         'Label7
         '
@@ -404,29 +403,28 @@ Partial Class frmParameters
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(143, 28)
         Me.Label7.TabIndex = 18
-        Me.Label7.Text = "Graphics Refresh Rate (ms)"
+        Me.Label7.Text = "Prob of Failed Delivery"
         Me.Label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'TextBox4
+        'txtFailedPickup
         '
-        Me.TextBox4.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TextBox4.Location = New System.Drawing.Point(301, 143)
-        Me.TextBox4.Name = "TextBox4"
-        Me.TextBox4.Size = New System.Drawing.Size(65, 20)
-        Me.TextBox4.TabIndex = 17
+        Me.txtFailedPickup.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.txtFailedPickup.Location = New System.Drawing.Point(301, 143)
+        Me.txtFailedPickup.Name = "txtFailedPickup"
+        Me.txtFailedPickup.Size = New System.Drawing.Size(65, 20)
+        Me.txtFailedPickup.TabIndex = 17
         '
-        'TrackBar4
+        'tbFailedPickup
         '
-        Me.TrackBar4.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TrackBar4.Location = New System.Drawing.Point(152, 143)
-        Me.TrackBar4.Maximum = 5000
-        Me.TrackBar4.Minimum = 10
-        Me.TrackBar4.Name = "TrackBar4"
-        Me.TrackBar4.Size = New System.Drawing.Size(143, 22)
-        Me.TrackBar4.TabIndex = 16
-        Me.TrackBar4.TickFrequency = 0
-        Me.TrackBar4.TickStyle = System.Windows.Forms.TickStyle.None
-        Me.TrackBar4.Value = 10
+        Me.tbFailedPickup.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tbFailedPickup.Location = New System.Drawing.Point(152, 143)
+        Me.tbFailedPickup.Maximum = 100
+        Me.tbFailedPickup.Name = "tbFailedPickup"
+        Me.tbFailedPickup.Size = New System.Drawing.Size(143, 22)
+        Me.tbFailedPickup.TabIndex = 16
+        Me.tbFailedPickup.TickFrequency = 0
+        Me.tbFailedPickup.TickStyle = System.Windows.Forms.TickStyle.None
+        Me.tbFailedPickup.Value = 1
         '
         'Label6
         '
@@ -436,29 +434,29 @@ Partial Class frmParameters
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(143, 28)
         Me.Label6.TabIndex = 15
-        Me.Label6.Text = "Graphics Refresh Rate (ms)"
+        Me.Label6.Text = "Prob of Failed Pickup"
         Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'TextBox3
+        'txtCubicMetres
         '
-        Me.TextBox3.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TextBox3.Location = New System.Drawing.Point(301, 115)
-        Me.TextBox3.Name = "TextBox3"
-        Me.TextBox3.Size = New System.Drawing.Size(65, 20)
-        Me.TextBox3.TabIndex = 14
+        Me.txtCubicMetres.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.txtCubicMetres.Location = New System.Drawing.Point(301, 115)
+        Me.txtCubicMetres.Name = "txtCubicMetres"
+        Me.txtCubicMetres.Size = New System.Drawing.Size(65, 20)
+        Me.txtCubicMetres.TabIndex = 14
         '
-        'TrackBar3
+        'tbCubicMetres
         '
-        Me.TrackBar3.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TrackBar3.Location = New System.Drawing.Point(152, 115)
-        Me.TrackBar3.Maximum = 5000
-        Me.TrackBar3.Minimum = 10
-        Me.TrackBar3.Name = "TrackBar3"
-        Me.TrackBar3.Size = New System.Drawing.Size(143, 22)
-        Me.TrackBar3.TabIndex = 13
-        Me.TrackBar3.TickFrequency = 0
-        Me.TrackBar3.TickStyle = System.Windows.Forms.TickStyle.None
-        Me.TrackBar3.Value = 10
+        Me.tbCubicMetres.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tbCubicMetres.Location = New System.Drawing.Point(152, 115)
+        Me.tbCubicMetres.Maximum = 500
+        Me.tbCubicMetres.Minimum = 1
+        Me.tbCubicMetres.Name = "tbCubicMetres"
+        Me.tbCubicMetres.Size = New System.Drawing.Size(143, 22)
+        Me.tbCubicMetres.TabIndex = 13
+        Me.tbCubicMetres.TickFrequency = 0
+        Me.tbCubicMetres.TickStyle = System.Windows.Forms.TickStyle.None
+        Me.tbCubicMetres.Value = 3
         '
         'Label5
         '
@@ -468,29 +466,29 @@ Partial Class frmParameters
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(143, 28)
         Me.Label5.TabIndex = 12
-        Me.Label5.Text = "Graphics Refresh Rate (ms)"
+        Me.Label5.Text = "Average Size (m3)"
         Me.Label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'TextBox2
+        'txtDeadlines
         '
-        Me.TextBox2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TextBox2.Location = New System.Drawing.Point(301, 87)
-        Me.TextBox2.Name = "TextBox2"
-        Me.TextBox2.Size = New System.Drawing.Size(65, 20)
-        Me.TextBox2.TabIndex = 11
+        Me.txtDeadlines.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.txtDeadlines.Location = New System.Drawing.Point(301, 87)
+        Me.txtDeadlines.Name = "txtDeadlines"
+        Me.txtDeadlines.Size = New System.Drawing.Size(65, 20)
+        Me.txtDeadlines.TabIndex = 11
         '
-        'TrackBar2
+        'tbDeadlines
         '
-        Me.TrackBar2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TrackBar2.Location = New System.Drawing.Point(152, 87)
-        Me.TrackBar2.Maximum = 5000
-        Me.TrackBar2.Minimum = 10
-        Me.TrackBar2.Name = "TrackBar2"
-        Me.TrackBar2.Size = New System.Drawing.Size(143, 22)
-        Me.TrackBar2.TabIndex = 10
-        Me.TrackBar2.TickFrequency = 0
-        Me.TrackBar2.TickStyle = System.Windows.Forms.TickStyle.None
-        Me.TrackBar2.Value = 10
+        Me.tbDeadlines.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tbDeadlines.Location = New System.Drawing.Point(152, 87)
+        Me.tbDeadlines.Maximum = 1440
+        Me.tbDeadlines.Minimum = 1
+        Me.tbDeadlines.Name = "tbDeadlines"
+        Me.tbDeadlines.Size = New System.Drawing.Size(143, 22)
+        Me.tbDeadlines.TabIndex = 10
+        Me.tbDeadlines.TickFrequency = 0
+        Me.tbDeadlines.TickStyle = System.Windows.Forms.TickStyle.None
+        Me.tbDeadlines.Value = 10
         '
         'Label4
         '
@@ -500,7 +498,7 @@ Partial Class frmParameters
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(143, 28)
         Me.Label4.TabIndex = 9
-        Me.Label4.Text = "Graphics Refresh Rate (ms)"
+        Me.Label4.Text = "Average Deadline (min)"
         Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtDispatchRate
@@ -606,7 +604,7 @@ Partial Class frmParameters
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
         Me.Name = "frmParameters"
-        Me.Text = "Set Speed"
+        Me.Text = "Simulation Parameters"
         Me.TopMost = True
         Me.TableLayoutPanel1.ResumeLayout(False)
         Me.TableLayoutPanel1.PerformLayout()
@@ -617,10 +615,10 @@ Partial Class frmParameters
         CType(Me.TrackBar8, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.TrackBar7, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.TrackBar6, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.TrackBar5, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.TrackBar4, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.TrackBar3, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.TrackBar2, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.tbFailedDelivery, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.tbFailedPickup, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.tbCubicMetres, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.tbDeadlines, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbDispatchRate, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbSimSpeed, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbGraphicsRefreshRate, System.ComponentModel.ISupportInitialize).EndInit()
@@ -655,17 +653,17 @@ Partial Class frmParameters
     Friend WithEvents TextBox6 As System.Windows.Forms.TextBox
     Friend WithEvents TrackBar6 As System.Windows.Forms.TrackBar
     Friend WithEvents Label8 As System.Windows.Forms.Label
-    Friend WithEvents TextBox5 As System.Windows.Forms.TextBox
-    Friend WithEvents TrackBar5 As System.Windows.Forms.TrackBar
+    Friend WithEvents txtFailedDelivery As System.Windows.Forms.TextBox
+    Friend WithEvents tbFailedDelivery As System.Windows.Forms.TrackBar
     Friend WithEvents Label7 As System.Windows.Forms.Label
-    Friend WithEvents TextBox4 As System.Windows.Forms.TextBox
-    Friend WithEvents TrackBar4 As System.Windows.Forms.TrackBar
+    Friend WithEvents txtFailedPickup As System.Windows.Forms.TextBox
+    Friend WithEvents tbFailedPickup As System.Windows.Forms.TrackBar
     Friend WithEvents Label6 As System.Windows.Forms.Label
-    Friend WithEvents TextBox3 As System.Windows.Forms.TextBox
-    Friend WithEvents TrackBar3 As System.Windows.Forms.TrackBar
+    Friend WithEvents txtCubicMetres As System.Windows.Forms.TextBox
+    Friend WithEvents tbCubicMetres As System.Windows.Forms.TrackBar
     Friend WithEvents Label5 As System.Windows.Forms.Label
-    Friend WithEvents TextBox2 As System.Windows.Forms.TextBox
-    Friend WithEvents TrackBar2 As System.Windows.Forms.TrackBar
+    Friend WithEvents txtDeadlines As System.Windows.Forms.TextBox
+    Friend WithEvents tbDeadlines As System.Windows.Forms.TrackBar
     Friend WithEvents Label4 As System.Windows.Forms.Label
     Friend WithEvents txtDispatchRate As System.Windows.Forms.TextBox
     Friend WithEvents tbDispatchRate As System.Windows.Forms.TrackBar
