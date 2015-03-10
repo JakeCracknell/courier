@@ -65,16 +65,16 @@
     End Sub
 
     Public Sub InsertWayPointOptimally(ByVal WayPoint As WayPoint)
-        'Update(True)
-
         Dim RIS As New RouteInsertionSolver(Me, WayPoint)
         Dim NewPlan As CourierPlan = RIS.GetPlan()
         If NewPlan IsNot Nothing Then
             WayPoints = NewPlan.WayPoints
             Routes = NewPlan.Routes
         Else
-            Debug.WriteLine("Could not insert a waypoint optimally")
-            Routes.Add(New AStarSearch(WayPoints.Last.Position, WayPoint.Position, Map.NodesAdjacencyList, Minimiser).GetRoute)
+            'TODO need to replan - no other way around it.
+            Debug.WriteLine("Could not insert a waypoint optimally - trying to fit in at the end, despite " & CapacityLeft & "m3 left")
+            Dim StartPoint As HopPosition = If(WayPoints.Count > 0, WayPoints.Last.Position, RoutePosition.GetPoint)
+            Routes.Add(New AStarSearch(StartPoint, WayPoint.Position, Map.NodesAdjacencyList, Minimiser).GetRoute)
             WayPoints.Add(WayPoint)
         End If
 
