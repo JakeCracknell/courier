@@ -10,6 +10,7 @@
     'On form load, add menu items to load each som file, spawn agents.
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles Me.Load
         Randomize()
+        bwSimulator.RunWorkerAsync()
         For Each File As String In OSMFileSystemManager.GetAllFilenames()
             Dim LoadMenuItem As New ToolStripMenuItem(LOAD_TSMI_TEXT_PREFIX & File)
             AddHandler LoadMenuItem.Click, AddressOf LoadToolStripMenuItem_Click
@@ -31,7 +32,7 @@
     End Sub
 
     Private Sub LoadToolStripMenuItem_Click(sender As Object, e As EventArgs)
-        AASimulation = Nothing 'Cancels previous sims/playgrounds if any.
+        CancelSimulation()
 
         Dim FileName As String = CType(sender, ToolStripMenuItem).Text.Replace(LOAD_TSMI_TEXT_PREFIX, "")
         FileName = OSMFileSystemManager.GetFilePathFromName(FileName)
@@ -57,23 +58,34 @@
     Private Sub AgentToolStripMenuItem_Click(sender As Object, e As EventArgs)
         If Map IsNot Nothing AndAlso AASimulation IsNot Nothing Then
             Dim Amount As Integer = CInt(CType(sender, ToolStripMenuItem).Text.Replace(AGENT_TSMI_TEXT_PREFIX, ""))
-            For i = 1 To Amount
-                AASimulation.AddAgent(Map)
-            Next
+            SyncLock AASimulation
+                For i = 1 To Amount
+                    AASimulation.AddAgent(Map)
+                Next
+            End SyncLock
         Else
             MsgBox("Map is not loaded or simulation has not started")
         End If
     End Sub
-
+    Private Sub bwSimulator_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles bwSimulator.DoWork
+        While True
+            If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
+                SyncLock AASimulation
+                    Dim SimulationStateChanged As Boolean = False
+                    For i = 1 To Math.Max(1, SimulationParameters.SimulationSpeed / (1000 / SimulationParameters.DisplayRefreshSpeed))
+                        SimulationStateChanged = SimulationStateChanged Or AASimulation.Tick()
+                    Next
+                End SyncLock
+            End If
+        End While
+    End Sub
 
     Private Sub tmrAgents_Tick(sender As Object, e As EventArgs) Handles tmrAgents.Tick
         If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
             SelectionMode = MapSelectionMode.AGENTS_ALL_ROUTE_TO
-            Dim SimulationStateChanged As Boolean = False
-            For i = 1 To Math.Max(1, SimulationParameters.SimulationSpeed / (1000 / SimulationParameters.DisplayRefreshSpeed))
-                SimulationStateChanged = SimulationStateChanged Or AASimulation.Tick()
-            Next
-            SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, NoticeBoard.IncompleteJobs))
+            SyncLock AASimulation
+                SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, NoticeBoard.IncompleteJobs))
+            End SyncLock
         End If
         tmrAgents.Interval = SimulationParameters.DisplayRefreshSpeed
     End Sub
@@ -81,6 +93,14 @@
         ShowMemoryUsage()
         ShowTime()
         ShowDebugVariable()
+    End Sub
+
+    Private Sub CancelSimulation()
+        If AASimulation IsNot Nothing Then
+            SyncLock AASimulation
+                AASimulation = Nothing 'Cancels previous sims/playgrounds if any.
+            End SyncLock
+        End If
     End Sub
 
     Enum MapSelectionMode
@@ -122,10 +142,12 @@
                     End If
                 Case MapSelectionMode.AGENTS_ALL_ROUTE_TO
                     If AASimulation IsNot Nothing AndAlso AASimulation.Agents IsNot Nothing Then
-                        RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
-                        For Each Agent In AASimulation.Agents
-                            Agent.SetRouteTo(RouteToNode)
-                        Next
+                        SyncLock AASimulation
+                            RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
+                            For Each Agent In AASimulation.Agents
+                                Agent.SetRouteTo(RouteToNode)
+                            Next
+                        End SyncLock
                     End If
             End Select
         End If
@@ -160,14 +182,15 @@
         lblLoadStatus.Text = FormatNumber(KB, 0) & " K"
     End Sub
     Private Sub ShowTime()
-        If AASimulation IsNot Nothing Then
-            lblTime.Text = "Time: " & AASimulation.GetTimeString
-        End If
+        lblTime.Text = "Time: " & If(AASimulation IsNot Nothing, AASimulation.GetTimeString, "n/a")
     End Sub
 
     Private Sub StartToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles StartSimulationToolStripMenuItem.Click
         If Map IsNot Nothing Then
-            If AASimulation Is Nothing OrElse AASimulation.GetType <> GetType(AACourierSimulation) Then
+            If AASimulation Is Nothing Then
+                AASimulation = New AACourierSimulation(Map)
+            ElseIf AASimulation.GetType <> GetType(AACourierSimulation) Then
+                CancelSimulation()
                 AASimulation = New AACourierSimulation(Map)
             End If
             AASimulation.Start()
@@ -176,7 +199,10 @@
 
     Private Sub StartPlaygroundToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles StartPlaygroundToolStripMenuItem.Click
         If Map IsNot Nothing Then
-            If AASimulation Is Nothing OrElse AASimulation.GetType <> GetType(AAPlayground) Then
+            If AASimulation Is Nothing Then
+                AASimulation = New AAPlayground()
+            ElseIf AASimulation.GetType <> GetType(AAPlayground) Then
+                CancelSimulation()
                 AASimulation = New AAPlayground()
             End If
             AASimulation.Start()
@@ -185,12 +211,14 @@
 
     Private Sub StopToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles StopToolStripMenuItem.Click
         If AASimulation IsNot Nothing Then
-            AASimulation.Pause()
+            SyncLock AASimulation
+                AASimulation.Pause()
+            End SyncLock
         End If
     End Sub
 
     Private Sub ResetToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetToolStripMenuItem.Click
-        AASimulation = Nothing
+        CancelSimulation()
         SetPictureBox(MapGraphics.DrawMap(Map))
     End Sub
 
@@ -267,4 +295,6 @@
     Private Sub DepotsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DepotsToolStripMenuItem.Click
         MapGraphics.ConfigDrawDepots = DepotsToolStripMenuItem.Checked
     End Sub
+
+
 End Class

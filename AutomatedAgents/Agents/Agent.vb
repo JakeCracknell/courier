@@ -32,6 +32,7 @@
     End Sub
 
     Public Overridable Sub Move()
+        Plan.CapacityLeft = Math.Round(Plan.CapacityLeft, 5)
         If Plan.CapacityLeft > GetVehicleMaxCapacity() Then
             'Throw New OverflowException
             Debug.WriteLine("Vehicle is too full by: " & GetVehicleCapacityPercentage() * 100 & "%")

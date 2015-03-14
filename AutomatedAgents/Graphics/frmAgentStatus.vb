@@ -1,5 +1,8 @@
 ﻿Public Class frmAgentStatus
     Private AASimulation As AASimulation
+
+    'TODO update this within synclock on graphics tick of frmmain.
+
     Private Sub tmrAgentListView_Tick(sender As Object, e As EventArgs) Handles tmrAgentListView.Tick
         Try
             If AASimulation.Agents.Count <> lvAgentList.Items.Count Then
@@ -28,7 +31,7 @@
             Next
             lvAgentList.EndUpdate()
         Catch ex As Exception
-            Debug.WriteLine(ex.ToString)
+            Debug.WriteLine("Do not ignore this exception!!!:   " & ex.ToString)
             'TODO SOME SORT OF NULLPOINTER CAN HAPPEN HERE?
         End Try
 
