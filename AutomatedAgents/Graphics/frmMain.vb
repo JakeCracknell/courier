@@ -71,12 +71,15 @@
         While True
             If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
                 SyncLock AASimulation
-                    Dim SimulationStateChanged As Boolean = False
-                    For i = 1 To Math.Max(1, SimulationParameters.SimulationSpeed / (1000 / SimulationParameters.DisplayRefreshSpeed))
-                        SimulationStateChanged = SimulationStateChanged Or AASimulation.Tick()
-                    Next
+                    If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
+                        Dim SimulationStateChanged As Boolean = False
+                        For i = 1 To Math.Max(1, SimulationParameters.SimulationSpeed / (1000 / SimulationParameters.DisplayRefreshSpeed))
+                            SimulationStateChanged = SimulationStateChanged Or AASimulation.Tick()
+                        Next
+                    End If
                 End SyncLock
             End If
+            Threading.Thread.Sleep(1000 / SimulationParameters.SimulationSpeed)
         End While
     End Sub
 
