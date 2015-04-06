@@ -565,14 +565,14 @@ Partial Class frmParameters
         '
         Me.tbGraphicsRefreshRate.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tbGraphicsRefreshRate.Location = New System.Drawing.Point(152, 31)
-        Me.tbGraphicsRefreshRate.Maximum = 5000
-        Me.tbGraphicsRefreshRate.Minimum = 10
+        Me.tbGraphicsRefreshRate.Maximum = 100
+        Me.tbGraphicsRefreshRate.Minimum = 1
         Me.tbGraphicsRefreshRate.Name = "tbGraphicsRefreshRate"
         Me.tbGraphicsRefreshRate.Size = New System.Drawing.Size(143, 22)
         Me.tbGraphicsRefreshRate.TabIndex = 3
         Me.tbGraphicsRefreshRate.TickFrequency = 0
         Me.tbGraphicsRefreshRate.TickStyle = System.Windows.Forms.TickStyle.None
-        Me.tbGraphicsRefreshRate.Value = 10
+        Me.tbGraphicsRefreshRate.Value = 1
         '
         'Label1
         '
@@ -593,7 +593,7 @@ Partial Class frmParameters
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(143, 28)
         Me.Label2.TabIndex = 5
-        Me.Label2.Text = "Graphics Refresh Rate (ms)"
+        Me.Label2.Text = "Graphics Refresh Rate (x)"
         Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'frmParameters

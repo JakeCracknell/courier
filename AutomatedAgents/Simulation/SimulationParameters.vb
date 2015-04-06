@@ -1,7 +1,7 @@
 ﻿Module SimulationParameters
     'Variables
     Public SimulationSpeed As Integer = 1
-    Public DisplayRefreshSpeed As Integer = 10
+    Public DisplayRefreshSpeed As Integer = 1
     Public DispatchRatePerHour As Integer = 18
     Public DeadlineAverage As Integer = 120
     Public CubicMetresAverage As Double = 0.5

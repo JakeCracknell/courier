@@ -5,7 +5,8 @@
     Private OVERLAY_FONT As New Font("TimesNewRoman", 12)
     Private ERROR_FONT As New Font("TimesNewRoman", 36, FontStyle.Bold)
     Private DEPOT_FONT As New Font("TimesNewRoman", 7)
-    Private CENTRED_STRING_FORMAT As New StringFormat With {.LineAlignment = StringAlignment.Center, .Alignment = StringAlignment.Center}
+    Private CENTRED_STRING_FORMAT As New StringFormat With _
+        {.LineAlignment = StringAlignment.Center, .Alignment = StringAlignment.Center}
     Private ROUTE_PEN As New Pen(New SolidBrush(Color.Gold), 3)
     Private ROAD_THIN_PEN As New Pen(New SolidBrush(Color.Black), 1)
     Private ROAD_THICK_PEN_OUTER As New Pen(New SolidBrush(Color.Black), 5)

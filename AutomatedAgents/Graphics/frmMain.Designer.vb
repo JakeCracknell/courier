@@ -52,7 +52,7 @@ Partial Class frmMain
         Me.StopToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ResetToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SpeedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.tmrAgents = New System.Windows.Forms.Timer(Me.components)
+        Me.tmrRedraw = New System.Windows.Forms.Timer(Me.components)
         Me.picMap = New System.Windows.Forms.PictureBox()
         Me.tmrStatus = New System.Windows.Forms.Timer(Me.components)
         Me.bwSimulator = New System.ComponentModel.BackgroundWorker()
@@ -262,9 +262,10 @@ Partial Class frmMain
         Me.SpeedToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
         Me.SpeedToolStripMenuItem.Text = "Speed..."
         '
-        'tmrAgents
+        'tmrRedraw
         '
-        Me.tmrAgents.Interval = 1000
+        Me.tmrRedraw.Enabled = True
+        Me.tmrRedraw.Interval = 10
         '
         'picMap
         '
@@ -308,7 +309,7 @@ Partial Class frmMain
     Friend WithEvents MenuStrip1 As System.Windows.Forms.MenuStrip
     Friend WithEvents FileToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents AgentsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents tmrAgents As System.Windows.Forms.Timer
+    Friend WithEvents tmrRedraw As System.Windows.Forms.Timer
     Friend WithEvents picMap As System.Windows.Forms.PictureBox
     Friend WithEvents lblTime As System.Windows.Forms.ToolStripStatusLabel
     Friend WithEvents tmrStatus As System.Windows.Forms.Timer

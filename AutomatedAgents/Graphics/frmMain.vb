@@ -41,7 +41,7 @@
         Map = Loader.CreateMap()
         MapGraphics.Resize(picMap.Width, picMap.Height, Map.Bounds)
         SetPictureBox(MapGraphics.DrawMap(Map))
-        tmrAgents.Start()
+        tmrRedraw.Start()
     End Sub
 
     Private Sub NodesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NodesToolStripMenuItem.Click
@@ -68,33 +68,34 @@
             MsgBox("Map is not loaded or simulation has not started")
         End If
     End Sub
+
     Private Sub bwSimulator_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles bwSimulator.DoWork
-        Threading.Thread.CurrentThread.Priority = Threading.ThreadPriority.Lowest
+        Dim MapDrawCounter As Integer = 0
         While True
             If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
                 SyncLock AASimulation
                     If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
                         Dim SimulationStateChanged As Boolean = False
-                        For i = 1 To Math.Max(1, SimulationParameters.SimulationSpeed / (1000 / SimulationParameters.DisplayRefreshSpeed))
+                        For i = 1 To SimulationParameters.SimulationSpeed
                             SimulationStateChanged = SimulationStateChanged Or AASimulation.Tick()
                         Next
                     End If
+                    SelectionMode = MapSelectionMode.AGENTS_ALL_ROUTE_TO
+                    If MapDrawCounter >= SimulationParameters.DisplayRefreshSpeed Then
+                        SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, NoticeBoard.IncompleteJobs))
+                        MapDrawCounter = 0
+                    Else
+                        MapDrawCounter += 1
+                    End If
                 End SyncLock
             End If
-            Threading.Thread.Sleep(1000 / SimulationParameters.SimulationSpeed)
+            Dim SleepTime As Integer = 1000 / SimulationParameters.SimulationSpeed
+            If SleepTime > 0 Then
+                Threading.Thread.Sleep(SleepTime)
+            End If
         End While
     End Sub
 
-    'TODO: fix Synclock is blocking GUI thread
-    Private Sub tmrAgents_Tick(sender As Object, e As EventArgs) Handles tmrAgents.Tick
-        If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
-            SelectionMode = MapSelectionMode.AGENTS_ALL_ROUTE_TO
-            SyncLock AASimulation
-                SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, NoticeBoard.IncompleteJobs))
-            End SyncLock
-        End If
-        tmrAgents.Interval = SimulationParameters.DisplayRefreshSpeed
-    End Sub
     Private Sub tmrStatus_Tick(sender As Object, e As EventArgs) Handles tmrStatus.Tick
         ShowMemoryUsage()
         ShowTime()

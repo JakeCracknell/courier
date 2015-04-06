@@ -34,7 +34,7 @@
                 'yes, Most common tag
                 OneWay = True
             Case "no", "false", "0"
-                'Superfluous tag, sometimes used to confirm a bidriectional street, against mapping errors.
+                'Superfluous tag, sometimes used to confirm a bidirectional street, against mapping errors.
                 OneWay = False
             Case "-1", "reverse"
                 'One way in opposite direction of node list
