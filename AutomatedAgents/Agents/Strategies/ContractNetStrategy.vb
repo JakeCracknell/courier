@@ -16,7 +16,7 @@ Class ContractNetStrategy
     Public Sub Run() Implements IAgentStrategy.Run
         Dim NewJob As CourierJob = Contractor.CollectJob
         If NewJob IsNot Nothing Then
-            Agent.Plan = Contractor.Solver.GetPlan
+            Agent.Plan = Contractor.Solver.Solution
         End If
 
         If Agent.Plan.WayPoints.Count = 0 Then
@@ -47,9 +47,9 @@ Class ContractNetStrategy
                             Dim DepotWaypoint As New WayPoint() With {.DefinedStatus = JobStatus.PENDING_DELIVERY, _
                                                                       .Job = Job, .Position = Job.DeliveryPosition, _
                                                                       .VolumeDelta = Job.CubicMetres}
-                            Agent.Plan.InsertWayPointOptimally(DepotWaypoint)
-                            'PlannedRoute(0) = Job.DeliveryPosition
-                            'Agent.Plan.Replan()
+                            'Agent.Plan.WayPoints.Add(DepotWaypoint)
+                            'Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser)
+                            'Agent.Plan = Solver.Solution 'can't do until contingency done
                         End If
                 End Select
 

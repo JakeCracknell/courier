@@ -51,35 +51,6 @@
         Return TotalCost
     End Function
 
-    'Forces a complete replan
-    'TODO: perhaps this could try to connect two disjoint route lists in different ways.
-    'Perhaps auction off jobs?
-    Public Sub Replan(Optional AdditionalJob As CourierJob = Nothing)
-        Throw New NotImplementedException
-        'For i = WayPoints.Count - 1 To 0 Step -1
-        '    If WayPoints(i).Job.Status = JobStatus.CANCELLED Then
-        '        WayPoints.RemoveAt(i)
-        '        Routes.RemoveAt(i)
-        '    End If
-        'Next
-    End Sub
-
-    Public Sub InsertWayPointOptimally(ByVal WayPoint As WayPoint)
-        Dim RIS As New RouteInsertionSolver(Me, WayPoint)
-        Dim NewPlan As CourierPlan = RIS.GetPlan()
-        If NewPlan IsNot Nothing Then
-            WayPoints = NewPlan.WayPoints
-            Routes = NewPlan.Routes
-        Else
-            'TODO need to replan - no other way around it.
-            Debug.WriteLine("Could not insert a waypoint optimally - trying to fit in at the end, despite " & CapacityLeft & "m3 left")
-            Dim StartPoint As HopPosition = If(WayPoints.Count > 0, WayPoints.Last.Position, RoutePosition.GetPoint)
-            Routes.Add(New AStarSearch(StartPoint, WayPoint.Position, Map.NodesAdjacencyList, Minimiser).GetRoute)
-            WayPoints.Add(WayPoint)
-        End If
-
-    End Sub
-
     Public Function FirstWayPointReached() As Boolean
         Return RoutePosition.GetPoint.ApproximatelyEquals(WayPoints(0).Position)
     End Function

@@ -5,9 +5,9 @@
     Private CurrentBid As Double = NO_BID
     Private AwardedJob As CourierJob = Nothing
     Private Agent As Agent
-    Private TentativeSolver As RouteInsertionSolver = Nothing
+    Private TentativeSolver As NNSearchSolver = Nothing
 
-    Property Solver As RouteInsertionSolver = Nothing
+    Property Solver As NNSearchSolver = Nothing
 
     Sub New(ByVal Agent As Agent)
         Me.Agent = Agent
@@ -32,13 +32,14 @@
             CurrentDrivingCost = Agent.Plan.UpdateAndGetCost()
         End If
 
-        TentativeSolver = New RouteInsertionSolver(Agent.Plan, JobToReview)
+        TentativeSolver = New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(TimeSpan.FromMinutes(15)), Agent.RouteFindingMinimiser, JobToReview)
 
-        If TentativeSolver.GetPlan Is Nothing Then
+
+        If TentativeSolver.Solution Is Nothing Then
             'Impossible to fit into schedule
             CurrentBid = NO_BID
         Else
-            CurrentBid = TentativeSolver.RouteCost - CurrentDrivingCost
+            CurrentBid = TentativeSolver.TotalCost - CurrentDrivingCost
         End If
 
         JobToBeAwarded = JobToReview

@@ -89,7 +89,9 @@
     <Compile Include="Graphics\CoordinateConverter.vb" />
     <Compile Include="Agents\AgentAsync.vb" />
     <Compile Include="RouteFinding\RouteCache.vb" />
+    <Compile Include="VehicleRoutingProblem\NNSearchSolver.vb" />
     <Compile Include="VehicleRoutingProblem\RouteInsertionSolver.vb" />
+    <Compile Include="VehicleRoutingProblem\SolverPunctualityStrategy.vb" />
     <Compile Include="VehicleRoutingProblem\TSPSolver.vb" />
     <Compile Include="VehicleRoutingProblem\ListPermutator.vb" />
     <Compile Include="VehicleRoutingProblem\NearestNeighbourSolver.vb" />
