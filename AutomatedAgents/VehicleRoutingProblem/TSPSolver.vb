@@ -42,15 +42,7 @@
             Dim AStarRoutes(Route.Count - 1) As Route
             Dim LastPoint As IPoint = Start
             For i = 0 To Route.Count - 1
-                Dim IntermDict As Dictionary(Of IPoint, Route) = Nothing
-                If Not RouteCache.TryGetValue(LastPoint, IntermDict) OrElse _
-                    Not IntermDict.TryGetValue(Route(i).Position, AStarRoutes(i)) Then
-                    AStarRoutes(i) = New AStarSearch(LastPoint, Route(i).Position, Map.NodesAdjacencyList, Minimiser).GetRoute
-                    If Not RouteCache.ContainsKey(LastPoint) Then
-                        RouteCache.Add(LastPoint, New Dictionary(Of IPoint, Route))
-                    End If
-                    RouteCache(LastPoint).Add(Route(i).Position, AStarRoutes(i))
-                End If
+                AStarRoutes(i) = RouteCache.GetRoute(LastPoint, Route(i).Position)
                 LastPoint = Route(i).Position
             Next
 

@@ -88,6 +88,7 @@
     <Compile Include="Centralised\SimpleDispatcher.vb" />
     <Compile Include="Graphics\CoordinateConverter.vb" />
     <Compile Include="Agents\AgentAsync.vb" />
+    <Compile Include="RouteFinding\RouteCache.vb" />
     <Compile Include="VehicleRoutingProblem\RouteInsertionSolver.vb" />
     <Compile Include="VehicleRoutingProblem\TSPSolver.vb" />
     <Compile Include="VehicleRoutingProblem\ListPermutator.vb" />

@@ -10,6 +10,7 @@
     'On form load, add menu items to load each som file, spawn agents.
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles Me.Load
         Randomize()
+        Threading.Thread.CurrentThread.Priority = Threading.ThreadPriority.Highest
         bwSimulator.RunWorkerAsync()
         For Each File As String In OSMFileSystemManager.GetAllFilenames()
             Dim LoadMenuItem As New ToolStripMenuItem(LOAD_TSMI_TEXT_PREFIX & File)
@@ -68,6 +69,7 @@
         End If
     End Sub
     Private Sub bwSimulator_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles bwSimulator.DoWork
+        Threading.Thread.CurrentThread.Priority = Threading.ThreadPriority.Lowest
         While True
             If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
                 SyncLock AASimulation
@@ -83,6 +85,7 @@
         End While
     End Sub
 
+    'TODO: fix Synclock is blocking GUI thread
     Private Sub tmrAgents_Tick(sender As Object, e As EventArgs) Handles tmrAgents.Tick
         If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
             SelectionMode = MapSelectionMode.AGENTS_ALL_ROUTE_TO

@@ -4,6 +4,7 @@
     Private Dispatcher As IDispatcher
 
     Sub New(ByVal Map As StreetMap)
+        RouteCache.Initialise(Map.NodesAdjacencyList, RouteFindingMinimiser.DISTANCE)
         Dispatcher = New SimpleDispatcher(Map)
         'Dispatcher = New DebuggingDispatcher(Map)
         NoticeBoard.Clear()
@@ -33,10 +34,5 @@
         'NoticeBoard.Tick()
         Return Modified
     End Function
-
-    Protected Overrides Sub Finalize()
-        MyBase.Finalize()
-        NoticeBoard.Clear()
-    End Sub
 
 End Class
