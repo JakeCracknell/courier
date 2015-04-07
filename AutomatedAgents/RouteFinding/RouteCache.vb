@@ -21,7 +21,6 @@
     End Function
 
     Function GetRoute(ByVal FromPoint As IPoint, ByVal ToPoint As IPoint) As Route
-        Debug.WriteLine(RouteCount)
         Dim Route As Route = GetRouteIfCached(FromPoint, ToPoint)
         If Route Is Nothing Then
             Route = New AStarSearch(FromPoint, ToPoint, NodesAdjacencyList, Minimiser).GetRoute

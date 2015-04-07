@@ -46,10 +46,15 @@ Class ContractNetStrategy
                             'Fail -> Depot
                             Dim DepotWaypoint As New WayPoint() With {.DefinedStatus = JobStatus.PENDING_DELIVERY, _
                                                                       .Job = Job, .Position = Job.DeliveryPosition, _
-                                                                      .VolumeDelta = Job.CubicMetres}
-                            'Agent.Plan.WayPoints.Add(DepotWaypoint)
-                            'Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser)
-                            'Agent.Plan = Solver.Solution 'can't do until contingency done
+                                                                      .VolumeDelta = -Job.CubicMetres}
+                            Agent.Plan.WayPoints.Add(DepotWaypoint)
+                            Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser)
+                            Agent.Plan = Solver.Solution 'can't do until contingency done
+                            If Agent.Plan Is Nothing Then
+                                Dim sss As New NNSearchSolver(Solver.OldPlan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser)
+
+                            End If
+                            Debug.Assert(Agent.Plan IsNot Nothing)
                         End If
                 End Select
 
