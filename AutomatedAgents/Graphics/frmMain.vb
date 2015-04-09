@@ -68,7 +68,7 @@
             Dim Amount As Integer = CInt(CType(sender, ToolStripMenuItem).Text.Replace(AGENT_TSMI_TEXT_PREFIX, ""))
             SyncLock AASimulation
                 For i = 1 To Amount
-                    AASimulation.AddAgent(Map)
+                    AASimulation.AddAgent()
                 Next
             End SyncLock
         Else
@@ -219,10 +219,10 @@
     Private Sub StartPlaygroundToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles StartPlaygroundToolStripMenuItem.Click
         If Map IsNot Nothing Then
             If AASimulation Is Nothing Then
-                AASimulation = New AAPlayground()
+                AASimulation = New AAPlayground(Map)
             ElseIf AASimulation.GetType <> GetType(AAPlayground) Then
                 CancelSimulation()
-                AASimulation = New AAPlayground()
+                AASimulation = New AAPlayground(Map)
             End If
             AASimulation.Start()
         End If
@@ -312,5 +312,7 @@
         MapGraphics.ConfigDrawDepots = DepotsToolStripMenuItem.Checked
     End Sub
 
+    Private Sub ViewStatisticsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewStatisticsToolStripMenuItem.Click
 
+    End Sub
 End Class

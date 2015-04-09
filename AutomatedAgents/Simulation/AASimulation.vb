@@ -1,13 +1,14 @@
 ﻿Public MustInherit Class AASimulation
-
+    Property Map As StreetMap
     Property Agents As New List(Of Agent)
     Property IsRunning As Boolean = False
+    Property Statistics As New StatisticsLogger(Now, Map)
 
     Protected Time As TimeSpan
     Protected TIME_INCREMENT As TimeSpan = TimeSpan.FromSeconds(1)
 
-    Overridable Sub AddAgent(ByVal Map As StreetMap)
-        Dim Agent As New Agent(Map, GetSequentialColor)
+    Overridable Sub AddAgent()
+        Dim Agent As New Agent(Map, GetSequentialColor())
         Agents.Add(Agent)
     End Sub
 
@@ -19,7 +20,7 @@
             Agent.Move()
         Next
 
-        Return True
+        Return Agents.Count > 0
     End Function
 
     Function GetTimeString() As String
@@ -29,6 +30,10 @@
             Return "paused"
         End If
     End Function
+
+    Sub LogStatistics()
+        Statistics.Log(Agents)
+    End Sub
 
     Sub Start()
         IsRunning = True

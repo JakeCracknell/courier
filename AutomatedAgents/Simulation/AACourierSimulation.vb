@@ -4,6 +4,7 @@
     Private Dispatcher As IDispatcher
 
     Sub New(ByVal Map As StreetMap)
+        Me.Map = Map
         RouteCache.Initialise(Map.NodesAdjacencyList, RouteFindingMinimiser.DISTANCE)
         Dispatcher = New SimpleDispatcher(Map)
         'Dispatcher = New DebuggingDispatcher(Map)

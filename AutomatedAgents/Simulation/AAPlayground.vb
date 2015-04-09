@@ -1,7 +1,11 @@
 ﻿Public Class AAPlayground
     Inherits AASimulation
 
-    Public Overrides Sub AddAgent(ByVal Map As StreetMap)
+    Public Sub New(ByVal Map As StreetMap)
+        Me.Map = Map
+    End Sub
+
+    Public Overrides Sub AddAgent()
         Dim Agent As New AgentAsync(Map, GetSequentialColor)
         Agents.Add(Agent)
     End Sub

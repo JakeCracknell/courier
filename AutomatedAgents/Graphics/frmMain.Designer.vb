@@ -56,6 +56,7 @@ Partial Class frmMain
         Me.picMap = New System.Windows.Forms.PictureBox()
         Me.tmrStatus = New System.Windows.Forms.Timer(Me.components)
         Me.bwSimulator = New System.ComponentModel.BackgroundWorker()
+        Me.ViewStatisticsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.picMap, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -227,7 +228,7 @@ Partial Class frmMain
         '
         'SimulationToolStripMenuItem
         '
-        Me.SimulationToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StartSimulationToolStripMenuItem, Me.StartPlaygroundToolStripMenuItem, Me.StopToolStripMenuItem, Me.ResetToolStripMenuItem, Me.SpeedToolStripMenuItem})
+        Me.SimulationToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StartSimulationToolStripMenuItem, Me.StartPlaygroundToolStripMenuItem, Me.StopToolStripMenuItem, Me.ResetToolStripMenuItem, Me.SpeedToolStripMenuItem, Me.ViewStatisticsToolStripMenuItem})
         Me.SimulationToolStripMenuItem.Name = "SimulationToolStripMenuItem"
         Me.SimulationToolStripMenuItem.Size = New System.Drawing.Size(76, 20)
         Me.SimulationToolStripMenuItem.Text = "Simulation"
@@ -260,7 +261,7 @@ Partial Class frmMain
         '
         Me.SpeedToolStripMenuItem.Name = "SpeedToolStripMenuItem"
         Me.SpeedToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
-        Me.SpeedToolStripMenuItem.Text = "Speed..."
+        Me.SpeedToolStripMenuItem.Text = "Set Parameters..."
         '
         'tmrRedraw
         '
@@ -282,6 +283,12 @@ Partial Class frmMain
         '
         'bwSimulator
         '
+        '
+        'ViewStatisticsToolStripMenuItem
+        '
+        Me.ViewStatisticsToolStripMenuItem.Name = "ViewStatisticsToolStripMenuItem"
+        Me.ViewStatisticsToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
+        Me.ViewStatisticsToolStripMenuItem.Text = "View Statistics..."
         '
         'frmMain
         '
@@ -336,5 +343,6 @@ Partial Class frmMain
     Friend WithEvents RouteViewToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents DepotsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents bwSimulator As System.ComponentModel.BackgroundWorker
+    Friend WithEvents ViewStatisticsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class
