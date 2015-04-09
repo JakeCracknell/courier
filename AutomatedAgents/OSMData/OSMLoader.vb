@@ -16,7 +16,8 @@ Public Class OSMLoader
                                  xBounds.GetAttribute("maxlat"), _
                                  xBounds.GetAttribute("maxlon"))
 
-        Dim Map As New StreetMap(Bounds)
+
+        Dim Map As New StreetMap(IO.Path.GetFileNameWithoutExtension(FilePath), Bounds)
         Dim NodeHashMap As New Dictionary(Of Long, Node)
 
         Dim xNodes As XmlNodeList = xDoc.GetElementsByTagName("node")
