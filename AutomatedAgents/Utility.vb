@@ -57,4 +57,14 @@
 
         Return rand_normal
     End Function
+
+    Public Sub SetDoubleBuffered(ByVal c As System.Windows.Forms.Control)
+        If System.Windows.Forms.SystemInformation.TerminalServerSession Then
+            Return
+        End If
+
+        Dim aProp As System.Reflection.PropertyInfo = GetType(System.Windows.Forms.Control).GetProperty("DoubleBuffered", System.Reflection.BindingFlags.NonPublic Or System.Reflection.BindingFlags.Instance)
+
+        aProp.SetValue(c, True, Nothing)
+    End Sub
 End Module

@@ -1,6 +1,9 @@
 ﻿Public Class frmAgentStatus
     Private AASimulation As AASimulation
 
+    Private Sub frmAgentStatus_Load(sender As Object, e As EventArgs) Handles Me.Load
+        SetDoubleBuffered(lvAgentList)
+    End Sub
     'TODO update this within synclock on graphics tick of frmmain.
 
     Private Sub tmrAgentListView_Tick(sender As Object, e As EventArgs) Handles tmrAgentListView.Tick
@@ -55,4 +58,5 @@
             Next
         Next
     End Sub
+
 End Class
