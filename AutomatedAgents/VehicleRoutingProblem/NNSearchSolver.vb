@@ -138,7 +138,7 @@
                 ' if the pickup is yet to have occurred
                 If NextState.CapacityLeft < 0 OrElse _
                     (W.Predecessor IsNot Nothing AndAlso Node.State.WayPointsLeft.Contains(W.Predecessor)) Then
-                    Debug.Write(If(NextState.CapacityLeft < 0, "C", ""))
+                    'Debug.Write(If(NextState.CapacityLeft < 0, "C", ""))
                     Continue For
                 End If
 
@@ -147,7 +147,7 @@
                 NextState.FuelLeft = Node.State.FuelLeft - Route.GetKM * 0.1 'TODO fuel, also maybe leave extra time?
                 'PRUNE this branch if it is unreachable given fuel reserves
                 If NextState.FuelLeft < 0 Then
-                    Debug.Write("F")
+                    'Debug.Write("F")
                     Continue For
                 End If
 
@@ -238,7 +238,7 @@
         Do
             Dim Solution As TSPSolution = FindRandomSolution()
             Dim Cost As Double = Solution.Cost(StartState)
-            Debug.WriteLine(Cost & " at " & t.ElapsedMilliseconds)
+            'Debug.WriteLine(Cost & " at " & t.ElapsedMilliseconds)
             If Cost < BestCost Then
                 BestCost = Cost
                 BestSolution = Solution
@@ -264,7 +264,7 @@
             Dim NextSolution As TSPSolution = Solution.Mutate(StartState)
 
             DeltaCost = NextSolution.Cost(StartState) - Cost
-            Debug.Write(DeltaCost & " ")
+            'Debug.Write(DeltaCost & " ")
 
             'if the new order has a smaller distance
             'or if the new order has a larger distance but satisfies Boltzman condition then accept the arrangement
