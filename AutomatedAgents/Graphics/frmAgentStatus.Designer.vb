@@ -22,8 +22,6 @@ Partial Class frmAgentStatus
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container()
-        Me.tmrAgentListView = New System.Windows.Forms.Timer(Me.components)
         Me.lvAgentList = New System.Windows.Forms.ListView()
         Me.cID = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.cVehicle = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -55,10 +53,6 @@ Partial Class frmAgentStatus
         Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
         Me.SuspendLayout()
-        '
-        'tmrAgentListView
-        '
-        Me.tmrAgentListView.Enabled = True
         '
         'lvAgentList
         '
@@ -236,7 +230,6 @@ Partial Class frmAgentStatus
         Me.ResumeLayout(False)
 
     End Sub
-    Friend WithEvents tmrAgentListView As System.Windows.Forms.Timer
     Friend WithEvents lvAgentList As System.Windows.Forms.ListView
     Friend WithEvents cID As System.Windows.Forms.ColumnHeader
     Friend WithEvents cAt As System.Windows.Forms.ColumnHeader

@@ -5,12 +5,16 @@
         SetDoubleBuffered(lvAgentList)
         SetDoubleBuffered(lvJobList)
     End Sub
-    'TODO update this within synclock on graphics tick of frmmain.
+    ''TODO update this within synclock on graphics tick of frmmain.
 
-    Private Sub tmrAgentListView_Tick(sender As Object, e As EventArgs) Handles tmrAgentListView.Tick
-        If AASimulation Is Nothing Then
-            Exit Sub
-        End If
+    'Private Sub tmrAgentListView_Tick(sender As Object, e As EventArgs) Handles tmrAgentListView.Tick
+    '    If AASimulation Is Nothing Then
+    '        Exit Sub
+    '    End If
+
+
+    'End Sub
+    Sub RefreshLists()
         Try
             If AASimulation.Agents.Count <> lvAgentList.Items.Count Then
                 SetAASimulation(AASimulation)
@@ -21,8 +25,8 @@
             Debug.WriteLine("Do not ignore this exception!!!:   " & ex.ToString)
             'TODO SOME SORT OF NULLPOINTER CAN HAPPEN HERE? Sync issue?
         End Try
-
     End Sub
+
     Private Sub PopulateJobList()
         lvJobList.BeginUpdate()
         lvJobList.Items.Clear()

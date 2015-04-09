@@ -112,6 +112,10 @@
         ShowMemoryUsage()
         ShowTime()
         ShowDebugVariable()
+        'TODO refactor!!!!!!!!!!!!!!!!!!!!! Update intermediate object!
+        If AASimulation IsNot Nothing AndAlso AASimulation.Agents.Count > 0 Then
+            frmAgentStatus.RefreshLists()
+        End If
     End Sub
 
     Private Sub CancelSimulation()
