@@ -77,7 +77,7 @@
         End If
     End Sub
 
-    Public Sub SetAASimulation(ByVal AASimulation As Object)
+    Public Sub SetAASimulation(ByVal AASimulation As AASimulation)
         Me.AASimulation = AASimulation
         lvAgentList.Items.Clear()
         For i = 0 To Me.AASimulation.Agents.Count - 1

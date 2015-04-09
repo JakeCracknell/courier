@@ -86,6 +86,7 @@
                         Dim SimulationStateChanged As Boolean = False
                         For i = 1 To SimulationParameters.SimulationSpeed
                             SimulationStateChanged = SimulationStateChanged Or AASimulation.Tick()
+                            AASimulation.LogStatistics()
 
                             If MapDrawCounter >= SimulationParameters.DisplayRefreshSpeed Then
                                 If SimulationStateChanged Then
@@ -213,6 +214,7 @@
             End If
             AASimulation.Start()
             frmAgentStatus.SetAASimulation(AASimulation)
+            frmStatistics.SetAASimulation(AASimulation)
         End If
     End Sub
 
@@ -225,6 +227,8 @@
                 AASimulation = New AAPlayground(Map)
             End If
             AASimulation.Start()
+            frmAgentStatus.SetAASimulation(AASimulation)
+            frmStatistics.SetAASimulation(AASimulation)
         End If
     End Sub
 
@@ -313,6 +317,6 @@
     End Sub
 
     Private Sub ViewStatisticsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewStatisticsToolStripMenuItem.Click
-
+        frmStatistics.Show()
     End Sub
 End Class
