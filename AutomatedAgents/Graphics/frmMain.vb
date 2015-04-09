@@ -3,7 +3,7 @@
  
     Private Const LOAD_TSMI_TEXT_PREFIX As String = "Load "
     Private Const AGENT_TSMI_TEXT_PREFIX As String = "Add "
-    Private AGENT_TSMI_AMOUNTS() As Integer = {1, 5, 10, 50, 100, 500, 1000, 5000, 10000}
+    Private AGENT_TSMI_AMOUNTS() As Integer = {1, 2, 3, 4, 5, 10, 50, 100, 500, 1000, 5000, 10000}
 
     Private AASimulation As AASimulation
 
@@ -23,6 +23,13 @@
             AddHandler AgentMenuItem.Click, AddressOf AgentToolStripMenuItem_Click
             AgentsToolStripMenuItem.DropDownItems.Add(AgentMenuItem)
         Next
+
+        'Open instances of other forms.
+        frmAgentStatus.Show()
+        frmAgentStatus.Location = New Point(Me.Location.X, Me.Location.Y + Me.Height)
+        frmParameters.Show()
+        frmParameters.Location = New Point(Me.Location.X + Me.Width, Me.Location.Y)
+
     End Sub
 
     Private Sub frmMain_Resize(sender As Object, e As EventArgs) Handles Me.Resize
@@ -70,23 +77,27 @@
     End Sub
 
     Private Sub bwSimulator_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles bwSimulator.DoWork
-        Dim MapDrawCounter As Integer = 0
+        Dim MapDrawCounter As Integer = 1
         While True
             If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
+                SelectionMode = MapSelectionMode.AGENTS_ALL_ROUTE_TO
                 SyncLock AASimulation
                     If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
                         Dim SimulationStateChanged As Boolean = False
                         For i = 1 To SimulationParameters.SimulationSpeed
                             SimulationStateChanged = SimulationStateChanged Or AASimulation.Tick()
+
+                            If MapDrawCounter >= SimulationParameters.DisplayRefreshSpeed Then
+                                If SimulationStateChanged Then
+                                    SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, NoticeBoard.IncompleteJobs))
+                                End If
+                                MapDrawCounter = 1
+                            Else
+                                MapDrawCounter += 1
+                            End If
                         Next
                     End If
-                    SelectionMode = MapSelectionMode.AGENTS_ALL_ROUTE_TO
-                    If MapDrawCounter >= SimulationParameters.DisplayRefreshSpeed Then
-                        SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, NoticeBoard.IncompleteJobs))
-                        MapDrawCounter = 0
-                    Else
-                        MapDrawCounter += 1
-                    End If
+
                 End SyncLock
             End If
             Dim SleepTime As Integer = 1000 / SimulationParameters.SimulationSpeed
@@ -201,6 +212,7 @@
                 AASimulation = New AACourierSimulation(Map)
             End If
             AASimulation.Start()
+            frmAgentStatus.SetAASimulation(AASimulation)
         End If
     End Sub
 
@@ -267,10 +279,7 @@
     End Sub
 
     Private Sub AgentStatusToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AgentStatusToolStripMenuItem.Click
-        If AASimulation IsNot Nothing Then
-            frmAgentStatus.Show()
-            frmAgentStatus.SetAASimulation(AASimulation)
-        End If
+        frmAgentStatus.Show()
     End Sub
 
   

@@ -7,6 +7,9 @@
     'TODO update this within synclock on graphics tick of frmmain.
 
     Private Sub tmrAgentListView_Tick(sender As Object, e As EventArgs) Handles tmrAgentListView.Tick
+        If AASimulation Is Nothing Then
+            Exit Sub
+        End If
         Try
             If AASimulation.Agents.Count <> lvAgentList.Items.Count Then
                 SetAASimulation(AASimulation)
