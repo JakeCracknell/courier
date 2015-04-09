@@ -1,5 +1,6 @@
 ﻿Module NoticeBoard
     'Private Const START_DATE As Date = Date.Parse("2015-01-01 00:00:00")
+    Public CurrentTime As TimeSpan
 
     Property DepotPoint As HopPosition
 
@@ -7,12 +8,15 @@
     Property UnpickedJobs As New List(Of CourierJob)
     Property PickedJobs As New List(Of CourierJob)
 
-    Property IncompleteJobs As New List(Of CourierJob)
-    Property CompletedJobs As New List(Of CourierJob)
-    Property FailedJobs As New List(Of CourierJob)
+    Property IncompleteJobs As New List(Of CourierJob) 'In the process of picking up or delivering
+    Property CompletedJobs As New List(Of CourierJob) 'Includes jobs where collection or delivery failed
+    Property RefusedJobs As New List(Of CourierJob) 'No bids
 
     Property JobRevenue As Decimal = 0
-    Public CurrentTime As TimeSpan
+    Property FuelBill As Decimal = 0
+    Property TotalTimeEarly As Long = 0
+    Property TotalTimeLate As Long = 0
+    Property LateJobs As Integer = 0
 
     'For CNP Only
     Public AvailableContractors As New List(Of ContractNetContractor)
@@ -85,7 +89,7 @@
             Dim Job As CourierJob = UnallocatedJobs(i)
             If Job.Status = JobStatus.CANCELLED OrElse Job.Deadline < CurrentTime Then
                 IncompleteJobs.Remove(Job)
-                FailedJobs.Add(Job)
+                RefusedJobs.Add(Job)
                 UnallocatedJobs.Remove(Job)
             End If
         Next
@@ -94,10 +98,16 @@
             Dim Job As CourierJob = PickedJobs(i)
             If Job.Status = JobStatus.COMPLETED Then
                 JobRevenue += Job.CustomerFee
-                'Debug.WriteLine(JobRevenue)
                 CompletedJobs.Add(Job)
                 IncompleteJobs.Remove(Job)
                 PickedJobs.Remove(Job)
+                Dim TimeSpare As Integer = (Job.Deadline - CurrentTime).TotalSeconds
+                If TimeSpare < 0 Then
+                    LateJobs += 1
+                    TotalTimeLate += -TimeSpare
+                Else
+                    TotalTimeEarly += TimeSpare
+                End If
             End If
         Next
 

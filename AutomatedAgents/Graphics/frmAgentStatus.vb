@@ -16,9 +16,7 @@
                 SetAASimulation(AASimulation)
             End If
             PopulateAgentList()
-            If IsInDebugMode() Then
-                PopulateJobList()
-            End If
+            PopulateJobList()
         Catch ex As Exception
             Debug.WriteLine("Do not ignore this exception!!!:   " & ex.ToString)
             'TODO SOME SORT OF NULLPOINTER CAN HAPPEN HERE? Sync issue?
