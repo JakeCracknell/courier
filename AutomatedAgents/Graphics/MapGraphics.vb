@@ -92,7 +92,7 @@
         Dim y2 As Integer = Point.Y + AGENT_DRAW_SIZE \ 2
         Dim x1 As Integer = Point.X - AGENT_DRAW_SIZE \ 2
         Dim x2 As Integer = Point.X + AGENT_DRAW_SIZE \ 2
-        
+
         Dim gp As New Drawing2D.GraphicsPath(Drawing2D.FillMode.Alternate)
         If Upwards Then
             Dim ptsArray As PointF() = {New Point(x1, y1), New Point(x2, y1), _

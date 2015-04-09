@@ -50,7 +50,7 @@ Partial Class frmAgentStatus
         Me.lvAgentList.FullRowSelect = True
         Me.lvAgentList.Location = New System.Drawing.Point(0, 0)
         Me.lvAgentList.Name = "lvAgentList"
-        Me.lvAgentList.Size = New System.Drawing.Size(1034, 131)
+        Me.lvAgentList.Size = New System.Drawing.Size(917, 144)
         Me.lvAgentList.TabIndex = 0
         Me.lvAgentList.UseCompatibleStateImageBehavior = False
         Me.lvAgentList.View = System.Windows.Forms.View.Details
@@ -123,7 +123,7 @@ Partial Class frmAgentStatus
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1034, 131)
+        Me.ClientSize = New System.Drawing.Size(917, 144)
         Me.Controls.Add(Me.lvAgentList)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "frmAgentStatus"
