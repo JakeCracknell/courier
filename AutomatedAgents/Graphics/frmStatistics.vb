@@ -1,4 +1,6 @@
-﻿Public Class frmStatistics
+﻿Imports System.Windows.Forms.DataVisualization.Charting
+
+Public Class frmStatistics
     Private Const SERIES_LIST_ITEM_FORMAT As String = "{0} ({1})"
 
     Private AASimulation As AASimulation
@@ -11,7 +13,9 @@
 
     Sub InitialiseSeriesList()
         For Each DC As DataColumn In AASimulation.Statistics.Table.Columns
-            clbDataSeries.Items.Add(DC.ColumnName)
+            If Not DC.Unique Then 'Don't include "Time"
+                clbDataSeries.Items.Add(DC.ColumnName)
+            End If
         Next
     End Sub
 
@@ -23,25 +27,91 @@
             Next
         End If
         Dim DR As DataRow = Table.Rows(Table.Rows.Count - 1)
-        For i = 0 To Table.Columns.Count - 1
-            Dim DC As DataColumn = Table.Columns(i)
+        For i = 0 To Table.Columns.Count - 2 'Don't include "Time"
+            Dim DC As DataColumn = Table.Columns(i + 1)
             clbDataSeries.Items(i) = String.Format(SERIES_LIST_ITEM_FORMAT, DC.ColumnName, DR(DC))
         Next
     End Sub
 
-    Sub RefreshChart()
-        Dim Table As DataTable = AASimulation.Statistics.Table
+    Sub RefreshChart() 
+            Dim Table As DataTable = AASimulation.Statistics.Table
 
-        Dim DataColumns As New List(Of DataColumn)
-        For Each ColumnIndex In clbDataSeries.CheckedIndices
-            DataColumns.Add(Table.Columns(ColumnIndex))
+            Dim DataColumns As New List(Of DataColumn)
+            For Each ColumnIndex In clbDataSeries.CheckedIndices
+                DataColumns.Add(Table.Columns(ColumnIndex + 1))
+            Next
+
+            chartSimulationStatistics.Series.Clear()
+            chartSimulationStatistics.DataSource = Table
+
+            For Each DC As DataColumn In DataColumns
+                Dim Series As New Series(DC.ColumnName)
+                Series.XValueMember = "Time"
+                Series.YValueMembers = DC.ColumnName
+                Series.ChartType = SeriesChartType.Line
+                chartSimulationStatistics.Series.Add(Series)
         Next
 
-        chartSimulationStatistics.DataBindTable(Table)
+        SyncLock Table
+            chartSimulationStatistics.DataBind()
+        End SyncLock
+    End Sub
 
+    Private Sub SetRefreshTimer()
+        txtDataRefreshTimerInterval.Enabled = cbDataRefreshTimer.Checked
+        tmrStatisticsRefresh.Enabled = cbDataRefreshTimer.Checked
+        If IsNumeric(txtDataRefreshTimerInterval.Text) Then
+            tmrStatisticsRefresh.Interval = CInt(txtDataRefreshTimerInterval.Text)
+        End If
+    End Sub
+
+    Private Sub RefreshData()
+        If AASimulation IsNot Nothing Then
+            RefreshSeriesList()
+            RefreshChart()
+        End If
     End Sub
 
     Private Sub btnRefreshData_Click(sender As Object, e As EventArgs) Handles btnRefreshData.Click
-        RefreshSeriesList()
+        RefreshData()
+    End Sub
+
+    Private Sub clbDataSeries_ItemCheck(sender As Object, e As ItemCheckEventArgs) Handles clbDataSeries.ItemCheck
+        RefreshData()
+    End Sub
+
+    Private Sub cbDataRefreshTimer_CheckedChanged(sender As Object, e As EventArgs) Handles cbDataRefreshTimer.CheckedChanged
+        SetRefreshTimer()
+    End Sub
+
+    Private Sub txtDataRefreshTimerInterval_TextChanged(sender As Object, e As EventArgs) Handles txtDataRefreshTimerInterval.TextChanged
+        SetRefreshTimer()
+    End Sub
+
+    Private Sub tmrStatisticsRefresh_Tick(sender As Object, e As EventArgs) Handles tmrStatisticsRefresh.Tick
+        RefreshData()
+    End Sub
+
+    Private Sub btnSaveImage_Click(sender As Object, e As EventArgs) Handles btnSaveImage.Click
+        If chartSimulationStatistics.Series.Count > 0 Then
+            Dim PlottedColumns As String = ""
+            For Each Serie In chartSimulationStatistics.Series
+                PlottedColumns &= Serie.Name & ","
+            Next
+            PlottedColumns = PlottedColumns.TrimEnd(",")
+            Dim FileName As String = AASimulation.Statistics.StatsDirectoryPath & PlottedColumns & ".png"
+            Try
+                IO.File.Delete(FileName)
+                chartSimulationStatistics.SaveImage(FileName, Drawing.Imaging.ImageFormat.Png)
+                Console.Beep()
+            Catch ex As Exception
+                MsgBox("Operation failed: " & ex.Message, MsgBoxStyle.Exclamation)
+            End Try
+        End If
+
+    End Sub
+
+    Private Sub btnSaveDataAsCSV_Click(sender As Object, e As EventArgs) Handles btnSaveDataAsCSV.Click
+        AASimulation.Statistics.SaveToCSV()
     End Sub
 End Class

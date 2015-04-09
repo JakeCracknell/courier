@@ -1,16 +1,22 @@
 ﻿Public Class StatisticsLogger
-    Private Const CSV_FILEPATH_FORMAT As String = "stats\{0}-{1}\data.csv"
+    Private Const STATS_DIRECTORY_FORMAT As String = "stats\{0}-{1}\"
+    Private Const CSV_FILENAME As String = "data.csv"
     Private Const CSV_SAVE_MESSAGE_FORMAT As String = "Statistics Saved to {0}. File size: {1} KB. Row count: {2}"
+
 
     Public ReadOnly SimulationStartTime As Date
     Public ReadOnly Map As StreetMap
     Public ReadOnly Table As DataTable
+    Public ReadOnly StatsDirectoryPath As String
 
     Sub New(ByVal SimulationStartTime As Date, ByVal Map As StreetMap)
         Me.SimulationStartTime = SimulationStartTime
         Me.Map = Map
 
-        Table = New DataTable()
+        StatsDirectoryPath = String.Format(STATS_DIRECTORY_FORMAT, SimulationStartTime.Ticks, Map.Name)
+        IO.Directory.CreateDirectory(StatsDirectoryPath)
+
+        Table = New DataTable("CourierSimulation")
 
         Dim TimeColumn As New DataColumn("Time", GetType(Integer))
         Table.Columns.Add(TimeColumn)
@@ -69,20 +75,24 @@
         Row("CumulativeRevenue") = NoticeBoard.JobRevenue
         Row("CumulativeProfit") = NoticeBoard.JobRevenue - NoticeBoard.FuelBill
 
-        Table.Rows.Add(Row)
+        SyncLock Table
+            Table.Rows.Add(Row)
+        End SyncLock
     End Sub
 
     Sub SaveToCSV()
-        Try
-            Dim FileName As String = String.Format(CSV_FILEPATH_FORMAT, SimulationStartTime.Ticks, Map.Name)
-            IO.File.Delete(FileName)
+        SyncLock Table
+            Try
+                Dim FileName As String = StatsDirectoryPath & CSV_FILENAME
+                IO.File.Delete(FileName)
+                Table.WriteXml(FileName)
 
-            Table.WriteXml(FileName)
+                MsgBox(String.Format(CSV_SAVE_MESSAGE_FORMAT, FileName, CInt(0), 0), MsgBoxStyle.OkOnly)
+            Catch ex As Exception
+                MsgBox("Operation failed: " & ex.Message, MsgBoxStyle.Exclamation)
+            End Try
+        End SyncLock
 
-            MsgBox(String.Format(CSV_SAVE_MESSAGE_FORMAT, FileName, CInt(0), 0), MsgBoxStyle.OkOnly)
-        Catch ex As Exception
-            MsgBox("Operation failed: " & ex.Message, MsgBoxStyle.Exclamation)
-        End Try
 
     End Sub
 

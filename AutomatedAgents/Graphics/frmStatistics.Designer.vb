@@ -22,25 +22,31 @@ Partial Class frmStatistics
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
         Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
-        Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
-        Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
-        Me.SplitContainer3 = New System.Windows.Forms.SplitContainer()
-        Me.btnRefreshData = New System.Windows.Forms.Button()
-        Me.cbDataRefreshTimer = New System.Windows.Forms.CheckBox()
-        Me.txtDataRefreshTimerInterval = New System.Windows.Forms.TextBox()
-        Me.SplitContainer4 = New System.Windows.Forms.SplitContainer()
-        Me.btnSaveImage = New System.Windows.Forms.Button()
-        Me.btnSaveDataAsCSV = New System.Windows.Forms.Button()
         Me.SplitContainer5 = New System.Windows.Forms.SplitContainer()
         Me.clbDataSeries = New System.Windows.Forms.CheckedListBox()
         Me.chartSimulationStatistics = New System.Windows.Forms.DataVisualization.Charting.Chart()
+        Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
+        Me.SplitContainer3 = New System.Windows.Forms.SplitContainer()
+        Me.btnRefreshData = New System.Windows.Forms.Button()
+        Me.txtDataRefreshTimerInterval = New System.Windows.Forms.TextBox()
+        Me.cbDataRefreshTimer = New System.Windows.Forms.CheckBox()
+        Me.SplitContainer4 = New System.Windows.Forms.SplitContainer()
+        Me.btnSaveImage = New System.Windows.Forms.Button()
+        Me.btnSaveDataAsCSV = New System.Windows.Forms.Button()
+        Me.tmrStatisticsRefresh = New System.Windows.Forms.Timer(Me.components)
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
+        CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SplitContainer5.Panel1.SuspendLayout()
+        Me.SplitContainer5.Panel2.SuspendLayout()
+        Me.SplitContainer5.SuspendLayout()
+        CType(Me.chartSimulationStatistics, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.SplitContainer2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer2.Panel1.SuspendLayout()
         Me.SplitContainer2.Panel2.SuspendLayout()
@@ -53,11 +59,6 @@ Partial Class frmStatistics
         Me.SplitContainer4.Panel1.SuspendLayout()
         Me.SplitContainer4.Panel2.SuspendLayout()
         Me.SplitContainer4.SuspendLayout()
-        CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SplitContainer5.Panel1.SuspendLayout()
-        Me.SplitContainer5.Panel2.SuspendLayout()
-        Me.SplitContainer5.SuspendLayout()
-        CType(Me.chartSimulationStatistics, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'SplitContainer1
@@ -79,6 +80,45 @@ Partial Class frmStatistics
         Me.SplitContainer1.Size = New System.Drawing.Size(745, 481)
         Me.SplitContainer1.SplitterDistance = 434
         Me.SplitContainer1.TabIndex = 0
+        '
+        'SplitContainer5
+        '
+        Me.SplitContainer5.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.SplitContainer5.Location = New System.Drawing.Point(0, 0)
+        Me.SplitContainer5.Name = "SplitContainer5"
+        '
+        'SplitContainer5.Panel1
+        '
+        Me.SplitContainer5.Panel1.Controls.Add(Me.clbDataSeries)
+        '
+        'SplitContainer5.Panel2
+        '
+        Me.SplitContainer5.Panel2.Controls.Add(Me.chartSimulationStatistics)
+        Me.SplitContainer5.Size = New System.Drawing.Size(745, 434)
+        Me.SplitContainer5.SplitterDistance = 158
+        Me.SplitContainer5.TabIndex = 0
+        '
+        'clbDataSeries
+        '
+        Me.clbDataSeries.CheckOnClick = True
+        Me.clbDataSeries.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.clbDataSeries.FormattingEnabled = True
+        Me.clbDataSeries.Location = New System.Drawing.Point(0, 0)
+        Me.clbDataSeries.Name = "clbDataSeries"
+        Me.clbDataSeries.Size = New System.Drawing.Size(158, 434)
+        Me.clbDataSeries.TabIndex = 0
+        '
+        'chartSimulationStatistics
+        '
+        ChartArea1.Name = "ChartArea1"
+        Me.chartSimulationStatistics.ChartAreas.Add(ChartArea1)
+        Me.chartSimulationStatistics.Dock = System.Windows.Forms.DockStyle.Fill
+        Legend1.Name = "Legend1"
+        Me.chartSimulationStatistics.Legends.Add(Legend1)
+        Me.chartSimulationStatistics.Location = New System.Drawing.Point(0, 0)
+        Me.chartSimulationStatistics.Name = "chartSimulationStatistics"
+        Me.chartSimulationStatistics.Size = New System.Drawing.Size(583, 434)
+        Me.chartSimulationStatistics.TabIndex = 0
         '
         'SplitContainer2
         '
@@ -127,6 +167,16 @@ Partial Class frmStatistics
         Me.btnRefreshData.Text = "Refresh"
         Me.btnRefreshData.UseVisualStyleBackColor = True
         '
+        'txtDataRefreshTimerInterval
+        '
+        Me.txtDataRefreshTimerInterval.Dock = System.Windows.Forms.DockStyle.Top
+        Me.txtDataRefreshTimerInterval.Enabled = False
+        Me.txtDataRefreshTimerInterval.Location = New System.Drawing.Point(0, 17)
+        Me.txtDataRefreshTimerInterval.Name = "txtDataRefreshTimerInterval"
+        Me.txtDataRefreshTimerInterval.Size = New System.Drawing.Size(185, 20)
+        Me.txtDataRefreshTimerInterval.TabIndex = 1
+        Me.txtDataRefreshTimerInterval.Text = "100"
+        '
         'cbDataRefreshTimer
         '
         Me.cbDataRefreshTimer.AutoSize = True
@@ -137,15 +187,6 @@ Partial Class frmStatistics
         Me.cbDataRefreshTimer.TabIndex = 0
         Me.cbDataRefreshTimer.Text = "Timer Refresh Interval:"
         Me.cbDataRefreshTimer.UseVisualStyleBackColor = True
-        '
-        'txtDataRefreshTimerInterval
-        '
-        Me.txtDataRefreshTimerInterval.Dock = System.Windows.Forms.DockStyle.Top
-        Me.txtDataRefreshTimerInterval.Enabled = False
-        Me.txtDataRefreshTimerInterval.Location = New System.Drawing.Point(0, 17)
-        Me.txtDataRefreshTimerInterval.Name = "txtDataRefreshTimerInterval"
-        Me.txtDataRefreshTimerInterval.Size = New System.Drawing.Size(185, 20)
-        Me.txtDataRefreshTimerInterval.TabIndex = 1
         '
         'SplitContainer4
         '
@@ -187,48 +228,8 @@ Partial Class frmStatistics
         Me.btnSaveDataAsCSV.Text = ".CSV"
         Me.btnSaveDataAsCSV.UseVisualStyleBackColor = True
         '
-        'SplitContainer5
+        'tmrStatisticsRefresh
         '
-        Me.SplitContainer5.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SplitContainer5.Location = New System.Drawing.Point(0, 0)
-        Me.SplitContainer5.Name = "SplitContainer5"
-        '
-        'SplitContainer5.Panel1
-        '
-        Me.SplitContainer5.Panel1.Controls.Add(Me.clbDataSeries)
-        '
-        'SplitContainer5.Panel2
-        '
-        Me.SplitContainer5.Panel2.Controls.Add(Me.chartSimulationStatistics)
-        Me.SplitContainer5.Size = New System.Drawing.Size(745, 434)
-        Me.SplitContainer5.SplitterDistance = 158
-        Me.SplitContainer5.TabIndex = 0
-        '
-        'clbDataSeries
-        '
-        Me.clbDataSeries.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.clbDataSeries.FormattingEnabled = True
-        Me.clbDataSeries.Location = New System.Drawing.Point(0, 0)
-        Me.clbDataSeries.Name = "clbDataSeries"
-        Me.clbDataSeries.Size = New System.Drawing.Size(158, 434)
-        Me.clbDataSeries.TabIndex = 0
-        '
-        'chartSimulationStatistics
-        '
-        ChartArea1.Name = "ChartArea1"
-        Me.chartSimulationStatistics.ChartAreas.Add(ChartArea1)
-        Me.chartSimulationStatistics.Dock = System.Windows.Forms.DockStyle.Fill
-        Legend1.Name = "Legend1"
-        Me.chartSimulationStatistics.Legends.Add(Legend1)
-        Me.chartSimulationStatistics.Location = New System.Drawing.Point(0, 0)
-        Me.chartSimulationStatistics.Name = "chartSimulationStatistics"
-        Series1.ChartArea = "ChartArea1"
-        Series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line
-        Series1.Legend = "Legend1"
-        Series1.Name = "Series1"
-        Me.chartSimulationStatistics.Series.Add(Series1)
-        Me.chartSimulationStatistics.Size = New System.Drawing.Size(583, 434)
-        Me.chartSimulationStatistics.TabIndex = 0
         '
         'frmStatistics
         '
@@ -242,6 +243,11 @@ Partial Class frmStatistics
         Me.SplitContainer1.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer1.ResumeLayout(False)
+        Me.SplitContainer5.Panel1.ResumeLayout(False)
+        Me.SplitContainer5.Panel2.ResumeLayout(False)
+        CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.SplitContainer5.ResumeLayout(False)
+        CType(Me.chartSimulationStatistics, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer2.Panel1.ResumeLayout(False)
         Me.SplitContainer2.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer2, System.ComponentModel.ISupportInitialize).EndInit()
@@ -255,11 +261,6 @@ Partial Class frmStatistics
         Me.SplitContainer4.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer4, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer4.ResumeLayout(False)
-        Me.SplitContainer5.Panel1.ResumeLayout(False)
-        Me.SplitContainer5.Panel2.ResumeLayout(False)
-        CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.SplitContainer5.ResumeLayout(False)
-        CType(Me.chartSimulationStatistics, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -275,4 +276,5 @@ Partial Class frmStatistics
     Friend WithEvents SplitContainer4 As System.Windows.Forms.SplitContainer
     Friend WithEvents btnSaveImage As System.Windows.Forms.Button
     Friend WithEvents btnSaveDataAsCSV As System.Windows.Forms.Button
+    Friend WithEvents tmrStatisticsRefresh As System.Windows.Forms.Timer
 End Class

@@ -10,6 +10,7 @@
         'Dispatcher = New DebuggingDispatcher(Map)
         NoticeBoard.Clear()
         NoticeBoard.DepotPoint = Map.NodesAdjacencyList.GetRandomPoint
+        InitialiseLogger()
     End Sub
 
     'Returns whether the state has changed.

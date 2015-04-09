@@ -2,7 +2,7 @@
     Property Map As StreetMap
     Property Agents As New List(Of Agent)
     Property IsRunning As Boolean = False
-    Property Statistics As New StatisticsLogger(Now, Map)
+    Property Statistics As StatisticsLogger
 
     Protected Time As TimeSpan
     Protected TIME_INCREMENT As TimeSpan = TimeSpan.FromSeconds(1)
@@ -30,6 +30,12 @@
             Return "paused"
         End If
     End Function
+
+    Sub InitialiseLogger()
+        If Statistics Is Nothing Then
+            Statistics = New StatisticsLogger(Now, Map)
+        End If
+    End Sub
 
     Sub LogStatistics()
         Statistics.Log(Agents)
