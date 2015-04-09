@@ -36,7 +36,7 @@ Partial Class frmStatistics
         Me.cbDataRefreshTimer = New System.Windows.Forms.CheckBox()
         Me.SplitContainer4 = New System.Windows.Forms.SplitContainer()
         Me.btnSaveImage = New System.Windows.Forms.Button()
-        Me.btnSaveDataAsCSV = New System.Windows.Forms.Button()
+        Me.btnSaveDataAsXML = New System.Windows.Forms.Button()
         Me.tmrStatisticsRefresh = New System.Windows.Forms.Timer(Me.components)
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -201,7 +201,7 @@ Partial Class frmStatistics
         '
         'SplitContainer4.Panel2
         '
-        Me.SplitContainer4.Panel2.Controls.Add(Me.btnSaveDataAsCSV)
+        Me.SplitContainer4.Panel2.Controls.Add(Me.btnSaveDataAsXML)
         Me.SplitContainer4.Size = New System.Drawing.Size(373, 43)
         Me.SplitContainer4.SplitterDistance = 173
         Me.SplitContainer4.TabIndex = 0
@@ -217,16 +217,16 @@ Partial Class frmStatistics
         Me.btnSaveImage.Text = ".PNG"
         Me.btnSaveImage.UseVisualStyleBackColor = True
         '
-        'btnSaveDataAsCSV
+        'btnSaveDataAsXML
         '
-        Me.btnSaveDataAsCSV.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.btnSaveDataAsCSV.Font = New System.Drawing.Font("Microsoft Sans Serif", 26.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnSaveDataAsCSV.Location = New System.Drawing.Point(0, 0)
-        Me.btnSaveDataAsCSV.Name = "btnSaveDataAsCSV"
-        Me.btnSaveDataAsCSV.Size = New System.Drawing.Size(196, 43)
-        Me.btnSaveDataAsCSV.TabIndex = 1
-        Me.btnSaveDataAsCSV.Text = ".CSV"
-        Me.btnSaveDataAsCSV.UseVisualStyleBackColor = True
+        Me.btnSaveDataAsXML.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.btnSaveDataAsXML.Font = New System.Drawing.Font("Microsoft Sans Serif", 26.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnSaveDataAsXML.Location = New System.Drawing.Point(0, 0)
+        Me.btnSaveDataAsXML.Name = "btnSaveDataAsXML"
+        Me.btnSaveDataAsXML.Size = New System.Drawing.Size(196, 43)
+        Me.btnSaveDataAsXML.TabIndex = 1
+        Me.btnSaveDataAsXML.Text = ".XML"
+        Me.btnSaveDataAsXML.UseVisualStyleBackColor = True
         '
         'tmrStatisticsRefresh
         '
@@ -275,6 +275,6 @@ Partial Class frmStatistics
     Friend WithEvents cbDataRefreshTimer As System.Windows.Forms.CheckBox
     Friend WithEvents SplitContainer4 As System.Windows.Forms.SplitContainer
     Friend WithEvents btnSaveImage As System.Windows.Forms.Button
-    Friend WithEvents btnSaveDataAsCSV As System.Windows.Forms.Button
+    Friend WithEvents btnSaveDataAsXML As System.Windows.Forms.Button
     Friend WithEvents tmrStatisticsRefresh As System.Windows.Forms.Timer
 End Class

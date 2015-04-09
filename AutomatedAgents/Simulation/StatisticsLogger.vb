@@ -1,7 +1,7 @@
 ﻿Public Class StatisticsLogger
     Private Const STATS_DIRECTORY_FORMAT As String = "stats\{0}-{1}\"
-    Private Const CSV_FILENAME As String = "data.csv"
-    Private Const CSV_SAVE_MESSAGE_FORMAT As String = "Statistics Saved to {0}. File size: {1} KB. Row count: {2}"
+    Private Const XML_FILENAME As String = "data.xml"
+    Private Const XML_SAVE_MESSAGE_FORMAT As String = "Statistics Saved to {0}. File size: {1} KB. Row count: {2}"
 
 
     Public ReadOnly SimulationStartTime As Date
@@ -80,20 +80,18 @@
         End SyncLock
     End Sub
 
-    Sub SaveToCSV()
+    Sub SaveToXML()
         SyncLock Table
             Try
-                Dim FileName As String = StatsDirectoryPath & CSV_FILENAME
+                Dim FileName As String = StatsDirectoryPath & XML_FILENAME
                 IO.File.Delete(FileName)
                 Table.WriteXml(FileName)
 
-                MsgBox(String.Format(CSV_SAVE_MESSAGE_FORMAT, FileName, CInt(0), 0), MsgBoxStyle.OkOnly)
+                MsgBox(String.Format(XML_SAVE_MESSAGE_FORMAT, FileName, New IO.FileInfo(FileName).Length \ 1024, Table.Rows.Count), MsgBoxStyle.OkOnly)
             Catch ex As Exception
                 MsgBox("Operation failed: " & ex.Message, MsgBoxStyle.Exclamation)
             End Try
         End SyncLock
-
-
     End Sub
 
 End Class

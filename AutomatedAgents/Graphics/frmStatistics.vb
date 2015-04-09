@@ -111,7 +111,9 @@ Public Class frmStatistics
 
     End Sub
 
-    Private Sub btnSaveDataAsCSV_Click(sender As Object, e As EventArgs) Handles btnSaveDataAsCSV.Click
-        AASimulation.Statistics.SaveToCSV()
+    Private Sub btnSaveDataAsXML_Click(sender As Object, e As EventArgs) Handles btnSaveDataAsXML.Click
+        If AASimulation IsNot Nothing Then
+            AASimulation.Statistics.SaveToXML()
+        End If
     End Sub
 End Class
