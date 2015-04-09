@@ -38,8 +38,9 @@
     End Sub
 
     Sub Log(ByVal Agents As List(Of Agent))
-        Dim RowID As Integer = NoticeBoard.CurrentTime.TotalSeconds
         Dim Row As DataRow = Table.NewRow
+        Row("Time") = NoticeBoard.CurrentTime.TotalSeconds
+
         Row("CompletedJobsCount") = NoticeBoard.CompletedJobs.Count
         Row("IncompleteJobsCount") = NoticeBoard.IncompleteJobs.Count
         Row("RefusedJobsCount") = NoticeBoard.RefusedJobs.Count
@@ -48,23 +49,27 @@
         Row("CumulativeTimeEarly") = NoticeBoard.TotalTimeEarly
         Row("CumulativeTimeLate") = NoticeBoard.TotalTimeLate
 
-        Row("CurrentActiveVehicles") = Agents.Sum(Function(x)
-                                                      Return Math.Min(x.Plan.WayPoints.Count, 1)
-                                                  End Function)
-        Row("CurrentAverageVehicleSpeed") = Agents.Average(Function(x)
-                                                               Return x.CurrentSpeedKMH
-                                                           End Function)
-        Row("CurrentAverageVehicleSaturation") = Agents.Average(Function(x)
-                                                                    Return x.Plan.CapacityLeft
-                                                                End Function)
-        Row("CurrentTotalSaturation") = Agents.Sum(Function(x)
-                                                       Return x.GetVehicleMaxCapacity - x.GetVehicleCapacityLeft
-                                                   End Function)
+        If Agents.Count > 0 Then
+            Row("CurrentActiveVehicles") = Agents.Sum(Function(x)
+                                                          Return Math.Min(x.Plan.WayPoints.Count, 1)
+                                                      End Function)
+            Row("CurrentAverageVehicleSpeed") = Agents.Average(Function(x)
+                                                                   Return x.CurrentSpeedKMH
+                                                               End Function)
+            Row("CurrentAverageVehicleSaturation") = Agents.Average(Function(x)
+                                                                        Return x.Plan.CapacityLeft
+                                                                    End Function)
+            Row("CurrentTotalSaturation") = Agents.Sum(Function(x)
+                                                           Return x.GetVehicleMaxCapacity - x.GetVehicleCapacityLeft
+                                                       End Function)
+        End If
+
 
         Row("CumulativeCost") = NoticeBoard.FuelBill
         Row("CumulativeRevenue") = NoticeBoard.JobRevenue
         Row("CumulativeProfit") = NoticeBoard.JobRevenue - NoticeBoard.FuelBill
 
+        Table.Rows.Add(Row)
     End Sub
 
     Sub SaveToCSV()
