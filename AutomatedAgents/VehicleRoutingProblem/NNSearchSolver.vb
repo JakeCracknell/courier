@@ -245,6 +245,7 @@
             End If
         Loop Until t.ElapsedMilliseconds > 1000
         RecreateCourierPlan(BestSolution.WayPoints)
+        Return True
     End Function
 
     Private Function SolveUsingSimulatedAnnealing()
@@ -279,6 +280,7 @@
             AnnealingIteration += 1
         End While
         RecreateCourierPlan(Solution.WayPoints)
+        Return True
     End Function
 
     Private Function Heuristic(ByVal State As CourierPlanState) As Double

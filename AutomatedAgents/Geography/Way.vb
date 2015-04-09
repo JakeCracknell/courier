@@ -80,6 +80,6 @@
     End Function
 
     Public Overrides Function ToString() As String
-        Return Name
+        Return If(Name <> "", Name, Type.ToString("G"))
     End Function
 End Class

@@ -1,7 +1,4 @@
 ﻿Public Class CourierJob
-    'By default £2 + 20p/km
-    Private Const DEFAULT_FEE_BASE As Double = 2
-    Private Const DEFAULT_FEE_DISTANCE_MULTIPLIER As Double = 0.2
     Public Const CUSTOMER_WAIT_TIME_MIN As Integer = 20 ' 20 sekonds
     Public Const CUSTOMER_WAIT_TIME_MAX As Integer = 2 * 60 ' 2 minutes
     Public Const CUSTOMER_WAIT_TIME_AVG As Integer = _
@@ -9,28 +6,26 @@
 
     Private Const DEADLINE_TO_DEPOT As Integer = 60 * 60 * 12 ' 12 hours
 
-    Public PickupPosition As HopPosition
+    Public ReadOnly JobID As Integer = NewID("job")
+    Public ReadOnly PickupPosition As HopPosition
     Public DeliveryPosition As HopPosition
     Public ReadOnly OriginalDeliveryPosition As HopPosition
     Public Deadline As TimeSpan
-    Public CubicMetres As Double
-    Public CustomerFee As Decimal
+    Public ReadOnly CubicMetres As Double
+    Public CustomerFee As Decimal 'Potentially refunded
+    Public OriginalCustomerFee As Decimal
     Public Status As JobStatus = JobStatus.UNALLOCATED
 
-    Sub New(ByVal PickupPosition As HopPosition, ByVal DeliveryPosition As HopPosition, ByVal Size As Double, ByVal Fee As Decimal, ByVal Deadline As TimeSpan)
+    Sub New(ByVal PickupPosition As HopPosition, ByVal DeliveryPosition As HopPosition, ByVal Size As Double, ByVal Deadline As TimeSpan)
         Me.PickupPosition = PickupPosition
         Me.DeliveryPosition = DeliveryPosition
         Me.OriginalDeliveryPosition = DeliveryPosition
         Me.CubicMetres = Size
-        Me.CustomerFee = Math.Round(Fee, 2)
         Me.Deadline = Deadline
     End Sub
     Sub New(ByVal PickupPosition As HopPosition, ByVal DeliveryPosition As HopPosition)
         Me.New(PickupPosition, DeliveryPosition, _
                Math.Max(SimulationParameters.CubicMetresMin, Gaussian(SimulationParameters.CubicMetresAverage)), _
-            DEFAULT_FEE_BASE + _
-            HaversineDistance(PickupPosition, DeliveryPosition) * _
-            DEFAULT_FEE_DISTANCE_MULTIPLIER,
                     NoticeBoard.CurrentTime.Add( _
                     TimeSpan.FromMinutes(Gaussian(SimulationParameters.DeadlineAverage))))
     End Sub
@@ -71,11 +66,23 @@
         End If
     End Function
 
+    Function GetDirectRoute() As Route
+        Return RouteCache.GetRoute(PickupPosition, OriginalDeliveryPosition)
+    End Function
+
+    Function IsGoingToDepot() As Boolean
+        Return Not OriginalDeliveryPosition.Equals(DeliveryPosition)
+    End Function
+
+    Public Sub CalculateFee(ByVal EstimatedExtraHoursOfDriving As Double)
+        CustomerFee = Math.Round(SimulationParameters.FeeBasePrice + EstimatedExtraHoursOfDriving * SimulationParameters.FeeHourlyPrice, 2)
+    End Sub
 
     'Uncollected deliveries are partially refunded to the base fee
     'Or if the customer was charged less than this, no refund.
+    'TODO: should recalculate based on what solver says or triangle inequality
     Private Sub PartialRefund()
-        CustomerFee = Math.Min(DEFAULT_FEE_BASE, CustomerFee)
+        CustomerFee = Math.Min(FeeBasePrice, CustomerFee) 'WRONG
     End Sub
 
     'Full refund if the deadline is missed.

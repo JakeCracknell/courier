@@ -7,6 +7,9 @@
     Public CubicMetresAverage As Double = 0.5
     Public ProbPickupFail As Double = 0.01
     Public ProbDeliveryFail As Double = 0.1
+    Public FeeBasePrice As Double = 2
+    Public FeeHourlyPrice As Double = 0.2
+
 
     Public Const CubicMetresMin As Double = 0.0004
 

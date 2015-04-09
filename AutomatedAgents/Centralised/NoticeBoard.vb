@@ -70,7 +70,7 @@
             If Winner IsNot Nothing Then
                 Winner.AwardJob()
                 AllocateJob(JobOffered)
-                JobOffered.CustomerFee = BestBid
+                JobOffered.CalculateFee(BestBid)
             Else
                 'Debug.WriteLine("Could not find a contractor for job")
                 JobOffered.Status = JobStatus.CANCELLED

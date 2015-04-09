@@ -83,6 +83,7 @@
     <None Include="Agents\Strategies\LazyStrategy.vb" />
     <Compile Include="Centralised\DebuggingDispatcher.vb" />
     <Compile Include="Centralised\IDispatcher.vb" />
+    <Compile Include="Centralised\UIDAssigner.vb" />
     <Compile Include="Geography\Bounds.vb" />
     <Compile Include="Centralised\NoticeBoard.vb" />
     <Compile Include="Centralised\SimpleDispatcher.vb" />

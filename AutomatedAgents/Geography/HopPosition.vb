@@ -84,6 +84,6 @@
     End Function
 
     Public Overrides Function ToString() As String
-        Return Hop.Way.Name
+        Return Hop.Way.ToString
     End Function
 End Class

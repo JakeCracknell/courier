@@ -15,7 +15,7 @@
     Public Overrides Function Tick() As Boolean
         Time = Time.Add(TIME_INCREMENT)
         NoticeBoard.CurrentTime = Time
-        Dim Modified As Boolean = True
+        Dim Modified As Boolean = False
 
         'Moved here for CNP
         Dispatcher.Tick()
@@ -32,7 +32,7 @@
 
         'Dispatcher.Tick()
         'NoticeBoard.Tick()
-        Return Modified
+        Return Agents.Count > 0
     End Function
 
 End Class
