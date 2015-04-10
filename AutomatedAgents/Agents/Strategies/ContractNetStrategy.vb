@@ -16,13 +16,22 @@ Class ContractNetStrategy
     Public Sub Run() Implements IAgentStrategy.Run
         Dim NewJob As CourierJob = Contractor.CollectJob
         If NewJob IsNot Nothing Then
-            Agent.Plan = Contractor.Solver.GetPlan
+            Select Case Policy
+                Case ContractNetPolicy.CNP1
+                    Agent.Plan = New CourierPlan(Agent.Plan.StartPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft, WayPoint.CreateWayPointList(NewJob))
+                Case ContractNetPolicy.CNP2
+                    Agent.Plan.WayPoints.AddRange(WayPoint.CreateWayPointList(NewJob))
+                    Agent.Plan.RecreateRouteListFromWaypoints()
+                Case ContractNetPolicy.CNP3, ContractNetPolicy.CNP4
+                    Agent.Plan = Contractor.Solver.GetPlan
+            End Select
         End If
 
         If Agent.Plan.IsIdle() Then
             Exit Sub
         End If
 
+        'No need to recompute A* route to first waypoint.
         Agent.Plan.Update(False)
 
         'If a route somewhere has just been completed...
@@ -33,24 +42,36 @@ Class ContractNetStrategy
                     Case JobStatus.PENDING_PICKUP
                         Agent.Delayer = New Delayer(Job.Collect())
                         If Job.Status = JobStatus.CANCELLED Then
+                            'CNP policy invariant
                             Agent.Plan.ExtractCancelled()
                         ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
+                            'Successful pickup
                             Agent.Plan.CapacityLeft -= Job.CubicMetres
                         End If
                     Case JobStatus.PENDING_DELIVERY
                         Agent.Delayer = New Delayer(Job.Deliver())
                         If Job.Status = JobStatus.COMPLETED Then
+                            'Successful dropoff
                             Agent.TotalCompletedJobs += 1
                             Agent.Plan.CapacityLeft += Job.CubicMetres
                         ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
-                            'Fail -> Depot TODO: DIFFERENT CNPS HANDLE DIFFERENTLY
+                            'Fail -> Depot. TODO: use Nearest Depot to Agent.Plan.StartPoint
                             Dim DepotWaypoint As New WayPoint() With {.DefinedStatus = JobStatus.PENDING_DELIVERY, _
-                                                                      .Job = Job, .Position = Job.DeliveryPosition, _
-                                                                      .VolumeDelta = -Job.CubicMetres}
-                            Agent.Plan.WayPoints.Add(DepotWaypoint)
-                            Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser)
-                            Agent.Plan = Solver.GetPlan
-                            Debug.Assert(Agent.Plan IsNot Nothing)
+                                          .Job = Job, .Position = Job.DeliveryPosition, _
+                                          .VolumeDelta = -Job.CubicMetres}
+                            Select Case Policy
+                                Case ContractNetPolicy.CNP1, ContractNetPolicy.CNP2, ContractNetPolicy.CNP3
+                                    'Go to the depot right now.
+                                    Agent.Plan.WayPoints.Insert(0, DepotWaypoint)
+                                    Agent.Plan.Routes.Insert(0, RouteCache.GetRoute(Agent.Plan.StartPoint, DepotWaypoint.Position))
+                                Case ContractNetPolicy.CNP4
+                                    'Go to the depot whenever it is optimal.
+                                    Agent.Plan.WayPoints.Add(DepotWaypoint)
+                                    Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser)
+                                    Agent.Plan = Solver.GetPlan
+                                    Debug.Assert(Agent.Plan IsNot Nothing)
+                            End Select
+
                         End If
                 End Select
 

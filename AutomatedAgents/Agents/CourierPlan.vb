@@ -18,7 +18,7 @@
     Public Sub New(ByVal StartPoint As HopPosition, ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser, ByVal CapacityLeft As Double, ByVal WayPoints As List(Of WayPoint))
         Me.New(StartPoint, Map, Minimiser, CapacityLeft)
         Me.WayPoints = WayPoints
-        CreateRouteListFromWaypoints()
+        RecreateRouteListFromWaypoints()
     End Sub
     Public Sub New(ByVal StartPoint As HopPosition, ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser, ByVal CapacityLeft As Double, ByVal WayPoints As List(Of WayPoint), ByVal RouteList As List(Of Route))
         Me.New(StartPoint, Map, Minimiser, CapacityLeft)
@@ -26,9 +26,9 @@
         Me.Routes = RouteList
     End Sub
 
-    Private Sub CreateRouteListFromWaypoints()
+    Public Sub RecreateRouteListFromWaypoints()
         Routes = New List(Of Route)
-        Dim LastPoint As IPoint = StartPoint
+        Dim LastPoint As IPoint = RoutePosition.GetPoint
         For Each W As WayPoint In WayPoints
             Routes.Add(RouteCache.GetRoute(LastPoint, W.Position))
             LastPoint = W.Position

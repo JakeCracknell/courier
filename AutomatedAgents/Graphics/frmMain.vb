@@ -297,19 +297,16 @@
         LineViewToolStripMenuItem.Checked = False
         RouteFromToolStripMenuItem.Checked = False
     End Sub
-
     Private Sub JobViewToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles JobViewToolStripMenuItem.Click
         MapGraphics.ConfigDrawAgentRoutes = If(JobViewToolStripMenuItem.Checked, 0, -1)
         LineViewToolStripMenuItem.Checked = False
         RouteFromToolStripMenuItem.Checked = False
     End Sub
-
     Private Sub LineViewToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LineViewToolStripMenuItem.Click
         MapGraphics.ConfigDrawAgentRoutes = If(LineViewToolStripMenuItem.Checked, 1, -1)
         JobViewToolStripMenuItem.Checked = False
         RouteFromToolStripMenuItem.Checked = False
     End Sub
-
     Private Sub RouteViewToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RouteViewToolStripMenuItem.Click
         MapGraphics.ConfigDrawAgentRoutes = If(RouteViewToolStripMenuItem.Checked, 2, -1)
         JobViewToolStripMenuItem.Checked = False
@@ -322,5 +319,21 @@
 
     Private Sub ViewStatisticsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewStatisticsToolStripMenuItem.Click
         frmStatistics.Show()
+    End Sub
+
+    Private Sub CNP1ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CNP1ToolStripMenuItem.Click
+        SimulationParameters.CNPVersion = ContractNetPolicy.CNP1
+    End Sub
+    Private Sub CNP2ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CNP2ToolStripMenuItem.Click
+        SimulationParameters.CNPVersion = ContractNetPolicy.CNP2
+    End Sub
+    Private Sub CNP3ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CNP3ToolStripMenuItem.Click
+        SimulationParameters.CNPVersion = ContractNetPolicy.CNP3
+    End Sub
+    Private Sub CNP4ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CNP4ToolStripMenuItem.Click
+        SimulationParameters.CNPVersion = ContractNetPolicy.CNP4
+    End Sub
+    Private Sub CNP5ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CNP5ToolStripMenuItem.Click
+        SimulationParameters.CNPVersion = ContractNetPolicy.CNP5
     End Sub
 End Class

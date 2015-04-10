@@ -24,7 +24,7 @@
         Me.Color = Color
         Me.AgentName = AgentNameAssigner.AssignAgentName()
         Me.VehicleSize = VehicleSize
-        Strategy = New ContractNetStrategy(Me, ContractNetPolicy.CNP4)
+        Strategy = New ContractNetStrategy(Me, SimulationParameters.CNPVersion)
         Refuel()
 
         'TODO: start at depot, which is also a refuelling station

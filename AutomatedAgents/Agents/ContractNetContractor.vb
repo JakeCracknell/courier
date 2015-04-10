@@ -107,4 +107,5 @@
         AwardedJob = Nothing
         Return Temp
     End Function
+
 End Class

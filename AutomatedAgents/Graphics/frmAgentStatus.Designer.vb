@@ -61,7 +61,7 @@ Partial Class frmAgentStatus
         Me.lvAgentList.FullRowSelect = True
         Me.lvAgentList.Location = New System.Drawing.Point(0, 0)
         Me.lvAgentList.Name = "lvAgentList"
-        Me.lvAgentList.Size = New System.Drawing.Size(917, 153)
+        Me.lvAgentList.Size = New System.Drawing.Size(915, 120)
         Me.lvAgentList.TabIndex = 0
         Me.lvAgentList.UseCompatibleStateImageBehavior = False
         Me.lvAgentList.View = System.Windows.Forms.View.Details
@@ -144,8 +144,8 @@ Partial Class frmAgentStatus
         'SplitContainer1.Panel2
         '
         Me.SplitContainer1.Panel2.Controls.Add(Me.lvJobList)
-        Me.SplitContainer1.Size = New System.Drawing.Size(917, 307)
-        Me.SplitContainer1.SplitterDistance = 153
+        Me.SplitContainer1.Size = New System.Drawing.Size(915, 413)
+        Me.SplitContainer1.SplitterDistance = 120
         Me.SplitContainer1.TabIndex = 1
         '
         'lvJobList
@@ -155,7 +155,7 @@ Partial Class frmAgentStatus
         Me.lvJobList.FullRowSelect = True
         Me.lvJobList.Location = New System.Drawing.Point(0, 0)
         Me.lvJobList.Name = "lvJobList"
-        Me.lvJobList.Size = New System.Drawing.Size(917, 150)
+        Me.lvJobList.Size = New System.Drawing.Size(915, 289)
         Me.lvJobList.TabIndex = 1
         Me.lvJobList.UseCompatibleStateImageBehavior = False
         Me.lvJobList.View = System.Windows.Forms.View.Details
@@ -217,7 +217,7 @@ Partial Class frmAgentStatus
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(917, 307)
+        Me.ClientSize = New System.Drawing.Size(915, 413)
         Me.Controls.Add(Me.SplitContainer1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "frmAgentStatus"

@@ -52,11 +52,17 @@ Partial Class frmMain
         Me.StopToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ResetToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SpeedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ViewStatisticsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.tmrRedraw = New System.Windows.Forms.Timer(Me.components)
         Me.picMap = New System.Windows.Forms.PictureBox()
         Me.tmrStatus = New System.Windows.Forms.Timer(Me.components)
         Me.bwSimulator = New System.ComponentModel.BackgroundWorker()
-        Me.ViewStatisticsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SelectCNPToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CNP1ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CNP2ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CNP3ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CNP4ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CNP5ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.picMap, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -111,7 +117,7 @@ Partial Class frmMain
         '
         'AgentsToolStripMenuItem
         '
-        Me.AgentsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AgentStatusToolStripMenuItem})
+        Me.AgentsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AgentStatusToolStripMenuItem, Me.SelectCNPToolStripMenuItem})
         Me.AgentsToolStripMenuItem.Name = "AgentsToolStripMenuItem"
         Me.AgentsToolStripMenuItem.Size = New System.Drawing.Size(56, 20)
         Me.AgentsToolStripMenuItem.Text = "Agents"
@@ -119,7 +125,7 @@ Partial Class frmMain
         'AgentStatusToolStripMenuItem
         '
         Me.AgentStatusToolStripMenuItem.Name = "AgentStatusToolStripMenuItem"
-        Me.AgentStatusToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
+        Me.AgentStatusToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.AgentStatusToolStripMenuItem.Text = "Agent Status..."
         '
         'RouteTestingToolStripMenuItem
@@ -263,6 +269,12 @@ Partial Class frmMain
         Me.SpeedToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
         Me.SpeedToolStripMenuItem.Text = "Set Parameters..."
         '
+        'ViewStatisticsToolStripMenuItem
+        '
+        Me.ViewStatisticsToolStripMenuItem.Name = "ViewStatisticsToolStripMenuItem"
+        Me.ViewStatisticsToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
+        Me.ViewStatisticsToolStripMenuItem.Text = "View Statistics..."
+        '
         'tmrRedraw
         '
         Me.tmrRedraw.Enabled = True
@@ -284,11 +296,42 @@ Partial Class frmMain
         'bwSimulator
         '
         '
-        'ViewStatisticsToolStripMenuItem
+        'SelectCNPToolStripMenuItem
         '
-        Me.ViewStatisticsToolStripMenuItem.Name = "ViewStatisticsToolStripMenuItem"
-        Me.ViewStatisticsToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
-        Me.ViewStatisticsToolStripMenuItem.Text = "View Statistics..."
+        Me.SelectCNPToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CNP1ToolStripMenuItem, Me.CNP2ToolStripMenuItem, Me.CNP3ToolStripMenuItem, Me.CNP4ToolStripMenuItem, Me.CNP5ToolStripMenuItem})
+        Me.SelectCNPToolStripMenuItem.Name = "SelectCNPToolStripMenuItem"
+        Me.SelectCNPToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.SelectCNPToolStripMenuItem.Text = "Select CNP#"
+        '
+        'CNP1ToolStripMenuItem
+        '
+        Me.CNP1ToolStripMenuItem.Name = "CNP1ToolStripMenuItem"
+        Me.CNP1ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CNP1ToolStripMenuItem.Text = "CNP1"
+        '
+        'CNP2ToolStripMenuItem
+        '
+        Me.CNP2ToolStripMenuItem.Name = "CNP2ToolStripMenuItem"
+        Me.CNP2ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CNP2ToolStripMenuItem.Text = "CNP2"
+        '
+        'CNP3ToolStripMenuItem
+        '
+        Me.CNP3ToolStripMenuItem.Name = "CNP3ToolStripMenuItem"
+        Me.CNP3ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CNP3ToolStripMenuItem.Text = "CNP3"
+        '
+        'CNP4ToolStripMenuItem
+        '
+        Me.CNP4ToolStripMenuItem.Name = "CNP4ToolStripMenuItem"
+        Me.CNP4ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CNP4ToolStripMenuItem.Text = "CNP4"
+        '
+        'CNP5ToolStripMenuItem
+        '
+        Me.CNP5ToolStripMenuItem.Name = "CNP5ToolStripMenuItem"
+        Me.CNP5ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CNP5ToolStripMenuItem.Text = "CNP5"
         '
         'frmMain
         '
@@ -344,5 +387,11 @@ Partial Class frmMain
     Friend WithEvents DepotsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents bwSimulator As System.ComponentModel.BackgroundWorker
     Friend WithEvents ViewStatisticsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents SelectCNPToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents CNP1ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents CNP2ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents CNP3ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents CNP4ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents CNP5ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class
