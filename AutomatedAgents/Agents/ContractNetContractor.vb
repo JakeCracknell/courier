@@ -6,11 +6,13 @@
     Private AwardedJob As CourierJob = Nothing
     Private Agent As Agent
     Private TentativeSolver As NNSearchSolver = Nothing
+    Private Policy As ContractNetPolicy
 
     Property Solver As NNSearchSolver = Nothing
 
-    Sub New(ByVal Agent As Agent)
+    Sub New(ByVal Agent As Agent, ByVal Policy As ContractNetPolicy)
         Me.Agent = Agent
+        Me.Policy = Policy
     End Sub
 
     Sub AnnounceJob(ByVal CourierJob As CourierJob)
@@ -25,31 +27,44 @@
     Private Sub EvaluateJobToReview()
         CurrentBid = NO_BID
 
-        'Basic preliminary checks before starting something big
+        'Common basic preliminary checks:
         If JobToReview.CubicMetres > Agent.GetVehicleMaxCapacity Then
             Exit Sub
-        Else
-            Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition)
-            Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
-            Dim MinTime As TimeSpan = Route1.GetEstimatedTime + Route2.GetEstimatedTime
-            If NoticeBoard.CurrentTime + MinTime > JobToReview.Deadline - DEADLINE_PLANNING_REDUNDANCY_TIME Then
-                Exit Sub
-            End If
         End If
 
-        Dim CurrentDrivingCost As Double = 0
-        If Solver IsNot Nothing Then
-            CurrentDrivingCost = Agent.Plan.UpdateAndGetCost()
-        End If
+        Select Case Policy
+            Case ContractNetPolicy.CNP1
 
-        TentativeSolver = New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(TimeSpan.FromMinutes(15)), Agent.RouteFindingMinimiser, JobToReview)
+            Case ContractNetPolicy.CNP2
 
-        If TentativeSolver.Solution Is Nothing Then
-            'Impossible to fit into schedule
-            CurrentBid = NO_BID
-        Else
-            CurrentBid = TentativeSolver.TotalCost - CurrentDrivingCost
-        End If
+            Case ContractNetPolicy.CNP3
+
+            Case ContractNetPolicy.CNP4
+                'Check if the deadline is too slim, even if the agent fulfills it immediately
+                Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition)
+                Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
+                Dim MinTime As TimeSpan = Route1.GetEstimatedTime + Route2.GetEstimatedTime
+                If NoticeBoard.CurrentTime + MinTime > JobToReview.Deadline - DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
+                    Exit Sub
+                End If
+
+                'The current cost is 0 if idle or whatever the updated plan says.
+                Dim CurrentDrivingCost As Double = If(Solver Is Nothing, 0, Agent.Plan.UpdateAndGetCost())
+
+                TentativeSolver = New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(DEADLINE_PLANNING_REDUNDANCY_TIME_PER_ROUTE), Agent.RouteFindingMinimiser, JobToReview)
+
+                'Solution is Nothing iff impossible to fit into schedule (though as we only use NN, this is often untrue)
+                CurrentBid = If(TentativeSolver.Solution Is Nothing, NO_BID, TentativeSolver.TotalCost - CurrentDrivingCost)
+
+            Case ContractNetPolicy.CNP5
+                Throw New NotImplementedException
+        End Select
+
+        'Basic preliminary checks before starting something big
+
+
+
+
 
     End Sub
 

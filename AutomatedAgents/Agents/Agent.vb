@@ -24,9 +24,10 @@
         Me.Color = Color
         Me.AgentName = AgentNameAssigner.AssignAgentName()
         Me.VehicleSize = VehicleSize
-        Strategy = New ContractNetStrategy(Me)
+        Strategy = New ContractNetStrategy(Me, ContractNetPolicy.CNP4)
         Refuel()
 
+        'TODO: start at depot, which is also a refuelling station
         Plan = New CourierPlan(Map.NodesAdjacencyList.GetRandomPoint, Map, RouteFindingMinimiser, GetVehicleMaxCapacity)
         Plan.RoutePosition.Move(VehicleSize)
     End Sub
@@ -58,12 +59,7 @@
 
 
     Public Overridable Sub SetRouteTo(ByVal DestinationPoint As IPoint)
-        'Dim StartingPoint As RoutingPoint = RoutePlan.Last.GetEndPoint
-
-        'Dim RouteFinder As RouteFinder = New AStarSearch(StartingPoint, DestinationPoint, Map.NodesAdjacencyList, RouteFindingMinimiser)
-        'Debug.Assert(RouteFinder IsNot Nothing)
-
-        'RoutePlan.Add(RouteFinder.GetRoute)
+        Debug.WriteLine("This type fo agent does not support direct routing commands")
     End Sub
 
     Protected Sub DepleteFuel(ByVal DistanceTravelled As Double)

@@ -64,6 +64,7 @@
         Return WP
     End Function
 
+    'A->CCC->B->CCC->D goes to A->B->D. Triangle inequality should bring some efficiency gains. TODO: compare with a new TSP solve.
     Sub ExtractCancelled()
         Dim LastPoint As HopPosition = StartPoint
         Dim Index As Integer = 0

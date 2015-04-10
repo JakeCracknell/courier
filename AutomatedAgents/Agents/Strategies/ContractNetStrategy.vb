@@ -4,12 +4,12 @@ Class ContractNetStrategy
 
     Private Agent As Agent
     Private Contractor As ContractNetContractor
+    Private Policy As ContractNetPolicy
 
-    Private LastJobConsidered As CourierJob = Nothing
-
-    Public Sub New(ByVal Agent As Agent)
+    Public Sub New(ByVal Agent As Agent, ByVal Policy As ContractNetPolicy)
         Me.Agent = Agent
-        Contractor = New ContractNetContractor(Agent)
+        Me.Policy = Policy
+        Contractor = New ContractNetContractor(Agent, Policy)
         NoticeBoard.AvailableContractors.Add(Contractor)
     End Sub
 
@@ -49,11 +49,7 @@ Class ContractNetStrategy
                                                                       .VolumeDelta = -Job.CubicMetres}
                             Agent.Plan.WayPoints.Add(DepotWaypoint)
                             Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser)
-                            Agent.Plan = Solver.Solution 'can't do until contingency done
-                            If Agent.Plan Is Nothing Then
-                                Dim sss As New NNSearchSolver(Solver.OldPlan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser)
-
-                            End If
+                            Agent.Plan = Solver.Solution
                             Debug.Assert(Agent.Plan IsNot Nothing)
                         End If
                 End Select
