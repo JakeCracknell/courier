@@ -39,7 +39,7 @@
                 LVI.SubItems.Add(Math.Round(J.GetDirectRoute.GetKM, 3))
                 LVI.SubItems.Add(J.GetDirectRoute.GetEstimatedTime.ToString("h\:mm\:ss"))
                 LVI.SubItems.Add(J.CubicMetres)
-                LVI.SubItems.Add(J.Deadline.ToString)
+                LVI.SubItems.Add(J.Deadline.ToString("d\:hh\:mm\:ss"))
                 LVI.SubItems.Add(J.Status.ToString("G"))
                 Dim TimeLeft As TimeSpan = J.Deadline - NoticeBoard.CurrentTime
                 LVI.SubItems.Add(TimeLeft.ToString("h\:mm\:ss") & If(TimeLeft < TimeSpan.Zero, " LATE", ""))
