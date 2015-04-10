@@ -47,7 +47,7 @@
     Function Deliver() As Integer
         Debug.Assert(Status = JobStatus.PENDING_DELIVERY)
 
-        If DeliveryPosition.Equals(NoticeBoard.DepotPoint) Then
+        If IsGoingToDepot() Then
             Status = JobStatus.COMPLETED
             Return CUSTOMER_WAIT_TIME_MIN
         ElseIf Rnd() > SimulationParameters.ProbDeliveryFail Then
@@ -60,7 +60,8 @@
             Return GenerateRandomWaitTime()
         Else
             Status = JobStatus.PENDING_DELIVERY
-            DeliveryPosition = NoticeBoard.DepotPoint
+            DeliveryPosition = Nothing
+            Throw New NotImplementedException
             Deadline += TimeSpan.FromSeconds(DEADLINE_TO_DEPOT)
             Return CUSTOMER_WAIT_TIME_MAX
         End If

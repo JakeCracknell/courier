@@ -76,7 +76,6 @@ Public Class OSMLoader
         '        End If
         '    Next
         'Next
-        Debug.WriteLine("Fuels: " & Map.FuelNodes.Count)
 
 
         Return Map

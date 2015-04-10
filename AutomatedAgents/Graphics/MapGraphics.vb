@@ -13,7 +13,8 @@
     Private ROAD_THICK_PEN_INNER_TWOWAY As New Pen(New SolidBrush(Color.White), 3)
     Private ROAD_THICK_PEN_INNER_ONEWAY As New Pen(New SolidBrush(Color.Red), 3)
     Private DELIVERY_FAIL_CROSS_PEN As New Pen(New SolidBrush(Color.Black), 2)
-    Private DEPOT_THICK_PEN As New Pen(Brushes.Black, 2)
+    Private LANDMARK_BORDER_PEN As New Pen(Brushes.Black, 2)
+    Private LANDMARK_BRUSH As Brush = Brushes.White
     Private Const ROUTE_TO_LABEL_FORMAT As String = "TO ({0} hops, {1} km, {2} min)"
 
     Private MapBitmapOriginal As Bitmap
@@ -82,7 +83,12 @@
             Next
         End If
 
-        DrawDepot(gr)
+        For Each Depot As IPoint In Map.Depots
+            DrawLandmark(gr, CC.GetPoint(Depot), "D"c)
+        Next
+        For Each FuelPoint As IPoint In Map.FuelPoints
+            DrawLandmark(gr, CC.GetPoint(FuelPoint), "P"c)
+        Next
 
         Return MapBitmapOriginal.Clone
     End Function
@@ -109,20 +115,17 @@
         'gr.DrawLines(Pens.Black, ptsArray)
     End Sub
 
-    Sub DrawDepot(ByVal gr As Graphics)
-        If NoticeBoard.DepotPoint IsNot Nothing Then
-            Dim DepotPoint As Point = CC.GetPoint(NoticeBoard.DepotPoint)
-            Dim Len2 As Integer = SPECIAL_NODE_DRAW_SIZE \ 2
-            gr.FillRectangle(Brushes.White, DepotPoint.X - Len2, _
-                             DepotPoint.Y - Len2, _
-                             SPECIAL_NODE_DRAW_SIZE, SPECIAL_NODE_DRAW_SIZE)
+    Sub DrawLandmark(ByVal gr As Graphics, ByVal DrawPoint As Point, ByVal Character As Char)
+        Dim Len2 As Integer = SPECIAL_NODE_DRAW_SIZE \ 2
+        gr.FillRectangle(LANDMARK_BRUSH, DrawPoint.X - Len2, _
+                         DrawPoint.Y - Len2, _
+                         SPECIAL_NODE_DRAW_SIZE, SPECIAL_NODE_DRAW_SIZE)
 
-            gr.DrawRectangle(DEPOT_THICK_PEN, DepotPoint.X - Len2, _
-                             DepotPoint.Y - Len2, _
-                             SPECIAL_NODE_DRAW_SIZE, SPECIAL_NODE_DRAW_SIZE)
-            DepotPoint.Offset(0, 0)
-            gr.DrawString("D", DEPOT_FONT, Brushes.Black, DepotPoint, CENTRED_STRING_FORMAT)
-        End If
+        gr.DrawRectangle(LANDMARK_BORDER_PEN, DrawPoint.X - Len2, _
+                         DrawPoint.Y - Len2, _
+                         SPECIAL_NODE_DRAW_SIZE, SPECIAL_NODE_DRAW_SIZE)
+        DrawPoint.Offset(0, 0)
+        gr.DrawString(Character, DEPOT_FONT, Brushes.Black, DrawPoint, CENTRED_STRING_FORMAT)
     End Sub
 
     Sub DrawAgent(ByVal Agent As Agent, ByVal gr As Graphics)
@@ -222,10 +225,6 @@
     Function DrawOverlay(ByVal Agents As List(Of Agent), ByVal UnpickedJobs As List(Of CourierJob)) As Image
         Dim OverlayBitmapCopy As Bitmap = MapBitmapOriginal.Clone
         Dim grOverlay As Graphics = Graphics.FromImage(OverlayBitmapCopy)
-
-        If ConfigDrawDepots Then
-            DrawDepot(grOverlay)
-        End If
 
         For Each Agent As Agent In Agents
             Dim AgentIsWaiting As Boolean = Agent.Delayer.IsWaiting

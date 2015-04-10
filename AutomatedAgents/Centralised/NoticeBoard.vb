@@ -2,8 +2,6 @@
     'Private Const START_DATE As Date = Date.Parse("2015-01-01 00:00:00")
     Public CurrentTime As TimeSpan
 
-    Property DepotPoint As HopPosition
-
     Property UnallocatedJobs As New List(Of CourierJob)
     Property UnpickedJobs As New List(Of CourierJob)
     Property PickedJobs As New List(Of CourierJob)

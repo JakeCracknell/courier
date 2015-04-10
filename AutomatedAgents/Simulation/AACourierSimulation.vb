@@ -9,7 +9,7 @@
         Dispatcher = New SimpleDispatcher(Map)
         'Dispatcher = New DebuggingDispatcher(Map)
         NoticeBoard.Clear()
-        NoticeBoard.DepotPoint = Map.NodesAdjacencyList.GetRandomPoint
+        Map.Depots.Add(Map.NodesAdjacencyList.GetRandomPoint) 'TODO: remove this
         InitialiseLogger()
     End Sub
 

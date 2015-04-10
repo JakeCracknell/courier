@@ -33,5 +33,17 @@
         Return False
     End Function
 
-
+    'Uses as-the-crow-flies distance.
+    Public Function GetNearestLandmark(ByVal Point As IPoint, ByVal Landmarks As List(Of IPoint)) As IPoint
+        Dim ClosestLandmark As IPoint = Nothing
+        Dim ClosestDistance As Double = Double.MaxValue
+        For Each Landmark As IPoint In Landmarks
+            Dim Distance As Double = HaversineDistance(Landmark, Point)
+            If Distance < ClosestDistance Then
+                ClosestDistance = Distance
+                ClosestLandmark = Landmark
+            End If
+        Next
+        Return ClosestLandmark
+    End Function
 End Module
