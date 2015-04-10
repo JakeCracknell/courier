@@ -5,7 +5,7 @@
     Private CurrentBid As Double = NO_BID
     Private AwardedJob As CourierJob = Nothing
     Private Agent As Agent
-    Private TentativeSolver As NNSearchSolver = Nothing
+    Private TentativeSolver As ISolver = Nothing
     Private Policy As ContractNetPolicy
 
     Property Solver As NNSearchSolver = Nothing
@@ -32,12 +32,40 @@
             Exit Sub
         End If
 
+        'The current cost is 0 if idle or whatever the updated plan says. UpdateAndGetCost() necessary for all policies
+        Dim CurrentDrivingCost As Double = If(Solver Is Nothing, 0, Agent.Plan.UpdateAndGetCost())
+
         Select Case Policy
             Case ContractNetPolicy.CNP1
-
+                'Only if idle, bid S->A->B cost. No bid if cannot be done on time
+                If Agent.Plan.IsIdle() Then
+                    Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition)
+                    Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
+                    Dim MinTime As TimeSpan = Route1.GetEstimatedTime + Route2.GetEstimatedTime
+                    If NoticeBoard.CurrentTime + MinTime > JobToReview.Deadline - DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
+                        Exit Sub
+                    End If
+                    CurrentBid = Route1.GetCostForAgent(Agent) + Route2.GetCostForAgent(Agent)
+                End If
             Case ContractNetPolicy.CNP2
-
+                'Sum current route times and bid only if the job can be done by the deadline. Bid the cost of appending it to the end of its route.
+                Dim StartingPoint As IPoint = If(Agent.Plan.IsIdle, Agent.Plan.RoutePosition.GetPoint, Agent.Plan.WayPoints.Last.Position)
+                Dim Route1 As Route = RouteCache.GetRoute(StartingPoint, JobToReview.PickupPosition)
+                Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
+                Dim TimeSum As TimeSpan = Route1.GetEstimatedTime + Route2.GetEstimatedTime
+                For Each R As Route In Agent.Plan.Routes
+                    TimeSum += R.GetEstimatedTime
+                Next
+                If NoticeBoard.CurrentTime + TimeSum > JobToReview.Deadline - DEADLINE_PLANNING_REDUNDANCY_TIME_PER_ROUTE Then
+                    Exit Sub
+                End If
+                CurrentBid = Route1.GetCostForAgent(Agent) + Route2.GetCostForAgent(Agent)
             Case ContractNetPolicy.CNP3
+                TentativeSolver = New CNP3Solver(Agent, JobToReview)
+
+                'Solution is Nothing iff impossible to fit into schedule (though as we only use NN, this is often untrue)
+                CurrentBid = If(TentativeSolver.IsSuccessful, TentativeSolver.GetTotalCost - CurrentDrivingCost, NO_BID)
+
 
             Case ContractNetPolicy.CNP4
                 'Check if the deadline is too slim, even if the agent fulfills it immediately
@@ -48,24 +76,14 @@
                     Exit Sub
                 End If
 
-                'The current cost is 0 if idle or whatever the updated plan says.
-                Dim CurrentDrivingCost As Double = If(Solver Is Nothing, 0, Agent.Plan.UpdateAndGetCost())
-
                 TentativeSolver = New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(DEADLINE_PLANNING_REDUNDANCY_TIME_PER_ROUTE), Agent.RouteFindingMinimiser, JobToReview)
 
                 'Solution is Nothing iff impossible to fit into schedule (though as we only use NN, this is often untrue)
-                CurrentBid = If(TentativeSolver.Solution Is Nothing, NO_BID, TentativeSolver.TotalCost - CurrentDrivingCost)
+                CurrentBid = If(TentativeSolver.IsSuccessful, TentativeSolver.GetTotalCost - CurrentDrivingCost, NO_BID)
 
             Case ContractNetPolicy.CNP5
                 Throw New NotImplementedException
         End Select
-
-        'Basic preliminary checks before starting something big
-
-
-
-
-
     End Sub
 
     Sub PlaceBid()

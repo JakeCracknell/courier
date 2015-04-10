@@ -16,10 +16,10 @@ Class ContractNetStrategy
     Public Sub Run() Implements IAgentStrategy.Run
         Dim NewJob As CourierJob = Contractor.CollectJob
         If NewJob IsNot Nothing Then
-            Agent.Plan = Contractor.Solver.Solution
+            Agent.Plan = Contractor.Solver.GetPlan
         End If
 
-        If Agent.Plan.WayPoints.Count = 0 Then
+        If Agent.Plan.IsIdle() Then
             Exit Sub
         End If
 
@@ -43,13 +43,13 @@ Class ContractNetStrategy
                             Agent.TotalCompletedJobs += 1
                             Agent.Plan.CapacityLeft += Job.CubicMetres
                         ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
-                            'Fail -> Depot
+                            'Fail -> Depot TODO: DIFFERENT CNPS HANDLE DIFFERENTLY
                             Dim DepotWaypoint As New WayPoint() With {.DefinedStatus = JobStatus.PENDING_DELIVERY, _
                                                                       .Job = Job, .Position = Job.DeliveryPosition, _
                                                                       .VolumeDelta = -Job.CubicMetres}
                             Agent.Plan.WayPoints.Add(DepotWaypoint)
                             Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser)
-                            Agent.Plan = Solver.Solution
+                            Agent.Plan = Solver.GetPlan
                             Debug.Assert(Agent.Plan IsNot Nothing)
                         End If
                 End Select

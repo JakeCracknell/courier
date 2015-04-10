@@ -1,5 +1,5 @@
 ﻿Module SimulationParameters
-    'Variables
+    '***** Global Variables/parameters
     Public SimulationSpeed As Integer = 1
     Public DisplayRefreshSpeed As Integer = 1
     Public DispatchRatePerHour As Integer = 18
@@ -15,11 +15,13 @@
 
     Public dEbUgVaRiAbLe As Object
 
-    'Global Constants
+    '***** Global Constants
+    Public Const MAX_POSSIBLE_SPEED_KMH As Integer = 112
+
+    'These are supposed to take into account flucutations in traffic and also waiting times at waypoints.
     Public DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB As TimeSpan = TimeSpan.FromMinutes(3)
     Public DEADLINE_PLANNING_REDUNDANCY_TIME_PER_ROUTE As TimeSpan = TimeSpan.FromMinutes(15)
 
-    Public Const MAX_POSSIBLE_SPEED_KMH As Integer = 112
 
 
 End Module

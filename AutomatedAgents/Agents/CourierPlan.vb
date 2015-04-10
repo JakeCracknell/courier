@@ -15,11 +15,26 @@
         Me.CapacityLeft = CapacityLeft
         RoutePosition = New RoutePosition(New Route(StartPoint))
     End Sub
+    Public Sub New(ByVal StartPoint As HopPosition, ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser, ByVal CapacityLeft As Double, ByVal WayPoints As List(Of WayPoint))
+        Me.New(StartPoint, Map, Minimiser, CapacityLeft)
+        Me.WayPoints = WayPoints
+        CreateRouteListFromWaypoints()
+    End Sub
     Public Sub New(ByVal StartPoint As HopPosition, ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser, ByVal CapacityLeft As Double, ByVal WayPoints As List(Of WayPoint), ByVal RouteList As List(Of Route))
         Me.New(StartPoint, Map, Minimiser, CapacityLeft)
         Me.WayPoints = WayPoints
         Me.Routes = RouteList
     End Sub
+
+    Private Sub CreateRouteListFromWaypoints()
+        Routes = New List(Of Route)
+        Dim LastPoint As IPoint = StartPoint
+        For Each W As WayPoint In WayPoints
+            Routes.Add(RouteCache.GetRoute(LastPoint, W.Position))
+            LastPoint = W.Position
+        Next
+    End Sub
+
 
     'Agent has made progress on its plan, perhaps completing waypoints.
     Public Sub Update(ByVal RecalculateFirstAStar As Boolean)
@@ -87,4 +102,9 @@
                Where W.DefinedStatus = JobStatus.PENDING_DELIVERY
                Select W.Job).ToList
     End Function
+
+    Function IsIdle() As Boolean
+        Return WayPoints.Count = 0
+    End Function
+
 End Class

@@ -37,7 +37,7 @@
         If Plan.CapacityLeft > GetVehicleMaxCapacity() Then
             'Throw New OverflowException
             Debug.WriteLine("Vehicle is too full by: " & GetVehicleCapacityPercentage() * 100 & "%")
-        ElseIf Plan.WayPoints.Count = 0 AndAlso Plan.CapacityLeft <> GetVehicleMaxCapacity() Then
+        ElseIf Plan.IsIdle() AndAlso Plan.CapacityLeft <> GetVehicleMaxCapacity() Then
             Debug.WriteLine("Capacity left is non-empty, but vehicle is empty: " & Plan.CapacityLeft)
             'Debug.WriteLine(AgentName & " [" & "".PadRight((1 - Plan.CapacityLeft) * 60, "#") & "".PadRight(Plan.CapacityLeft * 60, " ") & "]")
         End If

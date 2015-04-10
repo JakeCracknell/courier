@@ -1,10 +1,12 @@
 ﻿Public Class NNSearchSolver
+    Implements ISolver
+
     Private Minimiser As RouteFindingMinimiser
     Private PunctualityStrategy As SolverPunctualityStrategy
     Private StartState As CourierPlanState
     Public OldPlan As CourierPlan
-    Public Solution As CourierPlan
-    Public TotalCost As Double
+    Private Solution As CourierPlan
+    Private TotalCost As Double
     Private Shared r As New Random
 
     'TODO: BYVAL locked waypoints - those that must occur first. EG wp ->1 and ->2 already got their courtesy call
@@ -82,6 +84,8 @@
                 NextState.WayPointsLeft = New List(Of WayPoint)(Node.State.WayPointsLeft)
                 NextState.WayPointsLeft.Remove(W)
 
+
+                'TODO: this part needs an Agent object to calc fuel.
                 Dim ExtraCost As Double
                 Select Case Minimiser
                     Case RouteFindingMinimiser.DISTANCE : ExtraCost = Route.GetKM
@@ -406,11 +410,15 @@ FailedMutation:
 
     End Class
 
-    Private Structure CourierPlanState 'TODO: Is class faster?
-        Dim Point As IPoint
-        Dim Time As TimeSpan
-        Dim FuelLeft As Double
-        Dim CapacityLeft As Double
-        Dim WayPointsLeft As List(Of WayPoint)
-    End Structure
+    Public Function GetPlan() As CourierPlan Implements ISolver.GetPlan
+        Return Solution
+    End Function
+
+    Public Function GetTotalCost() As Double Implements ISolver.GetTotalCost
+        Return TotalCost
+    End Function
+
+    Public Function IsSuccessful() As Boolean Implements ISolver.IsSuccessful
+        Return Solution IsNot Nothing
+    End Function
 End Class

@@ -22,6 +22,7 @@
         Return Distance
     End Function
 
+    'TODO traffic
     Public Function GetEstimatedTravelTime() As Double
         If Way IsNot Nothing Then
             Return Distance / Way.GetMaxSpeedKMH(VehicleSize.CAR)
