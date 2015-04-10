@@ -8,7 +8,7 @@
     Private TentativeSolver As ISolver = Nothing
     Private Policy As ContractNetPolicy
 
-    Property Solver As NNSearchSolver = Nothing
+    Property Solver As ISolver = Nothing
 
     Sub New(ByVal Agent As Agent, ByVal Policy As ContractNetPolicy)
         Me.Agent = Agent
@@ -86,7 +86,7 @@
         End Select
 
         'Sometimes the solver will be directed to a lower cost route with this new job, making the difference negative.
-        CurrentBid = Math.Max(0, CurrentBid)
+        CurrentBid = If(CurrentBid <> NO_BID, Math.Max(0, CurrentBid), NO_BID)
     End Sub
 
     Sub PlaceBid()

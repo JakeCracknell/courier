@@ -4,7 +4,7 @@
     Private Solution As CourierPlan = Nothing
     Private Agent As Agent
     Private ExtraJob As CourierJob
-    Private TotalCost As Double
+    Private TotalCost As Double = 0
 
     Sub New(ByVal Agent As Agent, ByVal Job As CourierJob)
         Me.Agent = Agent
@@ -36,8 +36,8 @@
             State.FuelLeft -= Agent.Plan.Routes(0).GetEstimatedFuelUsage(Agent.VehicleSize)
             State.Time += Agent.Plan.Routes(0).GetEstimatedTime()
             State.Point = Agent.Plan.Routes(0).GetEndPoint
+            TotalCost = Agent.Plan.Routes(0).GetCostForAgent(Agent)
         End If
-        TotalCost = Agent.Plan.Routes(0).GetCostForAgent(Agent)
 
         Do Until JobsLeft.Count = 0
             Dim BestNextJob As CourierJob = Nothing
@@ -56,7 +56,15 @@
             Next
             If BestNextJob IsNot Nothing Then
                 JobSolution.Add(BestNextJob)
-                TotalCost += BestNextCost
+                TotalCost += BestNextCost + BestNextJob.GetDirectRoute.GetCostForAgent(Agent)
+                Dim Route1 As Route = RouteCache.GetRoute(State.Point, BestNextJob.PickupPosition)
+                Dim Route2 As Route = BestNextJob.GetDirectRoute
+                State.Time += Route1.GetEstimatedTime _
+                    + Route2.GetEstimatedTime _
+                    + DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB
+                State.FuelLeft -= (Route1.GetEstimatedFuelUsage(Agent.VehicleSize) _
+                    + Route2.GetEstimatedFuelUsage(Agent.VehicleSize))
+                State.Point = BestNextJob.DeliveryPosition
                 JobsLeft.Remove(BestNextJob)
             Else
                 'Route impossible
