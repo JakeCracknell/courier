@@ -57,39 +57,19 @@ Public Class frmStatistics
         End SyncLock
     End Sub
 
-    Private Sub SetRefreshTimer()
-        txtDataRefreshTimerInterval.Enabled = cbDataRefreshTimer.Checked
-        tmrStatisticsRefresh.Enabled = cbDataRefreshTimer.Checked
-        If IsNumeric(txtDataRefreshTimerInterval.Text) Then
-            tmrStatisticsRefresh.Interval = CInt(txtDataRefreshTimerInterval.Text)
-        End If
-    End Sub
-
-    Private Sub RefreshData()
+    Private Sub controlRefreshData_Event(sender As Object, e As EventArgs) Handles btnRefreshData.Click, clbDataSeries.SelectedIndexChanged, tmrStatisticsRefresh.Tick
         If AASimulation IsNot Nothing Then
             RefreshSeriesList()
             RefreshChart()
         End If
     End Sub
 
-    Private Sub btnRefreshData_Click(sender As Object, e As EventArgs) Handles btnRefreshData.Click
-        RefreshData()
-    End Sub
-
-    Private Sub clbDataSeries_ItemCheck(sender As Object, e As ItemCheckEventArgs) Handles clbDataSeries.ItemCheck
-        RefreshData()
-    End Sub
-
-    Private Sub cbDataRefreshTimer_CheckedChanged(sender As Object, e As EventArgs) Handles cbDataRefreshTimer.CheckedChanged
-        SetRefreshTimer()
-    End Sub
-
-    Private Sub txtDataRefreshTimerInterval_TextChanged(sender As Object, e As EventArgs) Handles txtDataRefreshTimerInterval.TextChanged
-        SetRefreshTimer()
-    End Sub
-
-    Private Sub tmrStatisticsRefresh_Tick(sender As Object, e As EventArgs) Handles tmrStatisticsRefresh.Tick
-        RefreshData()
+    Private Sub controlRefreshTimerChange(sender As Object, e As EventArgs) Handles cbDataRefreshTimer.CheckedChanged, txtDataRefreshTimerInterval.TextChanged
+        txtDataRefreshTimerInterval.Enabled = cbDataRefreshTimer.Checked
+        tmrStatisticsRefresh.Enabled = cbDataRefreshTimer.Checked
+        If IsNumeric(txtDataRefreshTimerInterval.Text) Then
+            tmrStatisticsRefresh.Interval = CInt(txtDataRefreshTimerInterval.Text)
+        End If
     End Sub
 
     Private Sub btnSaveImage_Click(sender As Object, e As EventArgs) Handles btnSaveImage.Click
