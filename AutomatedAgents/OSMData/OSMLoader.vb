@@ -1,14 +1,16 @@
 ﻿Imports System.Xml
 
 Public Class OSMLoader
-    Private FilePath As String
+    Private OSMFilePath As String
+    Private AAFilePath As String
     Public Sub New(ByVal FilePath As String)
-        Me.FilePath = FilePath
+        Me.OSMFilePath = FilePath
+        Me.AAFilePath = FilePath.Replace(".osm", ".aa")
     End Sub
 
     Function CreateMap() As StreetMap
         Dim xDoc As XmlDocument = New XmlDocument()
-        xDoc.Load(FilePath)
+        xDoc.Load(OSMFilePath)
 
         Dim xBounds As XmlElement = xDoc.GetElementsByTagName("bounds")(0)
         Dim Bounds As New Bounds(xBounds.GetAttribute("minlat"), _
@@ -17,7 +19,7 @@ Public Class OSMLoader
                                  xBounds.GetAttribute("maxlon"))
 
 
-        Dim Map As New StreetMap(IO.Path.GetFileNameWithoutExtension(FilePath), Bounds)
+        Dim Map As New StreetMap(IO.Path.GetFileNameWithoutExtension(OSMFilePath), Bounds)
         Dim NodeHashMap As New Dictionary(Of Long, Node)
 
         Dim xNodes As XmlNodeList = xDoc.GetElementsByTagName("node")
@@ -44,39 +46,28 @@ Public Class OSMLoader
 
         Node.TotalNodesTraffic = 1
 
-        Map.NodesAdjacencyList.RemoveDisconnectedComponents()
+        Try
+            If IO.File.Exists(AAFilePath) Then
+                Dim AAFile() As String = IO.File.ReadAllLines(AAFilePath)
+                For Each NodeID As String In AAFile(0).Split(",")
+                    Map.Depots.Add(Map.NodesAdjacencyList.Rows(CLng(NodeID)).NodeKey)
+                    Map.FuelPoints.Add(Map.NodesAdjacencyList.Rows(CLng(NodeID)).NodeKey)
+                Next
+                For Each NodeID As String In AAFile(1).Split(",")
+                    Map.FuelPoints.Add(Map.NodesAdjacencyList.Rows(CLng(NodeID)).NodeKey)
+                Next
+            End If
+        Catch ex As Exception
+            MsgBox(IO.Path.GetFileName(AAFilePath) & " could not be parsed: " & ex.Message)
+        End Try
 
-        ''Find fuel locations
-        'For Each xItem As XmlElement In xNodes
-        '    Dim xTags As XmlNodeList = xItem.GetElementsByTagName("tag")
-        '    For Each xTag As XmlElement In xTags
-        '        Dim AttributeName As String = xTag.GetAttribute("k")
-        '        If AttributeName = "amenity" Then
-        '            Dim ValueName As String = xTag.GetAttribute("v")
-        '            If ValueName = "fuel" Then
-        '                Dim NodeRef As Long = xItem.GetAttribute("id")
-        '                Dim Node As Node = NodeHashMap(NodeRef)
-        '                Map.FuelNodes.Add(Map.NodesAdjacencyList.GetNearestNode(Node.Latitude, Node.Longitude))
-        '            End If
-        '        End If
-        '    Next
-        'Next
-        'For Each xItem As XmlElement In xWays
-        '    Dim xTags As XmlNodeList = xItem.GetElementsByTagName("tag")
-        '    For Each xTag As XmlElement In xTags
-        '        Dim AttributeName As String = xTag.GetAttribute("k")
-        '        If AttributeName = "amenity" Then
-        '            Dim ValueName As String = xTag.GetAttribute("v")
-        '            If ValueName = "fuel" Then
-        '                Dim xNd As XmlElement = xItem.SelectSingleNode("nd")
-        '                Dim NodeRef As Long = xNd.GetAttribute("ref")
-        '                Dim Node As Node = NodeHashMap(NodeRef)
-        '                Map.FuelNodes.Add(Map.NodesAdjacencyList.GetNearestNode(Node.Latitude, Node.Longitude))
-        '            End If
-        '        End If
-        '    Next
-        'Next
-
+        If Map.Depots.Count = 0 Then
+            Dim CentralPoint As PointF = Bounds.GetCentralPoint
+            Dim CentralNode As Node = Map.NodesAdjacencyList.GetNearestNode(CentralPoint.X, CentralPoint.Y)
+            Map.Depots.Add(CentralNode)
+            Map.FuelPoints.Add(CentralNode)
+        End If
+        Map.NodesAdjacencyList.RemoveDisconnectedComponents(Map.Depots(0))
 
         Return Map
     End Function

@@ -9,14 +9,12 @@
         Dispatcher = New SimpleDispatcher(Map)
         'Dispatcher = New DebuggingDispatcher(Map)
         NoticeBoard.Clear()
-        Map.Depots.Add(Map.NodesAdjacencyList.GetRandomPoint) 'TODO: remove this
         InitialiseLogger()
     End Sub
 
     'Returns whether the state has changed.
     Public Overrides Function Tick() As Boolean
-        Time = Time.Add(TIME_INCREMENT)
-        NoticeBoard.CurrentTime = Time
+        NoticeBoard.CurrentTime += TIME_INCREMENT
         Dim Modified As Boolean = False
 
         'Moved here for CNP

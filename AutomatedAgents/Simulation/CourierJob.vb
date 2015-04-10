@@ -44,6 +44,7 @@
         PartialRefund()
         Return CUSTOMER_WAIT_TIME_MAX
     End Function
+
     Function Deliver() As Integer
         Debug.Assert(Status = JobStatus.PENDING_DELIVERY)
 
@@ -61,7 +62,6 @@
         Else
             Status = JobStatus.PENDING_DELIVERY
             DeliveryPosition = Nothing
-            Throw New NotImplementedException
             Deadline += TimeSpan.FromSeconds(DEADLINE_TO_DEPOT)
             Return CUSTOMER_WAIT_TIME_MAX
         End If

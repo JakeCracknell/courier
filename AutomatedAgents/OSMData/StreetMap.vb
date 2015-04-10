@@ -6,18 +6,18 @@
     Public Ways As New List(Of Way)
     Public NodesAdjacencyList As New NodesAdjacencyList
 
-    Public Depots As List(Of IPoint)
-    Public FuelPoints As New List(Of IPoint)
+    Public Depots As New List(Of Node)
+    Public FuelPoints As New List(Of Node)
 
     Public Sub New(ByVal Name As String, ByVal Bounds As Bounds)
         Me.Name = Name
         Me.Bounds = Bounds
     End Sub
 
-    Public Function GetNearestDepot(ByVal Point As IPoint) As IPoint
-        Return GetNearestLandmark(Point, Depots)
+    Public Function GetNearestDepot(ByVal Point As IPoint) As HopPosition
+        Return NodesAdjacencyList.GetHopPositionFromNodeID(GetNearestLandmark(Point, Depots).ID)
     End Function
-    Public Function GetNearestFuelPoint(ByVal Point As IPoint) As IPoint
-        Return GetNearestLandmark(Point, FuelPoints)
+    Public Function GetNearestFuelPoint(ByVal Point As IPoint) As HopPosition
+        Return NodesAdjacencyList.GetHopPositionFromNodeID(GetNearestLandmark(Point, FuelPoints).ID)
     End Function
 End Class

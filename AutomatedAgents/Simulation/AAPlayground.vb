@@ -3,6 +3,7 @@
 
     Public Sub New(ByVal Map As StreetMap)
         Me.Map = Map
+        NoticeBoard.Clear()
         InitialiseLogger()
     End Sub
 

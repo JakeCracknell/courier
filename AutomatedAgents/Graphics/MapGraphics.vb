@@ -28,7 +28,7 @@
     Public ConfigDrawAgentLines As Boolean = True
     Public ConfigDrawNodeLabels As Boolean = False
     Public ConfigDrawAgentRoutes As Integer = 0
-    Public ConfigDrawDepots As Boolean = True
+    Public ConfigDrawLandmarks As Boolean = True
 
     Sub Resize(ByVal _Width As Integer, ByVal _Height As Integer, ByVal Bounds As Bounds)
         Width = _Width
@@ -83,12 +83,14 @@
             Next
         End If
 
-        For Each Depot As IPoint In Map.Depots
-            DrawLandmark(gr, CC.GetPoint(Depot), "D"c)
-        Next
-        For Each FuelPoint As IPoint In Map.FuelPoints
-            DrawLandmark(gr, CC.GetPoint(FuelPoint), "P"c)
-        Next
+        If ConfigDrawLandmarks Then
+            For Each FuelPoint As IPoint In Map.FuelPoints
+                DrawLandmark(gr, CC.GetPoint(FuelPoint), "F"c)
+            Next
+            For Each Depot As IPoint In Map.Depots
+                DrawLandmark(gr, CC.GetPoint(Depot), "D"c)
+            Next
+        End If
 
         Return MapBitmapOriginal.Clone
     End Function

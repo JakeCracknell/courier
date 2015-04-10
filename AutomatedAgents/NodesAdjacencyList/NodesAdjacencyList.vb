@@ -57,10 +57,10 @@
         Return Node
     End Function
 
-    Function GetPointByNodeID(ByVal NodeID As Long) As HopPosition
+    Function GetHopPositionFromNodeID(ByVal NodeID As Long) As HopPosition
         Dim Row As NodesAdjacencyListRow = Rows(NodeID)
         Dim Hop As New Hop(Row.NodeKey, Row.Cells(0))
-        Return New HopPosition(Hop, 0.5)
+        Return New HopPosition(Hop, 0)
     End Function
 
     Function GetRandomPoint() As HopPosition
@@ -106,7 +106,7 @@
         Return False
     End Function
 
-    Sub RemoveDisconnectedComponents()
+    Sub RemoveDisconnectedComponents(ByVal CentralStartingNode As Node )
         Dim t As New Stopwatch
         t.Start()
         Dim FullyExploredNodes As New HashSet(Of Node)
@@ -114,9 +114,9 @@
         Dim DFSStackIDs As New HashSet(Of Long)
         Dim VerifiedNodes As New HashSet(Of Node)
 
-        'Starting from a random node, run DFS and discover all connected nodes
+        'Starting from a given (or randomly chosen) node, run DFS and discover all connected nodes
         'that are reachable somehow from this node.
-        Dim RandomStartRow As NodesAdjacencyListRow = Rows.Values(Int(Rnd() * Rows.Count))
+        Dim RandomStartRow As NodesAdjacencyListRow = Rows(CentralStartingNode.ID)
         DFSStack.Push(RandomStartRow)
         VerifiedNodes.Add(RandomStartRow.NodeKey)
         Do

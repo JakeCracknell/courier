@@ -55,7 +55,8 @@ Class ContractNetStrategy
                             Agent.TotalCompletedJobs += 1
                             Agent.Plan.CapacityLeft += Job.CubicMetres
                         ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
-                            'Fail -> Depot. TODO: use Nearest Depot to Agent.Plan.StartPoint
+                            'Customer is not in -> deliver to nearest depot.
+                            Job.DeliveryPosition = Agent.Map.GetNearestDepot(Agent.Plan.StartPoint)
                             Dim DepotWaypoint As New WayPoint() With {.DefinedStatus = JobStatus.PENDING_DELIVERY, _
                                           .Job = Job, .Position = Job.DeliveryPosition, _
                                           .VolumeDelta = -Job.CubicMetres}

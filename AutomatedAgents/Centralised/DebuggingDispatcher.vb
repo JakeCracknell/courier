@@ -11,10 +11,10 @@
     Sub Tick() Implements IDispatcher.Tick
 
         If NoticeBoard.IncompleteJobs.Count = 0 Then
-            Dim RosslynAve As HopPosition = Map.NodesAdjacencyList.GetPointByNodeID(2525720829)
-            Dim AvenueGardens As HopPosition = Map.NodesAdjacencyList.GetPointByNodeID(32045458)
-            Dim Woodlands As HopPosition = Map.NodesAdjacencyList.GetPointByNodeID(21095820)
-            Dim Railwayside As HopPosition = Map.NodesAdjacencyList.GetPointByNodeID(30947897)
+            Dim RosslynAve As HopPosition = Map.NodesAdjacencyList.GetHopPositionFromNodeID(2525720829)
+            Dim AvenueGardens As HopPosition = Map.NodesAdjacencyList.GetHopPositionFromNodeID(32045458)
+            Dim Woodlands As HopPosition = Map.NodesAdjacencyList.GetHopPositionFromNodeID(21095820)
+            Dim Railwayside As HopPosition = Map.NodesAdjacencyList.GetHopPositionFromNodeID(30947897)
 
 
             Dim Job As New CourierJob(RosslynAve, Railwayside)

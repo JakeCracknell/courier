@@ -313,8 +313,9 @@
         LineViewToolStripMenuItem.Checked = False
     End Sub
 
-    Private Sub DepotsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DepotsToolStripMenuItem.Click
-        MapGraphics.ConfigDrawDepots = DepotsToolStripMenuItem.Checked
+    Private Sub LandmarksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LandmarksToolStripMenuItem.Click
+        MapGraphics.ConfigDrawLandmarks = LandmarksToolStripMenuItem.Checked
+        SetPictureBox(MapGraphics.DrawMap(Map))
     End Sub
 
     Private Sub ViewStatisticsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewStatisticsToolStripMenuItem.Click

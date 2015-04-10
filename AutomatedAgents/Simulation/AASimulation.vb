@@ -4,7 +4,6 @@
     Property IsRunning As Boolean = False
     Property Statistics As StatisticsLogger
 
-    Protected Time As TimeSpan
     Protected TIME_INCREMENT As TimeSpan = TimeSpan.FromSeconds(1)
 
     Overridable Sub AddAgent()
@@ -14,7 +13,7 @@
 
     'Returns whether the state has changed.
     Overridable Function Tick() As Boolean
-        Time = Time.Add(TIME_INCREMENT)
+        NoticeBoard.CurrentTime += TIME_INCREMENT
 
         For Each Agent As Agent In Agents
             Agent.Move()
@@ -24,11 +23,7 @@
     End Function
 
     Function GetTimeString() As String
-        If IsRunning Then
-            Return Time.ToString
-        Else
-            Return "paused"
-        End If
+        Return NoticeBoard.CurrentTime.ToString & If(IsRunning, "", " paused")
     End Function
 
     Sub InitialiseLogger()
