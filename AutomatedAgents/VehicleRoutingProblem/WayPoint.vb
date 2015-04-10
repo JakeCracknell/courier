@@ -62,6 +62,6 @@ Public Class WayPoint
     End Function
 
     Public Overrides Function ToString() As String
-        Return Position.ToString & " [" & VolumeDelta & "]"
+        Return Job.JobID & " [" & Math.Round(VolumeDelta, 2) & "]"
     End Function
 End Class

@@ -84,6 +84,9 @@
             Case ContractNetPolicy.CNP5
                 Throw New NotImplementedException
         End Select
+
+        'Sometimes the solver will be directed to a lower cost route with this new job, making the difference negative.
+        CurrentBid = Math.Max(0, CurrentBid)
     End Sub
 
     Sub PlaceBid()

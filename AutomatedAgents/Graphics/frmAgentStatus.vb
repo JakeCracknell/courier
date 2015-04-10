@@ -41,7 +41,8 @@
                 LVI.SubItems.Add(J.CubicMetres)
                 LVI.SubItems.Add(J.Deadline.ToString)
                 LVI.SubItems.Add(J.Status.ToString("G"))
-                LVI.SubItems.Add((NoticeBoard.CurrentTime - J.Deadline).ToString("h\:mm\:ss"))
+                Dim TimeLeft As TimeSpan = J.Deadline - NoticeBoard.CurrentTime
+                LVI.SubItems.Add(TimeLeft.ToString("h\:mm\:ss") & If(TimeLeft < TimeSpan.Zero, " LATE", ""))
                 LVI.SubItems.Add(FormatCurrency(J.CustomerFee))
                 LVI.BackColor = AASimulation.Agents(AgentID).Color
                 LVI.UseItemStyleForSubItems = False
@@ -59,11 +60,11 @@
             If Position IsNot Nothing Then
                 Dim Way As Way = Position.GetCurrentWay
                 DisplayLVCell(lvAgentList, i, cAt, If(Way IsNot Nothing, Way.Name, ""))
-                DisplayLVCell(lvAgentList, i, cDestination, Position.GetEndPoint.ToString)
+                DisplayLVCell(lvAgentList, i, cNextWayPoint, If(Agent.Plan.WayPoints.Count > 0, Agent.Plan.WayPoints(0).ToString, ""))
                 DisplayLVCell(lvAgentList, i, cKMH, Agent.CurrentSpeedKMH)
             End If
-
-            DisplayLVCell(lvAgentList, i, cJobs, Agent.Plan.WayPoints.Count)
+            DisplayLVCell(lvAgentList, i, cAllocatedJobs, Agent.Plan.GetCurrentJobs.Count)
+            DisplayLVCell(lvAgentList, i, cWayPoints, Agent.Plan.WayPoints.Count)
             DisplayLVCell(lvAgentList, i, cVehicle, Agent.GetVehicleString())
             DisplayLVCell(lvAgentList, i, cAName, Agent.AgentName)
             DisplayLVCell(lvAgentList, i, cLitres, Math.Round(Agent.PetroleumLitres, 2))
@@ -84,6 +85,7 @@
     Public Sub SetAASimulation(ByVal AASimulation As AASimulation)
         Me.AASimulation = AASimulation
         lvAgentList.Items.Clear()
+        lvJobList.Items.Clear()
         For i = 0 To Me.AASimulation.Agents.Count - 1
             lvAgentList.Items.Add(i)
             lvAgentList.Items(i).UseItemStyleForSubItems = False

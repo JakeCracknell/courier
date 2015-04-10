@@ -27,8 +27,9 @@ Partial Class frmAgentStatus
         Me.cVehicle = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.cAName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.cAt = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.cDestination = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.cJobs = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.cNextWayPoint = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.cWayPoints = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.cAllocatedJobs = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.cKMH = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.cLitres = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.cTotalKM = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -56,12 +57,12 @@ Partial Class frmAgentStatus
         '
         'lvAgentList
         '
-        Me.lvAgentList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.cID, Me.cVehicle, Me.cAName, Me.cAt, Me.cDestination, Me.cJobs, Me.cKMH, Me.cLitres, Me.cTotalKM, Me.cFuelCost, Me.cCapacity, Me.cCompletedJobs})
+        Me.lvAgentList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.cID, Me.cVehicle, Me.cAName, Me.cAt, Me.cNextWayPoint, Me.cWayPoints, Me.cAllocatedJobs, Me.cKMH, Me.cLitres, Me.cTotalKM, Me.cFuelCost, Me.cCapacity, Me.cCompletedJobs})
         Me.lvAgentList.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lvAgentList.FullRowSelect = True
         Me.lvAgentList.Location = New System.Drawing.Point(0, 0)
         Me.lvAgentList.Name = "lvAgentList"
-        Me.lvAgentList.Size = New System.Drawing.Size(915, 120)
+        Me.lvAgentList.Size = New System.Drawing.Size(915, 119)
         Me.lvAgentList.TabIndex = 0
         Me.lvAgentList.UseCompatibleStateImageBehavior = False
         Me.lvAgentList.View = System.Windows.Forms.View.Details
@@ -83,52 +84,56 @@ Partial Class frmAgentStatus
         'cAt
         '
         Me.cAt.Text = "Route Position"
-        Me.cAt.Width = 116
+        Me.cAt.Width = 82
         '
-        'cDestination
+        'cNextWayPoint
         '
-        Me.cDestination.Text = "Next Destination"
-        Me.cDestination.Width = 110
+        Me.cNextWayPoint.Text = "Next WayPoint"
+        Me.cNextWayPoint.Width = 93
         '
-        'cJobs
+        'cWayPoints
         '
-        Me.cJobs.Text = "Jobs"
-        Me.cJobs.Width = 35
+        Me.cWayPoints.Text = "WayPoints"
+        Me.cWayPoints.Width = 66
+        '
+        'cAllocatedJobs
+        '
+        Me.cAllocatedJobs.Text = "Jobs"
         '
         'cKMH
         '
-        Me.cKMH.DisplayIndex = 7
+        Me.cKMH.DisplayIndex = 8
         Me.cKMH.Text = "Speed (KM/h)"
         Me.cKMH.Width = 82
         '
         'cLitres
         '
-        Me.cLitres.DisplayIndex = 8
+        Me.cLitres.DisplayIndex = 9
         Me.cLitres.Text = "Fuel (L)"
         '
         'cTotalKM
         '
-        Me.cTotalKM.DisplayIndex = 9
+        Me.cTotalKM.DisplayIndex = 10
         Me.cTotalKM.Text = "Total Distance (KM)"
         Me.cTotalKM.Width = 111
         '
         'cFuelCost
         '
-        Me.cFuelCost.DisplayIndex = 11
+        Me.cFuelCost.DisplayIndex = 12
         Me.cFuelCost.Text = "Fuel Costs"
         Me.cFuelCost.Width = 63
         '
         'cCapacity
         '
-        Me.cCapacity.DisplayIndex = 6
+        Me.cCapacity.DisplayIndex = 7
         Me.cCapacity.Text = "Capacity"
         Me.cCapacity.Width = 53
         '
         'cCompletedJobs
         '
-        Me.cCompletedJobs.DisplayIndex = 10
-        Me.cCompletedJobs.Text = "Completed Jobs"
-        Me.cCompletedJobs.Width = 89
+        Me.cCompletedJobs.DisplayIndex = 11
+        Me.cCompletedJobs.Text = "Completed"
+        Me.cCompletedJobs.Width = 67
         '
         'SplitContainer1
         '
@@ -145,7 +150,7 @@ Partial Class frmAgentStatus
         '
         Me.SplitContainer1.Panel2.Controls.Add(Me.lvJobList)
         Me.SplitContainer1.Size = New System.Drawing.Size(915, 413)
-        Me.SplitContainer1.SplitterDistance = 120
+        Me.SplitContainer1.SplitterDistance = 119
         Me.SplitContainer1.TabIndex = 1
         '
         'lvJobList
@@ -155,7 +160,7 @@ Partial Class frmAgentStatus
         Me.lvJobList.FullRowSelect = True
         Me.lvJobList.Location = New System.Drawing.Point(0, 0)
         Me.lvJobList.Name = "lvJobList"
-        Me.lvJobList.Size = New System.Drawing.Size(915, 289)
+        Me.lvJobList.Size = New System.Drawing.Size(915, 290)
         Me.lvJobList.TabIndex = 1
         Me.lvJobList.UseCompatibleStateImageBehavior = False
         Me.lvJobList.View = System.Windows.Forms.View.Details
@@ -233,14 +238,14 @@ Partial Class frmAgentStatus
     Friend WithEvents lvAgentList As System.Windows.Forms.ListView
     Friend WithEvents cID As System.Windows.Forms.ColumnHeader
     Friend WithEvents cAt As System.Windows.Forms.ColumnHeader
-    Friend WithEvents cDestination As System.Windows.Forms.ColumnHeader
+    Friend WithEvents cNextWayPoint As System.Windows.Forms.ColumnHeader
     Friend WithEvents cKMH As System.Windows.Forms.ColumnHeader
     Friend WithEvents cAName As System.Windows.Forms.ColumnHeader
     Friend WithEvents cLitres As System.Windows.Forms.ColumnHeader
     Friend WithEvents cTotalKM As System.Windows.Forms.ColumnHeader
     Friend WithEvents cFuelCost As System.Windows.Forms.ColumnHeader
     Friend WithEvents cVehicle As System.Windows.Forms.ColumnHeader
-    Friend WithEvents cJobs As System.Windows.Forms.ColumnHeader
+    Friend WithEvents cWayPoints As System.Windows.Forms.ColumnHeader
     Friend WithEvents cCapacity As System.Windows.Forms.ColumnHeader
     Friend WithEvents cCompletedJobs As System.Windows.Forms.ColumnHeader
     Friend WithEvents SplitContainer1 As System.Windows.Forms.SplitContainer
@@ -256,4 +261,5 @@ Partial Class frmAgentStatus
     Friend WithEvents cStatus As System.Windows.Forms.ColumnHeader
     Friend WithEvents cTimeLeft As System.Windows.Forms.ColumnHeader
     Friend WithEvents cRevenue As System.Windows.Forms.ColumnHeader
+    Friend WithEvents cAllocatedJobs As System.Windows.Forms.ColumnHeader
 End Class
