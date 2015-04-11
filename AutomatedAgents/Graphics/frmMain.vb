@@ -186,12 +186,15 @@
         End If
     End Sub
 
-    'Without this the garbage collector has too much garbage. :(
     Private Sub SetPictureBox(ByVal NewImage As Image)
-        If picMap.Image IsNot Nothing Then
-            picMap.Image.Dispose()
-        End If
-        picMap.Image = NewImage
+        Try
+            'Without this the garbage collector has too much garbage. :(
+            If picMap.Image IsNot Nothing Then
+                picMap.Image.Dispose()
+            End If
+            picMap.Image = NewImage
+        Catch ex As Exception
+        End Try
     End Sub
 
     Private Sub ShowDebugVariable()

@@ -41,6 +41,7 @@
         If WayPoints.Count > 0 Then
             StartPoint = RoutePosition.GetPoint
             If RecalculateFirstAStar Then
+                'Debug.WriteLineIf(FuelDiversion IsNot Nothing, "On refuel diversion, so not sure what to recalculate")
                 Dim AStar As New AStarSearch(StartPoint, WayPoints(0).Position, Map.NodesAdjacencyList, Minimiser)
                 Routes(0) = AStar.GetRoute
             End If
@@ -67,7 +68,11 @@
     End Function
 
     Public Function FirstWayPointReached() As Boolean
-        Return RoutePosition.GetPoint.ApproximatelyEquals(WayPoints(0).Position)
+        If FuelDiversion Is Nothing Then
+            Return RoutePosition.GetPoint.ApproximatelyEquals(WayPoints(0).Position)
+        Else
+            Return False 'Edge case where waypoint is on the way to the fuel point.
+        End If
     End Function
 
     Public Function RemoveFirstWayPoint() As WayPoint
@@ -97,12 +102,6 @@
         Loop
     End Sub
 
-    'Overridden by waypoints/routes. Only for use whilst idle or for an emergency refuel.
-    Sub SetNewRoute(ByVal Route As Route)
-        Debug.Assert(WayPoints.Count = 0)
-        RoutePosition = New RoutePosition(Route)
-    End Sub
-
     Function GetCurrentJobs() As List(Of CourierJob)
         Return (From W In WayPoints
                Where W.DefinedStatus = JobStatus.PENDING_DELIVERY
@@ -116,6 +115,29 @@
 
     Function IsStationary() As Boolean
         Return WayPoints.Count = 0 AndAlso RoutePosition.RouteCompleted
+    End Function
+
+
+    Private FuelDiversion As Route = Nothing
+    Sub SetNewRoute(ByVal Route As Route) 'Only for use whilst idle - will be overridden if jobs come in.
+        Debug.Assert(WayPoints.Count = 0)
+        RoutePosition = New RoutePosition(Route)
+    End Sub
+
+    Sub SetFuelDiversion(ByVal Route As Route)
+        Debug.Assert(WayPoints.Count <> 0)
+        RoutePosition = New RoutePosition(Route)
+        FuelDiversion = Route
+    End Sub
+    Sub EndFuelDiversion()
+        Debug.Assert(FuelDiversion IsNot Nothing)
+        FuelDiversion = Nothing
+        StartPoint = RoutePosition.GetPoint
+        Routes(0) = RouteCache.GetRoute(StartPoint, WayPoints(0).Position)
+    End Sub
+
+    Function IsOnFuelDiversion() As Boolean
+        Return FuelDiversion IsNot Nothing
     End Function
 
 End Class

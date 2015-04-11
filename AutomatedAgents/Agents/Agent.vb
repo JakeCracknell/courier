@@ -1,6 +1,7 @@
 ﻿Public Class Agent
     Private Const DEFAULT_KMH As Double = 48
     Private Const FUEL_TANK_FULL_THRESHOLD As Double = 0.95
+    Private Const FUEL_TANK_LOW_THRESHOLD As Double = 0.05
 
     Public Const RouteFindingMinimiser As RouteFindingMinimiser = RouteFindingMinimiser.DISTANCE
     Public ReadOnly AgentID As Integer
@@ -58,6 +59,19 @@
             TotalKMTravelled += DistanceTravelled
             TotalDrivingTime += 1
             DepleteFuel(DistanceTravelled)
+
+            If EmergencyRefuelRequired() Then
+                If Not Plan.IsOnFuelDiversion Then
+                    Dim RouteToFuel As Route = GetRouteForRefuel()
+                    Plan.SetFuelDiversion(RouteToFuel)
+                    SimulationState.NewEvent(AgentID, LogMessages.EmergencyRefuel(FuelLitres, RouteToFuel.GetKM))
+                ElseIf Plan.RoutePosition.RouteCompleted Then
+                    Delayer = New Delayer(SimulationParameters.REFUELLING_TIME_SECONDS)
+                    Plan.EndFuelDiversion()
+                    Refuel()
+                    'Else : Agent is on its way to the fuel point now
+                End If
+            End If
         Else
             CurrentSpeedKMH = 0
             If Plan.IsIdle Then
@@ -114,4 +128,14 @@
         Return FuelLitres / Vehicles.FuelTankSize(VehicleType) > FUEL_TANK_FULL_THRESHOLD
     End Function
 
+    Function EmergencyRefuelRequired() As Boolean
+        Return FuelLitres / Vehicles.FuelTankSize(VehicleType) < FUEL_TANK_LOW_THRESHOLD
+    End Function
+
+    Function GetRouteForRefuel() As Route
+        Dim CurrentPoint As HopPosition = Plan.RoutePosition.GetPoint
+        Dim NearestFuel As HopPosition = Map.GetNearestFuelPoint(CurrentPoint)
+        Dim RouteToFuel As Route = RouteCache.GetRoute(CurrentPoint, NearestFuel)
+        Return RouteToFuel
+    End Function
 End Class

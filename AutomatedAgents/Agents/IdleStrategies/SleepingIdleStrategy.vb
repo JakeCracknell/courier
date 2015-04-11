@@ -14,12 +14,10 @@
                     Agent.Delayer = New Delayer(SimulationParameters.REFUELLING_TIME_SECONDS)
                     Agent.Refuel()
                 Else
-                    'Refuelling now
+                    'Refuelling/waiting now
                 End If
             Else
-                Dim CurrentPoint As HopPosition = Agent.Plan.RoutePosition.GetPoint
-                Dim NearestFuel As HopPosition = Agent.Map.GetNearestFuelPoint(CurrentPoint)
-                RouteToFuel = RouteCache.GetRoute(CurrentPoint, NearestFuel)
+                RouteToFuel = Agent.GetRouteForRefuel()
                 Agent.Plan.SetNewRoute(RouteToFuel)
             End If
         Else
