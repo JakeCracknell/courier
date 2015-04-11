@@ -19,7 +19,7 @@
         Public Const CubicMetresMin As Double = 0.0004
 
         'These are supposed to take into account flucutations in traffic and also waiting times at waypoints.
-        Public DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB As TimeSpan = TimeSpan.FromMinutes(3)
+        Public DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB As TimeSpan = TimeSpan.FromMinutes(4)
         Public DEADLINE_PLANNING_REDUNDANCY_TIME_PER_ROUTE As TimeSpan = TimeSpan.FromMinutes(15)
 
 

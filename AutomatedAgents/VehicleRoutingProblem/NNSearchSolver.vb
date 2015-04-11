@@ -16,7 +16,7 @@
         Me.PunctualityStrategy = PunctualityStrategy
         StartState.CapacityLeft = CourierPlan.CapacityLeft
         StartState.FuelLeft = Double.MaxValue
-        StartState.Time = NoticeBoard.CurrentTime
+        StartState.Time = NoticeBoard.CurrentTime + OldPlan.GetDiversionTimeEstimate
         StartState.Point = CourierPlan.RoutePosition.GetPoint
         StartState.WayPointsLeft = New List(Of WayPoint)(CourierPlan.WayPoints)
 

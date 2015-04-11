@@ -30,7 +30,7 @@
         'Set starting state
         Dim State As New CourierPlanState
         State.FuelLeft = Double.MaxValue  'Agent.PetroleumLitres
-        State.Time = NoticeBoard.CurrentTime
+        State.Time = NoticeBoard.CurrentTime + Agent.Plan.GetDiversionTimeEstimate
         State.Point = Agent.Plan.StartPoint
         If JobSolution.Count > 0 Then
             State.FuelLeft -= Agent.Plan.Routes(0).GetEstimatedFuelUsage(Agent.VehicleType)
@@ -43,9 +43,9 @@
             Dim BestNextJob As CourierJob = Nothing
             Dim BestNextCost As Double = Double.MaxValue
             For Each J As CourierJob In JobsLeft
-                Dim Route As Route = RouteCache.GetRoute(State.Point, J.PickupPosition)
-                Dim Cost As Double = Route.GetCostForAgent(Agent)
-                If Not (State.Time + Route.GetEstimatedTime + J.GetDirectRoute.GetEstimatedTime < _
+                Dim RouteToPickup As Route = RouteCache.GetRoute(State.Point, J.PickupPosition)
+                Dim Cost As Double = RouteToPickup.GetCostForAgent(Agent)
+                If Not (State.Time + RouteToPickup.GetEstimatedTime + J.GetDirectRoute.GetEstimatedTime < _
                         J.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB) Then
                     Continue For 'Would not get there on time.
                 End If
@@ -74,7 +74,7 @@
         Loop
 
         'Route found
-        Dim WayPoints As List(Of WayPoint) = WayPoint.CreateWayPointList(JobSolution) 'TODO: remove this comment once this is verified as working
+        Dim WayPoints As List(Of WayPoint) = WayPoint.CreateWayPointList(JobSolution)
         Solution = New CourierPlan(Agent.Plan.StartPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft, WayPoints)
     End Sub
 

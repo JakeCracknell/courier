@@ -68,7 +68,7 @@
     End Function
 
     Public Function FirstWayPointReached() As Boolean
-        If FuelDiversion Is Nothing Then
+        If ForcedDiversion Is Nothing Then
             Return RoutePosition.GetPoint.ApproximatelyEquals(WayPoints(0).Position)
         Else
             Return False 'Edge case where waypoint is on the way to the fuel point.
@@ -110,34 +110,39 @@
 
     'Might be idle and moving. Idle = not doing any jobs, might be moving according to an idle strategy
     Function IsIdle() As Boolean
-        Return WayPoints.Count = 0
+        Return WayPoints.Count = 0 And Not IsOnDiversion()
     End Function
 
     Function IsStationary() As Boolean
         Return WayPoints.Count = 0 AndAlso RoutePosition.RouteCompleted
     End Function
 
-
-    Private FuelDiversion As Route = Nothing
+    '----------------------------Diversions-------------------------------------
+    Private ForcedDiversion As Route = Nothing
     Sub SetNewRoute(ByVal Route As Route) 'Only for use whilst idle - will be overridden if jobs come in.
         Debug.Assert(WayPoints.Count = 0)
         RoutePosition = New RoutePosition(Route)
     End Sub
-
-    Sub SetFuelDiversion(ByVal Route As Route)
+    Sub SetDiversion(ByVal Route As Route) 'For emergency refueling that cannot be interrupted.
         Debug.Assert(WayPoints.Count <> 0)
         RoutePosition = New RoutePosition(Route)
-        FuelDiversion = Route
+        ForcedDiversion = Route
     End Sub
-    Sub EndFuelDiversion()
-        Debug.Assert(FuelDiversion IsNot Nothing)
-        FuelDiversion = Nothing
+    Sub EndDiversion()
+        Debug.Assert(ForcedDiversion IsNot Nothing)
+        ForcedDiversion = Nothing
         StartPoint = RoutePosition.GetPoint
         Routes(0) = RouteCache.GetRoute(StartPoint, WayPoints(0).Position)
     End Sub
-
-    Function IsOnFuelDiversion() As Boolean
-        Return FuelDiversion IsNot Nothing
+    Function GetDiversionTimeEstimate() As TimeSpan
+        If ForcedDiversion Is Nothing Then
+            Return TimeSpan.Zero
+        Else
+            Return RoutePosition.GetSubRoute.GetEstimatedTime() + TimeSpan.FromSeconds(SimulationParameters.REFUELLING_TIME_SECONDS)
+        End If
+    End Function
+    Function IsOnDiversion() As Boolean
+        Return ForcedDiversion IsNot Nothing
     End Function
 
 End Class

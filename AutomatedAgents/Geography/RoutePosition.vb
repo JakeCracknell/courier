@@ -81,4 +81,10 @@
         End If
     End Function
 
+    Function GetSubRoute() As Route
+        Dim HopList As List(Of Hop) = Route.GetHopList()
+        Dim SubRoute As New Route(HopList.GetRange(HopIndex, HopList.Count - HopIndex))
+        Return SubRoute
+    End Function
+
 End Class

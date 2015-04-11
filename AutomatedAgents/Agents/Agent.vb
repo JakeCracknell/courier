@@ -61,13 +61,13 @@
             DepleteFuel(DistanceTravelled)
 
             If EmergencyRefuelRequired() Then
-                If Not Plan.IsOnFuelDiversion Then
+                If Not Plan.IsOnDiversion Then
                     Dim RouteToFuel As Route = GetRouteForRefuel()
-                    Plan.SetFuelDiversion(RouteToFuel)
+                    Plan.SetDiversion(RouteToFuel)
                     SimulationState.NewEvent(AgentID, LogMessages.EmergencyRefuel(FuelLitres, RouteToFuel.GetKM))
                 ElseIf Plan.RoutePosition.RouteCompleted Then
                     Delayer = New Delayer(SimulationParameters.REFUELLING_TIME_SECONDS)
-                    Plan.EndFuelDiversion()
+                    Plan.EndDiversion()
                     Refuel()
                     'Else : Agent is on its way to the fuel point now
                 End If

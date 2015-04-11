@@ -42,7 +42,7 @@
                     Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition)
                     Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
                     Dim MinTime As TimeSpan = Route1.GetEstimatedTime + Route2.GetEstimatedTime
-                    If NoticeBoard.CurrentTime + MinTime > _
+                    If NoticeBoard.CurrentTime + Agent.Plan.GetDiversionTimeEstimate + MinTime > _
                         JobToReview.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
                         Exit Sub
                     End If
@@ -55,10 +55,9 @@
                 Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
                 Dim TimeSum As TimeSpan = Route1.GetEstimatedTime + Route2.GetEstimatedTime
                 For Each R As Route In Agent.Plan.Routes
-                    TimeSum += R.GetEstimatedTime
+                    TimeSum += R.GetEstimatedTime + SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB
                 Next
-                If NoticeBoard.CurrentTime + TimeSum > _
-                    JobToReview.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_ROUTE Then
+                If NoticeBoard.CurrentTime + Agent.Plan.GetDiversionTimeEstimate + TimeSum > JobToReview.Deadline Then
                     Exit Sub
                 End If
                 CurrentBid = Route1.GetCostForAgent(Agent) + Route2.GetCostForAgent(Agent)
