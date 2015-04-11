@@ -18,8 +18,11 @@
         Public Const MAX_POSSIBLE_SPEED_KMH As Integer = 112
         Public Const CubicMetresMin As Double = 0.0004
 
-        'These are supposed to take into account flucutations in traffic and also waiting times at waypoints.
+        'These are supposed to take into account fluctuations in traffic,
+        'waiting times at waypoints and emergency refuelling.
         Public DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB As TimeSpan = TimeSpan.FromMinutes(4)
+
+        'TODO: In addition to above, this constraint should apply. 
         Public DEADLINE_PLANNING_REDUNDANCY_TIME_PER_ROUTE As TimeSpan = TimeSpan.FromMinutes(15)
 
 

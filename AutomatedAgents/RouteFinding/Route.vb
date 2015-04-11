@@ -68,8 +68,7 @@
     End Function
 
     Public Function GetEstimatedFuelUsage(ByVal VehicleSize As Vehicles.Type) As Double
-        'TODO
-        Return GetKM() * 0.1
+        Return Vehicles.FuelEconomy(VehicleSize, GetKM())
     End Function
 
     Function GetCostForAgent(ByVal Agent As Agent) As Double

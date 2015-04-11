@@ -49,7 +49,7 @@
                         J.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB) Then
                     Continue For 'Would not get there on time.
                 End If
-                'TODO: fuel
+                'Fuel constraints are ignored
                 If Cost < BestNextCost Then
                     BestNextCost = Cost
                     BestNextJob = J
