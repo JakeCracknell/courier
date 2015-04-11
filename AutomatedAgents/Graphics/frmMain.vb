@@ -340,4 +340,14 @@
     Private Sub CNP5ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CNP5ToolStripMenuItem.Click
         SimulationParameters.CNPVersion = ContractNetPolicy.CNP5
     End Sub
+
+    Private Sub CarToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CarToolStripMenuItem.Click
+        SimulationParameters.VehicleType = Vehicles.Type.CAR
+    End Sub
+    Private Sub SmallCommercialVanToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SmallCommercialVanToolStripMenuItem.Click
+        SimulationParameters.VehicleType = Vehicles.Type.VAN
+    End Sub
+    Private Sub Lorry75TonneToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles Lorry75TonneToolStripMenuItem.Click
+        SimulationParameters.VehicleType = Vehicles.Type.TRUCK
+    End Sub
 End Class

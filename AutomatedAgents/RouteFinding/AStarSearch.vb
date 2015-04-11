@@ -88,8 +88,6 @@
                         PriorityQueue.Add(F_Cost, NextAStarTreeNode)
                     End If
 
-                    'TODO investigate if I am insane or if it is looking too far
-                    'to the side of the map with a*. crete for example!
                 End If
             Next
 

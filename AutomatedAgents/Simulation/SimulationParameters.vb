@@ -11,6 +11,7 @@
         Public FeeBasePrice As Double = 2 'TODO currently unused
         Public FeeHourlyPrice As Double = 0.2 'TODO currently unused
         Public CNPVersion As ContractNetPolicy = ContractNetPolicy.CNP4
+        Public VehicleType As Vehicles.Type = Vehicles.Type.CAR
 
 
         '***** Global Constants

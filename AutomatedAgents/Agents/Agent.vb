@@ -22,7 +22,7 @@
     Protected IdleStrategy As IIdleStrategy
 
     Public Sub New(ByVal ID As Integer, ByVal Map As StreetMap, ByVal Color As Color)
-        Me.New(ID, Map, Color, Vehicles.Type.CAR)
+        Me.New(ID, Map, Color, SimulationParameters.VehicleType)
     End Sub
     Public Sub New(ByVal ID As Integer, ByVal Map As StreetMap, ByVal Color As Color, ByVal VehicleType As Vehicles.Type)
         Me.AgentID = ID
@@ -34,7 +34,7 @@
         IdleStrategy = New SleepingIdleStrategy(Me)
         Refuel()
 
-        'TODO: start at depot, which is also a refuelling station
+        'Agents start at a randomly chosen depot.
         Plan = New CourierPlan(Map.GetStartingPoint, Map, RouteFindingMinimiser, GetVehicleMaxCapacity)
         Plan.RoutePosition.Move(VehicleType)
     End Sub
