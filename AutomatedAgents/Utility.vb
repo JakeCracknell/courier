@@ -47,6 +47,22 @@
         Return Math.Sqrt((lat1 - lat2) ^ 2 + (lon1 - lon2) ^ 2) * 111.2
     End Function
 
+    Function GetCentralPointInPlane(ByVal X1 As Double, ByVal Y1 As Double, ByVal X2 As Double, ByVal Y2 As Double) As PointF
+        Dim MinX As Double = Math.Min(X1, X2)
+        Dim MaxX As Double = Math.Max(X1, X2)
+        Dim MinY As Double = Math.Min(Y1, Y2)
+        Dim MaxY As Double = Math.Max(Y1, Y2)
+
+        Return New PointF(MinX + (MaxX - MinX) / 2, MinY + (MaxY - MinY) / 2)
+    End Function
+
+    Function GetMidpointOfTwoPoints(ByVal p1 As IPoint, ByVal p2 As IPoint) As PointF
+        Return GetMidpointOfTwoPoints(p1.GetLatitude, p1.GetLatitude, p2.GetLongitude, p2.GetLongitude)
+    End Function
+    Function GetMidpointOfTwoPoints(ByVal X1 As Double, ByVal Y1 As Double, ByVal X2 As Double, ByVal Y2 As Double) As PointF
+        Return New PointF((X1 + X2) / 2, (Y1 + Y2) / 2)
+    End Function
+
     Public Function Gaussian(Optional mu As Double = 0, Optional sigma As Double = 1) As Double
         Dim r As New Random
         Dim u1 = r.NextDouble()

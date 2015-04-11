@@ -13,7 +13,7 @@
 
     'Returns whether the state has changed.
     Public Overrides Function Tick() As Boolean
-        NoticeBoard.CurrentTime += TIME_INCREMENT
+        NoticeBoard.CurrentTime += SimulationParameters.SIMULATION_TIME_INCREMENT
         Dim Modified As Boolean = False
 
         'Moved here for CNP
@@ -22,15 +22,11 @@
 
         'Iterate through agents in semi-random order
         Dim MidIndex As Integer = Int(Rnd() * Agents.Count)
-        For i = MidIndex To Agents.Count - 1
-            Agents(i).Move()
-        Next
-        For i = 0 To MidIndex - 1
-            Agents(i).Move()
+        For i = MidIndex To MidIndex + Agents.Count - 1
+            Agents(i Mod Agents.Count).Move()
+            NoticeBoard.AgentPositions(i Mod Agents.Count) = Agents(i Mod Agents.Count).Plan.RoutePosition.GetPoint
         Next
 
-        'Dispatcher.Tick()
-        'NoticeBoard.Tick()
         Return Agents.Count > 0
     End Function
 

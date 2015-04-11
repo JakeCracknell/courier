@@ -4,17 +4,17 @@
     Property IsRunning As Boolean = False
     Property Statistics As StatisticsLogger
 
-    Protected TIME_INCREMENT As TimeSpan = TimeSpan.FromSeconds(1)
-
     Overridable Sub AddAgent()
         Dim ID As Integer = UIDAssigner.NewID("agent", 0)
         Dim Agent As New Agent(ID, Map, GetSequentialColor(ID))
         Agents.Add(Agent)
+        ReDim Preserve NoticeBoard.AgentPositions(Agents.Count - 1)
+        NoticeBoard.AgentPositions(Agents.Count - 1) = Agent.Plan.RoutePosition.GetPoint
     End Sub
 
     'Returns whether the state has changed.
     Overridable Function Tick() As Boolean
-        NoticeBoard.CurrentTime += TIME_INCREMENT
+        NoticeBoard.CurrentTime += SimulationParameters.SIMULATION_TIME_INCREMENT
 
         For Each Agent As Agent In Agents
             Agent.Move()

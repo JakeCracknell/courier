@@ -15,6 +15,7 @@
 
 
         '***** Global Constants
+        Public SIMULATION_TIME_INCREMENT As TimeSpan = TimeSpan.FromSeconds(1)
         Public Const REFUELLING_TIME_SECONDS As Integer = 60
         Public Const MAX_POSSIBLE_SPEED_KMH As Integer = 112
         Public Const CubicMetresMin As Double = 0.0004

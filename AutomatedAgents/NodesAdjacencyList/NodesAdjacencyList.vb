@@ -106,7 +106,7 @@
         Return False
     End Function
 
-    Sub RemoveDisconnectedComponents(ByVal CentralStartingNode As Node )
+    Sub RemoveDisconnectedComponents(ByVal CentralStartingNode As Node)
         Dim t As New Stopwatch
         t.Start()
         Dim FullyExploredNodes As New HashSet(Of Node)

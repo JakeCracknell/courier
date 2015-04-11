@@ -19,6 +19,7 @@
 
         'For CNP Only
         Public AvailableContractors As New List(Of ContractNetContractor)
+        Property AgentPositions As HopPosition() = {}
 
         Function AreJobsWaiting() As Boolean
             Return UnallocatedJobs.Count > 0
@@ -142,6 +143,7 @@
             IncompleteJobs.Clear()
             CompletedJobs.Clear()
             AvailableContractors.Clear()
+            Array.Clear(AgentPositions, 0, AgentPositions.Length)
         End Sub
 
     End Module

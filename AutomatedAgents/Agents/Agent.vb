@@ -31,11 +31,11 @@
         Me.AgentName = AgentNameAssigner.AssignAgentName()
         Me.VehicleType = VehicleType
         Strategy = New ContractNetStrategy(Me, SimulationParameters.CNPVersion)
-        IdleStrategy = New SleepingIdleStrategy(Me)
+        IdleStrategy = New ScatterIdleStrategy(Me)
         Refuel()
 
         'Agents start at a randomly chosen depot.
-        Plan = New CourierPlan(Map.GetStartingPoint, Map, RouteFindingMinimiser, GetVehicleMaxCapacity)
+        Plan = New CourierPlan(Map.NodesAdjacencyList.GetRandomPoint, Map, RouteFindingMinimiser, GetVehicleMaxCapacity)
         Plan.RoutePosition.Move(VehicleType)
     End Sub
 

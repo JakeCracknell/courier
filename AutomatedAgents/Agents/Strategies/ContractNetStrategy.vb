@@ -44,6 +44,7 @@ Class ContractNetStrategy
                         If Job.Status = JobStatus.CANCELLED Then
                             'CNP policy invariant
                             Agent.Plan.ExtractCancelled()
+                            Agent.TotalCompletedJobs += 1 'Cancelled pick counts as completed job
                             SimulationState.NewEvent(Agent.AgentID, LogMessages.PickFail(Job.JobID))
                         ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
                             'Successful pickup

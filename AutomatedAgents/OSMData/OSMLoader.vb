@@ -28,8 +28,10 @@ Public Class OSMLoader
             Dim xLat As Double = xItem.GetAttribute("lat")
             Dim xLon As Double = xItem.GetAttribute("lon")
             Dim Node As New Node(xNodeID, xLat, xLon)
-            Map.Nodes.Add(Node)
-            NodeHashMap.Add(xNodeID, Node)
+            If Bounds.Encloses(Node) Then
+                Map.Nodes.Add(Node)
+                NodeHashMap.Add(xNodeID, Node)
+            End If
         Next
 
         Dim xWays As XmlNodeList = xDoc.GetElementsByTagName("way")
@@ -67,7 +69,14 @@ Public Class OSMLoader
             Map.Depots.Add(CentralNode)
             Map.FuelPoints.Add(CentralNode)
         End If
+
+        Dim t As New Stopwatch : t.Start()
         Map.NodesAdjacencyList.RemoveDisconnectedComponents(Map.Depots(0))
+        For Each N As Node In Map.Nodes
+            If Not Map.NodesAdjacencyList.Rows.ContainsKey(N.ID) Then
+                N.Connected = False
+            End If
+        Next
 
         Return Map
     End Function

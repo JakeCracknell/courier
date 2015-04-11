@@ -10,7 +10,11 @@ Public Class Bounds
     End Sub
 
     Function GetCentralPoint() As PointF
-
         Return New PointF(MinLatitude + (MaxLatitude - MinLatitude) / 2, MinLongitude + (MaxLongitude - MinLongitude) / 2)
     End Function
+
+    Function Encloses(ByVal Point As IPoint) As Boolean
+        Return Point.GetLatitude > MinLatitude AndAlso Point.GetLatitude < MaxLatitude AndAlso Point.GetLongitude > MinLongitude AndAlso Point.GetLongitude < MaxLongitude
+    End Function
+
 End Class

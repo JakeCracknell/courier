@@ -39,7 +39,6 @@
             DepleteFuel(DistanceTravelled)
             CurrentSpeedKMH = Plan.RoutePosition.GetCurrentWay.GetMaxSpeedKMH(VehicleType)
         End If
-
     End Sub
 
     Public Overrides Sub SetRouteTo(ByVal DestinationPoint As IPoint)
