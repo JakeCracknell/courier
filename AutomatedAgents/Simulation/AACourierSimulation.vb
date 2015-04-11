@@ -8,8 +8,7 @@
         RouteCache.Initialise(Map.NodesAdjacencyList, RouteFindingMinimiser.DISTANCE)
         Dispatcher = New SimpleDispatcher(Map)
         'Dispatcher = New DebuggingDispatcher(Map)
-        NoticeBoard.Clear()
-        InitialiseLogger()
+        InitialiseLoggingModules()
     End Sub
 
     'Returns whether the state has changed.

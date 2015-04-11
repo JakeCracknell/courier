@@ -5,8 +5,8 @@
     Private AwaitingRoute As Boolean = False
     Private TicksWaited As Integer = 0
 
-    Public Sub New(ByVal Map As StreetMap, ByVal Color As Color)
-        MyBase.New(Map, Color)
+    Public Sub New(ByVal ID As Integer, ByVal Map As StreetMap, ByVal Color As Color)
+        MyBase.New(ID, Map, Color)
     End Sub
 
     Public Overrides Sub Move()

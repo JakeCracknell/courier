@@ -97,7 +97,7 @@
         Loop
     End Sub
 
-    'Overridden by waypoints/routes. Only for use whilst idle.
+    'Overridden by waypoints/routes. Only for use whilst idle or for an emergency refuel.
     Sub SetNewRoute(ByVal Route As Route)
         Debug.Assert(WayPoints.Count = 0)
         RoutePosition = New RoutePosition(Route)

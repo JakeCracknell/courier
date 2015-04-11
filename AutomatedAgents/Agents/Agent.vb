@@ -3,7 +3,8 @@
     Private Const FUEL_TANK_FULL_THRESHOLD As Double = 0.95
 
     Public Const RouteFindingMinimiser As RouteFindingMinimiser = RouteFindingMinimiser.DISTANCE
-    Public AgentName As String
+    Public ReadOnly AgentID As Integer
+    Public ReadOnly AgentName As String
     Public FuelLitres As Double
     Public FuelCosts As Decimal = 0
     Public CurrentSpeedKMH As Double = 0
@@ -19,10 +20,11 @@
     Protected Strategy As IAgentStrategy
     Protected IdleStrategy As IIdleStrategy
 
-    Public Sub New(ByVal Map As StreetMap, ByVal Color As Color)
-        Me.New(Map, Color, Vehicles.Type.CAR)
+    Public Sub New(ByVal ID As Integer, ByVal Map As StreetMap, ByVal Color As Color)
+        Me.New(ID, Map, Color, Vehicles.Type.CAR)
     End Sub
-    Public Sub New(ByVal Map As StreetMap, ByVal Color As Color, ByVal VehicleType As Vehicles.Type)
+    Public Sub New(ByVal ID As Integer, ByVal Map As StreetMap, ByVal Color As Color, ByVal VehicleType As Vehicles.Type)
+        Me.AgentID = ID
         Me.Map = Map
         Me.Color = Color
         Me.AgentName = AgentNameAssigner.AssignAgentName()
@@ -40,10 +42,11 @@
         Plan.CapacityLeft = Math.Round(Plan.CapacityLeft, 5)
         If Plan.CapacityLeft > GetVehicleMaxCapacity() Then
             'Throw New OverflowException
-            Debug.WriteLine("Vehicle is too full by: " & GetVehicleCapacityPercentage() & "%")
+            Debug.WriteLine("ERROR: Vehicle is too full by: " & GetVehicleCapacityPercentage() & "%")
         ElseIf Plan.IsIdle() AndAlso Plan.CapacityLeft <> GetVehicleMaxCapacity() Then
-            Debug.WriteLine("Capacity left is non-empty, but vehicle is empty: " & Plan.CapacityLeft)
-            'Debug.WriteLine(AgentName & " [" & "".PadRight((1 - Plan.CapacityLeft) * 60, "#") & "".PadRight(Plan.CapacityLeft * 60, " ") & "]")
+            Debug.WriteLine("ERROR: Capacity left is non-empty, but vehicle is empty: " & Plan.CapacityLeft)
+        ElseIf FuelLitres <= 0 Then
+            Debug.WriteLine("ERROR: Out of fuel! Fuel level is: " & FuelLitres)
         End If
 
         'Reroutes if needed. In the simple case, when a waypoint is reached
@@ -80,6 +83,7 @@
         NoticeBoard.FuelBill += FuelPurchasePrice
         FuelCosts += FuelPurchasePrice
         FuelLitres = Vehicles.FuelTankSize(VehicleType)
+        SimulationState.NewEvent(AgentID, LogMessages.Refuel(FuelLitresPurchased, FuelPurchasePrice))
     End Sub
 
     Public Function GetVehicleString() As String

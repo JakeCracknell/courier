@@ -49,10 +49,19 @@ Partial Class frmAgentStatus
         Me.cStatus = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.cTimeLeft = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.cRevenue = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
+        Me.lvLog = New System.Windows.Forms.ListView()
+        Me.cAgentID = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.cEventTime = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.cEventDescription = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
+        CType(Me.SplitContainer2, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SplitContainer2.Panel1.SuspendLayout()
+        Me.SplitContainer2.Panel2.SuspendLayout()
+        Me.SplitContainer2.SuspendLayout()
         Me.SuspendLayout()
         '
         'lvAgentList
@@ -148,7 +157,7 @@ Partial Class frmAgentStatus
         '
         'SplitContainer1.Panel2
         '
-        Me.SplitContainer1.Panel2.Controls.Add(Me.lvJobList)
+        Me.SplitContainer1.Panel2.Controls.Add(Me.SplitContainer2)
         Me.SplitContainer1.Size = New System.Drawing.Size(915, 413)
         Me.SplitContainer1.SplitterDistance = 119
         Me.SplitContainer1.TabIndex = 1
@@ -160,7 +169,7 @@ Partial Class frmAgentStatus
         Me.lvJobList.FullRowSelect = True
         Me.lvJobList.Location = New System.Drawing.Point(0, 0)
         Me.lvJobList.Name = "lvJobList"
-        Me.lvJobList.Size = New System.Drawing.Size(915, 290)
+        Me.lvJobList.Size = New System.Drawing.Size(915, 145)
         Me.lvJobList.TabIndex = 1
         Me.lvJobList.UseCompatibleStateImageBehavior = False
         Me.lvJobList.View = System.Windows.Forms.View.Details
@@ -172,7 +181,7 @@ Partial Class frmAgentStatus
         '
         'cAgent
         '
-        Me.cAgent.Text = "Vehicle"
+        Me.cAgent.Text = "Agent"
         '
         'cFrom
         '
@@ -218,6 +227,50 @@ Partial Class frmAgentStatus
         '
         Me.cRevenue.Text = "Revenue"
         '
+        'SplitContainer2
+        '
+        Me.SplitContainer2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.SplitContainer2.Location = New System.Drawing.Point(0, 0)
+        Me.SplitContainer2.Name = "SplitContainer2"
+        Me.SplitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal
+        '
+        'SplitContainer2.Panel1
+        '
+        Me.SplitContainer2.Panel1.Controls.Add(Me.lvJobList)
+        '
+        'SplitContainer2.Panel2
+        '
+        Me.SplitContainer2.Panel2.Controls.Add(Me.lvLog)
+        Me.SplitContainer2.Size = New System.Drawing.Size(915, 290)
+        Me.SplitContainer2.SplitterDistance = 145
+        Me.SplitContainer2.TabIndex = 2
+        '
+        'lvLog
+        '
+        Me.lvLog.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.cEventTime, Me.cAgentID, Me.cEventDescription})
+        Me.lvLog.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lvLog.FullRowSelect = True
+        Me.lvLog.Location = New System.Drawing.Point(0, 0)
+        Me.lvLog.Name = "lvLog"
+        Me.lvLog.Size = New System.Drawing.Size(915, 141)
+        Me.lvLog.TabIndex = 2
+        Me.lvLog.UseCompatibleStateImageBehavior = False
+        Me.lvLog.View = System.Windows.Forms.View.Details
+        '
+        'cAgentID
+        '
+        Me.cAgentID.Text = "Agent"
+        Me.cAgentID.Width = 46
+        '
+        'cEventTime
+        '
+        Me.cEventTime.Text = "Time"
+        '
+        'cEventDescription
+        '
+        Me.cEventDescription.Text = "Description"
+        Me.cEventDescription.Width = 104
+        '
         'frmAgentStatus
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -232,6 +285,10 @@ Partial Class frmAgentStatus
         Me.SplitContainer1.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer1.ResumeLayout(False)
+        Me.SplitContainer2.Panel1.ResumeLayout(False)
+        Me.SplitContainer2.Panel2.ResumeLayout(False)
+        CType(Me.SplitContainer2, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.SplitContainer2.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -262,4 +319,9 @@ Partial Class frmAgentStatus
     Friend WithEvents cTimeLeft As System.Windows.Forms.ColumnHeader
     Friend WithEvents cRevenue As System.Windows.Forms.ColumnHeader
     Friend WithEvents cAllocatedJobs As System.Windows.Forms.ColumnHeader
+    Friend WithEvents SplitContainer2 As System.Windows.Forms.SplitContainer
+    Friend WithEvents lvLog As System.Windows.Forms.ListView
+    Friend WithEvents cEventTime As System.Windows.Forms.ColumnHeader
+    Friend WithEvents cAgentID As System.Windows.Forms.ColumnHeader
+    Friend WithEvents cEventDescription As System.Windows.Forms.ColumnHeader
 End Class

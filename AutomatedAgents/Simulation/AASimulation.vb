@@ -7,7 +7,7 @@
     Protected TIME_INCREMENT As TimeSpan = TimeSpan.FromSeconds(1)
 
     Overridable Sub AddAgent()
-        Dim Agent As New Agent(Map, GetSequentialColor())
+        Dim Agent As New Agent(UIDAssigner.NewID("agent", 0), Map, GetSequentialColor())
         Agents.Add(Agent)
     End Sub
 
@@ -26,10 +26,12 @@
         Return NoticeBoard.CurrentTime.ToString & If(IsRunning, "", " paused")
     End Function
 
-    Sub InitialiseLogger()
-        If Statistics Is Nothing Then
+    Sub InitialiseLoggingModules()
+        If Statistics Is Nothing Then 'without this frmStats could cause a synclock exception. TODO refactor
             Statistics = New StatisticsLogger(Now, Map)
         End If
+        NoticeBoard.Clear()
+        SimulationState.Initialise()
     End Sub
 
     Sub LogStatistics()

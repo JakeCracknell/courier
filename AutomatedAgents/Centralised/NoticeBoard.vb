@@ -47,9 +47,10 @@
             UnallocatedJobs.Add(Job)
             Parallel.ForEach(Of ContractNetContractor)(AvailableContractors,
                 Sub(Contractor)
-                Contractor.AnnounceJob(Job)
-                Contractor.PlaceBid()
-            End Sub)
+                    Contractor.AnnounceJob(Job)
+                    Contractor.PlaceBid()
+                End Sub)
+            SimulationState.NewEvent(LogMessages.JobBroadcasted(Job.JobID))
             'For Each Contractor As ContractNetContractor In AvailableContractors
             '    Contractor.AnnounceJob(Job)
             '    Contractor.PlaceBid()
@@ -62,20 +63,28 @@
                 Dim JobOffered As CourierJob = UnallocatedJobs(0)
 
                 Dim Winner As ContractNetContractor = Nothing
+                Dim Bids As New List(Of Double)
                 Dim BestBid As Double = Double.MaxValue
                 For Each Contractor As ContractNetContractor In AvailableContractors
                     Dim Bid As Double = Contractor.GetBid
-                    If Bid <> ContractNetContractor.NO_BID AndAlso Bid < BestBid Then
-                        BestBid = Bid
-                        Winner = Contractor
+                    If Bid <> ContractNetContractor.NO_BID Then
+                        Bids.Add(Bid)
+                        If Bid < BestBid Then
+                            BestBid = Bid
+                            Winner = Contractor
+                        End If
                     End If
+
                 Next
                 If Winner IsNot Nothing Then
+                    Bids.Sort()
+                    SimulationState.NewEvent(LogMessages.BidsReceived(JobOffered.JobID, Bids))
                     Winner.AwardJob()
                     AllocateJob(JobOffered)
                     JobOffered.CalculateFee(BestBid)
+                    SimulationState.NewEvent(LogMessages.JobAwarded(JobOffered.JobID, BestBid))
                 Else
-                    'Debug.WriteLine("Could not find a contractor for job")
+                    SimulationState.NewEvent(LogMessages.JobRefused(JobOffered.JobID))
                     JobOffered.Status = JobStatus.CANCELLED
                 End If
             End If

@@ -76,7 +76,8 @@
     End Function
 
     Public Sub CalculateFee(ByVal EstimatedExtraHoursOfDriving As Double)
-        CustomerFee = Math.Round(SimulationParameters.FeeBasePrice + EstimatedExtraHoursOfDriving * SimulationParameters.FeeHourlyPrice, 2)
+        OriginalCustomerFee = Math.Round(SimulationParameters.FeeBasePrice + EstimatedExtraHoursOfDriving * SimulationParameters.FeeHourlyPrice, 2)
+        CustomerFee = OriginalCustomerFee
     End Sub
 
     'Uncollected deliveries are partially refunded to the base fee

@@ -44,27 +44,37 @@ Class ContractNetStrategy
                         If Job.Status = JobStatus.CANCELLED Then
                             'CNP policy invariant
                             Agent.Plan.ExtractCancelled()
+                            SimulationState.NewEvent(Agent.AgentID, LogMessages.PickFail(Job.JobID))
                         ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
                             'Successful pickup
                             Agent.Plan.CapacityLeft -= Job.CubicMetres
+                            SimulationState.NewEvent(Agent.AgentID, LogMessages.PickSuccess(Job.JobID))
                         End If
                     Case JobStatus.PENDING_DELIVERY
                         Agent.Delayer = New Delayer(Job.Deliver())
                         If Job.Status = JobStatus.COMPLETED Then
-                            'Successful dropoff
+                            'Successful dropoff (perhaps late)
                             Agent.TotalCompletedJobs += 1
                             Agent.Plan.CapacityLeft += Job.CubicMetres
+                            Dim TimeLeft As TimeSpan = Job.Deadline - NoticeBoard.CurrentTime
+                            If TimeLeft < TimeSpan.Zero Then
+                                SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliveryLate(Job.JobID, -TimeLeft, Job.OriginalCustomerFee))
+                            Else
+                                SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliverySuccess(Job.JobID, TimeLeft))
+                            End If
                         ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
                             'Customer is not in -> deliver to nearest depot.
                             Job.DeliveryPosition = Agent.Map.GetNearestDepot(Agent.Plan.StartPoint)
                             Dim DepotWaypoint As New WayPoint() With {.DefinedStatus = JobStatus.PENDING_DELIVERY, _
                                           .Job = Job, .Position = Job.DeliveryPosition, _
                                           .VolumeDelta = -Job.CubicMetres}
+                            Dim ImmediateRouteToDepot As Route = RouteCache.GetRoute(Agent.Plan.StartPoint, DepotWaypoint.Position)
+
                             Select Case Policy
                                 Case ContractNetPolicy.CNP1, ContractNetPolicy.CNP2, ContractNetPolicy.CNP3
                                     'Go to the depot right now.
                                     Agent.Plan.WayPoints.Insert(0, DepotWaypoint)
-                                    Agent.Plan.Routes.Insert(0, RouteCache.GetRoute(Agent.Plan.StartPoint, DepotWaypoint.Position))
+                                    Agent.Plan.Routes.Insert(0, ImmediateRouteToDepot)
                                 Case ContractNetPolicy.CNP4
                                     'Go to the depot whenever it is optimal.
                                     Agent.Plan.WayPoints.Add(DepotWaypoint)
@@ -72,7 +82,7 @@ Class ContractNetStrategy
                                     Agent.Plan = Solver.GetPlan
                                     Debug.Assert(Agent.Plan IsNot Nothing)
                             End Select
-
+                            SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliveryFail(Job.JobID, ImmediateRouteToDepot.GetKM))
                         End If
                 End Select
 

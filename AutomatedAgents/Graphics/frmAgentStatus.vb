@@ -4,6 +4,7 @@
     Private Sub frmAgentStatus_Load(sender As Object, e As EventArgs) Handles Me.Load
         SetDoubleBuffered(lvAgentList)
         SetDoubleBuffered(lvJobList)
+        SetDoubleBuffered(lvLog)
     End Sub
     ''TODO update this within synclock on graphics tick of frmmain.
 
@@ -21,6 +22,7 @@
             End If
             PopulateAgentList()
             PopulateJobList()
+            PopulateEventsList()
         Catch ex As Exception
             Debug.WriteLine("Do not ignore this exception!!!:   " & ex.ToString)
             'TODO SOME SORT OF NULLPOINTER CAN HAPPEN HERE? Sync issue?
@@ -30,10 +32,10 @@
     Private Sub PopulateJobList()
         lvJobList.BeginUpdate()
         lvJobList.Items.Clear()
-        For AgentID = 0 To AASimulation.Agents.Count - 1
-            For Each J As CourierJob In AASimulation.Agents(AgentID).Plan.GetCurrentJobs
+        For Each Agent As Agent In AASimulation.Agents
+            For Each J As CourierJob In Agent.Plan.GetCurrentJobs
                 Dim LVI As New ListViewItem(J.JobID)
-                LVI.SubItems.Add(AgentID)
+                LVI.SubItems.Add(Agent.AgentID)
                 LVI.SubItems.Add(J.PickupPosition.ToString)
                 LVI.SubItems.Add(J.OriginalDeliveryPosition.ToString & If(J.IsGoingToDepot(), " -> [D]", ""))
                 LVI.SubItems.Add(Math.Round(J.GetDirectRoute.GetKM, 3))
@@ -44,7 +46,7 @@
                 Dim TimeLeft As TimeSpan = J.Deadline - NoticeBoard.CurrentTime
                 LVI.SubItems.Add(TimeLeft.ToString("h\:mm\:ss") & If(TimeLeft < TimeSpan.Zero, " LATE", ""))
                 LVI.SubItems.Add(FormatCurrency(J.CustomerFee))
-                LVI.BackColor = AASimulation.Agents(AgentID).Color
+                LVI.BackColor = Agent.Color
                 LVI.UseItemStyleForSubItems = False
                 lvJobList.Items.Add(LVI)
             Next
@@ -80,6 +82,24 @@
         If lv.Items(Row).SubItems(Column.Index).Text <> Value Then
             lv.Items(Row).SubItems(Column.Index).Text = Value
         End If
+    End Sub
+
+    Private Sub PopulateEventsList()
+        Dim Events = SimulationState.GetEvents
+        If Events.Length = 0 Then
+            Exit Sub
+        End If
+
+        'Array.Sort(Events)
+        lvLog.BeginUpdate()
+        For Each E As SimulationState.LogEvent In Events
+            Dim LVI As New ListViewItem(E.Time.ToString)
+            LVI.SubItems.Add(If(E.AgentID >= 0, E.AgentID, "HQ"))
+            LVI.SubItems.Add(E.Description)
+            lvLog.Items.Insert(0, LVI)
+        Next
+        lvLog.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
+        lvLog.EndUpdate()
     End Sub
 
     Public Sub SetAASimulation(ByVal AASimulation As AASimulation)
