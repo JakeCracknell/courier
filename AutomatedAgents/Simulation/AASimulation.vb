@@ -7,7 +7,8 @@
     Protected TIME_INCREMENT As TimeSpan = TimeSpan.FromSeconds(1)
 
     Overridable Sub AddAgent()
-        Dim Agent As New Agent(UIDAssigner.NewID("agent", 0), Map, GetSequentialColor())
+        Dim ID As Integer = UIDAssigner.NewID("agent", 0)
+        Dim Agent As New Agent(ID, Map, GetSequentialColor(ID))
         Agents.Add(Agent)
     End Sub
 

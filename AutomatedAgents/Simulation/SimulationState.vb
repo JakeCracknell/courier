@@ -19,9 +19,14 @@
         End Structure
 
         Private Events As List(Of LogEvent)
+        Private SimulationStateSyncObject As New Object
+        Private AgentStatuses As List(Of List(Of String))
+        Private JobStatuses As List(Of List(Of String))
 
         Public Sub Initialise()
             Events = New List(Of LogEvent)
+            AgentStatuses = New List(Of List(Of String))
+            JobStatuses = New List(Of List(Of String))
         End Sub
 
         Public Sub NewEvent(ByVal Description As String)
@@ -41,5 +46,55 @@
             End SyncLock
             Return EventsArray
         End Function
+
+        Public Sub CacheAASimulationStatus(ByVal AASimulation As AASimulation)
+            SyncLock SimulationStateSyncObject
+                AgentStatuses = New List(Of List(Of String))
+                JobStatuses = New List(Of List(Of String))
+
+                For Each Agent As Agent In AASimulation.Agents
+                    Dim AgentList As New List(Of String)(13)
+                    AgentList.Add(Agent.AgentID)
+                    AgentList.Add(Agent.Plan.RoutePosition.GetPoint.ToString)
+                    AgentList.Add(If(Agent.Plan.WayPoints.Count > 0, Agent.Plan.WayPoints(0).ToString, "idle"))
+                    AgentList.Add(Agent.CurrentSpeedKMH)
+                    AgentList.Add(Agent.Plan.GetCurrentJobs.Count)
+                    AgentList.Add(Agent.Plan.WayPoints.Count)
+                    AgentList.Add(Agent.GetVehicleString())
+                    AgentList.Add(Agent.AgentName)
+                    AgentList.Add(Math.Round(Agent.FuelLitres, 2))
+                    AgentList.Add(Math.Round(Agent.TotalKMTravelled, 1))
+                    AgentList.Add(FormatCurrency(Agent.FuelCosts))
+                    AgentList.Add(Math.Round(Agent.GetVehicleCapacityPercentage, 1) & "%")
+                    AgentList.Add(Agent.TotalCompletedJobs)
+                    AgentStatuses.Add(AgentList)
+
+                    For Each J As CourierJob In Agent.Plan.GetCurrentJobs
+                        Dim JobList As New List(Of String)
+                        JobList.Add(J.JobID)
+                        JobList.Add(Agent.AgentID)
+                        JobList.Add(J.PickupPosition.ToString)
+                        JobList.Add(J.OriginalDeliveryPosition.ToString & If(J.IsGoingToDepot(), " -> [D]", ""))
+                        JobList.Add(Math.Round(J.GetDirectRoute.GetKM, 3))
+                        JobList.Add(J.GetDirectRoute.GetEstimatedTime.ToString("h\:mm\:ss"))
+                        JobList.Add(J.CubicMetres)
+                        JobList.Add(J.Deadline.ToString("d\:hh\:mm\:ss"))
+                        JobList.Add(J.Status.ToString("G"))
+                        Dim TimeLeft As TimeSpan = J.Deadline - NoticeBoard.CurrentTime
+                        JobList.Add(TimeLeft.ToString("h\:mm\:ss") & If(TimeLeft < TimeSpan.Zero, " LATE", ""))
+                        JobList.Add(FormatCurrency(J.CustomerFee))
+                        'LVI.BackColor = Agent.Color
+                        JobStatuses.Add(JobList)
+                    Next
+                Next
+            End SyncLock
+        End Sub
+
+        Public Function GetAASimulationStatus() As Tuple(Of List(Of List(Of String)), List(Of List(Of String)))
+            SyncLock SimulationStateSyncObject
+                Return New Tuple(Of List(Of List(Of String)), List(Of List(Of String)))(AgentStatuses, JobStatuses)
+            End SyncLock
+        End Function
+
     End Module
 End Namespace

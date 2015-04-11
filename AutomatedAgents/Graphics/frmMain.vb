@@ -91,6 +91,7 @@
                             If MapDrawCounter >= SimulationParameters.DisplayRefreshSpeed Then
                                 If SimulationStateChanged Then
                                     SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, NoticeBoard.IncompleteJobs))
+                                    SimulationState.CacheAASimulationStatus(AASimulation)
                                 End If
                                 MapDrawCounter = 1
                             Else
@@ -112,7 +113,7 @@
         ShowMemoryUsage()
         ShowTime()
         ShowDebugVariable()
-        'TODO refactor!!!!!!!!!!!!!!!!!!!!! Update intermediate object!
+
         If AASimulation IsNot Nothing AndAlso AASimulation.Agents.Count > 0 Then
             frmAgentStatus.RefreshLists()
         End If
@@ -220,7 +221,6 @@
                 AASimulation = New AACourierSimulation(Map)
             End If
             AASimulation.Start()
-            frmAgentStatus.SetAASimulation(AASimulation)
             frmStatistics.SetAASimulation(AASimulation)
         End If
     End Sub
@@ -234,7 +234,6 @@
                 AASimulation = New AAPlayground(Map)
             End If
             AASimulation.Start()
-            frmAgentStatus.SetAASimulation(AASimulation)
             frmStatistics.SetAASimulation(AASimulation)
         End If
     End Sub
@@ -286,13 +285,11 @@
         If Map IsNot Nothing AndAlso Map.NodesAdjacencyList IsNot Nothing Then
             RouteFinderBenchmark.RunRouteFinderBenchmark(Map.NodesAdjacencyList)
         End If
-
     End Sub
 
     Private Sub AgentStatusToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AgentStatusToolStripMenuItem.Click
         frmAgentStatus.Show()
     End Sub
-
   
     Private Sub AgentPlansToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AgentPlansToolStripMenuItem.Click
         MapGraphics.ConfigDrawAgentRoutes = -1

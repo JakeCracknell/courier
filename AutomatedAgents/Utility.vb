@@ -1,17 +1,18 @@
 ﻿Module Utility
     Private SequentialColours() As Color = {Color.Blue, Color.Green, Color.Red, Color.Yellow, Color.Pink, Color.Purple, Color.Orange, Color.Brown, Color.Black, Color.Beige, Color.Violet}
-    Private SequentialColoursIndex As Integer = 0
-
-    Function GetSequentialColor() As Color
-        If SequentialColoursIndex < SequentialColours.Length Then
-            Dim Color As Color = SequentialColours(SequentialColoursIndex)
-            SequentialColoursIndex += 1
-            Return Color
+    Private SequentialColoursDictionary As New Dictionary(Of Integer, Color)
+    Function GetSequentialColor(ByVal ID As Integer) As Color
+        If ID < SequentialColours.Length Then
+            Return SequentialColours(ID)
+        ElseIf SequentialColoursDictionary.ContainsKey(ID) Then
+            Return SequentialColoursDictionary(ID)
         Else
-            Return GetRandomColor()
+            Dim RandomColour As Color = GetRandomColour()
+            SequentialColoursDictionary.Add(ID, RandomColour)
+            Return RandomColour
         End If
     End Function
-    Function GetRandomColor() As Color
+    Function GetRandomColour() As Color
         Return Color.FromArgb(Rnd() * 255, Rnd() * 255, Rnd() * 255)
     End Function
 

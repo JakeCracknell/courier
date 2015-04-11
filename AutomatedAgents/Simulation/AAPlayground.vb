@@ -8,7 +8,8 @@
     End Sub
 
     Public Overrides Sub AddAgent()
-        Dim Agent As New AgentAsync(Agents.Count, Map, GetSequentialColor)
+        Dim ID As Integer = UIDAssigner.NewID("playground", 1000)
+        Dim Agent As New AgentAsync(ID, Map, GetSequentialColor(ID))
         Agents.Add(Agent)
     End Sub
 
