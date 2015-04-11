@@ -30,7 +30,7 @@
     End Sub
 
     'Distance to travel based on speed of current way. Close enough for now, as 1 second is not long.
-    Public Function Move(ByVal Vehicle As VehicleSize) As Double
+    Public Function Move(ByVal Vehicle As Vehicles.Type) As Double
         Dim Way As Way = Route.At(HopIndex).Way
         If Way IsNot Nothing Then
             Dim DistanceToTravel As Double = Way.GetMaxSpeedKMH(Vehicle) / 3600
@@ -72,7 +72,7 @@
         Return Route Is Nothing OrElse (PercentageTravelled = 1 And HopIndex = Route.HopCount - 1)
     End Function
 
-    Function GetCurrentSpeed(ByVal VehicleSize As VehicleSize) As Double
+    Function GetCurrentSpeed(ByVal VehicleSize As Vehicles.Type) As Double
         Dim Way As Way = GetCurrentWay()
         If Way IsNot Nothing Then
             Return Way.GetMaxSpeedKMH(VehicleSize)

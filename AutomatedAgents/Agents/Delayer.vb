@@ -32,6 +32,6 @@
     End Function
 
     Function IsWaiting() As Boolean
-        Return TimeLeft <= 0
+        Return TimeLeft > 0
     End Function
 End Class

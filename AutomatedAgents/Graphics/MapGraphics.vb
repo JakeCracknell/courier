@@ -229,8 +229,6 @@
         Dim grOverlay As Graphics = Graphics.FromImage(OverlayBitmapCopy)
 
         For Each Agent As Agent In Agents
-            Dim AgentIsWaiting As Boolean = Agent.Delayer.IsWaiting
-
             DrawAgent(Agent, grOverlay)
             If ConfigDrawAgentRoutes = 0 Then ' Lines for jobs, not for driving route
                 Dim Brush As New SolidBrush(Agent.Color)

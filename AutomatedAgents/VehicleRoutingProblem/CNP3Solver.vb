@@ -33,7 +33,7 @@
         State.Time = NoticeBoard.CurrentTime
         State.Point = Agent.Plan.StartPoint
         If JobSolution.Count > 0 Then
-            State.FuelLeft -= Agent.Plan.Routes(0).GetEstimatedFuelUsage(Agent.VehicleSize)
+            State.FuelLeft -= Agent.Plan.Routes(0).GetEstimatedFuelUsage(Agent.VehicleType)
             State.Time += Agent.Plan.Routes(0).GetEstimatedTime()
             State.Point = Agent.Plan.Routes(0).GetEndPoint
             TotalCost = Agent.Plan.Routes(0).GetCostForAgent(Agent)
@@ -45,7 +45,8 @@
             For Each J As CourierJob In JobsLeft
                 Dim Route As Route = RouteCache.GetRoute(State.Point, J.PickupPosition)
                 Dim Cost As Double = Route.GetCostForAgent(Agent)
-                If Not (State.Time + Route.GetEstimatedTime + J.GetDirectRoute.GetEstimatedTime < J.Deadline - DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB) Then
+                If Not (State.Time + Route.GetEstimatedTime + J.GetDirectRoute.GetEstimatedTime < _
+                        J.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB) Then
                     Continue For 'Would not get there on time.
                 End If
                 'TODO: fuel
@@ -61,9 +62,9 @@
                 Dim Route2 As Route = BestNextJob.GetDirectRoute
                 State.Time += Route1.GetEstimatedTime _
                     + Route2.GetEstimatedTime _
-                    + DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB
-                State.FuelLeft -= (Route1.GetEstimatedFuelUsage(Agent.VehicleSize) _
-                    + Route2.GetEstimatedFuelUsage(Agent.VehicleSize))
+                    + SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB
+                State.FuelLeft -= (Route1.GetEstimatedFuelUsage(Agent.VehicleType) _
+                    + Route2.GetEstimatedFuelUsage(Agent.VehicleType))
                 State.Point = BestNextJob.DeliveryPosition
                 JobsLeft.Remove(BestNextJob)
             Else

@@ -42,7 +42,8 @@
                     Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition)
                     Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
                     Dim MinTime As TimeSpan = Route1.GetEstimatedTime + Route2.GetEstimatedTime
-                    If NoticeBoard.CurrentTime + MinTime > JobToReview.Deadline - DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
+                    If NoticeBoard.CurrentTime + MinTime > _
+                        JobToReview.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
                         Exit Sub
                     End If
                     CurrentBid = Route1.GetCostForAgent(Agent) + Route2.GetCostForAgent(Agent)
@@ -56,7 +57,8 @@
                 For Each R As Route In Agent.Plan.Routes
                     TimeSum += R.GetEstimatedTime
                 Next
-                If NoticeBoard.CurrentTime + TimeSum > JobToReview.Deadline - DEADLINE_PLANNING_REDUNDANCY_TIME_PER_ROUTE Then
+                If NoticeBoard.CurrentTime + TimeSum > _
+                    JobToReview.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_ROUTE Then
                     Exit Sub
                 End If
                 CurrentBid = Route1.GetCostForAgent(Agent) + Route2.GetCostForAgent(Agent)
@@ -72,11 +74,14 @@
                 Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition)
                 Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
                 Dim MinTime As TimeSpan = Route1.GetEstimatedTime + Route2.GetEstimatedTime
-                If NoticeBoard.CurrentTime + MinTime > JobToReview.Deadline - DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
+                If NoticeBoard.CurrentTime + MinTime > _
+                    JobToReview.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
                     Exit Sub
                 End If
 
-                TentativeSolver = New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(DEADLINE_PLANNING_REDUNDANCY_TIME_PER_ROUTE), Agent.RouteFindingMinimiser, JobToReview)
+                TentativeSolver = New NNSearchSolver(Agent.Plan, _
+                        New SolverPunctualityStrategy(SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_ROUTE), _
+                        Agent.RouteFindingMinimiser, JobToReview)
 
                 'Solution is Nothing iff impossible to fit into schedule (though as we only use NN, this is often untrue)
                 CurrentBid = If(TentativeSolver.IsSuccessful, TentativeSolver.GetTotalCost - CurrentDrivingCost, NO_BID)

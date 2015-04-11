@@ -168,7 +168,7 @@
                         SyncLock AASimulation
                             RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
                             For Each Agent In AASimulation.Agents
-                                Agent.SetRouteTo(RouteToNode)
+                                Agent.SetRouteTo(Map.NodesAdjacencyList.GetHopPositionFromNodeID(RouteToNode.ID))
                             Next
                         End SyncLock
                     End If
@@ -195,8 +195,8 @@
     End Sub
 
     Private Sub ShowDebugVariable()
-        If dEbUgVaRiAbLe IsNot Nothing Then
-            lblDebugVariable.Text = "Variable: " & dEbUgVaRiAbLe.ToString
+        If SimulationParameters.DisplayedDebugVariable IsNot Nothing Then
+            lblDebugVariable.Text = "Variable: " & SimulationParameters.DisplayedDebugVariable.ToString
         End If
     End Sub
     Private Sub ShowMemoryUsage()

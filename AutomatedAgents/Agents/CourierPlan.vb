@@ -97,14 +97,25 @@
         Loop
     End Sub
 
+    'Overridden by waypoints/routes. Only for use whilst idle.
+    Sub SetNewRoute(ByVal Route As Route)
+        Debug.Assert(WayPoints.Count = 0)
+        RoutePosition = New RoutePosition(Route)
+    End Sub
+
     Function GetCurrentJobs() As List(Of CourierJob)
         Return (From W In WayPoints
                Where W.DefinedStatus = JobStatus.PENDING_DELIVERY
                Select W.Job).ToList
     End Function
 
+    'Might be idle and moving. Idle = not doing any jobs, might be moving according to an idle strategy
     Function IsIdle() As Boolean
         Return WayPoints.Count = 0
+    End Function
+
+    Function IsStationary() As Boolean
+        Return WayPoints.Count = 0 AndAlso RoutePosition.RouteCompleted
     End Function
 
 End Class

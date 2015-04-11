@@ -83,7 +83,7 @@
     'Or if the customer was charged less than this, no refund.
     'TODO: should recalculate based on what solver says or triangle inequality
     Private Sub PartialRefund()
-        CustomerFee = Math.Min(FeeBasePrice, CustomerFee) 'WRONG
+        CustomerFee = Math.Min(SimulationParameters.FeeBasePrice, CustomerFee) 'WRONG
     End Sub
 
     'Full refund if the deadline is missed.

@@ -76,6 +76,8 @@
     <Compile Include="Agents\ContractNetContractor.vb" />
     <Compile Include="Agents\ContractNetPolicy.vb" />
     <Compile Include="Agents\CourierPlan.vb" />
+    <Compile Include="Agents\IdleStrategies\IIdleStrategy.vb" />
+    <Compile Include="Agents\IdleStrategies\SleepingIdleStrategy.vb" />
     <Compile Include="Agents\Strategies\ContractNetStrategy.vb" />
     <Compile Include="Agents\Delayer.vb" />
     <Compile Include="Agents\Strategies\IAgentStrategy.vb" />
@@ -127,7 +129,7 @@
     <Compile Include="Agents\AgentNameAssigner.vb" />
     <Compile Include="Simulation\JobStatus.vb" />
     <Compile Include="Centralised\SingleDispatcher.vb" />
-    <Compile Include="Simulation\VehicleSize.vb" />
+    <Compile Include="Agents\Vehicles.vb" />
     <Compile Include="Simulation\AACourierSimulation.vb" />
     <Compile Include="Graphics\frmMain.vb">
       <SubType>Form</SubType>

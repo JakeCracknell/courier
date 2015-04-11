@@ -14,6 +14,10 @@
         Me.Bounds = Bounds
     End Sub
 
+    'Starting point is a randomly chosen depot
+    Public Function GetStartingPoint() As HopPosition
+        Return NodesAdjacencyList.GetHopPositionFromNodeID(Depots(Int(Rnd() * Depots.Count)).ID)
+    End Function
     Public Function GetNearestDepot(ByVal Point As IPoint) As HopPosition
         Return NodesAdjacencyList.GetHopPositionFromNodeID(GetNearestLandmark(Point, Depots).ID)
     End Function

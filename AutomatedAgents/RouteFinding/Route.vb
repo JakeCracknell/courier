@@ -67,7 +67,7 @@
         Return TimeSpan.FromHours(GetEstimatedHours())
     End Function
 
-    Public Function GetEstimatedFuelUsage(ByVal VehicleSize As VehicleSize) As Double
+    Public Function GetEstimatedFuelUsage(ByVal VehicleSize As Vehicles.Type) As Double
         'TODO
         Return GetKM() * 0.1
     End Function
@@ -79,7 +79,7 @@
             Case AutomatedAgents.RouteFindingMinimiser.TIME_NO_TRAFFIC, AutomatedAgents.RouteFindingMinimiser.TIME_WITH_TRAFFIC
                 Return GetEstimatedHours()
             Case AutomatedAgents.RouteFindingMinimiser.FUEL
-                Return GetEstimatedFuelUsage(Agent.VehicleSize)
+                Return GetEstimatedFuelUsage(Agent.VehicleType)
         End Select
         Return 0
     End Function

@@ -67,9 +67,9 @@
                         Case RouteFindingMinimiser.DISTANCE
                             HeuristicCost = HaversineDistance(Cell.Node, EndPoint)
                         Case RouteFindingMinimiser.TIME_NO_TRAFFIC
-                            HeuristicCost = HaversineDistance(Cell.Node, EndPoint) / MAX_POSSIBLE_SPEED_KMH
+                            HeuristicCost = HaversineDistance(Cell.Node, EndPoint) / SimulationParameters.MAX_POSSIBLE_SPEED_KMH
                         Case RouteFindingMinimiser.TIME_WITH_TRAFFIC 'TODO
-                            HeuristicCost = HaversineDistance(Cell.Node, EndPoint) / MAX_POSSIBLE_SPEED_KMH
+                            HeuristicCost = HaversineDistance(Cell.Node, EndPoint) / SimulationParameters.MAX_POSSIBLE_SPEED_KMH
                     End Select
 
                     Dim F_Cost As Double = HeuristicCost + NextAStarTreeNode.TotalCost

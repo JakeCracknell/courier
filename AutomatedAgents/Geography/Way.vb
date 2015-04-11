@@ -54,7 +54,7 @@
         Me.MaxSpeedOverrideKMH = MaxSpeedOverrideKMH
     End Sub
 
-    Function GetMaxSpeedKMH(ByVal Vehicle As VehicleSize)
+    Function GetMaxSpeedKMH(ByVal Vehicle As Vehicles.Type)
         If MaxSpeedOverrideKMH > 0 Then
             Return MaxSpeedOverrideKMH
         End If

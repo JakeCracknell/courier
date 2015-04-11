@@ -67,10 +67,10 @@
             DisplayLVCell(lvAgentList, i, cWayPoints, Agent.Plan.WayPoints.Count)
             DisplayLVCell(lvAgentList, i, cVehicle, Agent.GetVehicleString())
             DisplayLVCell(lvAgentList, i, cAName, Agent.AgentName)
-            DisplayLVCell(lvAgentList, i, cLitres, Math.Round(Agent.PetroleumLitres, 2))
+            DisplayLVCell(lvAgentList, i, cLitres, Math.Round(Agent.FuelLitres, 2))
             DisplayLVCell(lvAgentList, i, cTotalKM, Math.Round(Agent.TotalKMTravelled, 1))
             DisplayLVCell(lvAgentList, i, cFuelCost, FormatCurrency(Agent.FuelCosts))
-            DisplayLVCell(lvAgentList, i, cCapacity, Math.Round(100 * Agent.GetVehicleCapacityPercentage, 1) & "%")
+            DisplayLVCell(lvAgentList, i, cCapacity, Math.Round(Agent.GetVehicleCapacityPercentage, 1) & "%")
             DisplayLVCell(lvAgentList, i, cCompletedJobs, Agent.TotalCompletedJobs)
         Next
         lvAgentList.EndUpdate()
