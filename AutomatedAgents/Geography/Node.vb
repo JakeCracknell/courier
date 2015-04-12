@@ -4,11 +4,8 @@
     Public ID As Long
     Public Latitude As Double
     Public Longitude As Double
-
-    Public Connected As Boolean = True
-
-    Private AgentTraffic As Integer = 0
-    Public Shared TotalNodesTraffic As Integer = 1
+    Public Description As String
+    Public Connected As Boolean = True 'by default
 
     Public Sub New(ByVal ID As Long, ByVal Latitiude As Double, ByVal Longitude As Double)
         Me.ID = ID
@@ -37,15 +34,7 @@
     End Function
 
     Public Overloads Function ToString() As String
-        Return ID
+        Return If(Description, ID)
     End Function
 
-    Public Sub VisitNode()
-        AgentTraffic += 1
-        TotalNodesTraffic += 1
-    End Sub
-
-    Public Function GetAgentTraffic() As Integer
-        Return AgentTraffic
-    End Function
 End Class

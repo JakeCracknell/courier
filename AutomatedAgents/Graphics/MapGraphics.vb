@@ -12,6 +12,7 @@
     Private ROAD_THICK_PEN_OUTER As New Pen(New SolidBrush(Color.Black), 5)
     Private ROAD_THICK_PEN_INNER_TWOWAY As New Pen(New SolidBrush(Color.White), 3)
     Private ROAD_THICK_PEN_INNER_ONEWAY As New Pen(New SolidBrush(Color.Red), 3)
+    Private NODE_BUSINESS_BRUSH As Brush = Brushes.Blue
     Private DELIVERY_FAIL_CROSS_PEN As New Pen(New SolidBrush(Color.Black), 2)
     Private LANDMARK_BORDER_PEN As New Pen(Brushes.Black, 2)
     Private LANDMARK_BRUSH As Brush = Brushes.White
@@ -23,7 +24,7 @@
     Private Height As Integer
     Private CC As CoordinateConverter
 
-    Public ConfigDrawNodes As Boolean = False
+    Public ConfigDrawBusinessNodes As Boolean = False
     Public ConfigDrawRoads As Integer = 1
     Public ConfigDrawAgentLines As Boolean = True
     Public ConfigDrawNodeLabels As Boolean = False
@@ -44,13 +45,12 @@
         gr = Graphics.FromImage(MapBitmapOriginal)
         gr.Clear(BG_COLOR)
 
-        If ConfigDrawNodes Then
+        If ConfigDrawBusinessNodes Then
             For Each N As Node In Map.Nodes
                 Dim Point As Point = CC.GetPoint(N)
                 Dim PointSize As Integer = 1 'Math.Min(Width * Height / 130000, ((Map.Nodes.Count / 10) * N.GetAgentTraffic / Node.TotalNodesTraffic))
-                gr.DrawRectangle(Pens.Blue, Point.X, Point.Y, PointSize, PointSize)
-                If Not N.Connected Then
-                    gr.FillRectangle(Brushes.Red, Point.X, Point.Y, 10, 10)
+                If N.Description IsNot Nothing Then
+                    gr.FillRectangle(NODE_BUSINESS_BRUSH, Point.X, Point.Y, 2, 2)
                 End If
                 If ConfigDrawNodeLabels Then
                     gr.DrawString(N.ID Mod 1000, OVERLAY_FONT, Brushes.Black, Point)

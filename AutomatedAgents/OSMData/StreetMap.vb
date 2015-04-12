@@ -8,6 +8,7 @@
 
     Public Depots As New List(Of Node)
     Public FuelPoints As New List(Of Node)
+    Public Businesses As New List(Of Node)
 
     Public Sub New(ByVal Name As String, ByVal Bounds As Bounds)
         Me.Name = Name

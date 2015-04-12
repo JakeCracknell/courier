@@ -38,6 +38,10 @@ Partial Class frmMain
         Me.CNP3ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CNP4ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CNP5ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SelectVehicleToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CarToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SmallCommercialVanToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.Lorry75TonneToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RouteTestingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RouteFromToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BenchmarkToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -63,10 +67,6 @@ Partial Class frmMain
         Me.picMap = New System.Windows.Forms.PictureBox()
         Me.tmrStatus = New System.Windows.Forms.Timer(Me.components)
         Me.bwSimulator = New System.ComponentModel.BackgroundWorker()
-        Me.SelectVehicleToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CarToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.SmallCommercialVanToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.Lorry75TonneToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.picMap, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -129,14 +129,14 @@ Partial Class frmMain
         'AgentStatusToolStripMenuItem
         '
         Me.AgentStatusToolStripMenuItem.Name = "AgentStatusToolStripMenuItem"
-        Me.AgentStatusToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.AgentStatusToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
         Me.AgentStatusToolStripMenuItem.Text = "Agent Status..."
         '
         'SelectCNPToolStripMenuItem
         '
         Me.SelectCNPToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CNP1ToolStripMenuItem, Me.CNP2ToolStripMenuItem, Me.CNP3ToolStripMenuItem, Me.CNP4ToolStripMenuItem, Me.CNP5ToolStripMenuItem})
         Me.SelectCNPToolStripMenuItem.Name = "SelectCNPToolStripMenuItem"
-        Me.SelectCNPToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.SelectCNPToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
         Me.SelectCNPToolStripMenuItem.Text = "Select CNP#"
         '
         'CNP1ToolStripMenuItem
@@ -169,6 +169,31 @@ Partial Class frmMain
         Me.CNP5ToolStripMenuItem.Size = New System.Drawing.Size(104, 22)
         Me.CNP5ToolStripMenuItem.Text = "CNP5"
         '
+        'SelectVehicleToolStripMenuItem
+        '
+        Me.SelectVehicleToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CarToolStripMenuItem, Me.SmallCommercialVanToolStripMenuItem, Me.Lorry75TonneToolStripMenuItem})
+        Me.SelectVehicleToolStripMenuItem.Name = "SelectVehicleToolStripMenuItem"
+        Me.SelectVehicleToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
+        Me.SelectVehicleToolStripMenuItem.Text = "Select Vehicle"
+        '
+        'CarToolStripMenuItem
+        '
+        Me.CarToolStripMenuItem.Name = "CarToolStripMenuItem"
+        Me.CarToolStripMenuItem.Size = New System.Drawing.Size(194, 22)
+        Me.CarToolStripMenuItem.Text = "Car"
+        '
+        'SmallCommercialVanToolStripMenuItem
+        '
+        Me.SmallCommercialVanToolStripMenuItem.Name = "SmallCommercialVanToolStripMenuItem"
+        Me.SmallCommercialVanToolStripMenuItem.Size = New System.Drawing.Size(194, 22)
+        Me.SmallCommercialVanToolStripMenuItem.Text = "Small Commercial Van"
+        '
+        'Lorry75TonneToolStripMenuItem
+        '
+        Me.Lorry75TonneToolStripMenuItem.Name = "Lorry75TonneToolStripMenuItem"
+        Me.Lorry75TonneToolStripMenuItem.Size = New System.Drawing.Size(194, 22)
+        Me.Lorry75TonneToolStripMenuItem.Text = "Lorry (7.5 Tonne)"
+        '
         'RouteTestingToolStripMenuItem
         '
         Me.RouteTestingToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RouteFromToolStripMenuItem, Me.BenchmarkToolStripMenuItem})
@@ -199,14 +224,14 @@ Partial Class frmMain
         '
         Me.NodesToolStripMenuItem.CheckOnClick = True
         Me.NodesToolStripMenuItem.Name = "NodesToolStripMenuItem"
-        Me.NodesToolStripMenuItem.Size = New System.Drawing.Size(137, 22)
-        Me.NodesToolStripMenuItem.Text = "Nodes"
+        Me.NodesToolStripMenuItem.Size = New System.Drawing.Size(195, 22)
+        Me.NodesToolStripMenuItem.Text = "Business Nodes"
         '
         'RoadsToolStripMenuItem
         '
         Me.RoadsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ThinRoadsToolStripMenuItem, Me.ThickRoadsToolStripMenuItem})
         Me.RoadsToolStripMenuItem.Name = "RoadsToolStripMenuItem"
-        Me.RoadsToolStripMenuItem.Size = New System.Drawing.Size(137, 22)
+        Me.RoadsToolStripMenuItem.Size = New System.Drawing.Size(195, 22)
         Me.RoadsToolStripMenuItem.Text = "Roads"
         '
         'ThinRoadsToolStripMenuItem
@@ -215,14 +240,14 @@ Partial Class frmMain
         Me.ThinRoadsToolStripMenuItem.CheckOnClick = True
         Me.ThinRoadsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
         Me.ThinRoadsToolStripMenuItem.Name = "ThinRoadsToolStripMenuItem"
-        Me.ThinRoadsToolStripMenuItem.Size = New System.Drawing.Size(138, 22)
+        Me.ThinRoadsToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.ThinRoadsToolStripMenuItem.Text = "Thin Roads"
         '
         'ThickRoadsToolStripMenuItem
         '
         Me.ThickRoadsToolStripMenuItem.CheckOnClick = True
         Me.ThickRoadsToolStripMenuItem.Name = "ThickRoadsToolStripMenuItem"
-        Me.ThickRoadsToolStripMenuItem.Size = New System.Drawing.Size(138, 22)
+        Me.ThickRoadsToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.ThickRoadsToolStripMenuItem.Text = "Thick Roads"
         '
         'AgentRoutesToolStripMenuItem
@@ -231,14 +256,14 @@ Partial Class frmMain
         Me.AgentRoutesToolStripMenuItem.CheckOnClick = True
         Me.AgentRoutesToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
         Me.AgentRoutesToolStripMenuItem.Name = "AgentRoutesToolStripMenuItem"
-        Me.AgentRoutesToolStripMenuItem.Size = New System.Drawing.Size(137, 22)
+        Me.AgentRoutesToolStripMenuItem.Size = New System.Drawing.Size(195, 22)
         Me.AgentRoutesToolStripMenuItem.Text = "Agent Lines"
         '
         'AgentPlansToolStripMenuItem
         '
         Me.AgentPlansToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.JobViewToolStripMenuItem, Me.LineViewToolStripMenuItem, Me.RouteViewToolStripMenuItem})
         Me.AgentPlansToolStripMenuItem.Name = "AgentPlansToolStripMenuItem"
-        Me.AgentPlansToolStripMenuItem.Size = New System.Drawing.Size(137, 22)
+        Me.AgentPlansToolStripMenuItem.Size = New System.Drawing.Size(195, 22)
         Me.AgentPlansToolStripMenuItem.Text = "Agent Plans"
         '
         'JobViewToolStripMenuItem
@@ -270,8 +295,8 @@ Partial Class frmMain
         Me.LandmarksToolStripMenuItem.CheckOnClick = True
         Me.LandmarksToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
         Me.LandmarksToolStripMenuItem.Name = "LandmarksToolStripMenuItem"
-        Me.LandmarksToolStripMenuItem.Size = New System.Drawing.Size(137, 22)
-        Me.LandmarksToolStripMenuItem.Text = "Depots"
+        Me.LandmarksToolStripMenuItem.Size = New System.Drawing.Size(195, 22)
+        Me.LandmarksToolStripMenuItem.Text = "Depots and Fuel Points"
         '
         'SimulationToolStripMenuItem
         '
@@ -336,31 +361,6 @@ Partial Class frmMain
         '
         'bwSimulator
         '
-        '
-        'SelectVehicleToolStripMenuItem
-        '
-        Me.SelectVehicleToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CarToolStripMenuItem, Me.SmallCommercialVanToolStripMenuItem, Me.Lorry75TonneToolStripMenuItem})
-        Me.SelectVehicleToolStripMenuItem.Name = "SelectVehicleToolStripMenuItem"
-        Me.SelectVehicleToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-        Me.SelectVehicleToolStripMenuItem.Text = "Select Vehicle"
-        '
-        'CarToolStripMenuItem
-        '
-        Me.CarToolStripMenuItem.Name = "CarToolStripMenuItem"
-        Me.CarToolStripMenuItem.Size = New System.Drawing.Size(194, 22)
-        Me.CarToolStripMenuItem.Text = "Car"
-        '
-        'SmallCommercialVanToolStripMenuItem
-        '
-        Me.SmallCommercialVanToolStripMenuItem.Name = "SmallCommercialVanToolStripMenuItem"
-        Me.SmallCommercialVanToolStripMenuItem.Size = New System.Drawing.Size(194, 22)
-        Me.SmallCommercialVanToolStripMenuItem.Text = "Small Commercial Van"
-        '
-        'Lorry75TonneToolStripMenuItem
-        '
-        Me.Lorry75TonneToolStripMenuItem.Name = "Lorry75TonneToolStripMenuItem"
-        Me.Lorry75TonneToolStripMenuItem.Size = New System.Drawing.Size(194, 22)
-        Me.Lorry75TonneToolStripMenuItem.Text = "Lorry (7.5 Tonne)"
         '
         'frmMain
         '

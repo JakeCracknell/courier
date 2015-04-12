@@ -52,7 +52,7 @@
     End Sub
 
     Private Sub NodesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NodesToolStripMenuItem.Click
-        MapGraphics.ConfigDrawNodes = NodesToolStripMenuItem.Checked
+        MapGraphics.ConfigDrawBusinessNodes = NodesToolStripMenuItem.Checked
         If Map IsNot Nothing Then
             SetPictureBox(DrawMap(Map))
         End If

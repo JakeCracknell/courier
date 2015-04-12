@@ -29,6 +29,23 @@ Public Class OSMLoader
             Dim xLon As Double = xItem.GetAttribute("lon")
             Dim Node As New Node(xNodeID, xLat, xLon)
             If Bounds.Encloses(Node) Then
+                Dim xTags As XmlNodeList = xItem.GetElementsByTagName("tag")
+                Dim IsBusiness As Boolean = False
+                Dim NodeName As String = Nothing
+                For Each xTag As XmlElement In xTags
+                    Dim AttributeName As String = xTag.GetAttribute("k")
+                    If AttributeName = "shop" OrElse AttributeName = "office" Then
+                        IsBusiness = True
+                        NodeName = If(NodeName, xTag.GetAttribute("v"))
+                    ElseIf AttributeName = "name" Then
+                        NodeName = xTag.GetAttribute("v")
+                    End If
+                Next
+                If IsBusiness Then
+                    Node.Description = NodeName
+                    Map.Businesses.Add(Node)
+                End If
+
                 Map.Nodes.Add(Node)
                 NodeHashMap.Add(xNodeID, Node)
             End If
@@ -45,8 +62,6 @@ Public Class OSMLoader
 
         Debug.WriteLine("Nodes: " & Map.Nodes.Count)
         Debug.WriteLine("Ways: " & Map.Ways.Count)
-
-        Node.TotalNodesTraffic = 1
 
         Try
             If IO.File.Exists(AAFilePath) Then
