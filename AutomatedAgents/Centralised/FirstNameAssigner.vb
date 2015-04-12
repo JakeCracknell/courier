@@ -1,8 +1,8 @@
-﻿Module AgentNameAssigner
+﻿Module FirstNameAssigner
     Private AllNames As String() = My.Resources.ResourceManager.GetString("AgentNames").Split(vbNewLine)
     Private NamesToAssign As New List(Of String)
 
-    Function AssignAgentName()
+    Function AssignName() As String
         If NamesToAssign.Count = 0 Then
             NamesToAssign = AllNames.ToList
         End If

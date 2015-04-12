@@ -36,13 +36,13 @@ Public Class OSMLoader
                     Dim AttributeName As String = xTag.GetAttribute("k")
                     If AttributeName = "shop" OrElse AttributeName = "office" Then
                         IsBusiness = True
-                        NodeName = If(NodeName, xTag.GetAttribute("v"))
+                        NodeName = If(NodeName, xTag.GetAttribute("v").Replace("_", " ") & " " & AttributeName)
                     ElseIf AttributeName = "name" Then
                         NodeName = xTag.GetAttribute("v")
                     End If
                 Next
                 If IsBusiness Then
-                    Node.Description = NodeName
+                    Node.Description = NodeName 'might be named something like 'music shop' or 'lawyer office'
                     Map.Businesses.Add(Node)
                 End If
 

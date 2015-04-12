@@ -15,6 +15,9 @@
     Public CustomerFee As Decimal 'Potentially refunded
     Public OriginalCustomerFee As Decimal
     Public Status As JobStatus = JobStatus.UNALLOCATED
+    Public PickupName As String
+    Public OriginalDeliveryName As String
+    Public DeliveryName As String
 
     Sub New(ByVal PickupPosition As HopPosition, ByVal DeliveryPosition As HopPosition, ByVal Size As Double, ByVal Deadline As TimeSpan)
         Me.PickupPosition = PickupPosition

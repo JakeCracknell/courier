@@ -30,7 +30,7 @@
         Me.AgentID = ID
         Me.Map = Map
         Me.Color = Color
-        Me.AgentName = AgentNameAssigner.AssignAgentName()
+        Me.AgentName = FirstNameAssigner.AssignName()
         Me.VehicleType = VehicleType
         Strategy = New ContractNetStrategy(Me, SimulationParameters.CNPVersion)
         IdleStrategy = New ConvergeToPickupIdleStrategy(Me)

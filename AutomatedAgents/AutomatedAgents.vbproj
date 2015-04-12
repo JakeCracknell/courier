@@ -132,7 +132,7 @@
     <Compile Include="RouteFinding\RouteFinderBenchmark.vb" />
     <Compile Include="RouteFinding\RouteFindingMinimiser.vb" />
     <Compile Include="Geography\IPoint.vb" />
-    <Compile Include="Agents\AgentNameAssigner.vb" />
+    <Compile Include="Centralised\FirstNameAssigner.vb" />
     <Compile Include="Simulation\JobStatus.vb" />
     <Compile Include="Centralised\Dispatchers\SingleDispatcher.vb" />
     <Compile Include="Agents\Vehicles.vb" />
