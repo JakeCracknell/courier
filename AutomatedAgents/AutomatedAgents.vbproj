@@ -76,6 +76,8 @@
     <Compile Include="Agents\ContractNetContractor.vb" />
     <Compile Include="Agents\ContractNetPolicy.vb" />
     <Compile Include="Agents\CourierPlan.vb" />
+    <Compile Include="Agents\IdleStrategies\ConvergeToPickupIdleStrategy.vb" />
+    <Compile Include="Agents\IdleStrategies\IdleStrategyUtils.vb" />
     <Compile Include="Agents\IdleStrategies\IIdleStrategy.vb" />
     <Compile Include="Agents\IdleStrategies\ScatterIdleStrategy.vb" />
     <Compile Include="Agents\IdleStrategies\SleepingIdleStrategy.vb" />

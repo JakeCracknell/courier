@@ -25,6 +25,7 @@ Class ContractNetStrategy
                 Case ContractNetPolicy.CNP3, ContractNetPolicy.CNP4
                     Agent.Plan = Contractor.Solver.GetPlan
             End Select
+            Agent.PickupPoints.Add(NewJob.PickupPosition)
         End If
 
         If Agent.Plan.IsIdle() Then

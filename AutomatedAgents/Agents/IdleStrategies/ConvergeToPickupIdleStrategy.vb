@@ -1,8 +1,9 @@
-﻿Public Class ScatterIdleStrategy
+﻿Public Class ConvergeToPickupIdleStrategy
     Implements IIdleStrategy
     Private Agent As Agent
     Private Status As IdleStrategyStatus
     Private LastJobCount As Integer = -1
+    Private Const MAX_POINTS_TO_CONSIDER As Integer = 200
 
     Sub New(ByVal Agent As Agent)
         Me.Agent = Agent
@@ -19,7 +20,7 @@
 
     Public Sub Run() Implements IIdleStrategy.Run
         If Agent.TotalCompletedJobs = 0 Then
-            'Algorithm is no good if the agents begin in very similar starting positions.
+            'Strategy cannot run if there are no pickup positions to consider
             Exit Sub
         End If
         If LastJobCount <> Agent.TotalCompletedJobs Then
@@ -65,27 +66,18 @@
     End Sub
 
     Private Function FindOptimalSleepingPosition() As HopPosition
-        Dim BestNode As Node = Nothing
-        Dim BestMaxMinDistance As Double
-        For Each N As Node In Agent.Map.Nodes
-            If N.Connected Then
-                Dim NeighbourDistances() As Double = {Agent.Map.Bounds.MaxLatitude - N.Latitude, _
-                                           N.Latitude - Agent.Map.Bounds.MinLatitude, _
-                                           Agent.Map.Bounds.MaxLongitude - N.Longitude, _
-                                           N.Longitude - Agent.Map.Bounds.MinLongitude, _
-                                           NoticeBoard.AgentPositions.Min(Function(Pos)
-                                                                              Return Math.Sqrt((Pos.GetLatitude - N.GetLatitude) ^ 2 + (Pos.GetLongitude - N.GetLongitude) ^ 2)
-                                                                          End Function)}
-                Dim Min As Double = NeighbourDistances.Min()
-                If Min > BestMaxMinDistance Then
-                    If Min = BestMaxMinDistance Then
-                        Debug.Write(Min & " ")
-                    End If
-                    BestMaxMinDistance = Min
-                    BestNode = N
-                End If
-            End If
+        Dim MeanLatitude As Double = 0
+        Dim MeanLongitude As Double = 0
+        Dim PickupPositionsCount As Integer = Math.Min(MAX_POINTS_TO_CONSIDER, Agent.PickupPoints.Count)
+        For i = Agent.PickupPoints.Count - 1 To Math.Max(0, Agent.PickupPoints.Count - 1 - MAX_POINTS_TO_CONSIDER) Step -1
+            MeanLatitude += Agent.PickupPoints(i).GetLatitude
+            MeanLongitude += Agent.PickupPoints(i).GetLongitude
         Next
-        Return Agent.Map.NodesAdjacencyList.GetHopPositionFromNodeID(BestNode.ID)
+        MeanLatitude /= PickupPositionsCount
+        MeanLongitude /= PickupPositionsCount
+
+        Dim BestNode As Node = Agent.Map.NodesAdjacencyList.GetNearestNode(MeanLatitude, MeanLongitude)
+        Dim BestHopPosition As HopPosition = Agent.Map.NodesAdjacencyList.GetHopPositionFromNodeID(BestNode.ID)
+        Return BestHopPosition
     End Function
 End Class

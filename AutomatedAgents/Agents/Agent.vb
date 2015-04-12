@@ -2,10 +2,12 @@
     Private Const DEFAULT_KMH As Double = 48
     Private Const FUEL_TANK_FULL_THRESHOLD As Double = 0.95
     Private Const FUEL_TANK_LOW_THRESHOLD As Double = 0.05
+    Private Const START_IN_RANDOM_POSITION As Boolean = False
 
     Public Const RouteFindingMinimiser As RouteFindingMinimiser = RouteFindingMinimiser.DISTANCE
     Public ReadOnly AgentID As Integer
     Public ReadOnly AgentName As String
+    Public ReadOnly PickupPoints As New List(Of HopPosition)
     Public FuelLitres As Double
     Public FuelCosts As Decimal = 0
     Public CurrentSpeedKMH As Double = 0
@@ -31,11 +33,12 @@
         Me.AgentName = AgentNameAssigner.AssignAgentName()
         Me.VehicleType = VehicleType
         Strategy = New ContractNetStrategy(Me, SimulationParameters.CNPVersion)
-        IdleStrategy = New ScatterIdleStrategy(Me)
+        IdleStrategy = New ConvergeToPickupIdleStrategy(Me)
         Refuel()
 
         'Agents start at a randomly chosen depot.
-        Plan = New CourierPlan(Map.NodesAdjacencyList.GetRandomPoint, Map, RouteFindingMinimiser, GetVehicleMaxCapacity)
+        Dim StartingPoint As HopPosition = If(START_IN_RANDOM_POSITION, Map.NodesAdjacencyList.GetRandomPoint, Map.GetStartingPoint)
+        Plan = New CourierPlan(StartingPoint, Map, RouteFindingMinimiser, GetVehicleMaxCapacity)
         Plan.RoutePosition.Move(VehicleType)
     End Sub
 
