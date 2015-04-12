@@ -77,43 +77,41 @@
         Next
 
         'Given the type of job, randomly pick the pickup and destination points.
-
-        Dim PickupName As String
-        Dim DeliveryName As String
+        Dim PickupName As String = ""
+        Dim DeliveryName As String = ""
         Dim PickupLocation As HopPosition = Nothing
-        Dim DropoffLocation As HopPosition = Nothing
+        Dim DeliveryLocation As HopPosition = Nothing
         Select Case JobType
             Case 0 'B2B
                 Dim RandomBusinessFrom As Node = Map.Businesses(RandomNumberGenerator.Next(0, Map.Businesses.Count))
-                PickupLocation = Map.NodesAdjacencyList.GetNearestNode(RandomBusinessFrom)
+                PickupLocation = Map.NodesAdjacencyList.GetNearestPoint(RandomBusinessFrom)
                 Dim RandomBusinessTo As Node = Map.Businesses(RandomNumberGenerator.Next(0, Map.Businesses.Count))
-                DropoffLocation = Map.NodesAdjacencyList.GetNearestNode(RandomBusinessTo)
+                DeliveryLocation = Map.NodesAdjacencyList.GetNearestPoint(RandomBusinessTo)
                 PickupName = GenerateWaypointName(PickupLocation, RandomBusinessFrom)
-                DeliveryName = GenerateWaypointName(DropoffLocation, RandomBusinessTo)
-
+                DeliveryName = GenerateWaypointName(DeliveryLocation, RandomBusinessTo)
             Case 1 'B2C
                 Dim RandomBusinessFrom As Node = Map.Businesses(RandomNumberGenerator.Next(0, Map.Businesses.Count))
-                PickupLocation = Map.NodesAdjacencyList.GetNearestNode(RandomBusinessFrom)
-                DropoffLocation = Map.NodesAdjacencyList.GetRandomPoint
+                PickupLocation = Map.NodesAdjacencyList.GetNearestPoint(RandomBusinessFrom)
+                DeliveryLocation = Map.NodesAdjacencyList.GetRandomPoint
                 PickupName = GenerateWaypointName(PickupLocation, RandomBusinessFrom)
-                DeliveryName = GenerateWaypointName(DropoffLocation)
+                DeliveryName = GenerateWaypointName(DeliveryLocation)
             Case 2 'C2B
                 PickupLocation = Map.NodesAdjacencyList.GetRandomPoint
                 Dim RandomBusinessTo As Node = Map.Businesses(RandomNumberGenerator.Next(0, Map.Businesses.Count))
-                DropoffLocation = Map.NodesAdjacencyList.GetNearestNode(RandomBusinessTo)
+                DeliveryLocation = Map.NodesAdjacencyList.GetNearestPoint(RandomBusinessTo)
                 PickupName = GenerateWaypointName(PickupLocation)
-                DeliveryName = GenerateWaypointName(DropoffLocation, RandomBusinessTo)
+                DeliveryName = GenerateWaypointName(DeliveryLocation, RandomBusinessTo)
             Case 3 'C2C
                 PickupLocation = Map.NodesAdjacencyList.GetRandomPoint
-                DropoffLocation = Map.NodesAdjacencyList.GetRandomPoint
+                DeliveryLocation = Map.NodesAdjacencyList.GetRandomPoint
                 PickupName = GenerateWaypointName(PickupLocation)
-                DeliveryName = GenerateWaypointName(DropoffLocation)
+                DeliveryName = GenerateWaypointName(DeliveryLocation)
         End Select
 
         'Assign a deadline, based on the direct route time (and the extra time the client can wait)
         'Optionally, _2B deliveries require a deadline uniformly distributed around the end of the business day
         Dim Deadline As TimeSpan
-        Dim DirectRoute As Route = RouteCache.GetRoute(PickupLocation, DropoffLocation)
+        Dim DirectRoute As Route = RouteCache.GetRoute(PickupLocation, DeliveryLocation)
         If (JobType = 0 Or JobType = 2) AndAlso _
                 ALL_X2B_DELIVERIES_HAVE_EOB_DEADLINE_WHERE_POSSIBLE AndAlso _
                 TimeOfDay.Hours >= START_OF_BUSINESS_HOUR AndAlso _
@@ -128,12 +126,16 @@
             Deadline = NoticeBoard.CurrentTime + TimeSpan.FromHours(Gamma(2, 1))
         End If
 
-        Dim CourierJob As New CourierJob(
+        'Generate a random package size from an exponential distribution (as many packages will be documents).
+        Dim Size As Double = Exponential(SimulationParameters.PackageSizeLambda, RandomNumberGenerator.NextDouble)
+
+        Dim CourierJob As New CourierJob(PickupLocation, DeliveryLocation, PickupName, DeliveryName, Size, Deadline)
+        NoticeBoard.AddJob(CourierJob)
     End Sub
 
 
     Function GenerateWaypointName(ByVal Position As HopPosition) As String
-        Dim Name As String = FirstNameAssigner.AssignName().ToLower
+        Dim Name As String = FirstNameAssigner.AssignName()
         Name = Name(0) & Name.Substring(1).ToLower
         Dim Age As Integer = Int(18 + Rnd() * 82)
         Dim WayName As String = Position.Hop.Way.Name
@@ -144,11 +146,12 @@
         Return String.Format("{0} ({1}), {2} {3}", Name, Age, HouseNo, WayName)
     End Function
     Function GenerateWaypointName(ByVal Position As HopPosition, ByVal Business As Node) As String
+        Dim Name As String = Char.ToUpper(Business.Description(0)) & Business.Description.Substring(1)
         Dim WayName As String = Position.Hop.Way.Name
-        If WayName <> "" Then
+        If WayName = "" Then
             WayName = "Unnamed Road"
         End If
         Dim HouseNo As Integer = 1 + Int(Exponential(0.03))
-        Return String.Format("{0}, {2} {3}", Business.Description, HouseNo, WayName)
+        Return String.Format("{0}, {1} {2}", Name, HouseNo, WayName)
     End Function
 End Class

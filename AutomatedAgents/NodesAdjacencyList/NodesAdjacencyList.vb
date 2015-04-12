@@ -57,7 +57,10 @@
         Return Node
     End Function
 
-    Function GetHopPositionFromNodeID(ByVal NodeID As Long) As HopPosition
+    Function GetHopPositionFromNode(ByVal Node As Node) As HopPosition
+        Return GetHopPositionFromNode(Node.ID)
+    End Function
+    Function GetHopPositionFromNode(ByVal NodeID As Long) As HopPosition
         Dim Row As NodesAdjacencyListRow = Rows(NodeID)
         Dim Hop As New Hop(Row.NodeKey, Row.Cells(0))
         Return New HopPosition(Hop, 0)
@@ -78,6 +81,10 @@
         Loop Until NodeA IsNot Nothing AndAlso NodeB IsNot Nothing AndAlso NodeA.Connected AndAlso NodeB.Connected
         Dim RandomPercentageTravelled As Double = Rnd()
         Return New HopPosition(New Hop(NodeA, NodeB, Way), RandomPercentageTravelled)
+    End Function
+
+    Function GetNearestPoint(ByVal Point As IPoint)
+        Return GetHopPositionFromNode(GetNearestNode(Point.GetLatitude, Point.GetLongitude))
     End Function
 
     Function GetNearestNode(ByVal Point As IPoint)

@@ -16,19 +16,20 @@
     Public OriginalCustomerFee As Decimal
     Public Status As JobStatus = JobStatus.UNALLOCATED
     Public PickupName As String
-    Public OriginalDeliveryName As String
     Public DeliveryName As String
 
-    Sub New(ByVal PickupPosition As HopPosition, ByVal DeliveryPosition As HopPosition, ByVal Size As Double, ByVal Deadline As TimeSpan)
+    Sub New(ByVal PickupPosition As HopPosition, ByVal DeliveryPosition As HopPosition, ByVal PickupName As String, ByVal DeliveryName As String, ByVal Size As Double, ByVal Deadline As TimeSpan)
         Me.PickupPosition = PickupPosition
         Me.DeliveryPosition = DeliveryPosition
         Me.OriginalDeliveryPosition = DeliveryPosition
+        Me.PickupName = PickupName
+        Me.DeliveryName = DeliveryName
         Me.CubicMetres = Size
         Me.Deadline = Deadline
     End Sub
     Sub New(ByVal PickupPosition As HopPosition, ByVal DeliveryPosition As HopPosition)
-        Me.New(PickupPosition, DeliveryPosition, _
-               Math.Max(SimulationParameters.CubicMetresMin, Gaussian(SimulationParameters.CubicMetresAverage)), _
+        Me.New(PickupPosition, DeliveryPosition, PickupPosition.ToString, DeliveryPosition.ToString, _
+               Math.Max(SimulationParameters.CubicMetresMin, Gaussian(SimulationParameters.PackageSizeLambda)), _
                     NoticeBoard.CurrentTime.Add( _
                     TimeSpan.FromMinutes(Gaussian(SimulationParameters.DeadlineAverage))))
     End Sub

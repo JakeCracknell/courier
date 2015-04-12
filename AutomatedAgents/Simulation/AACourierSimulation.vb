@@ -6,8 +6,7 @@
     Sub New(ByVal Map As StreetMap)
         Me.Map = Map
         RouteCache.Initialise(Map.NodesAdjacencyList, RouteFindingMinimiser.DISTANCE)
-        Dispatcher = New CityDispatcher(Map)
-        'Dispatcher = New DebuggingDispatcher(Map)
+        Dispatcher = If(Map.Businesses.Count > 10, New CityDispatcher(Map), New SimpleDispatcher(Map))
         InitialiseLoggingModules()
     End Sub
 

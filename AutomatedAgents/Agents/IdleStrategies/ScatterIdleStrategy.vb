@@ -86,6 +86,6 @@
                 End If
             End If
         Next
-        Return Agent.Map.NodesAdjacencyList.GetHopPositionFromNodeID(BestNode.ID)
+        Return Agent.Map.NodesAdjacencyList.GetHopPositionFromNode(BestNode.ID)
     End Function
 End Class

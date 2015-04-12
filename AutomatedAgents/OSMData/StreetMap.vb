@@ -17,12 +17,12 @@
 
     'Starting point is a randomly chosen depot
     Public Function GetStartingPoint() As HopPosition
-        Return NodesAdjacencyList.GetHopPositionFromNodeID(Depots(Int(Rnd() * Depots.Count)).ID)
+        Return NodesAdjacencyList.GetHopPositionFromNode(Depots(Int(Rnd() * Depots.Count)).ID)
     End Function
     Public Function GetNearestDepot(ByVal Point As IPoint) As HopPosition
-        Return NodesAdjacencyList.GetHopPositionFromNodeID(GetNearestLandmark(Point, Depots).ID)
+        Return NodesAdjacencyList.GetHopPositionFromNode(GetNearestLandmark(Point, Depots).ID)
     End Function
     Public Function GetNearestFuelPoint(ByVal Point As IPoint) As HopPosition
-        Return NodesAdjacencyList.GetHopPositionFromNodeID(GetNearestLandmark(Point, FuelPoints).ID)
+        Return NodesAdjacencyList.GetHopPositionFromNode(GetNearestLandmark(Point, FuelPoints).ID)
     End Function
 End Class

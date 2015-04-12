@@ -19,6 +19,7 @@
             End Select
         End Function
 
+        'A 2 seat sofa is 1.33m^3
         Function Capacity(ByVal Type As Type) As Double
             Select Case Type
                 Case Vehicles.Type.CAR

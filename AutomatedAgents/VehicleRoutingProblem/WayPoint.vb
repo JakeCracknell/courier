@@ -62,6 +62,17 @@ Public Class WayPoint
     End Function
 
     Public Overrides Function ToString() As String
-        Return Job.JobID & " [" & Math.Round(VolumeDelta, 2) & "]"
+        Select Case DefinedStatus
+            Case JobStatus.PENDING_PICKUP
+                Return "↑ " & Job.PickupName
+            Case JobStatus.PENDING_DELIVERY
+                If Job.IsGoingToDepot Then
+                    Return "↓ DEPOT"
+                Else
+                    Return "↓ " & Job.DeliveryName
+                End If
+            Case Else
+                Return ""
+        End Select
     End Function
 End Class

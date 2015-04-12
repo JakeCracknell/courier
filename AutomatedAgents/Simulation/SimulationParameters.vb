@@ -4,8 +4,8 @@
         Public SimulationSpeed As Integer = 1
         Public DisplayRefreshSpeed As Integer = 1
         Public DispatchRateCoefficient As Double = 1
-        Public DeadlineAverage As Integer = 120
-        Public CubicMetresAverage As Double = 0.5
+        Public DeadlineAverage As Integer = 120 'TODO fix
+        Public PackageSizeLambda As Double = 3
         Public ProbPickupFail As Double = 0.01
         Public ProbDeliveryFail As Double = 0.1
         Public FeeBasePrice As Double = 2 'TODO currently unused

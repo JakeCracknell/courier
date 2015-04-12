@@ -169,7 +169,7 @@
                         SyncLock AASimulation
                             RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
                             For Each Agent In AASimulation.Agents
-                                Agent.SetRouteTo(Map.NodesAdjacencyList.GetHopPositionFromNodeID(RouteToNode.ID))
+                                Agent.SetRouteTo(Map.NodesAdjacencyList.GetHopPositionFromNode(RouteToNode.ID))
                             Next
                         End SyncLock
                     End If

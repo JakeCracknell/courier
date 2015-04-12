@@ -24,7 +24,9 @@
             For i = 1 To AgentList.Count - 1
                 LVI.SubItems.Add(AgentList(i))
             Next
-            LVI.UseItemStyleForSubItems = False            LVI.BackColor = GetSequentialColor(AgentID)
+            LVI.UseItemStyleForSubItems = False
+            LVI.BackColor = GetSequentialColor(AgentID)
+
             lvAgentList.Items.Add(LVI)
         Next
         For Each JobList As List(Of String) In State.Item2
@@ -32,7 +34,8 @@
             Dim LVI As New ListViewItem(JobList(0))
             For i = 1 To JobList.Count - 1
                 LVI.SubItems.Add(JobList(i))
-            Next            LVI.UseItemStyleForSubItems = False
+            Next
+            LVI.UseItemStyleForSubItems = False
             LVI.BackColor = GetSequentialColor(AgentID)
             lvJobList.Items.Add(LVI)
         Next

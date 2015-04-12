@@ -77,7 +77,7 @@
         MeanLongitude /= PickupPositionsCount
 
         Dim BestNode As Node = Agent.Map.NodesAdjacencyList.GetNearestNode(MeanLatitude, MeanLongitude)
-        Dim BestHopPosition As HopPosition = Agent.Map.NodesAdjacencyList.GetHopPositionFromNodeID(BestNode.ID)
+        Dim BestHopPosition As HopPosition = Agent.Map.NodesAdjacencyList.GetHopPositionFromNode(BestNode.ID)
         Return BestHopPosition
     End Function
 End Class

@@ -6,7 +6,6 @@
 
     Public Const RouteFindingMinimiser As RouteFindingMinimiser = RouteFindingMinimiser.DISTANCE
     Public ReadOnly AgentID As Integer
-    Public ReadOnly AgentName As String
     Public ReadOnly PickupPoints As New List(Of HopPosition)
     Public FuelLitres As Double
     Public FuelCosts As Decimal = 0
@@ -30,7 +29,6 @@
         Me.AgentID = ID
         Me.Map = Map
         Me.Color = Color
-        Me.AgentName = FirstNameAssigner.AssignName()
         Me.VehicleType = VehicleType
         Strategy = New ContractNetStrategy(Me, SimulationParameters.CNPVersion)
         IdleStrategy = New ConvergeToPickupIdleStrategy(Me)
