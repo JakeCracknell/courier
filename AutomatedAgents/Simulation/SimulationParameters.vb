@@ -3,7 +3,7 @@
         '***** Global Variables/parameters
         Public SimulationSpeed As Integer = 1
         Public DisplayRefreshSpeed As Integer = 1
-        Public DispatchRatePerHour As Integer = 18
+        Public DispatchRateCoefficient As Double = 1
         Public DeadlineAverage As Integer = 120
         Public CubicMetresAverage As Double = 0.5
         Public ProbPickupFail As Double = 0.01

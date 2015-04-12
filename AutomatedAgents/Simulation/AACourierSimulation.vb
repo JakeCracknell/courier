@@ -6,7 +6,7 @@
     Sub New(ByVal Map As StreetMap)
         Me.Map = Map
         RouteCache.Initialise(Map.NodesAdjacencyList, RouteFindingMinimiser.DISTANCE)
-        Dispatcher = New SimpleDispatcher(Map)
+        Dispatcher = New CityDispatcher(Map)
         'Dispatcher = New DebuggingDispatcher(Map)
         InitialiseLoggingModules()
     End Sub

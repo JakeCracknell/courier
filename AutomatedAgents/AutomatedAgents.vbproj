@@ -88,12 +88,13 @@
     <None Include="Agents\Strategies\Non-CNP\NearestNeighbourAStarStrategy.vb" />
     <None Include="Agents\Strategies\Non-CNP\GreedyStrategy.vb" />
     <None Include="Agents\Strategies\Non-CNP\LazyStrategy.vb" />
-    <Compile Include="Centralised\DebuggingDispatcher.vb" />
-    <Compile Include="Centralised\IDispatcher.vb" />
+    <Compile Include="Centralised\Dispatchers\CityDispatcher.vb" />
+    <Compile Include="Centralised\Dispatchers\DebuggingDispatcher.vb" />
+    <Compile Include="Centralised\Dispatchers\IDispatcher.vb" />
     <Compile Include="Centralised\UIDAssigner.vb" />
     <Compile Include="Geography\Bounds.vb" />
     <Compile Include="Centralised\NoticeBoard.vb" />
-    <Compile Include="Centralised\SimpleDispatcher.vb" />
+    <Compile Include="Centralised\Dispatchers\SimpleDispatcher.vb" />
     <Compile Include="Graphics\CoordinateConverter.vb" />
     <Compile Include="Agents\AgentAsync.vb" />
     <Compile Include="Graphics\frmStatistics.Designer.vb">
@@ -133,7 +134,7 @@
     <Compile Include="Geography\IPoint.vb" />
     <Compile Include="Agents\AgentNameAssigner.vb" />
     <Compile Include="Simulation\JobStatus.vb" />
-    <Compile Include="Centralised\SingleDispatcher.vb" />
+    <Compile Include="Centralised\Dispatchers\SingleDispatcher.vb" />
     <Compile Include="Agents\Vehicles.vb" />
     <Compile Include="Simulation\AACourierSimulation.vb" />
     <Compile Include="Graphics\frmMain.vb">

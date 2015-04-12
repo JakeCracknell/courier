@@ -5,8 +5,8 @@
         txtGraphicsRefreshRate.Text = SimulationParameters.DisplayRefreshSpeed
         tbSimSpeed.Value = SimulationParameters.SimulationSpeed
         txtSimSpeed.Text = SimulationParameters.SimulationSpeed
-        txtDispatchRate.Text = SimulationParameters.DispatchRatePerHour
-        tbDispatchRate.Value = SimulationParameters.DispatchRatePerHour
+        txtDispatchRate.Text = SimulationParameters.DispatchRateCoefficient
+        tbDispatchRate.Value = SimulationParameters.DispatchRateCoefficient
         txtCubicMetres.Text = SimulationParameters.CubicMetresAverage
         tbCubicMetres.Value = SimulationParameters.CubicMetresAverage * 100
         txtDeadlines.Text = SimulationParameters.DeadlineAverage
@@ -53,14 +53,14 @@
             Dim txtValue As Integer = CInt(txtDispatchRate.Text)
             If txtValue >= tbDispatchRate.Minimum And txtValue <= tbDispatchRate.Maximum Then
                 tbDispatchRate.Value = txtValue
-                SimulationParameters.DispatchRatePerHour = txtValue
+                SimulationParameters.DispatchRateCoefficient = txtValue
             End If
         End If
     End Sub
 
     Private Sub tbDispatchRate_Scroll(sender As Object, e As EventArgs) Handles tbDispatchRate.Scroll
         txtDispatchRate.Text = tbDispatchRate.Value
-        SimulationParameters.DispatchRatePerHour = tbDispatchRate.Value
+        SimulationParameters.DispatchRateCoefficient = tbDispatchRate.Value
     End Sub
 
     Private Sub tbDeadlines_Scroll(sender As Object, e As EventArgs) Handles tbDeadlines.Scroll
