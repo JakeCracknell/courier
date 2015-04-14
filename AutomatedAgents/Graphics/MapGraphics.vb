@@ -59,7 +59,7 @@
         End If
 
         If ConfigDrawRoads <> 0 Then
-            For Each W As Way In Map.Ways
+            For Each W As Way In Map.Ways.Values
                 If W.Nodes.Length >= 2 Then
                     Dim LastPoint As Point = CC.GetPoint(W.Nodes(0))
 

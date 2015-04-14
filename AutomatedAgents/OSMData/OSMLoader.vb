@@ -57,7 +57,7 @@ Public Class OSMLoader
         For Each xItem As XmlElement In xWays
             Dim Way As Way = ParseWay(xItem, NodeHashMap)
             If Way IsNot Nothing Then
-                Map.Ways.Add(Way)
+                Map.Ways.Add(Way.ID, Way)
                 Map.NodesAdjacencyList.AddWay(Way)
             End If
         Next
@@ -75,6 +75,13 @@ Public Class OSMLoader
                 For Each NodeID As String In AAFile(1).Split(",")
                     Map.FuelPoints.Add(Map.NodesAdjacencyList.Rows(CLng(NodeID)).NodeKey)
                 Next
+
+                For i = 2 To AAFile.Length - 1
+                    Dim WayTrafficLine() As String = AAFile(i).Split(":")
+                    Dim WayID As Long = CLng(WayTrafficLine(0))
+                    Map.Ways(WayID).ParseTrafficTrace(WayTrafficLine(1))
+                Next
+
             End If
         Catch ex As Exception
             MsgBox(IO.Path.GetFileName(AAFilePath) & " could not be parsed: " & ex.Message)
@@ -165,7 +172,7 @@ Public Class OSMLoader
                     GoTo FailedWay
                 End If
             Next
-            PrintLine(1, W.ID & "," & SB.ToString)
+            PrintLine(1, W.ID & ":" & SB.ToString)
 FailedWay:
         Next
         FileClose(1)

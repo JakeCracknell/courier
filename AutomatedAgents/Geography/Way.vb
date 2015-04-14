@@ -5,7 +5,7 @@
     Public Type As WayType
     Public Name As String
     Private OSMSpeedLimit As Double = Double.MinValue
-    Private SpeedAtTime As List(Of Integer)
+    Private SpeedAtTime As List(Of Double)
     Public OneWay As Boolean
 
     Public Sub New(ByVal ID As Integer, ByVal Nodes As Node(), ByVal Type As WayType, ByVal Name As String)
@@ -86,8 +86,22 @@
         End If
     End Function
 
+    'Expected format is 34.56,36.89,32.67, ... 39.74
+    Sub ParseTrafficTrace(ByVal WayTrafficLine As String)
+        If WayTrafficLine IsNot Nothing Then
+            Dim SplitTrace() As String = WayTrafficLine.Split(",")
+            If SplitTrace.Length >= 2016 Then
+                For i = 0 To 2015
+                    SpeedAtTime(i) = CDbl(SplitTrace(i))
+                Next
+            End If
+        End If
+    End Sub
 
     Public Overrides Function ToString() As String
         Return If(Name <> "", Name, Type.ToString("G"))
     End Function
+
+
+
 End Class

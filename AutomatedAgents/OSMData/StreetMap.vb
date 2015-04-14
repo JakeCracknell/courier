@@ -3,7 +3,7 @@
     Public Bounds As Bounds
 
     Public Nodes As New List(Of Node)
-    Public Ways As New List(Of Way)
+    Public Ways As New SortedList(Of Long, Way)
     Public NodesAdjacencyList As New NodesAdjacencyList
     Public ConnectedNodesGrid As NodesGrid
 
