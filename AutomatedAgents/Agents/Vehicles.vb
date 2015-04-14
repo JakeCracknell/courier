@@ -1,5 +1,7 @@
 ﻿Namespace Vehicles
     Public Module Vehicles
+        Public Const MILE_LENGTH_IN_KM = 1.609344
+
         Public Enum Type
             CAR
             VAN

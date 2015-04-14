@@ -96,27 +96,9 @@ Public Class OSMLoader
                 Map.ConnectedNodesGrid.AddNode(N)
             End If
         Next
-        Map.ConnectedNodesGrid.ListAll()
-        Map.ConnectedNodesGrid.DrawAsText()
-
-        'Dim No As Node = Map.Depots(0)
-        't = Stopwatch.StartNew()
-        'For i = 1 To 100
-        '    Debug.Assert(No = Map.ConnectedNodesGrid.GetNearestNode(No))
-        'Next
-        'Debug.WriteLine(t.ElapsedMilliseconds)
-
-        't = Stopwatch.StartNew()
-        'For i = 1 To 100
-        '    Debug.Assert(No = Map.NodesAdjacencyList.GetNearestNode(No))
-        'Next
-        'Debug.WriteLine(t.ElapsedMilliseconds)
-
-
-
 
         'LoadHereXML(Map)
-
+        'ExportWaySpeedData(Map.Ways)
         Return Map
     End Function
 
@@ -131,6 +113,8 @@ Public Class OSMLoader
         Dim StartTime As Long = CLng(XMLFileInfos(0).Name.Substring(XMLFileInfos(0).Name.IndexOf(",") + 1).Split(".")(0))
 
         For Each XMLFile As IO.FileInfo In New IO.DirectoryInfo(TrafficDirectory).GetFiles
+
+            Dim t = Stopwatch.StartNew
             Dim Time As Integer = TimeSpan.FromTicks(CLng(XMLFile.Name.Substring(XMLFile.Name.IndexOf(",") + 1).Split(".")(0)) - StartTime).TotalMinutes \ 5
 
             Dim xDoc As XmlDocument = New XmlDocument()
@@ -147,21 +131,43 @@ Public Class OSMLoader
                     If CoordinateString <> "" Then
                         Dim Coordinates() As String = CoordinateString.Split(",")
                         Dim ClosestNode As Node = Map.ConnectedNodesGrid.GetNearestNode(CDbl(Coordinates(0)), CDbl(Coordinates(1)))
-                        ClosestNode.SpeedAtTime(Time) = Speed
+                        If ClosestNode IsNot Nothing Then
+                            ClosestNode.SpeedAtTime(Time) = Speed * 1.6
+                        End If
                     End If
                 Next
                 Debug.Write(i & " ")
                 i += 1
             Next
-
-            For Each W As Way In Map.Ways
-                For Each N As Node In W.Nodes
-                    Debug.WriteLine(N.SpeedAtTime(Time))
-                Next
-            Next
         Next
 
+    End Sub
 
-
+    Sub ExportWaySpeedData(ByVal Ways As List(Of Way))
+        FileOpen(1, "ways.txt", OpenMode.Output)
+        For Each W As Way In Ways
+            Dim SB As New System.Text.StringBuilder
+            For i = 0 To 2015
+                Dim SpeedSum As Double = 0
+                Dim NodesCounted As Integer = 0
+                For Each Node In W.Nodes
+                    Dim Speed As Double
+                    Node.SpeedAtTime.TryGetValue(i, Speed)
+                    If Speed <> 0 Then
+                        NodesCounted += 1
+                        SpeedSum += Node.SpeedAtTime(i)
+                    End If
+                Next
+                If NodesCounted >= 2 AndAlso NodesCounted / W.Nodes.Count > 0.2 Then
+                    Dim Speed As Double = SpeedSum / NodesCounted
+                    SB.Append(Math.Round(Speed, 2)).Append(",")
+                Else
+                    GoTo FailedWay
+                End If
+            Next
+            PrintLine(1, W.ID & "," & SB.ToString)
+FailedWay:
+        Next
+        FileClose(1)
     End Sub
 End Class

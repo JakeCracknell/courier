@@ -90,7 +90,7 @@
                 Select Case Minimiser
                     Case RouteFindingMinimiser.DISTANCE : ExtraCost = Route.GetKM
                     Case RouteFindingMinimiser.FUEL : ExtraCost = Route.GetKM * 0.1
-                    Case Else : ExtraCost = Route.GetEstimatedHours
+                    Case Else : ExtraCost = Route.GetHoursWithoutTraffic
                 End Select
 
                 Dim NextNode As New NNSearchNode(Node, NextState, W, ExtraCost)
@@ -163,7 +163,7 @@
                 Select Case Minimiser
                     Case RouteFindingMinimiser.DISTANCE : ExtraCost = Route.GetKM
                     Case RouteFindingMinimiser.FUEL : ExtraCost = Route.GetKM * 0.1
-                    Case Else : ExtraCost = Route.GetEstimatedHours
+                    Case Else : ExtraCost = Route.GetHoursWithoutTraffic
                 End Select
 
                 Dim NextNode As New NNSearchNode(Node, NextState, W, ExtraCost)
@@ -361,7 +361,7 @@
                 Dim TotalCost As Double = 0
                 Dim LastPoint As IPoint = StartState.Point
                 For Each WP As WayPoint In WayPoints
-                    TotalCost += RouteCache.GetRoute(LastPoint, WP.Position).GetEstimatedHours
+                    TotalCost += RouteCache.GetRoute(LastPoint, WP.Position).GetHoursWithoutTraffic
                     LastPoint = WP.Position
                 Next
                 Return TotalCost

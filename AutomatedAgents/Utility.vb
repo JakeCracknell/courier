@@ -16,6 +16,13 @@
         Return Color.FromArgb(Rnd() * 255, Rnd() * 255, Rnd() * 255)
     End Function
 
+    Function GetTimeIndex(ByVal Time As TimeSpan) As Integer
+        Dim DayIndex As Integer = Int(Time.TotalDays) Mod 7
+        Dim FiveMinuteIndex As Integer = TimeSpan.FromSeconds(Time.TotalSeconds Mod TimeSpan.FromDays(1).TotalSeconds).TotalMinutes \ 5
+        Dim TimeIndex As Integer = DayIndex * 288 + FiveMinuteIndex
+        Return TimeIndex
+    End Function
+
     Function HaversineDistance(ByVal Node1 As IPoint, ByVal Node2 As IPoint) As Double
         Return HaversineDistance(Node1.GetLatitude, Node1.GetLongitude, Node2.GetLatitude, Node2.GetLongitude)
     End Function

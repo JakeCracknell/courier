@@ -210,7 +210,7 @@
             Next
 
             Dim ToLabel As String = String.Format(ROUTE_TO_LABEL_FORMAT, Route.HopCount, _
-                    Math.Round(Route.GetKM, 1), Math.Round(Route.GetEstimatedHours * 60, 1))
+                    Math.Round(Route.GetKM, 1), Math.Round(Route.GetHoursWithoutTraffic * 60, 1))
             grOverlay.DrawString(ToLabel, OVERLAY_FONT, Brushes.Black, NodePoint)
 
 

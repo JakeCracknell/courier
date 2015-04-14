@@ -33,7 +33,7 @@
     Public Function Move(ByVal Vehicle As Vehicles.Type) As Double
         Dim Way As Way = Route.At(HopIndex).Way
         If Way IsNot Nothing Then
-            Dim DistanceToTravel As Double = Way.GetMaxSpeedKMH(Vehicle) / 3600
+            Dim DistanceToTravel As Double = Way.GetSpeedAtTime(NoticeBoard.CurrentTime) / 3600
             GetNextPosition(DistanceToTravel)
             Return DistanceToTravel
         Else
@@ -75,7 +75,7 @@
     Function GetCurrentSpeed(ByVal VehicleSize As Vehicles.Type) As Double
         Dim Way As Way = GetCurrentWay()
         If Way IsNot Nothing Then
-            Return Way.GetMaxSpeedKMH(VehicleSize)
+            Return Way.GetSpeedAtTime(NoticeBoard.CurrentTime)
         Else
             Return 0
         End If

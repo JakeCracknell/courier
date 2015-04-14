@@ -39,7 +39,7 @@
                     If Map IsNot Nothing Then
                         Dim AStar As New AStarSearch(LastPoint, WP.Position, Map.NodesAdjacencyList, Minimiser)
                         Cost = AStar.GetRoute.GetKM
-                        ExtraTime += TimeSpan.FromHours(AStar.GetRoute.GetEstimatedHours()) 'TODO: vehicle type
+                        ExtraTime += TimeSpan.FromHours(AStar.GetRoute.GetHoursWithoutTraffic()) 'TODO: vehicle type
                     Else
                         Cost = HaversineDistance(LastPoint, WP.Position)
                         ExtraTime += TimeSpan.FromHours(Cost / 48) ' Agent.GetAverageKMH)

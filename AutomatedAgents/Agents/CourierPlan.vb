@@ -59,7 +59,7 @@
                 Next
             Case RouteFindingMinimiser.TIME_NO_TRAFFIC, RouteFindingMinimiser.TIME_WITH_TRAFFIC
                 For Each R As Route In Routes
-                    TotalCost += R.GetEstimatedHours + CourierJob.CUSTOMER_WAIT_TIME_MAX / 3600
+                    TotalCost += R.GetHoursWithoutTraffic + CourierJob.CUSTOMER_WAIT_TIME_MAX / 3600
                 Next
             Case RouteFindingMinimiser.FUEL
                 Throw New NotImplementedException

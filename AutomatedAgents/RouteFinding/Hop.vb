@@ -23,9 +23,17 @@
     End Function
 
     'TODO traffic
-    Public Function GetEstimatedTravelTime() As Double
+    Public Function GetMinimumTravelTime() As Double
         If Way IsNot Nothing Then
-            Return Distance / Way.GetMaxSpeedKMH(Vehicles.Type.CAR)
+            Return Distance / Way.GetSpeedLimit()
+        Else
+            Return 0
+        End If
+    End Function
+
+    Public Function GetEstimatedTravelTimeAtTime(ByVal Time As TimeSpan) As Double
+        If Way IsNot Nothing Then
+            Return Distance / Way.GetSpeedAtTime(Time)
         Else
             Return 0
         End If

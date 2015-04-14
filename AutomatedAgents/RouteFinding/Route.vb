@@ -2,6 +2,7 @@
     Private Hops As List(Of Hop)
     Private TotalKM As Double = -1
     Private TotalHours As Double = -1
+    Private TotalHoursAtTime As New Dictionary(Of Integer, Double)
 
     Public Sub New(ByVal Hops As List(Of Hop))
         Debug.Assert(Hops IsNot Nothing AndAlso Hops.Count >= 1)
@@ -52,19 +53,41 @@
         Return TotalKM
     End Function
 
-    Public Function GetEstimatedHours() As Double
+    Public Function GetHoursWithoutTraffic() As Double
         'Lazily calculated, as I don't want a heavyweight constructor.
         If TotalHours < 0 Then
             TotalHours = 0
             For Each Hop As Hop In Hops
-                TotalHours += Hop.GetEstimatedTravelTime
+                TotalHours += Hop.GetMinimumTravelTime
             Next
         End If
         Return TotalHours
     End Function
 
-    Public Function GetEstimatedTime() As TimeSpan
-        Return TimeSpan.FromHours(GetEstimatedHours())
+    'TODO: delete this comment once this is verified as working.
+    Public Function GetEstimatedHours(ByVal Time As TimeSpan) As Double
+        Dim TimeIndex As Integer = GetTimeIndex(Time)
+        If Not TotalHoursAtTime.ContainsKey(TimeIndex) Then
+            Dim TotalHours As Double = 0
+            Dim WorkingTime As TimeSpan = Time
+            For Each Hop As Hop In Hops
+                TotalHours += Hop.GetEstimatedTravelTimeAtTime(WorkingTime)
+                WorkingTime = Time + TimeSpan.FromHours(TotalHours)
+            Next
+            TotalHoursAtTime(TimeIndex) = TotalHours
+        End If
+        Return TotalHoursAtTime(TimeIndex)
+    End Function
+    Public Function GetEstimatedTime(ByVal Time As TimeSpan) As TimeSpan
+        Return TimeSpan.FromHours(GetEstimatedHours(Time))
+    End Function
+    Public Function GetEstimatedTime() As TimeSpan 'TODO: refactor any usage of this!!!!!!!!!!!
+        Return TimeSpan.FromHours(GetEstimatedHours(NoticeBoard.CurrentTime))
+    End Function
+
+
+    Public Function GetTimeWithoutTraffic() As TimeSpan
+        Return TimeSpan.FromHours(GetHoursWithoutTraffic())
     End Function
 
     Public Function GetEstimatedFuelUsage(ByVal VehicleSize As Vehicles.Type) As Double
@@ -75,8 +98,10 @@
         Select Case Agent.RouteFindingMinimiser
             Case AutomatedAgents.RouteFindingMinimiser.DISTANCE
                 Return GetKM()
-            Case AutomatedAgents.RouteFindingMinimiser.TIME_NO_TRAFFIC, AutomatedAgents.RouteFindingMinimiser.TIME_WITH_TRAFFIC
-                Return GetEstimatedHours()
+            Case AutomatedAgents.RouteFindingMinimiser.TIME_NO_TRAFFIC
+                Return GetHoursWithoutTraffic()
+            Case AutomatedAgents.RouteFindingMinimiser.TIME_WITH_TRAFFIC
+
             Case AutomatedAgents.RouteFindingMinimiser.FUEL
                 Return GetEstimatedFuelUsage(Agent.VehicleType)
         End Select

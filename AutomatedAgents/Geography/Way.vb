@@ -4,8 +4,8 @@
     Public Nodes As Node()
     Public Type As WayType
     Public Name As String
-    Private MaxSpeedOverrideKMH As Double = Double.MinValue
-
+    Private OSMSpeedLimit As Double = Double.MinValue
+    Private SpeedAtTime As List(Of Integer)
     Public OneWay As Boolean
 
     Public Sub New(ByVal ID As Integer, ByVal Nodes As Node(), ByVal Type As WayType, ByVal Name As String)
@@ -50,13 +50,13 @@
         End Select
     End Sub
 
-    Sub SetSpeed(ByVal MaxSpeedOverrideKMH As Double)
-        Me.MaxSpeedOverrideKMH = MaxSpeedOverrideKMH
+    Sub SetSpeedLimit(ByVal MaxSpeedOverrideKMH As Double)
+        Me.OSMSpeedLimit = MaxSpeedOverrideKMH
     End Sub
 
-    Function GetMaxSpeedKMH(ByVal Vehicle As Vehicles.Type)
-        If MaxSpeedOverrideKMH > 0 Then
-            Return MaxSpeedOverrideKMH
+    Function GetSpeedLimit() As Double
+        If OSMSpeedLimit > 0 Then
+            Return OSMSpeedLimit
         End If
 
         'UK speeds available from https://www.gov.uk/speed-limits
@@ -75,9 +75,17 @@
             Case Else
                 Return 48
         End Select
-
-
     End Function
+
+    Public Function GetSpeedAtTime(ByVal Time As TimeSpan) As Double
+        If SpeedAtTime IsNot Nothing Then
+            Dim TimeIndex As Integer = GetTimeIndex(Time)
+            Return Math.Min(SpeedAtTime(TimeIndex), GetSpeedLimit())
+        Else
+            Return GetSpeedLimit()
+        End If
+    End Function
+
 
     Public Overrides Function ToString() As String
         Return If(Name <> "", Name, Type.ToString("G"))

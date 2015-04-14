@@ -147,9 +147,9 @@
                 Case RouteFindingMinimiser.DISTANCE
                     TotalCost += Distance 'Hop.GetCost
                 Case RouteFindingMinimiser.TIME_NO_TRAFFIC
-                    TotalCost += Hop.GetEstimatedTravelTime
+                    TotalCost += Hop.GetMinimumTravelTime
                 Case RouteFindingMinimiser.TIME_WITH_TRAFFIC 'TODO
-                    TotalCost += Hop.GetEstimatedTravelTime
+                    TotalCost += Hop.GetEstimatedTravelTimeAtTime(NoticeBoard.CurrentTime) 'TODO: make this nicer
             End Select
         End Sub
 

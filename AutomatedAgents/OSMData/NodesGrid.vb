@@ -16,7 +16,11 @@
     Public Function GetNearestNode(ByVal IPoint As IPoint) As Node
         Return GetNearestNode(IPoint.GetLatitude, IPoint.GetLongitude)
     End Function
-    Public Function GetNearestNode(ByVal Lat As Double, ByVal Lon As Double) As Node 'TODO: use this everywhere
+    Public Function GetNearestNode(ByVal Lat As Double, ByVal Lon As Double, Optional ByVal MaxRadius As Integer = CELL_COUNT_EDGE) As Node 'TODO: use this everywhere
+        If Not Bounds.Encloses(Lat, Lon) Then
+            Return Nothing
+        End If
+
         Dim CentralCellX As Integer = CInt((Lat - Bounds.MinLatitude) / CellSizeLat)
         Dim CentralCellY As Integer = CInt((Lon - Bounds.MinLongitude) / CellSizeLon)
         Dim BestNode As Node = Nothing
@@ -24,10 +28,10 @@
 
         'Starting with a quadrant length of 3, reach of 1, (meaning to check all neighbouring cells. A 3x3 grid).
         'Expand out by a reach of 1 each time until any node is found.
-        For QuadrantLength As Integer = 3 To CELL_COUNT_EDGE Step 2
-            Dim QuadrantReach As Integer = QuadrantLength \ 2
-            For x = Math.Max(0, CentralCellX - QuadrantReach) To Math.Min(CELL_COUNT_EDGE - 1, CentralCellX + QuadrantReach)
-                For y = Math.Max(0, CentralCellY - QuadrantReach) To Math.Min(CELL_COUNT_EDGE - 1, CentralCellY + QuadrantReach)
+        For QuadrantLength As Integer = 3 To Math.Min(CELL_COUNT_EDGE, MaxRadius * 2 + 1) Step 2
+            Dim QuadrantRadius As Integer = QuadrantLength \ 2
+            For x = Math.Max(0, CentralCellX - QuadrantRadius) To Math.Min(CELL_COUNT_EDGE - 1, CentralCellX + QuadrantRadius)
+                For y = Math.Max(0, CentralCellY - QuadrantRadius) To Math.Min(CELL_COUNT_EDGE - 1, CentralCellY + QuadrantRadius)
                     Dim NodeList As List(Of Node) = NodeLists(x, y)
                     If NodeList IsNot Nothing Then
                         For Each Node In NodeList
@@ -45,7 +49,8 @@
             End If
         Next
 
-        Debug.Assert(False) 'Only if the map has no nodes!
+        Debug.Assert(False) 'Only if the map has no nodes or maxradius is set.
+        Return Nothing
     End Function
 
     Public Sub AddNode(ByVal Node As Node)

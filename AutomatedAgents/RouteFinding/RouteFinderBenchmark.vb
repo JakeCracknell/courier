@@ -102,9 +102,9 @@
                 Dim AStarRoute1 As Route = AStar1.GetRoute
                 Dim AStarRoute2 As Route = AStar2.GetRoute
                 If AStarRoute1 IsNot Nothing And AStarRoute2 IsNot Nothing Then
-                    Wins += IIf(AStarRoute1.GetEstimatedHours < AStarRoute2.GetEstimatedHours, 1, 0)
-                    Draws += IIf(AStarRoute1.GetEstimatedHours = AStarRoute2.GetEstimatedHours, 1, 0)
-                    Losses += IIf(AStarRoute1.GetEstimatedHours > AStarRoute2.GetEstimatedHours, 1, 0)
+                    Wins += IIf(AStarRoute1.GetHoursWithoutTraffic < AStarRoute2.GetHoursWithoutTraffic, 1, 0)
+                    Draws += IIf(AStarRoute1.GetHoursWithoutTraffic = AStarRoute2.GetHoursWithoutTraffic, 1, 0)
+                    Losses += IIf(AStarRoute1.GetHoursWithoutTraffic > AStarRoute2.GetHoursWithoutTraffic, 1, 0)
                 End If
             Loop Until Stopwatch.ElapsedMilliseconds > BENCHMARK_TIME_MS
             MsgBox(String.Format(COMPARATIVE_BENCHMARK_MSGBOX_FORMAT, Wins, Draws, Losses))

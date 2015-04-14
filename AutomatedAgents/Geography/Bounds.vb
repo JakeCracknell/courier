@@ -14,7 +14,11 @@ Public Class Bounds
     End Function
 
     Function Encloses(ByVal Point As IPoint) As Boolean
-        Return Point.GetLatitude > MinLatitude AndAlso Point.GetLatitude < MaxLatitude AndAlso Point.GetLongitude > MinLongitude AndAlso Point.GetLongitude < MaxLongitude
+        Return Encloses(Point.GetLatitude, Point.GetLongitude)
+    End Function
+
+    Function Encloses(Lat As Double, Lon As Double) As Boolean
+        Return Lat > MinLatitude AndAlso Lat < MaxLatitude AndAlso Lon > MinLongitude AndAlso Lon < MaxLongitude
     End Function
 
 End Class

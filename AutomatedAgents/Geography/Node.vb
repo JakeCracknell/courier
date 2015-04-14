@@ -1,6 +1,4 @@
-﻿Imports CSharpQuadTree
-
-Public Class Node
+﻿Public Class Node
     Implements IEquatable(Of Node)
     Implements IPoint
 

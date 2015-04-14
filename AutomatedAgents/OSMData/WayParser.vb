@@ -2,8 +2,6 @@
 Imports System.Text.RegularExpressions
 
 Module WayParser
-    Private Const MILE_LENGTH_IN_KM = 1.609344
-
     Public Function ParseWay(ByVal xItem As XmlElement, ByVal NodeHashMap As Dictionary(Of Long, Node)) As Way
         Dim xWayID As Integer = xItem.GetAttribute("id")
         Dim WayType As WayType = WayType.UNSPECIFIED
@@ -52,7 +50,7 @@ Module WayParser
             End If
 
             If MaxSpeedOverrideKMH <> -1 Then
-                Way.SetSpeed(MaxSpeedOverrideKMH)
+                Way.SetSpeedLimit(MaxSpeedOverrideKMH)
             End If
 
             Return Way
@@ -103,7 +101,7 @@ Module WayParser
         End If
 
         If str.Contains("mph") Then
-            Return CDec(Regex.Match(str, "\d+").Value * MILE_LENGTH_IN_KM)
+            Return CDec(Regex.Match(str, "\d+").Value * Vehicles.MILE_LENGTH_IN_KM)
         End If
 
         Debug.WriteLine("Could not parse maxspeed: " & str)
