@@ -150,11 +150,11 @@
                 Case MapSelectionMode.NONE
                     Exit Sub
                 Case MapSelectionMode.ROUTE_FROM
-                    RouteFromNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
+                    RouteFromNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.ConnectedNodesGrid)
                     SetPictureBox(MapGraphics.DrawRouteStart(RouteFromNode))
                     SelectionMode = MapSelectionMode.ROUTE_TO
                 Case MapSelectionMode.ROUTE_TO
-                    RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
+                    RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.ConnectedNodesGrid)
                     If Not RouteFromNode.Equals(RouteToNode) Then
                         Dim RouteFinder As IRouteFinder = New AStarSearch(RouteFromNode, RouteToNode, Map.NodesAdjacencyList, RouteFindingMinimiser.DISTANCE)
                         If RouteFinder.GetRoute() IsNot Nothing Then
@@ -167,7 +167,7 @@
                 Case MapSelectionMode.AGENTS_ALL_ROUTE_TO
                     If AASimulation IsNot Nothing AndAlso AASimulation.Agents IsNot Nothing Then
                         SyncLock AASimulation
-                            RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
+                            RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.ConnectedNodesGrid)
                             For Each Agent In AASimulation.Agents
                                 Agent.SetRouteTo(Map.NodesAdjacencyList.GetHopPositionFromNode(RouteToNode.ID))
                             Next
@@ -182,7 +182,7 @@
         MapMousePosition = e.Location
         If SelectionMode = MapSelectionMode.ROUTE_FROM Or SelectionMode = MapSelectionMode.ROUTE_TO Then
             Dim CC As New CoordinateConverter(Map.Bounds, picMap.Width, picMap.Height)
-            Dim Node As Node = CC.GetNearestNodeFromPoint(MapMousePosition, Map.NodesAdjacencyList)
+            Dim Node As Node = CC.GetNearestNodeFromPoint(MapMousePosition, Map.ConnectedNodesGrid)
             SetPictureBox(DrawHighlightedNode(Node, MapMousePosition))
         End If
     End Sub

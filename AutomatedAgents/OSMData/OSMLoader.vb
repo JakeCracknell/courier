@@ -3,9 +3,11 @@
 Public Class OSMLoader
     Private OSMFilePath As String
     Private AAFilePath As String
+    Private TrafficDirectory As String
     Public Sub New(ByVal FilePath As String)
         Me.OSMFilePath = FilePath
         Me.AAFilePath = FilePath.Replace(".osm", ".aa")
+        Me.TrafficDirectory = FilePath.Replace(".osm", "")
     End Sub
 
     Function CreateMap() As StreetMap
@@ -90,10 +92,76 @@ Public Class OSMLoader
         For Each N As Node In Map.Nodes
             If Not Map.NodesAdjacencyList.Rows.ContainsKey(N.ID) Then
                 N.Connected = False
+            Else
+                Map.ConnectedNodesGrid.AddNode(N)
             End If
         Next
+        Map.ConnectedNodesGrid.ListAll()
+        Map.ConnectedNodesGrid.DrawAsText()
+
+        'Dim No As Node = Map.Depots(0)
+        't = Stopwatch.StartNew()
+        'For i = 1 To 100
+        '    Debug.Assert(No = Map.ConnectedNodesGrid.GetNearestNode(No))
+        'Next
+        'Debug.WriteLine(t.ElapsedMilliseconds)
+
+        't = Stopwatch.StartNew()
+        'For i = 1 To 100
+        '    Debug.Assert(No = Map.NodesAdjacencyList.GetNearestNode(No))
+        'Next
+        'Debug.WriteLine(t.ElapsedMilliseconds)
+
+
+
+
+        'LoadHereXML(Map)
 
         Return Map
     End Function
 
+    Sub LoadHereXML(ByVal Map As StreetMap)
+        If Not IO.Directory.Exists(TrafficDirectory) Then
+            Exit Sub
+        End If
+        Dim XMLFileInfos As IO.FileInfo() = New IO.DirectoryInfo(TrafficDirectory).GetFiles
+        If XMLFileInfos.Count = 0 Then
+            Exit Sub
+        End If
+        Dim StartTime As Long = CLng(XMLFileInfos(0).Name.Substring(XMLFileInfos(0).Name.IndexOf(",") + 1).Split(".")(0))
+
+        For Each XMLFile As IO.FileInfo In New IO.DirectoryInfo(TrafficDirectory).GetFiles
+            Dim Time As Integer = TimeSpan.FromTicks(CLng(XMLFile.Name.Substring(XMLFile.Name.IndexOf(",") + 1).Split(".")(0)) - StartTime).TotalMinutes \ 5
+
+            Dim xDoc As XmlDocument = New XmlDocument()
+            xDoc.Load(XMLFile.FullName)
+
+            Dim i = 0
+            Dim xFlowItems As XmlNodeList = xDoc.GetElementsByTagName("FI")
+            For Each xFlowItem As XmlElement In xFlowItems
+                Dim xCurrentFlow As XmlElement = xFlowItem.GetElementsByTagName("CF")(0)
+                Dim Speed As Double = xCurrentFlow.GetAttribute("SP")
+                Dim xShapes As XmlNodeList = xFlowItem.GetElementsByTagName("SHP")
+                Dim CoordinateList As String = xFlowItem.InnerText
+                For Each CoordinateString As String In CoordinateList.Split(" ")
+                    If CoordinateString <> "" Then
+                        Dim Coordinates() As String = CoordinateString.Split(",")
+                        Dim ClosestNode As Node = Map.ConnectedNodesGrid.GetNearestNode(CDbl(Coordinates(0)), CDbl(Coordinates(1)))
+                        ClosestNode.SpeedAtTime(Time) = Speed
+                    End If
+                Next
+                Debug.Write(i & " ")
+                i += 1
+            Next
+
+            For Each W As Way In Map.Ways
+                For Each N As Node In W.Nodes
+                    Debug.WriteLine(N.SpeedAtTime(Time))
+                Next
+            Next
+        Next
+
+
+
+    End Sub
 End Class

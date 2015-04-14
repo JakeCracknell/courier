@@ -105,6 +105,21 @@
         Next
         Return BestNode
     End Function
+    Function GetNearestNodeFuzzy(ByVal Latitude As Double, ByVal Longitude As Double)
+        Dim BestNode As Node = Nothing
+        Dim BestDistance As Double = Double.MaxValue
+        For Each Row As NodesAdjacencyListRow In Rows.Values
+            Dim Node As Node = Row.NodeKey
+            If Node.Connected Then
+                Dim Distance As Double = Math.Sqrt((Node.Latitude - Latitude) ^ 2 + (Node.Longitude - Longitude) ^ 2)
+                If Distance < BestDistance Then
+                    BestNode = Node
+                    BestDistance = Distance
+                End If
+            End If
+        Next
+        Return BestNode
+    End Function
 
     'Tests for a single hop link from Node1 to Node2. Cannot be one-way in opposite direction.
     Function AreNodesLinked(ByVal Node1 As Node, ByVal Node2 As Node)

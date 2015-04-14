@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      My apps - HERE Developer
+    </title>
+    <meta content='IE=edge' http-equiv='X-UA-Compatible'>
+    <script>
+      var countryCode = 'ww';
+      var nkT = {
+        pName: 'Self-Serve:My apps',
+        sCountry: countryCode,
+        sLang: 'en'
+      };
+    </script>
+    <script src='//tags.tiqcdn.com/utag/here/heredeveloper/prod/utag.js'></script>
+    <link href='/images/icon.png' rel='icon' type='image/png'>
+    <link href='/stylesheets/screen2.css' rel='stylesheet'>
+    <script src='/javascript/modernizr.custom.83129.js' type='text/javascript'></script>
+    <script src='/javascript/bower_components/jquery/jquery.min.js' type='text/javascript'></script>
+    <script src='/javascript/bower_components/parsleyjs/dist/parsley.min.js' type='text/javascript'></script>
+    <script src='/javascript/bower_components/bower-highstock/highstock.js' type='text/javascript'></script>
+    <script src='/javascript/bower_components/angular/angular.min.js' type='text/javascript'></script>
+    <script src='/javascript/bower_components/angular-sanitize/angular-sanitize.min.js' type='text/javascript'></script>
+    <script src='/javascript/bower_components/angular-ui-router/release/angular-ui-router.min.js' type='text/javascript'></script>
+    <script src='/javascript/bower_components/highcharts-ng/dist/highcharts-ng.min.js' type='text/javascript'></script>
+    <script src='/javascript/bower_components/ng-csv/build/ng-csv.min.js' type='text/javascript'></script>
+    <script src='/javascript/bower_components/jquery.expander/jquery.expander.min.js' type='text/javascript'></script>
+    <script src='/javascript/dashboard-expander.js' type='text/javascript'></script>
+    <script src='/javascript/account_sdk/sso.js' type='text/javascript'></script>
+    <script>
+      function displayNPS() {
+        var nps = $('body:not(.hide-nps)').append('<a class="nps-feedback-button">Feedback</a>');
+        $('a.nps-feedback-button').click(function() {
+          new NPSurvey({
+            qa_mode: false,
+            id: 2323,
+            sourceId: 'd6ce9a61a90a345bf4fd0d8f1e2919cb',
+            display_name: 'developer.here.com',
+            render_overlay: true,
+            debug: true,
+            show_email: true,
+            render_always: true
+          });
+        });
+      }
+    </script>
+    <script src='/javascript/jquery/jquery.plugin.js' type='text/javascript'></script>
+    <script src='/javascript/bower_components/jquery.cookie/jquery.cookie.js' type='text/javascript'></script>
+    <script src='/javascript/jquery/jquery.enhance_inputs.js' type='text/javascript'></script>
+    <script src='/javascript/jquery/jquery.enhance_select.js' type='text/javascript'></script>
+    <script src='/javascript/jquery/jquery.tooltip.js' type='text/javascript'></script>
+    <script src='/javascript/application.js' type='text/javascript'></script>
+    <script src='https://nps-static.s3.amazonaws.com/widget/nps.js' type='text/javascript'></script>
+    <script src='/javascript/browsehappy.js' type='text/javascript'></script>
+    <script src='/javascript/cookie-notification.js' type='text/javascript'></script>
+  </head>
+  <body class='ltr js' id='default'>
+    <div id='container'>
+      <header class='logged-in' id='masthead'>
+        <div class='wrapper'>
+          <a class='logo' href='/frontpage'></a>
+          <div id='site-navigation-top'>
+            <nav class='site-navigation' role='navigation'>
+              <div class='wrapper'>
+                <ul>
+                  <li class=''>
+                    <a href='/products'>Products</a>
+                  </li>
+                  <li class=''>
+                    <a href='/solutions'>Solutions</a>
+                  </li>
+                  <li class=''>
+                    <a href='/documentation'>Documentation</a>
+                  </li>
+                  <li class=''>
+                    <a href='/get-started'>Pricing</a>
+                  </li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+          <div class='site-search' id='search-form-top'>
+            <form action='/search-results'>
+              <div>
+                <input id='query' name='criteria' type='text'>
+                <input class='submit' type='submit' value='Search'>
+              </div>
+            </form>
+          </div>
+          <div id='dashboard'>
+            <div>
+              <a href='/myapps'>Dashboard</a>
+            </div>
+          </div>
+          <ul class='user-navigation'>
+            <li class='top-level loggedin'>
+              <span class='username'>Jake</span>
+              <ul>
+                <li>
+                  <a href='/myapps'>
+                    <span>My apps</span>
+                  </a>
+                </li>
+                <li>
+                  <a href='https://account.here.com' target='_blank'>
+                    <span>My HERE account</span>
+                  </a>
+                </li>
+                <li>
+                  <a href='/user-session/signout'>
+                    <span>Logout</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </header>
+      <nav class='sub-navigation'>
+        <div class='wrapper'>
+          <ul>
+            <li class='active'>
+              <a href='/myapps'>
+                My apps
+              </a>
+            </li>
+            <li class=''>
+              <a href='/myapps/create/choose-plan'>
+                Create app
+              </a>
+            </li>
+            <li class=''>
+              <a href='/myapps/sla-report'>
+                SLA report
+              </a>
+            </li>
+            <li class=''>
+              <a href='/myapps/account-management'>
+                Account Management
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <!--[if lt IE 10]>
+        <div class='notification negative' id='browsehappy'>
+          <div class='wrapper'>
+            <a class='close'>
+              <div class='close-notification'></div>
+            </a>
+            <a href='http://browsehappy.com/' target='_blank'>
+              <p class='notification'>
+                Your browser version is no longer supported. Please upgrade your browser to improve your experience.
+              </p>
+            </a>
+          </div>
+        </div>
+      <![endif]-->
+      <div class='notification neutral' id='cookienotification'>
+        <div class='wrapper'>
+          <p class='notification'>
+            Developer.here.com uses cookies and similar technologies to manage, enhance and personalize your experience. Please learn more  on uses and how to manage cookies from our <strong><a href="http://here.com/privacy/cookie-policy" target="_blank">Cookie Policy</a></strong>. By closing this notice or interacting with this site you consent to our use of cookies.
+          </p>
+          <a class='button highlight consent-action close'>
+            OK
+          </a>
+        </div>
+      </div>
+      <div class='columns_3-2' id='main'>
+        <header class='page-header'>
+          <div class='wrapper'>
+            <h1>
+              My apps
+            </h1>
+          </div>
+        </header>
+        <script src="/assets/javascripts/shared.js"></script>
+        <script src="/assets/javascripts/dashboard.js"></script>
+        <div class='app-list-view' ng-app='dashboard' ng-controller='applicationList'>
+          
+          <div class='notification-wrapper'>
+            <div class='notification-new' ng-show='!loading &amp;&amp; applications.length === 0'>
+              You don't have any apps yet.<br>Visit the <a href='/get-started'>Get Started page</a> to create your first app.
+            </div>
+          </div>
+          <ul class='my-app-list-new'>
+            <li class='app' ng-repeat='app in applications'>
+              <div class='info'>
+                <div class='icons'>
+                  <span class='icon app-expired' ng-if='app.subscription_status_code === -1 || app.subscription_status_code === -3 || app.subscription_status_code === -4' title='{{ app.subscription_status_label }}'></span>
+                  <span class='icon app-ok' ng-if='app.subscription_status_code &gt; 0' title='{{ app.subscription_status_label }}'></span>
+                  <span class='icon app-overage' ng-if='app.is_overage' title='Transaction limit exceeded'></span>
+                  <span class='icon app-cancelled' ng-if='app.subscription_status_code === -2 || app.subscription_status_code === 2' title='Cancelled'></span>
+                </div>
+                <h2 ng-bind='app.app_name'></h2>
+                <p class='creation-timestamp' ng-bind="'Created ' + app.date_created"></p>
+              </div>
+              <aside ng-class='applicationBoxClass(app)'>
+                <h3 ng-bind='app.subscription_master_plan_label'></h3>
+                <p ng-bind='app.subscription_status_label'>
+                </p>
+              </aside>
+              <div class='actions'>
+                <a class='button neutral-dark' href='/myapps/app-details/{{ app.druid_id }}'>App details</a>
+              </div>
+            </li>
+          </ul>
+          <div id='page-metainfo' ng-if="supportEmailMessage != 'N/A'">
+            <p ng-bind-html='supportEmailMessage'></p>
+          </div>
+          <spinner global='true' loading-text="'Getting your applications, please wait. This may take up to a minute.'" loading='loading'></spinner>
+        </div>
+      </div>
+    </div>
+    <div id='footer'>
+      <div class='wrapper'>
+        <nav class='secondary-nav'>
+          <ul>
+            <li>
+              <a href='http://www.here.com' target='_blank' title='here.com'>
+                here.com
+              </a>
+            </li>
+            <li>
+              <a href='/site-terms' title='Read about our Terms of Use'>
+                Terms of Use
+              </a>
+            </li>
+            <li>
+              <a href='http://here.com/privacy/privacy-policy/' target='_blank' title='Read about our Privacy Policy'>
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a href='http://here.com/privacy/cookie-policy' target='_blank' title='Read about our Cookie Policy'>
+                Cookie Policy
+              </a>
+            </li>
+            <li>
+              <a href='/faqs' title='FAQs'>
+                FAQs
+              </a>
+            </li>
+            <li>
+              <a href='/contact-us' title='Contact Us'>
+                Contact Us
+              </a>
+            </li>
+            <li>
+              <span>
+                &copy; 1987 -
+                2015
+                HERE. All rights reserved.
+              </span>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </body>
+</html>

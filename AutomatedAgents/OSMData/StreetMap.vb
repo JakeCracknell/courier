@@ -5,6 +5,7 @@
     Public Nodes As New List(Of Node)
     Public Ways As New List(Of Way)
     Public NodesAdjacencyList As New NodesAdjacencyList
+    Public ConnectedNodesGrid As NodesGrid
 
     Public Depots As New List(Of Node)
     Public FuelPoints As New List(Of Node)
@@ -13,6 +14,7 @@
     Public Sub New(ByVal Name As String, ByVal Bounds As Bounds)
         Me.Name = Name
         Me.Bounds = Bounds
+        ConnectedNodesGrid = New NodesGrid(Bounds)
     End Sub
 
     'Starting point is a randomly chosen depot

@@ -1,11 +1,15 @@
-﻿Public Class Node
+﻿Imports CSharpQuadTree
+
+Public Class Node
     Implements IEquatable(Of Node)
     Implements IPoint
+
     Public ID As Long
     Public Latitude As Double
     Public Longitude As Double
     Public Description As String
     Public Connected As Boolean = True 'by default
+    Public SpeedAtTime As New Dictionary(Of Integer, Double)
 
     Public Sub New(ByVal ID As Long, ByVal Latitiude As Double, ByVal Longitude As Double)
         Me.ID = ID
@@ -36,5 +40,4 @@
     Public Overloads Function ToString() As String
         Return If(Description, ID)
     End Function
-
 End Class

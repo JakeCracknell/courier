@@ -38,7 +38,7 @@
                 OneWay = False
             Case "-1", "reverse"
                 'One way in opposite direction of node list
-                Nodes.Reverse()
+                Nodes = Nodes.Reverse().ToArray
                 OneWay = True
             Case "reversible", ""
                 'Very tricky case where highway direction can change throughout the day.

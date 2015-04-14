@@ -50,9 +50,9 @@
         Return New Point(X, Y)
     End Function
 
-    Public Function GetNearestNodeFromPoint(ByVal MousePosition As Point, ByVal AdjacencyList As NodesAdjacencyList)
+    Public Function GetNearestNodeFromPoint(ByVal MousePosition As Point, ByVal Grid As NodesGrid)
         Dim Longitude As Double = Bounds.MaxLongitude + LongLength * ((MousePosition.X / PanelWidth) - 1)
         Dim Latitiude As Double = Bounds.MaxLatitude - (MousePosition.Y * LatHeight / PanelHeight)
-        Return AdjacencyList.GetNearestNode(Latitiude, Longitude)
+        Return Grid.GetNearestNode(Latitiude, Longitude)
     End Function
 End Class
