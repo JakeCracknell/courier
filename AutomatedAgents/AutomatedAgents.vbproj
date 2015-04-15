@@ -107,6 +107,7 @@
     <Compile Include="Graphics\frmStatistics.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="OSMData\Module1.vb" />
     <Compile Include="OSMData\NodesGrid.vb" />
     <Compile Include="OSMData\TrafficData.vb" />
     <Compile Include="RouteFinding\RouteCache.vb" />

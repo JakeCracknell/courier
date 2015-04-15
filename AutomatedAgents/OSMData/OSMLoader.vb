@@ -1,4 +1,5 @@
 ﻿Imports System.Xml
+Imports System.IO
 
 Public Class OSMLoader
     Private OSMFilePath As String
@@ -24,34 +25,59 @@ Public Class OSMLoader
         Dim Map As New StreetMap(IO.Path.GetFileNameWithoutExtension(OSMFilePath), Bounds)
         Dim NodeHashMap As New Dictionary(Of Long, Node)
 
-        Dim xNodes As XmlNodeList = xDoc.GetElementsByTagName("node")
-        For Each xItem As XmlElement In xNodes
-            Dim xNodeID As Long = xItem.GetAttribute("id")
-            Dim xLat As Double = xItem.GetAttribute("lat")
-            Dim xLon As Double = xItem.GetAttribute("lon")
-            Dim Node As New Node(xNodeID, xLat, xLon)
-            If Bounds.Encloses(Node) Then
-                Dim xTags As XmlNodeList = xItem.GetElementsByTagName("tag")
-                Dim IsBusiness As Boolean = False
-                Dim NodeName As String = Nothing
-                For Each xTag As XmlElement In xTags
-                    Dim AttributeName As String = xTag.GetAttribute("k")
-                    If AttributeName = "shop" OrElse AttributeName = "office" Then
-                        IsBusiness = True
-                        NodeName = If(NodeName, xTag.GetAttribute("v").Replace("_", " ") & " " & AttributeName)
-                    ElseIf AttributeName = "name" Then
-                        NodeName = xTag.GetAttribute("v")
-                    End If
-                Next
-                If IsBusiness Then
-                    Node.Description = NodeName 'might be named something like 'music shop' or 'lawyer office'
-                    Map.Businesses.Add(Node)
-                End If
+        Dim Nodes As New List(Of Node)
+        Using OSMFile = File.Open(OSMFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+            Using reader = XmlReader.Create(OSMFile)
 
-                Map.Nodes.Add(Node)
-                NodeHashMap.Add(xNodeID, Node)
-            End If
-        Next
+                reader.MoveToContent()
+                reader.ReadStartElement("osm")
+
+                Dim foundFirstElement As Boolean = False
+                While reader.IsStartElement()
+                    If reader.Name <> "node" Then
+                        reader.Skip()
+                        If foundFirstElement Then
+                            Exit While
+                        End If
+                        Continue While
+                    End If
+                    foundFirstElement = True
+                    Dim Node As New Node(CLng(reader.GetAttribute("id")), CDbl(reader.GetAttribute("lat")), CDbl(reader.GetAttribute("lon")))
+                    reader.ReadStartElement()
+                    reader.Skip()
+
+
+                    Dim NodeName As String = Nothing
+                    Dim IsBusiness As Boolean = False
+                    While reader.Name = "tag"
+                        Dim AttributeName As String = reader.GetAttribute("k")
+                        If AttributeName = "shop" OrElse AttributeName = "office" Then
+                            IsBusiness = True
+                            NodeName = If(NodeName, reader.GetAttribute("v").Replace("_", " ") & " " & AttributeName)
+                        ElseIf AttributeName = "name" Then
+                            NodeName = reader.GetAttribute("v")
+                        End If
+
+                        reader.ReadStartElement()
+                        reader.Skip()
+                    End While
+
+                    If reader.NodeType = XmlNodeType.EndElement Then
+                        reader.ReadEndElement()
+                    End If
+
+                    If Bounds.Encloses(Node) Then
+                        If IsBusiness Then
+                            Node.Description = NodeName 'might be named something like 'music shop' or 'lawyer office'
+                            Map.Businesses.Add(Node)
+                        End If
+                        Map.Nodes.Add(Node)
+                        NodeHashMap.Add(Node.ID, Node)
+                    End If
+
+                End While
+            End Using
+        End Using
 
         Dim xWays As XmlNodeList = xDoc.GetElementsByTagName("way")
         For Each xItem As XmlElement In xWays
