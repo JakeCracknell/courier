@@ -1,15 +1,16 @@
 ﻿Namespace SimulationParameters
     Module SimulationParameters
         '***** Global Variables/parameters
-        Public SimulationSpeed As Integer = 1
-        Public DisplayRefreshSpeed As Integer = 1
+        Public SimulationSpeed As Integer = 30
+        Public DisplayRefreshSpeed As Integer = 10
         Public DispatchRateCoefficient As Double = 1
         Public DeadlineAverage As Integer = 120 'TODO fix
         Public PackageSizeLambda As Double = 3
         Public ProbPickupFail As Double = 0.01
         Public ProbDeliveryFail As Double = 0.1
-        Public FeeBasePrice As Double = 2 'TODO currently unused
-        Public FeeHourlyPrice As Double = 0.2 'TODO currently unused
+        Public FeeBasePrice As Double = 2
+        Public FeeHourlyPrice As Double = 0.2
+        Public AStarAccelerator As Double = 1.0
         Public CNPVersion As ContractNetPolicy = ContractNetPolicy.CNP4
         Public VehicleType As Vehicles.Type = Vehicles.Type.CAR
 
@@ -26,7 +27,6 @@
 
         'TODO: In addition to above, this constraint should apply. 
         Public DEADLINE_PLANNING_REDUNDANCY_TIME_PER_ROUTE As TimeSpan = TimeSpan.FromMinutes(15)
-
 
 
         Public DisplayedDebugVariable As Object

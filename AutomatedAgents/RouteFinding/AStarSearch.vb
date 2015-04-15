@@ -25,17 +25,17 @@
                     Dim OneHopList As New List(Of Hop)(1)
                     OneHopList.Add(New Hop(HP1, HP2, HP1.Hop.Way))
                     Route = New Route(OneHopList)
-                    Return
+                    Exit Sub
                 End If
             End If
-            DoAStar()
+            Run()
         Else
             'Routing from A to A. This is acceptable 
             Route = New Route(StartPoint)
         End If
     End Sub
 
-    Private Sub DoAStar()
+    Private Sub Run()
         Dim PriorityQueue As New SortedList(Of Double, AStarTreeNode)
         Dim AlreadyVisitedNodes As New HashSet(Of Long)
         Dim BestDistancesToNodes As New Dictionary(Of Long, Double)
@@ -53,8 +53,6 @@
                 NodesSearched.Add(CurrentPoint)
             End If
 
-
-
             Dim Row As NodesAdjacencyListRow = AdjacencyList.GetRow(CurrentPoint)
             For Each Cell As NodesAdjacencyListCell In Row.Cells
                 If Not AlreadyVisitedNodes.Contains(Cell.Node.ID) Then
@@ -68,9 +66,11 @@
                             HeuristicCost = HaversineDistance(Cell.Node, EndPoint)
                         Case RouteFindingMinimiser.TIME_NO_TRAFFIC
                             HeuristicCost = HaversineDistance(Cell.Node, EndPoint) / SimulationParameters.MAX_POSSIBLE_SPEED_KMH
-                        Case RouteFindingMinimiser.TIME_WITH_TRAFFIC 'TODO
+                        Case RouteFindingMinimiser.TIME_WITH_TRAFFIC
                             HeuristicCost = HaversineDistance(Cell.Node, EndPoint) / SimulationParameters.MAX_POSSIBLE_SPEED_KMH
                     End Select
+
+                    HeuristicCost *= SimulationParameters.AStarAccelerator
 
                     Dim F_Cost As Double = HeuristicCost + NextAStarTreeNode.TotalCost
                     Do Until Not PriorityQueue.ContainsKey(F_Cost) 'Exception can occur otherwise
@@ -145,10 +145,10 @@
         Public Sub CalculateCost(ByVal Distance As Double, ByVal Minimiser As RouteFindingMinimiser)
             Select Case Minimiser
                 Case RouteFindingMinimiser.DISTANCE
-                    TotalCost += Distance 'Hop.GetCost
+                    TotalCost += Distance
                 Case RouteFindingMinimiser.TIME_NO_TRAFFIC
                     TotalCost += Hop.GetMinimumTravelTime
-                Case RouteFindingMinimiser.TIME_WITH_TRAFFIC 'TODO
+                Case RouteFindingMinimiser.TIME_WITH_TRAFFIC
                     TotalCost += Hop.GetEstimatedTravelTimeAtTime(NoticeBoard.CurrentTime) 'TODO: make this nicer
             End Select
         End Sub

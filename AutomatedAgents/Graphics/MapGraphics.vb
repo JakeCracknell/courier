@@ -13,6 +13,7 @@
     Private ROAD_THICK_PEN_INNER_TWOWAY As New Pen(New SolidBrush(Color.White), 3)
     Private ROAD_THICK_PEN_INNER_ONEWAY As New Pen(New SolidBrush(Color.Red), 3)
     Private NODE_BUSINESS_BRUSH As Brush = Brushes.Blue
+    Private QUADRANT_GRID_PEN As New Pen(Brushes.Gray) With {.DashStyle = Drawing2D.DashStyle.Dash}
     Private DELIVERY_FAIL_CROSS_PEN As New Pen(New SolidBrush(Color.Black), 2)
     Private LANDMARK_BORDER_PEN As New Pen(Brushes.Black, 2)
     Private LANDMARK_BRUSH As Brush = Brushes.White
@@ -30,6 +31,7 @@
     Public ConfigDrawNodeLabels As Boolean = False
     Public ConfigDrawAgentRoutes As Integer = 0
     Public ConfigDrawLandmarks As Boolean = True
+    Public ConfigDrawGrid As Boolean = False
 
     Sub Resize(ByVal _Width As Integer, ByVal _Height As Integer, ByVal Bounds As Bounds)
         Width = _Width
@@ -92,6 +94,15 @@
             Next
         End If
 
+        If ConfigDrawGrid Then
+            For x = 0 To Width Step Math.Max(1, Width \ 100)
+                gr.DrawLine(QUADRANT_GRID_PEN, x, 0, x, Height)
+            Next
+            For y = 0 To Height Step Math.Max(1, Height \ 100)
+                gr.DrawLine(QUADRANT_GRID_PEN, 0, y, Width, y)
+            Next
+        End If
+
         Return MapBitmapOriginal.Clone
     End Function
 
@@ -114,7 +125,6 @@
         End If
         gp.CloseFigure()
         gr.FillPath(Brushes.Red, gp)
-        'gr.DrawLines(Pens.Black, ptsArray)
     End Sub
 
     Sub DrawLandmark(ByVal gr As Graphics, ByVal DrawPoint As Point, ByVal Character As Char)

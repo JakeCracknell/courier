@@ -35,14 +35,14 @@ Partial Class frmParameters
         Me.TextBox9 = New System.Windows.Forms.TextBox()
         Me.TrackBar9 = New System.Windows.Forms.TrackBar()
         Me.Label11 = New System.Windows.Forms.Label()
-        Me.TextBox8 = New System.Windows.Forms.TextBox()
-        Me.TrackBar8 = New System.Windows.Forms.TrackBar()
+        Me.txtAStarAccelerator = New System.Windows.Forms.TextBox()
+        Me.tbAStarAccelerator = New System.Windows.Forms.TrackBar()
         Me.Label10 = New System.Windows.Forms.Label()
-        Me.TextBox7 = New System.Windows.Forms.TextBox()
-        Me.TrackBar7 = New System.Windows.Forms.TrackBar()
+        Me.txtFeeHourly = New System.Windows.Forms.TextBox()
+        Me.tbFeeHourly = New System.Windows.Forms.TrackBar()
         Me.Label9 = New System.Windows.Forms.Label()
-        Me.TextBox6 = New System.Windows.Forms.TextBox()
-        Me.TrackBar6 = New System.Windows.Forms.TrackBar()
+        Me.txtFeeBase = New System.Windows.Forms.TextBox()
+        Me.tbFeeBase = New System.Windows.Forms.TrackBar()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.txtFailedDelivery = New System.Windows.Forms.TextBox()
         Me.tbFailedDelivery = New System.Windows.Forms.TrackBar()
@@ -70,9 +70,9 @@ Partial Class frmParameters
         CType(Me.TrackBar11, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TrackBar10, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TrackBar9, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.TrackBar8, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.TrackBar7, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.TrackBar6, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.tbAStarAccelerator, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.tbFeeHourly, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.tbFeeBase, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbFailedDelivery, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbFailedPickup, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbCubicMetres, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -100,14 +100,14 @@ Partial Class frmParameters
         Me.TableLayoutPanel1.Controls.Add(Me.TextBox9, 2, 10)
         Me.TableLayoutPanel1.Controls.Add(Me.TrackBar9, 1, 10)
         Me.TableLayoutPanel1.Controls.Add(Me.Label11, 0, 10)
-        Me.TableLayoutPanel1.Controls.Add(Me.TextBox8, 2, 9)
-        Me.TableLayoutPanel1.Controls.Add(Me.TrackBar8, 1, 9)
+        Me.TableLayoutPanel1.Controls.Add(Me.txtAStarAccelerator, 2, 9)
+        Me.TableLayoutPanel1.Controls.Add(Me.tbAStarAccelerator, 1, 9)
         Me.TableLayoutPanel1.Controls.Add(Me.Label10, 0, 9)
-        Me.TableLayoutPanel1.Controls.Add(Me.TextBox7, 2, 8)
-        Me.TableLayoutPanel1.Controls.Add(Me.TrackBar7, 1, 8)
+        Me.TableLayoutPanel1.Controls.Add(Me.txtFeeHourly, 2, 8)
+        Me.TableLayoutPanel1.Controls.Add(Me.tbFeeHourly, 1, 8)
         Me.TableLayoutPanel1.Controls.Add(Me.Label9, 0, 8)
-        Me.TableLayoutPanel1.Controls.Add(Me.TextBox6, 2, 7)
-        Me.TableLayoutPanel1.Controls.Add(Me.TrackBar6, 1, 7)
+        Me.TableLayoutPanel1.Controls.Add(Me.txtFeeBase, 2, 7)
+        Me.TableLayoutPanel1.Controls.Add(Me.tbFeeBase, 1, 7)
         Me.TableLayoutPanel1.Controls.Add(Me.Label8, 0, 7)
         Me.TableLayoutPanel1.Controls.Add(Me.txtFailedDelivery, 2, 6)
         Me.TableLayoutPanel1.Controls.Add(Me.tbFailedDelivery, 1, 6)
@@ -279,26 +279,27 @@ Partial Class frmParameters
         Me.Label11.Text = "Graphics Refresh Rate (ms)"
         Me.Label11.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'TextBox8
+        'txtAStarAccelerator
         '
-        Me.TextBox8.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TextBox8.Location = New System.Drawing.Point(301, 255)
-        Me.TextBox8.Name = "TextBox8"
-        Me.TextBox8.Size = New System.Drawing.Size(65, 20)
-        Me.TextBox8.TabIndex = 29
+        Me.txtAStarAccelerator.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.txtAStarAccelerator.Location = New System.Drawing.Point(301, 255)
+        Me.txtAStarAccelerator.Name = "txtAStarAccelerator"
+        Me.txtAStarAccelerator.Size = New System.Drawing.Size(65, 20)
+        Me.txtAStarAccelerator.TabIndex = 29
         '
-        'TrackBar8
+        'tbAStarAccelerator
         '
-        Me.TrackBar8.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TrackBar8.Location = New System.Drawing.Point(152, 255)
-        Me.TrackBar8.Maximum = 5000
-        Me.TrackBar8.Minimum = 10
-        Me.TrackBar8.Name = "TrackBar8"
-        Me.TrackBar8.Size = New System.Drawing.Size(143, 22)
-        Me.TrackBar8.TabIndex = 28
-        Me.TrackBar8.TickFrequency = 0
-        Me.TrackBar8.TickStyle = System.Windows.Forms.TickStyle.None
-        Me.TrackBar8.Value = 10
+        Me.tbAStarAccelerator.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tbAStarAccelerator.LargeChange = 1
+        Me.tbAStarAccelerator.Location = New System.Drawing.Point(152, 255)
+        Me.tbAStarAccelerator.Maximum = 500
+        Me.tbAStarAccelerator.Minimum = 100
+        Me.tbAStarAccelerator.Name = "tbAStarAccelerator"
+        Me.tbAStarAccelerator.Size = New System.Drawing.Size(143, 22)
+        Me.tbAStarAccelerator.TabIndex = 28
+        Me.tbAStarAccelerator.TickFrequency = 0
+        Me.tbAStarAccelerator.TickStyle = System.Windows.Forms.TickStyle.None
+        Me.tbAStarAccelerator.Value = 100
         '
         'Label10
         '
@@ -308,29 +309,29 @@ Partial Class frmParameters
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(143, 28)
         Me.Label10.TabIndex = 27
-        Me.Label10.Text = "Graphics Refresh Rate (ms)"
+        Me.Label10.Text = "A* Search Accelerator"
         Me.Label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'TextBox7
+        'txtFeeHourly
         '
-        Me.TextBox7.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TextBox7.Location = New System.Drawing.Point(301, 227)
-        Me.TextBox7.Name = "TextBox7"
-        Me.TextBox7.Size = New System.Drawing.Size(65, 20)
-        Me.TextBox7.TabIndex = 26
+        Me.txtFeeHourly.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.txtFeeHourly.Location = New System.Drawing.Point(301, 227)
+        Me.txtFeeHourly.Name = "txtFeeHourly"
+        Me.txtFeeHourly.Size = New System.Drawing.Size(65, 20)
+        Me.txtFeeHourly.TabIndex = 26
         '
-        'TrackBar7
+        'tbFeeHourly
         '
-        Me.TrackBar7.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TrackBar7.Location = New System.Drawing.Point(152, 227)
-        Me.TrackBar7.Maximum = 5000
-        Me.TrackBar7.Minimum = 10
-        Me.TrackBar7.Name = "TrackBar7"
-        Me.TrackBar7.Size = New System.Drawing.Size(143, 22)
-        Me.TrackBar7.TabIndex = 25
-        Me.TrackBar7.TickFrequency = 0
-        Me.TrackBar7.TickStyle = System.Windows.Forms.TickStyle.None
-        Me.TrackBar7.Value = 10
+        Me.tbFeeHourly.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tbFeeHourly.Location = New System.Drawing.Point(152, 227)
+        Me.tbFeeHourly.Maximum = 5000
+        Me.tbFeeHourly.Minimum = 10
+        Me.tbFeeHourly.Name = "tbFeeHourly"
+        Me.tbFeeHourly.Size = New System.Drawing.Size(143, 22)
+        Me.tbFeeHourly.TabIndex = 25
+        Me.tbFeeHourly.TickFrequency = 0
+        Me.tbFeeHourly.TickStyle = System.Windows.Forms.TickStyle.None
+        Me.tbFeeHourly.Value = 10
         '
         'Label9
         '
@@ -340,29 +341,28 @@ Partial Class frmParameters
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(143, 28)
         Me.Label9.TabIndex = 24
-        Me.Label9.Text = "Graphics Refresh Rate (ms)"
+        Me.Label9.Text = "Fee Hourly Price £"
         Me.Label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'TextBox6
+        'txtFeeBase
         '
-        Me.TextBox6.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TextBox6.Location = New System.Drawing.Point(301, 199)
-        Me.TextBox6.Name = "TextBox6"
-        Me.TextBox6.Size = New System.Drawing.Size(65, 20)
-        Me.TextBox6.TabIndex = 23
+        Me.txtFeeBase.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.txtFeeBase.Location = New System.Drawing.Point(301, 199)
+        Me.txtFeeBase.Name = "txtFeeBase"
+        Me.txtFeeBase.Size = New System.Drawing.Size(65, 20)
+        Me.txtFeeBase.TabIndex = 23
         '
-        'TrackBar6
+        'tbFeeBase
         '
-        Me.TrackBar6.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TrackBar6.Location = New System.Drawing.Point(152, 199)
-        Me.TrackBar6.Maximum = 5000
-        Me.TrackBar6.Minimum = 10
-        Me.TrackBar6.Name = "TrackBar6"
-        Me.TrackBar6.Size = New System.Drawing.Size(143, 22)
-        Me.TrackBar6.TabIndex = 22
-        Me.TrackBar6.TickFrequency = 0
-        Me.TrackBar6.TickStyle = System.Windows.Forms.TickStyle.None
-        Me.TrackBar6.Value = 10
+        Me.tbFeeBase.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tbFeeBase.Location = New System.Drawing.Point(152, 199)
+        Me.tbFeeBase.Maximum = 3000
+        Me.tbFeeBase.Name = "tbFeeBase"
+        Me.tbFeeBase.Size = New System.Drawing.Size(143, 22)
+        Me.tbFeeBase.TabIndex = 22
+        Me.tbFeeBase.TickFrequency = 0
+        Me.tbFeeBase.TickStyle = System.Windows.Forms.TickStyle.None
+        Me.tbFeeBase.Value = 10
         '
         'Label8
         '
@@ -372,7 +372,7 @@ Partial Class frmParameters
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(143, 28)
         Me.Label8.TabIndex = 21
-        Me.Label8.Text = "Graphics Refresh Rate (ms)"
+        Me.Label8.Text = "Fee Base Price £"
         Me.Label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtFailedDelivery
@@ -466,7 +466,7 @@ Partial Class frmParameters
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(143, 28)
         Me.Label5.TabIndex = 12
-        Me.Label5.Text = "Average Size (m3)"
+        Me.Label5.Text = "Package Size (m³), Exp(λ)"
         Me.Label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtDeadlines
@@ -494,6 +494,7 @@ Partial Class frmParameters
         '
         Me.Label4.AutoSize = True
         Me.Label4.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label4.Enabled = False
         Me.Label4.Location = New System.Drawing.Point(3, 84)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(143, 28)
@@ -525,6 +526,7 @@ Partial Class frmParameters
         '
         Me.Label3.AutoSize = True
         Me.Label3.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label3.Enabled = False
         Me.Label3.Location = New System.Drawing.Point(3, 56)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(143, 28)
@@ -612,9 +614,9 @@ Partial Class frmParameters
         CType(Me.TrackBar11, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.TrackBar10, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.TrackBar9, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.TrackBar8, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.TrackBar7, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.TrackBar6, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.tbAStarAccelerator, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.tbFeeHourly, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.tbFeeBase, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbFailedDelivery, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbFailedPickup, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbCubicMetres, System.ComponentModel.ISupportInitialize).EndInit()
@@ -644,14 +646,14 @@ Partial Class frmParameters
     Friend WithEvents TextBox9 As System.Windows.Forms.TextBox
     Friend WithEvents TrackBar9 As System.Windows.Forms.TrackBar
     Friend WithEvents Label11 As System.Windows.Forms.Label
-    Friend WithEvents TextBox8 As System.Windows.Forms.TextBox
-    Friend WithEvents TrackBar8 As System.Windows.Forms.TrackBar
+    Friend WithEvents txtAStarAccelerator As System.Windows.Forms.TextBox
+    Friend WithEvents tbAStarAccelerator As System.Windows.Forms.TrackBar
     Friend WithEvents Label10 As System.Windows.Forms.Label
-    Friend WithEvents TextBox7 As System.Windows.Forms.TextBox
-    Friend WithEvents TrackBar7 As System.Windows.Forms.TrackBar
+    Friend WithEvents txtFeeHourly As System.Windows.Forms.TextBox
+    Friend WithEvents tbFeeHourly As System.Windows.Forms.TrackBar
     Friend WithEvents Label9 As System.Windows.Forms.Label
-    Friend WithEvents TextBox6 As System.Windows.Forms.TextBox
-    Friend WithEvents TrackBar6 As System.Windows.Forms.TrackBar
+    Friend WithEvents txtFeeBase As System.Windows.Forms.TextBox
+    Friend WithEvents tbFeeBase As System.Windows.Forms.TrackBar
     Friend WithEvents Label8 As System.Windows.Forms.Label
     Friend WithEvents txtFailedDelivery As System.Windows.Forms.TextBox
     Friend WithEvents tbFailedDelivery As System.Windows.Forms.TrackBar
