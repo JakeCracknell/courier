@@ -6,6 +6,12 @@
     Private Bounds As Bounds
     Private CellSizeLat As Double
     Private CellSizeLon As Double
+    Private _count As Integer
+    ReadOnly Property Count As String
+        Get
+            Return _count
+        End Get
+    End Property
 
     Public Sub New(ByVal Bounds As Bounds)
         Me.Bounds = Bounds
@@ -65,6 +71,7 @@
             NodeLists(CentralCellX, CentralCellY) = New List(Of Node)
         End If
         NodeLists(CentralCellX, CentralCellY).Add(Node)
+        _count += 1
     End Sub
 
     Public Sub ListAll()

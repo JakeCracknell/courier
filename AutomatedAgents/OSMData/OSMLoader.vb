@@ -14,9 +14,9 @@ Public Class OSMLoader
 
     Function CreateMap() As StreetMap
         Dim Bounds As Bounds
-
         Dim Map As StreetMap
         Dim NodeHashMap As New Dictionary(Of Long, Node)
+        Dim UnconfirmedFuelPoints As New List(Of Node)
         Dim Nodes As New List(Of Node)
 
         Using OSMFile = File.Open(OSMFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
@@ -52,6 +52,10 @@ Public Class OSMLoader
                             NodeName = If(NodeName, reader.GetAttribute("v").Replace("_", " ") & " " & AttributeName)
                         ElseIf AttributeName = "name" Then
                             NodeName = reader.GetAttribute("v")
+                        ElseIf AttributeName = "amenity" Then
+                            If reader.GetAttribute("v") = "fuel" Then
+                                UnconfirmedFuelPoints.Add(Node)
+                            End If
                         End If
 
                         reader.ReadStartElement()
@@ -101,18 +105,18 @@ Public Class OSMLoader
                         Dim AttributeName As String = reader.GetAttribute("k")
                         If AttributeName = "highway" Then
                             WayType = DecodeHighWayType(reader.GetAttribute("v"))
-                        End If
-                        If AttributeName = "name" Then
+                        ElseIf AttributeName = "name" Then
                             WayName = reader.GetAttribute("v")
-                        End If
-                        If AttributeName = "oneway" Then
+                        ElseIf AttributeName = "oneway" Then
                             OneWay = reader.GetAttribute("v")
-                        End If
-                        If AttributeName = "access" Then
+                        ElseIf AttributeName = "access" Then
                             AccessAllowed = AccessAllowed And DecodeHighWayAccessLevel(reader.GetAttribute("v"))
-                        End If
-                        If AttributeName = "maxspeed" Then
+                        ElseIf AttributeName = "maxspeed" Then
                             MaxSpeedOverrideKMH = DecodeHighwayMaxSpeed(reader.GetAttribute("v"))
+                        ElseIf AttributeName = "amenity" Then
+                            If reader.GetAttribute("v") = "fuel" Then
+                                UnconfirmedFuelPoints.Add(Nds(0))
+                            End If
                         End If
                         reader.ReadStartElement()
                         reader.Skip()
@@ -141,9 +145,6 @@ Public Class OSMLoader
 
             End Using
         End Using
-
-        Debug.WriteLine("Nodes: " & Map.Nodes.Count)
-        Debug.WriteLine("Ways: " & Map.Ways.Count)
 
         Try
             If IO.File.Exists(AAFilePath) Then
@@ -174,7 +175,6 @@ Public Class OSMLoader
             Map.FuelPoints.Add(CentralNode)
         End If
 
-        Dim t As New Stopwatch : t.Start()
         Map.NodesAdjacencyList.RemoveDisconnectedComponents(Map.Depots(0))
         For Each N As Node In Map.Nodes
             If Not Map.NodesAdjacencyList.Rows.ContainsKey(N.ID) Then
@@ -183,6 +183,12 @@ Public Class OSMLoader
                 Map.ConnectedNodesGrid.AddNode(N)
             End If
         Next
+
+        Debug.WriteLine("All Nodes: " & Map.Nodes.Count)
+        Debug.WriteLine("Connected Nodes: " & Map.ConnectedNodesGrid.Count)
+        Debug.WriteLine("Ways: " & Map.Ways.Count)
+
+        'ListUnconfirmedFuelPoints(Map, UnconfirmedFuelPoints)
 
         'LoadHereXML(Map)
         'ExportWaySpeedData(Map.Ways)
@@ -308,4 +314,21 @@ FailedWay:
         'Otherwise unparsable - go by the WayType
         Return -1
     End Function
+
+    Private Sub ListUnconfirmedFuelPoints(Map As StreetMap, UnconfirmedFuelPoints As List(Of Node))
+        Debug.WriteLine("A number of unconfirmed fuel points were found:")
+        Dim NodeSet As New HashSet(Of Node)
+        For Each N As Node In UnconfirmedFuelPoints
+            Dim ClosestNode As Node = Map.ConnectedNodesGrid.GetNearestNode(N)
+            If Not NodeSet.Contains(ClosestNode) Then
+                NodeSet.Add(ClosestNode)
+            End If
+        Next
+
+        For Each N As Node In NodeSet
+            Debug.Write(N.ID & ",")
+        Next
+
+    End Sub
+
 End Class
