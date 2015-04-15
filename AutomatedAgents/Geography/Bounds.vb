@@ -18,7 +18,7 @@ Public Class Bounds
     End Function
 
     Function Encloses(Lat As Double, Lon As Double) As Boolean
-        Return Lat > MinLatitude AndAlso Lat < MaxLatitude AndAlso Lon > MinLongitude AndAlso Lon < MaxLongitude
+        Return Lat >= MinLatitude AndAlso Lat <= MaxLatitude AndAlso Lon >= MinLongitude AndAlso Lon <= MaxLongitude
     End Function
 
 End Class

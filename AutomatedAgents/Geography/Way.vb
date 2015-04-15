@@ -102,6 +102,4 @@
         Return If(Name <> "", Name, Type.ToString("G"))
     End Function
 
-
-
 End Class

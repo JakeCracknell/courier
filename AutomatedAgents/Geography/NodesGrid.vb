@@ -53,6 +53,11 @@
         Return Nothing
     End Function
 
+    Public Sub FitCoordinates(ByRef Lat As Double, ByRef Lon As Double)
+        Lat = Math.Min(Math.Max(Lat, Bounds.MinLatitude), Bounds.MaxLatitude)
+        Lon = Math.Min(Math.Max(Lon, Bounds.MinLongitude), Bounds.MaxLongitude)
+    End Sub
+
     Public Sub AddNode(ByVal Node As Node)
         Dim CentralCellX As Integer = CInt((Node.Latitude - Bounds.MinLatitude) / CellSizeLat)
         Dim CentralCellY As Integer = CInt((Node.Longitude - Bounds.MinLongitude) / CellSizeLon)

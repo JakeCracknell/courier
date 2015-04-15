@@ -53,6 +53,7 @@
     Public Function GetNearestNodeFromPoint(ByVal MousePosition As Point, ByVal Grid As NodesGrid)
         Dim Longitude As Double = Bounds.MaxLongitude + LongLength * ((MousePosition.X / PanelWidth) - 1)
         Dim Latitiude As Double = Bounds.MaxLatitude - (MousePosition.Y * LatHeight / PanelHeight)
+        Grid.FitCoordinates(Latitiude, Longitude)
         Return Grid.GetNearestNode(Latitiude, Longitude)
     End Function
 End Class

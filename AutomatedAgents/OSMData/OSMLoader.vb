@@ -1,5 +1,6 @@
 ﻿Imports System.Xml
 Imports System.IO
+Imports System.Text.RegularExpressions
 
 Public Class OSMLoader
     Private OSMFilePath As String
@@ -12,40 +13,35 @@ Public Class OSMLoader
     End Sub
 
     Function CreateMap() As StreetMap
-        Dim xDoc As XmlDocument = New XmlDocument()
-        xDoc.Load(OSMFilePath)
+        Dim Bounds As Bounds
 
-        Dim xBounds As XmlElement = xDoc.GetElementsByTagName("bounds")(0)
-        Dim Bounds As New Bounds(xBounds.GetAttribute("minlat"), _
-                                 xBounds.GetAttribute("minlon"), _
-                                 xBounds.GetAttribute("maxlat"), _
-                                 xBounds.GetAttribute("maxlon"))
-
-
-        Dim Map As New StreetMap(IO.Path.GetFileNameWithoutExtension(OSMFilePath), Bounds)
+        Dim Map As StreetMap
         Dim NodeHashMap As New Dictionary(Of Long, Node)
-
         Dim Nodes As New List(Of Node)
+
         Using OSMFile = File.Open(OSMFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
             Using reader = XmlReader.Create(OSMFile)
 
                 reader.MoveToContent()
                 reader.ReadStartElement("osm")
 
-                Dim foundFirstElement As Boolean = False
-                While reader.IsStartElement()
-                    If reader.Name <> "node" Then
-                        reader.Skip()
-                        If foundFirstElement Then
-                            Exit While
-                        End If
-                        Continue While
-                    End If
-                    foundFirstElement = True
+                Do Until reader.Name = "bounds"
+                    reader.Skip()
+                Loop
+                Bounds = New Bounds(reader.GetAttribute("minlat"), _
+                                    reader.GetAttribute("minlon"), _
+                                    reader.GetAttribute("maxlat"), _
+                                    reader.GetAttribute("maxlon"))
+                Map = New StreetMap(IO.Path.GetFileNameWithoutExtension(OSMFilePath), Bounds)
+
+                Do Until reader.Name = "node"
+                    reader.Skip()
+                Loop
+
+                Do Until reader.Name = "way"
                     Dim Node As New Node(CLng(reader.GetAttribute("id")), CDbl(reader.GetAttribute("lat")), CDbl(reader.GetAttribute("lon")))
                     reader.ReadStartElement()
                     reader.Skip()
-
 
                     Dim NodeName As String = Nothing
                     Dim IsBusiness As Boolean = False
@@ -62,10 +58,6 @@ Public Class OSMLoader
                         reader.Skip()
                     End While
 
-                    If reader.NodeType = XmlNodeType.EndElement Then
-                        reader.ReadEndElement()
-                    End If
-
                     If Bounds.Encloses(Node) Then
                         If IsBusiness Then
                             Node.Description = NodeName 'might be named something like 'music shop' or 'lawyer office'
@@ -75,18 +67,80 @@ Public Class OSMLoader
                         NodeHashMap.Add(Node.ID, Node)
                     End If
 
-                End While
+                    If reader.NodeType = XmlNodeType.EndElement Then
+                        reader.ReadEndElement()
+                        reader.Skip()
+                    End If
+                Loop
+
+                Do Until reader.Name = "relation" OrElse reader.NodeType = XmlNodeType.EndElement
+                    Dim WayID As Long = CLng(reader.GetAttribute("id"))
+                    Dim WayType As WayType = WayType.UNSPECIFIED
+                    Dim WayName As String = ""
+                    Dim MaxSpeedOverrideKMH As Integer = -1
+                    Dim OneWay As String = ""
+                    Dim AccessAllowed As Boolean = True
+
+                    reader.ReadStartElement()
+                    reader.Skip()
+
+                    Dim Nds As New List(Of Node)
+                    While reader.Name = "nd"
+                        Dim NodeRef As Long = CLng(reader.GetAttribute("ref"))
+                        Dim Node As Node = Nothing
+                        NodeHashMap.TryGetValue(NodeRef, Node)
+                        If Node IsNot Nothing Then
+                            Nds.Add(Node)
+                        End If
+
+                        reader.ReadStartElement()
+                        reader.Skip()
+                    End While
+
+                    While reader.Name = "tag"
+                        Dim AttributeName As String = reader.GetAttribute("k")
+                        If AttributeName = "highway" Then
+                            WayType = DecodeHighWayType(reader.GetAttribute("v"))
+                        End If
+                        If AttributeName = "name" Then
+                            WayName = reader.GetAttribute("v")
+                        End If
+                        If AttributeName = "oneway" Then
+                            OneWay = reader.GetAttribute("v")
+                        End If
+                        If AttributeName = "access" Then
+                            AccessAllowed = AccessAllowed And DecodeHighWayAccessLevel(reader.GetAttribute("v"))
+                        End If
+                        If AttributeName = "maxspeed" Then
+                            MaxSpeedOverrideKMH = DecodeHighwayMaxSpeed(reader.GetAttribute("v"))
+                        End If
+                        reader.ReadStartElement()
+                        reader.Skip()
+                    End While
+
+                    If WayType <> WayType.UNSPECIFIED And AccessAllowed Then
+                        Dim Way As New Way(WayID, Nds.ToArray, WayType, WayName)
+
+                        If OneWay <> "" Then
+                            Way.SetOneWay(OneWay)
+                        End If
+
+                        If MaxSpeedOverrideKMH <> -1 Then
+                            Way.SetSpeedLimit(MaxSpeedOverrideKMH)
+                        End If
+
+                        Map.Ways.Add(Way.ID, Way)
+                        Map.NodesAdjacencyList.AddWay(Way)
+                    End If
+
+                    If reader.NodeType = XmlNodeType.EndElement Then
+                        reader.ReadEndElement()
+                        reader.Skip()
+                    End If
+                Loop
+
             End Using
         End Using
-
-        Dim xWays As XmlNodeList = xDoc.GetElementsByTagName("way")
-        For Each xItem As XmlElement In xWays
-            Dim Way As Way = ParseWay(xItem, NodeHashMap)
-            If Way IsNot Nothing Then
-                Map.Ways.Add(Way.ID, Way)
-                Map.NodesAdjacencyList.AddWay(Way)
-            End If
-        Next
 
         Debug.WriteLine("Nodes: " & Map.Nodes.Count)
         Debug.WriteLine("Ways: " & Map.Ways.Count)
@@ -125,7 +179,7 @@ Public Class OSMLoader
         For Each N As Node In Map.Nodes
             If Not Map.NodesAdjacencyList.Rows.ContainsKey(N.ID) Then
                 N.Connected = False
-            Else
+            ElseIf N.Connected Then
                 Map.ConnectedNodesGrid.AddNode(N)
             End If
         Next
@@ -203,4 +257,55 @@ FailedWay:
         Next
         FileClose(1)
     End Sub
+
+
+    'Way parsing utility functions
+    Private Function DecodeHighWayType(ByVal str As String) As WayType
+        Select Case str
+            Case "service"
+                Return WayType.ROAD_SERVICE
+            Case "unclassified"
+                Return WayType.ROAD_UNCLASSIFIED 'e.g. vine road
+            Case "residential"
+                Return WayType.ROAD_RESIDENTIAL
+            Case "tertiary", "tertiary_link"
+                Return WayType.ROAD_TERTIARY
+            Case "secondary", "secondary_link"
+                Return WayType.ROAD_SECONDARY
+            Case "primary", "primary_link"
+                Return WayType.ROAD_PRIMARY
+            Case "trunk", "trunk_link"
+                Return WayType.ROAD_TRUNK
+            Case "motorway", "motorway_link"
+                Return WayType.ROAD_MOTORWAY
+            Case Else
+                Return WayType.UNSPECIFIED
+        End Select
+    End Function
+
+    Private Function DecodeHighWayAccessLevel(ByVal str As String) As Boolean
+        Select Case str
+            Case "yes", "delivery", "public", "unknown"
+                Return True
+            Case "no", "private", "permissive", "destination", "agricultural", "customers", "designated", "psv", "forestry", "military"
+                Return False
+            Case Else
+                'If in doubt, return false
+                Return False
+        End Select
+    End Function
+
+    Private Function DecodeHighwayMaxSpeed(ByVal str As String) As Double
+        If IsNumeric(str) Then
+            Return CDec(str)
+        End If
+
+        If str.Contains("mph") Then
+            Return CDec(Regex.Match(str, "\d+").Value * Vehicles.MILE_LENGTH_IN_KM)
+        End If
+
+        Debug.WriteLine("Could not parse maxspeed: " & str)
+        'Otherwise unparsable - go by the WayType
+        Return -1
+    End Function
 End Class

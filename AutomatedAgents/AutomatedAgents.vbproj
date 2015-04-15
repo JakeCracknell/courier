@@ -108,8 +108,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="OSMData\Module1.vb" />
-    <Compile Include="OSMData\NodesGrid.vb" />
-    <Compile Include="OSMData\TrafficData.vb" />
+    <Compile Include="Geography\NodesGrid.vb" />
     <Compile Include="RouteFinding\RouteCache.vb" />
     <Compile Include="Simulation\LogMessages.vb" />
     <Compile Include="Simulation\SimulationState.vb" />
@@ -133,7 +132,6 @@
     <Compile Include="Graphics\frmAgentStatus.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="OSMData\WayParser.vb" />
     <Compile Include="RouteFinding\AStarSearch.vb" />
     <Compile Include="RouteFinding\Route.vb" />
     <Compile Include="RouteFinding\RouteFinderBenchmark.vb" />
