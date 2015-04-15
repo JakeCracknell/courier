@@ -1,6 +1,7 @@
 ﻿Namespace Vehicles
     Public Module Vehicles
         Public Const MILE_LENGTH_IN_KM = 1.609344
+        Public Const LITRES_TO_A_GALLON = 3.785
 
         Public Enum Type
             CAR
@@ -48,19 +49,29 @@
             End Select
         End Function
 
+        'Function approximated from data here: http://blog.automatic.com/cost-speeding-save-little-time-spend-lot-money/
+        'Multipliers
         Function FuelEconomy(ByVal Type As Type, ByVal DistanceTravelledKM As Double) As Double
-            'For now just say fixed KPL. Note 100 mpg = 35.4 kpl
-            Debug.Assert(DistanceTravelledKM >= 0)
+            If Not DistanceTravelledKM > 0 Then
+                Return 0
+            End If
+
+            Dim Multiplier As Double
+
             Select Case Type
                 Case Vehicles.Type.CAR
-                    Return DistanceTravelledKM / 17.7
+                    Multiplier = 1
                 Case Vehicles.Type.VAN
-                    Return DistanceTravelledKM / 11
+                    Multiplier = 0.92
                 Case Vehicles.Type.TRUCK
-                    Return DistanceTravelledKM / 8
-                Case Else
-                    Return 0.0
+                    Multiplier = 0.55
             End Select
+
+            Dim MilesTravelled As Double = DistanceTravelledKM / MILE_LENGTH_IN_KM
+            Dim SpeedMPH As Double = MilesTravelled * 3600
+            Dim MPG As Double = Multiplier * (-0.0119 * SpeedMPH ^ 2 + SpeedMPH * 1.2754)
+            Dim FuelUsedInGallons As Double = MilesTravelled / MPG
+            Return FuelUsedInGallons * LITRES_TO_A_GALLON
         End Function
 
         'UK Petrol Prices for Thursday 9th April 2015
