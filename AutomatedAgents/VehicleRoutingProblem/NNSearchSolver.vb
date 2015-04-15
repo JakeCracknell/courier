@@ -104,9 +104,10 @@
                     Continue For
                 Else
                     'SortedList cannot contain dupe keys. Will occur if there are 2+ depot waypoints.
+                    Debug.WriteLine(ExtraCost)
+
                     Do Until Not NextNodes.ContainsKey(ExtraCost)
-                        'TODO somehow this becomes -infinity!
-                        ExtraCost += Double.MinValue
+                        ExtraCost += 0.0000000001
                     Loop
                     NextNodes.Add(ExtraCost, NextNode)
                 End If

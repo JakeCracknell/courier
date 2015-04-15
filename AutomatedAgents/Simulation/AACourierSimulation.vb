@@ -23,6 +23,7 @@
         Dim MidIndex As Integer = Int(Rnd() * Agents.Count)
         For i = MidIndex To MidIndex + Agents.Count - 1
             Agents(i Mod Agents.Count).Move()
+            'Debug.Assert(HaversineDistance(NoticeBoard.AgentPositions(i Mod Agents.Count), Agents(i Mod Agents.Count).Plan.RoutePosition.GetPoint) < 0.05) 'TODO, remove this for fast simulations
             NoticeBoard.AgentPositions(i Mod Agents.Count) = Agents(i Mod Agents.Count).Plan.RoutePosition.GetPoint
         Next
 

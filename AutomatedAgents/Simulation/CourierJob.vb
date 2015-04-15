@@ -79,8 +79,8 @@
         Return Not OriginalDeliveryPosition.Equals(DeliveryPosition)
     End Function
 
-    Public Sub CalculateFee(ByVal EstimatedExtraHoursOfDriving As Double)
-        OriginalCustomerFee = Math.Round(SimulationParameters.FeeBasePrice + EstimatedExtraHoursOfDriving * SimulationParameters.FeeHourlyPrice, 2)
+    Public Sub CalculateFee(ByVal EstimatedExtraCostOfDriving As Double)
+        OriginalCustomerFee = Math.Round(SimulationParameters.FeeBasePrice + EstimatedExtraCostOfDriving * SimulationParameters.FeeHourlyPrice, 2)
         CustomerFee = OriginalCustomerFee
     End Sub
 

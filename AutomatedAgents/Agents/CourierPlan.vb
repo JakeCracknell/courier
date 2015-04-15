@@ -38,8 +38,8 @@
 
     'Agent has made progress on its plan, perhaps completing waypoints.
     Public Sub Update(ByVal RecalculateFirstAStar As Boolean)
+        StartPoint = RoutePosition.GetPoint
         If WayPoints.Count > 0 Then
-            StartPoint = RoutePosition.GetPoint
             If RecalculateFirstAStar Then
                 'Debug.WriteLineIf(FuelDiversion IsNot Nothing, "On refuel diversion, so not sure what to recalculate")
                 Dim AStar As New AStarSearch(StartPoint, WayPoints(0).Position, Map.NodesAdjacencyList, Minimiser)
