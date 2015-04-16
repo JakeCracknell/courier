@@ -69,15 +69,29 @@
         Dim MeanLatitude As Double = 0
         Dim MeanLongitude As Double = 0
         Dim PickupPositionsCount As Integer = Math.Min(MAX_POINTS_TO_CONSIDER, Agent.PickupPoints.Count)
-        For i = Agent.PickupPoints.Count - 1 To Math.Max(0, Agent.PickupPoints.Count - 1 - MAX_POINTS_TO_CONSIDER) Step -1
+        For i = Agent.PickupPoints.Count - 1 To Math.Max(0, Agent.PickupPoints.Count - MAX_POINTS_TO_CONSIDER) Step -1
             MeanLatitude += Agent.PickupPoints(i).GetLatitude
             MeanLongitude += Agent.PickupPoints(i).GetLongitude
+            'Debug.WriteLine(Agent.PickupPoints(i).GetLatitude & "   " & Agent.PickupPoints(i).GetLongitude)
         Next
         MeanLatitude /= PickupPositionsCount
         MeanLongitude /= PickupPositionsCount
 
+     
+
         Dim BestNode As Node = Agent.Map.NodesAdjacencyList.GetNearestNode(MeanLatitude, MeanLongitude)
         Dim BestHopPosition As HopPosition = Agent.Map.NodesAdjacencyList.GetHopPositionFromNode(BestNode.ID)
+
+
+
+
+        If Not Agent.Map.Bounds.Encloses(BestHopPosition) Then
+            'This happened once for Guernsey. Longitude was way off.
+            FindOptimalSleepingPosition()
+        End If
+
+
+
         Return BestHopPosition
     End Function
 End Class
