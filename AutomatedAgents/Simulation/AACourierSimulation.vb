@@ -25,7 +25,7 @@
         For i = MidIndex To MidIndex + Agents.Count - 1
             Agents(i Mod Agents.Count).Move()
             If Not HaversineDistance(NoticeBoard.AgentPositions(i Mod Agents.Count), Agents(i Mod Agents.Count).Plan.RoutePosition.GetPoint) < 0.05 Then
-                Console.Beep()
+                Console.Beep() 'TODO: Occasionally might flit by one node. 0.05 is 112mph, so this never should be called.
             End If
             'If Agents(i Mod Agents.Count).Plan.Routes.Count > 0 Then
             '    Dim Last As HopPosition = Agents(i Mod Agents.Count).Plan.Routes(0).GetStartPoint

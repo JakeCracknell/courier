@@ -51,13 +51,15 @@
                 End If
             Case ContractNetPolicy.CNP2
                 'Sum current route times and bid only if the job can be done by the deadline. Bid the cost of appending it to the end of its route.
-                Dim StartingPoint As IPoint = If(Agent.Plan.IsIdle, Agent.Plan.RoutePosition.GetPoint, Agent.Plan.WayPoints.Last.Position)
-                Dim Route1 As Route = RouteCache.GetRoute(StartingPoint, JobToReview.PickupPosition)
-                Dim TimeSum As TimeSpan = Route1.GetEstimatedTime(NoticeBoard.CurrentTime)
+                Dim TimeSum As TimeSpan = TimeSpan.Zero
                 For Each R As Route In Agent.Plan.Routes
                     TimeSum += R.GetEstimatedTime(NoticeBoard.CurrentTime + TimeSum) + SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB
                 Next
-                Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition) 'TODO speed now?
+                Dim StartingPoint As IPoint = If(Agent.Plan.IsIdle, Agent.Plan.RoutePosition.GetPoint, Agent.Plan.WayPoints.Last.Position)
+                Dim Route1 As Route = RouteCache.GetRoute(StartingPoint, JobToReview.PickupPosition) 'TODO use timesum for route
+                Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(NoticeBoard.CurrentTime + TimeSum)
+                TimeSum += Route1Time
+                Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition) 'TODO use timesum for route
                 TimeSum += Route2.GetEstimatedTime(NoticeBoard.CurrentTime + TimeSum)
                 If NoticeBoard.CurrentTime + Agent.Plan.GetDiversionTimeEstimate + TimeSum > JobToReview.Deadline Then
                     Exit Sub
