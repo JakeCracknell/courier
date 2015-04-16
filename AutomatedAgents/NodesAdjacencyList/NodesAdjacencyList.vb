@@ -132,8 +132,8 @@
     End Function
 
     Sub RemoveDisconnectedComponents(ByVal CentralStartingNode As Node)
-        Dim t As New Stopwatch
-        t.Start()
+        Dim t As Stopwatch = Stopwatch.StartNew
+
         Dim FullyExploredNodes As New HashSet(Of Node)
         Dim DFSStack As New Stack(Of NodesAdjacencyListRow)
         Dim DFSStackIDs As New HashSet(Of Long)
@@ -161,7 +161,7 @@
         Loop Until DFSStack.Count = 0
 
         Dim UnverifiedNodes As New HashSet(Of Node)
-        Dim NodesToPrune As New List(Of Node)
+        Dim NodesToPrune As New HashSet(Of Node)
         UnverifiedNodes = New HashSet(Of Node)(FullyExploredNodes)
         UnverifiedNodes.ExceptWith(VerifiedNodes)
 
@@ -182,13 +182,16 @@
                 NodesToPrune.Add(Row.NodeKey)
             End If
         Next
-
         For Each NodeToPrune In NodesToPrune
-            'All I am going to do for now. Complex to remove from Adj list and not necessary.
             NodeToPrune.Connected = False
-
-            'Could do more
-            Rows(NodeToPrune.ID).Cells.Clear()
+            Rows.Remove(NodeToPrune.ID)
+        Next
+        For Each Row As NodesAdjacencyListRow In Rows.Values
+            For CellIndex = Row.Cells.Count - 1 To 0 Step -1
+                If NodesToPrune.Contains(Row.Cells(CellIndex).Node) Then
+                    Row.Cells.RemoveAt(CellIndex)
+                End If
+            Next
         Next
 
         Debug.WriteLine(NodesToPrune.Count & " nodes pruned, in " & t.ElapsedMilliseconds & " ms")
