@@ -1,37 +1,32 @@
-﻿
-Class ContractNetStrategy
+﻿Public Class FreeForAllStrategy
     Implements IAgentStrategy
 
     Private Agent As Agent
-    Private Contractor As ContractNetContractor
-    Private Policy As ContractNetPolicy
+    Private HopefulJob As CourierJob = Nothing
 
-    Public Sub New(ByVal Agent As Agent, ByVal Policy As ContractNetPolicy)
+    Public Sub New(ByVal Agent As Agent)
         Me.Agent = Agent
-        Me.Policy = Policy
-        Contractor = New ContractNetContractor(Agent, Policy)
-        NoticeBoard.AvailableContractors.Add(Contractor)
     End Sub
 
     Public Sub Run() Implements IAgentStrategy.Run
-        Dim NewJob As CourierJob = Contractor.CollectJob
-        If NewJob IsNot Nothing Then
-            Select Case Policy
-                Case ContractNetPolicy.CNP1 'TODO test 1-3 works with the idle strats
-                    Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft, WayPoint.CreateWayPointList(NewJob))
-                Case ContractNetPolicy.CNP2
-                    Agent.Plan.WayPoints.AddRange(WayPoint.CreateWayPointList(NewJob))
-                    Agent.Plan.RecreateRouteListFromWaypoints()
-                Case ContractNetPolicy.CNP3, ContractNetPolicy.CNP4
-                    Agent.Plan = Contractor.Solver.GetPlan
-            End Select
-            Agent.PickupPoints.Add(NewJob.PickupPosition)
-        End If
-
         If Agent.Plan.IsIdle() Then
-            Exit Sub
+            HopefulJob = FindBestJob()
+            If HopefulJob IsNot Nothing Then
+                HopefulJob.Status = JobStatus.PENDING_PICKUP
+                Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft, WayPoint.CreateWayPointList(HopefulJob))
+                Agent.PickupPoints.Add(HopefulJob.PickupPosition)
+                SimulationState.NewEvent(Agent.AgentID, LogMessages.JobAwarded(HopefulJob.JobID, Agent.Plan.Routes(0).GetEstimatedHours(NoticeBoard.CurrentTime)))
+            Else
+                Exit Sub
+            End If
+        ElseIf HopefulJob IsNot Nothing Then
+            If HopefulJob.Status <> JobStatus.PENDING_PICKUP Then
+                'Too late!
+                HopefulJob = Nothing
+                Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft)
+                Exit Sub
+            End If
         End If
-
         'No need to recompute A* route to first waypoint.
         Agent.Plan.Update(False)
 
@@ -41,10 +36,11 @@ Class ContractNetStrategy
                 Dim Job As CourierJob = Agent.Plan.RemoveFirstWayPoint().Job
                 Select Case Job.Status
                     Case JobStatus.PENDING_PICKUP
+                        HopefulJob = Nothing
                         Agent.Delayer = New Delayer(Job.Collect())
                         If Job.Status = JobStatus.CANCELLED Then
                             'CNP policy invariant
-                            Agent.Plan.ExtractCancelled()
+                            Agent.Plan.ExtractCancelled() 'TODO partial refund based on time saved?
                             Agent.TotalCompletedJobs += 1 'Cancelled pick counts as completed job
                             SimulationState.NewEvent(Agent.AgentID, LogMessages.PickFail(Job.JobID))
                         ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
@@ -72,18 +68,10 @@ Class ContractNetStrategy
                                           .VolumeDelta = -Job.CubicMetres}
                             Dim ImmediateRouteToDepot As Route = RouteCache.GetRoute(Agent.Plan.StartPoint, DepotWaypoint.Position)
 
-                            Select Case Policy
-                                Case ContractNetPolicy.CNP1, ContractNetPolicy.CNP2, ContractNetPolicy.CNP3
-                                    'Go to the depot right now.
-                                    Agent.Plan.WayPoints.Insert(0, DepotWaypoint)
-                                    Agent.Plan.Routes.Insert(0, ImmediateRouteToDepot)
-                                Case ContractNetPolicy.CNP4
-                                    'Go to the depot whenever it is optimal.
-                                    Agent.Plan.WayPoints.Add(DepotWaypoint)
-                                    Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser)
-                                    Agent.Plan = Solver.GetPlan
-                                    Debug.Assert(Agent.Plan IsNot Nothing)
-                            End Select
+                            'Go to the depot right now.
+                            Agent.Plan.WayPoints.Insert(0, DepotWaypoint)
+                            Agent.Plan.Routes.Insert(0, ImmediateRouteToDepot)
+
                             SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliveryFail(Job.JobID, ImmediateRouteToDepot.GetKM))
                         End If
                 End Select
@@ -95,4 +83,30 @@ Class ContractNetStrategy
             End If
         End If
     End Sub
+
+    Function FindBestJob() As CourierJob
+        'Find best job based on the value of the job and whether the agent can perform it given its current resources.
+        Dim BestJob As CourierJob = Nothing
+        Dim BestValue As Double = Double.MinValue
+        For Each JobToReview As CourierJob In NoticeBoard.UnallocatedJobs
+            If JobToReview.CubicMetres > Agent.GetVehicleMaxCapacity Then
+                Continue For
+            End If
+
+            Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition)
+            Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
+            Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(NoticeBoard.CurrentTime)
+            Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(NoticeBoard.CurrentTime + Route1Time)
+            If NoticeBoard.CurrentTime + Agent.Plan.GetDiversionTimeEstimate + MinTime > _
+                JobToReview.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
+                Continue For
+            End If
+            Dim JobValue As Double = Route2.GetCostForAgent(Agent) / Route1.GetCostForAgent(Agent)
+            If JobValue > BestValue Then
+                BestJob = JobToReview
+                BestValue = Route1.GetCostForAgent(Agent)
+            End If
+        Next
+        Return BestJob
+    End Function
 End Class

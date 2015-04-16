@@ -41,7 +41,8 @@
                 If Agent.Plan.IsIdle() Then
                     Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition)
                     Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
-                    Dim MinTime As TimeSpan = Route1.GetEstimatedTime + Route2.GetEstimatedTime
+                    Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(NoticeBoard.CurrentTime)
+                    Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(NoticeBoard.CurrentTime + Route1Time)
                     If NoticeBoard.CurrentTime + Agent.Plan.GetDiversionTimeEstimate + MinTime > _
                         JobToReview.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
                         Exit Sub
@@ -52,11 +53,12 @@
                 'Sum current route times and bid only if the job can be done by the deadline. Bid the cost of appending it to the end of its route.
                 Dim StartingPoint As IPoint = If(Agent.Plan.IsIdle, Agent.Plan.RoutePosition.GetPoint, Agent.Plan.WayPoints.Last.Position)
                 Dim Route1 As Route = RouteCache.GetRoute(StartingPoint, JobToReview.PickupPosition)
-                Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
-                Dim TimeSum As TimeSpan = Route1.GetEstimatedTime + Route2.GetEstimatedTime
+                Dim TimeSum As TimeSpan = Route1.GetEstimatedTime(NoticeBoard.CurrentTime)
                 For Each R As Route In Agent.Plan.Routes
-                    TimeSum += R.GetEstimatedTime + SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB
+                    TimeSum += R.GetEstimatedTime(NoticeBoard.CurrentTime + TimeSum) + SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB
                 Next
+                Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition) 'TODO speed now?
+                TimeSum += Route2.GetEstimatedTime(NoticeBoard.CurrentTime + TimeSum)
                 If NoticeBoard.CurrentTime + Agent.Plan.GetDiversionTimeEstimate + TimeSum > JobToReview.Deadline Then
                     Exit Sub
                 End If
@@ -67,12 +69,12 @@
                 'Solution is Nothing iff impossible to fit into schedule (though as we only use NN, this is often untrue)
                 CurrentBid = If(TentativeSolver.IsSuccessful, TentativeSolver.GetTotalCost - CurrentDrivingCost, NO_BID)
 
-
             Case ContractNetPolicy.CNP4
                 'Check if the deadline is too slim, even if the agent fulfills it immediately
                 Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition)
                 Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
-                Dim MinTime As TimeSpan = Route1.GetEstimatedTime + Route2.GetEstimatedTime
+                Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(NoticeBoard.CurrentTime)
+                Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(NoticeBoard.CurrentTime + Route1Time)
                 If NoticeBoard.CurrentTime + MinTime > _
                     JobToReview.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
                     Exit Sub

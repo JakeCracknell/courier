@@ -87,6 +87,7 @@
     <Compile Include="Agents\IdleStrategies\SleepingIdleStrategy.vb" />
     <Compile Include="Agents\Strategies\ContractNetStrategy.vb" />
     <Compile Include="Agents\Delayer.vb" />
+    <Compile Include="Agents\Strategies\FreeForAllStrategy.vb" />
     <Compile Include="Agents\Strategies\IAgentStrategy.vb" />
     <None Include="Agents\Strategies\Non-CNP\NearestNeighbourEuclidianStrategy.vb" />
     <None Include="Agents\Strategies\Non-CNP\NearestNeighbourAStarStrategy.vb" />

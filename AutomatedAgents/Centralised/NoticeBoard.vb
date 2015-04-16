@@ -100,6 +100,9 @@
                     IncompleteJobs.Remove(Job)
                     RefusedJobs.Add(Job)
                     UnallocatedJobs.Remove(Job)
+                ElseIf Job.Status <> JobStatus.UNALLOCATED Then
+                    UnallocatedJobs.Remove(Job)
+                    UnpickedJobs.Add(Job)
                 End If
             Next
 
