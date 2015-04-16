@@ -137,6 +137,7 @@
         End Sub
 
         Sub Clear()
+            CurrentTime = TimeSpan.Zero
             UnallocatedJobs.Clear()
             UnpickedJobs.Clear()
             PickedJobs.Clear()
