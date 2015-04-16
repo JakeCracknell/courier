@@ -88,7 +88,7 @@
                             SimulationStateChanged = SimulationStateChanged Or AASimulation.Tick()
                             AASimulation.LogStatistics()
 
-                            If MapDrawCounter >= SimulationParameters.DisplayRefreshSpeed Then
+                            If MapDrawCounter >= SimulationParameters.DisplayRefreshSpeed AndAlso Not PauseDisplayToolStripMenuItem.Checked Then
                                 If SimulationStateChanged Then
                                     SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, NoticeBoard.IncompleteJobs))
                                     SimulationState.CacheAASimulationStatus(AASimulation)

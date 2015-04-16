@@ -40,8 +40,9 @@
         End Sub
 
         Public Function GetEvents() As LogEvent()
-            Dim EventsArray As LogEvent() = Events.ToArray
+            Dim EventsArray As LogEvent()
             SyncLock Events
+                EventsArray = Events.ToArray
                 Events.Clear()
             End SyncLock
             Return EventsArray

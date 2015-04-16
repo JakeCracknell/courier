@@ -56,6 +56,7 @@ Partial Class frmMain
         Me.LineViewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RouteViewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LandmarksToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.GridToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SimulationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StartSimulationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StartPlaygroundToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -67,7 +68,7 @@ Partial Class frmMain
         Me.picMap = New System.Windows.Forms.PictureBox()
         Me.tmrStatus = New System.Windows.Forms.Timer(Me.components)
         Me.bwSimulator = New System.ComponentModel.BackgroundWorker()
-        Me.GridToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PauseDisplayToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.picMap, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -216,7 +217,7 @@ Partial Class frmMain
         '
         'ViewToolStripMenuItem
         '
-        Me.ViewToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NodesToolStripMenuItem, Me.RoadsToolStripMenuItem, Me.AgentRoutesToolStripMenuItem, Me.AgentPlansToolStripMenuItem, Me.LandmarksToolStripMenuItem, Me.GridToolStripMenuItem})
+        Me.ViewToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NodesToolStripMenuItem, Me.RoadsToolStripMenuItem, Me.AgentRoutesToolStripMenuItem, Me.AgentPlansToolStripMenuItem, Me.LandmarksToolStripMenuItem, Me.GridToolStripMenuItem, Me.PauseDisplayToolStripMenuItem})
         Me.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem"
         Me.ViewToolStripMenuItem.Size = New System.Drawing.Size(44, 20)
         Me.ViewToolStripMenuItem.Text = "View"
@@ -299,6 +300,13 @@ Partial Class frmMain
         Me.LandmarksToolStripMenuItem.Size = New System.Drawing.Size(195, 22)
         Me.LandmarksToolStripMenuItem.Text = "Depots and Fuel Points"
         '
+        'GridToolStripMenuItem
+        '
+        Me.GridToolStripMenuItem.CheckOnClick = True
+        Me.GridToolStripMenuItem.Name = "GridToolStripMenuItem"
+        Me.GridToolStripMenuItem.Size = New System.Drawing.Size(195, 22)
+        Me.GridToolStripMenuItem.Text = "Grid"
+        '
         'SimulationToolStripMenuItem
         '
         Me.SimulationToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StartSimulationToolStripMenuItem, Me.StartPlaygroundToolStripMenuItem, Me.StopToolStripMenuItem, Me.ResetToolStripMenuItem, Me.SpeedToolStripMenuItem, Me.ViewStatisticsToolStripMenuItem})
@@ -363,12 +371,12 @@ Partial Class frmMain
         'bwSimulator
         '
         '
-        'GridToolStripMenuItem
+        'PauseDisplayToolStripMenuItem
         '
-        Me.GridToolStripMenuItem.CheckOnClick = True
-        Me.GridToolStripMenuItem.Name = "GridToolStripMenuItem"
-        Me.GridToolStripMenuItem.Size = New System.Drawing.Size(195, 22)
-        Me.GridToolStripMenuItem.Text = "Grid"
+        Me.PauseDisplayToolStripMenuItem.CheckOnClick = True
+        Me.PauseDisplayToolStripMenuItem.Name = "PauseDisplayToolStripMenuItem"
+        Me.PauseDisplayToolStripMenuItem.Size = New System.Drawing.Size(195, 22)
+        Me.PauseDisplayToolStripMenuItem.Text = "Pause Display"
         '
         'frmMain
         '
@@ -435,5 +443,6 @@ Partial Class frmMain
     Friend WithEvents SmallCommercialVanToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents Lorry75TonneToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents GridToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents PauseDisplayToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class
