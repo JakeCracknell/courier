@@ -84,21 +84,21 @@
         Select Case JobType
             Case 0 'B2B
                 Dim RandomBusinessFrom As Node = Map.Businesses(RandomNumberGenerator.Next(0, Map.Businesses.Count))
-                PickupLocation = Map.NodesAdjacencyList.GetNearestPoint(RandomBusinessFrom)
+                PickupLocation = Map.GetNearestPoint(RandomBusinessFrom)
                 Dim RandomBusinessTo As Node = Map.Businesses(RandomNumberGenerator.Next(0, Map.Businesses.Count))
-                DeliveryLocation = Map.NodesAdjacencyList.GetNearestPoint(RandomBusinessTo)
+                DeliveryLocation = Map.GetNearestPoint(RandomBusinessTo)
                 PickupName = GenerateWaypointName(PickupLocation, RandomBusinessFrom)
                 DeliveryName = GenerateWaypointName(DeliveryLocation, RandomBusinessTo)
             Case 1 'B2C
                 Dim RandomBusinessFrom As Node = Map.Businesses(RandomNumberGenerator.Next(0, Map.Businesses.Count))
-                PickupLocation = Map.NodesAdjacencyList.GetNearestPoint(RandomBusinessFrom)
+                PickupLocation = Map.GetNearestPoint(RandomBusinessFrom)
                 DeliveryLocation = Map.NodesAdjacencyList.GetRandomPoint
                 PickupName = GenerateWaypointName(PickupLocation, RandomBusinessFrom)
                 DeliveryName = GenerateWaypointName(DeliveryLocation)
             Case 2 'C2B
                 PickupLocation = Map.NodesAdjacencyList.GetRandomPoint
                 Dim RandomBusinessTo As Node = Map.Businesses(RandomNumberGenerator.Next(0, Map.Businesses.Count))
-                DeliveryLocation = Map.NodesAdjacencyList.GetNearestPoint(RandomBusinessTo)
+                DeliveryLocation = Map.GetNearestPoint(RandomBusinessTo)
                 PickupName = GenerateWaypointName(PickupLocation)
                 DeliveryName = GenerateWaypointName(DeliveryLocation, RandomBusinessTo)
             Case 3 'C2C
@@ -123,11 +123,11 @@
         Else
             'A gamma distribution, giving a range from 0 to infinity. Mode of (alpha-1)*theta = +1h
             'Spread mostly between 0.5 and 4
-            Deadline = NoticeBoard.CurrentTime + TimeSpan.FromHours(Gamma(2, 1))
+            Deadline = NoticeBoard.CurrentTime + TimeSpan.FromHours(ProbabilityDistributions.Gamma(2, 1))
         End If
 
         'Generate a random package size from an exponential distribution (as many packages will be documents).
-        Dim Size As Double = Exponential(SimulationParameters.PackageSizeLambda, RandomNumberGenerator.NextDouble)
+        Dim Size As Double = ProbabilityDistributions.Exponential(SimulationParameters.PackageSizeLambda, RandomNumberGenerator.NextDouble)
 
         Dim CourierJob As New CourierJob(PickupLocation, DeliveryLocation, PickupName, DeliveryName, Size, Deadline)
         NoticeBoard.AddJob(CourierJob)
@@ -142,7 +142,7 @@
         If WayName <> "" Then
             WayName = "Unnamed Road"
         End If
-        Dim HouseNo As Integer = 1 + Int(Exponential(0.03))
+        Dim HouseNo As Integer = 1 + Int(ProbabilityDistributions.Exponential(0.03))
         Return String.Format("{0} ({1}), {2} {3}", Name, Age, HouseNo, WayName)
     End Function
     Function GenerateWaypointName(ByVal Position As HopPosition, ByVal Business As Node) As String
@@ -151,7 +151,7 @@
         If WayName = "" Then
             WayName = "Unnamed Road"
         End If
-        Dim HouseNo As Integer = 1 + Int(Exponential(0.03))
+        Dim HouseNo As Integer = 1 + Int(ProbabilityDistributions.Exponential(0.03))
         Return String.Format("{0}, {1} {2}", Name, HouseNo, WayName)
     End Function
 End Class

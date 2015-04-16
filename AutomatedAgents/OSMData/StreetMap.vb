@@ -27,4 +27,9 @@
     Public Function GetNearestFuelPoint(ByVal Point As IPoint) As HopPosition
         Return NodesAdjacencyList.GetHopPositionFromNode(GetNearestLandmark(Point, FuelPoints).ID)
     End Function
+
+    Function GetNearestPoint(ByVal Point As IPoint) As HopPosition
+        Return NodesAdjacencyList.GetHopPositionFromNode(ConnectedNodesGrid.GetNearestNode(Point))
+    End Function
+
 End Class

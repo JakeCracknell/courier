@@ -24,7 +24,7 @@
 
     Private Class RouteFinderBenchmarkEngine
         Sub RunAsync()
-            Threading.ThreadPool.QueueUserWorkItem(AddressOf BenchmarkAStarHeuristicMultiplier)
+            Threading.ThreadPool.QueueUserWorkItem(AddressOf RunBenchmark)
         End Sub
 
         Protected Sub Test()

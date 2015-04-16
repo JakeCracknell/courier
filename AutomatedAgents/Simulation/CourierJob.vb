@@ -29,9 +29,9 @@
     End Sub
     Sub New(ByVal PickupPosition As HopPosition, ByVal DeliveryPosition As HopPosition)
         Me.New(PickupPosition, DeliveryPosition, PickupPosition.ToString, DeliveryPosition.ToString, _
-               Math.Max(SimulationParameters.CubicMetresMin, Exponential(SimulationParameters.PackageSizeLambda, Rnd)), _
+               Math.Max(SimulationParameters.CubicMetresMin, ProbabilityDistributions.Exponential(SimulationParameters.PackageSizeLambda, Rnd)), _
                     NoticeBoard.CurrentTime.Add( _
-                    TimeSpan.FromMinutes(Gaussian(SimulationParameters.DeadlineAverage))))
+                    TimeSpan.FromMinutes(ProbabilityDistributions.Gaussian(SimulationParameters.DeadlineAverage))))
     End Sub
 
     'These functions return the time taken to collect/deliver. If the customer
