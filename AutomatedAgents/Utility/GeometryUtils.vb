@@ -45,4 +45,8 @@
     Function GetMidpointOfTwoPoints(ByVal X1 As Double, ByVal Y1 As Double, ByVal X2 As Double, ByVal Y2 As Double) As PointF
         Return New PointF((X1 + X2) / 2, (Y1 + Y2) / 2)
     End Function
+
+    Function PointsAreApproximatelyEqual(ByVal p1 As IPoint, ByVal p2 As IPoint) As Boolean
+        Return Math.Abs(p1.GetLatitude - p2.GetLatitude) < 0.001 AndAlso Math.Abs(p1.GetLongitude - p2.GetLongitude) < 0.001
+    End Function
 End Module

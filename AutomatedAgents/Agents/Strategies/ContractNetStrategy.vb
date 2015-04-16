@@ -1,5 +1,4 @@
-﻿
-Class ContractNetStrategy
+﻿Class ContractNetStrategy
     Implements IAgentStrategy
 
     Private Agent As Agent
@@ -76,7 +75,7 @@ Class ContractNetStrategy
                                 Case ContractNetPolicy.CNP1, ContractNetPolicy.CNP2, ContractNetPolicy.CNP3
                                     'Go to the depot right now.
                                     Agent.Plan.WayPoints.Insert(0, DepotWaypoint)
-                                    Agent.Plan.Routes.Insert(0, ImmediateRouteToDepot)
+                                    Agent.Plan.RecreateRouteListFromWaypoints() 'Routes(1) will have also changed!
                                 Case ContractNetPolicy.CNP4
                                     'Go to the depot whenever it is optimal.
                                     Agent.Plan.WayPoints.Add(DepotWaypoint)
@@ -87,10 +86,12 @@ Class ContractNetStrategy
                             SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliveryFail(Job.JobID, ImmediateRouteToDepot.GetKM))
                         End If
                 End Select
-
             End If
 
             If Agent.Plan.Routes.Count > 0 Then
+                If Not PointsAreApproximatelyEqual(Agent.Plan.Routes(0).GetStartPoint, Agent.Plan.RoutePosition.GetPoint) Then
+                    Agent.Plan.RecreateRouteListFromWaypoints()
+                End If
                 Agent.Plan.RoutePosition = New RoutePosition(Agent.Plan.Routes(0))
             End If
         End If
