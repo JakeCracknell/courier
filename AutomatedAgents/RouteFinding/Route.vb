@@ -1,8 +1,10 @@
-﻿Public Class Route
+﻿Imports System.Collections.Concurrent
+
+Public Class Route
     Private Hops As List(Of Hop)
     Private TotalKM As Double = -1
     Private TotalHours As Double = -1
-    Private TotalHoursAtTime As New Dictionary(Of Integer, Double)
+    Private TotalHoursAtTime As New ConcurrentDictionary(Of Integer, Double)
 
     Public Sub New(ByVal Hops As List(Of Hop))
         Debug.Assert(Hops IsNot Nothing AndAlso Hops.Count >= 1)

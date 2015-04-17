@@ -71,7 +71,7 @@
                 'Solution is Nothing iff impossible to fit into schedule (though as we only use NN, this is often untrue)
                 CurrentBid = If(TentativeSolver.IsSuccessful, TentativeSolver.GetTotalCost - CurrentDrivingCost, NO_BID)
 
-            Case ContractNetPolicy.CNP4
+            Case ContractNetPolicy.CNP4, ContractNetPolicy.CNP5
                 'Check if the deadline is too slim, even if the agent fulfills it immediately
                 Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition)
                 Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
@@ -89,8 +89,6 @@
                 'Solution is Nothing iff impossible to fit into schedule (though as we only use NN, this is often untrue)
                 CurrentBid = If(TentativeSolver.IsSuccessful, TentativeSolver.GetTotalCost - CurrentDrivingCost, NO_BID)
 
-            Case ContractNetPolicy.CNP5
-                Throw New NotImplementedException
         End Select
 
         'Sometimes the solver will be directed to a lower cost route with this new job, making the difference negative.

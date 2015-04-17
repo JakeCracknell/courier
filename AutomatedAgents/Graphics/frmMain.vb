@@ -196,7 +196,7 @@
             If picMap.Image IsNot Nothing Then
                 picMap.Image.Dispose()
             End If
-            picMap.Image = NewImage
+            picMap.Image = NewImage.Clone
         Catch ex As Exception
             Debug.WriteLine(ex.ToString)
         End Try

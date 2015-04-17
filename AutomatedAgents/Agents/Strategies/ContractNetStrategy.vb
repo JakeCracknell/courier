@@ -79,7 +79,7 @@
                                     'Go to the depot right now.
                                     Agent.Plan.WayPoints.Insert(0, DepotWaypoint)
                                     Agent.Plan.RecreateRouteListFromWaypoints() 'Routes(1) will have also changed!
-                                Case ContractNetPolicy.CNP4, ContractNetPolicy.CNP5
+                                Case ContractNetPolicy.CNP4
                                     'Go to the depot whenever it is optimal.
                                     Agent.Plan.WayPoints.Add(DepotWaypoint)
                                     Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser)
@@ -89,11 +89,8 @@
                                     'Try to replan and avoid late deliveries.
                                     Agent.Plan.WayPoints.Add(DepotWaypoint)
                                     Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.REDUNDANCY_TIME), Agent.RouteFindingMinimiser)
-                                    If Solver Is Nothing Then
-                                        'If it fails, try to retract bids on jobs.
-                                        Agent.Plan = CNP5Contingency()
-                                        Debug.Assert(Agent.Plan IsNot Nothing)
-                                    End If
+                                    Agent.Plan = If(Solver.GetPlan, CNP5Contingency())
+                                    Debug.Assert(Agent.Plan IsNot Nothing)
                             End Select
                             SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliveryFail(Job.JobID, ImmediateRouteToDepot.GetKM))
                         End If

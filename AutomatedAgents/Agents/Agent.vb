@@ -52,8 +52,10 @@
             Debug.WriteLine("ERROR: Out of fuel! Fuel level is: " & FuelLitres)
         End If
 
+        Debug.Assert(Plan.WayPoints.Count = Plan.Routes.Count)
         'Reroutes if needed. In the simple case, when a waypoint is reached
         Strategy.Run()
+        Debug.Assert(Plan.WayPoints.Count = Plan.Routes.Count)
 
         If Not Plan.RoutePosition.RouteCompleted And Delayer.Tick() Then
             Dim DistanceTravelled As Double = Plan.RoutePosition.Move(VehicleType)

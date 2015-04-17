@@ -58,8 +58,10 @@
         'TODO perhaps experiment with not excluding the owner?
         'TODO: log messages
         Function RetractJobs(ByVal Owner As ContractNetContractor, ByVal RetractableJobs As List(Of CourierJob)) As List(Of CourierJob)
-            Dim OtherContractors As ContractNetContractor() = AvailableContractors.Except(Owner).ToArray
-            Dim OtherContractorsBids(OtherContractors.Length - 1) As Double
+            Dim OtherContractors As New List(Of ContractNetContractor)(AvailableContractors)
+            OtherContractors.Remove(Owner)
+
+            Dim OtherContractorsBids(OtherContractors.Count - 1) As Double
             Dim UnallocatedJobs As New List(Of CourierJob)
             For Each Job As CourierJob In RetractableJobs
                 Parallel.For(0, OtherContractors.Count, _
@@ -68,7 +70,7 @@
                                 End Sub)
                 Dim Winner As ContractNetContractor = Nothing
                 Dim BestBid As Double = Double.MaxValue
-                For i = 0 To OtherContractors.Length - 1
+                For i = 0 To OtherContractors.Count - 1
                     If OtherContractorsBids(i) <> ContractNetContractor.NO_BID Then
                         If OtherContractorsBids(i) < BestBid Then
                             BestBid = OtherContractorsBids(i)
