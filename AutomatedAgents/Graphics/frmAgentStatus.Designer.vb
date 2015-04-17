@@ -106,7 +106,7 @@ Partial Class frmAgentStatus
         'cKMH
         '
         Me.cKMH.DisplayIndex = 7
-        Me.cKMH.Text = "Speed (KM/h)"
+        Me.cKMH.Text = "Speed (km/h)"
         Me.cKMH.Width = 82
         '
         'cLitres
@@ -117,7 +117,7 @@ Partial Class frmAgentStatus
         'cTotalKM
         '
         Me.cTotalKM.DisplayIndex = 9
-        Me.cTotalKM.Text = "Total Distance (KM)"
+        Me.cTotalKM.Text = "Total Distance (km)"
         Me.cTotalKM.Width = 111
         '
         'cFuelCost
@@ -197,12 +197,12 @@ Partial Class frmAgentStatus
         '
         'cFrom
         '
-        Me.cFrom.Text = "From"
+        Me.cFrom.Text = "From ↑"
         Me.cFrom.Width = 156
         '
         'cTo
         '
-        Me.cTo.Text = "To"
+        Me.cTo.Text = "To ↓"
         Me.cTo.Width = 166
         '
         'cDirect

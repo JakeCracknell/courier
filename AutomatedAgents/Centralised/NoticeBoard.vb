@@ -55,9 +55,7 @@
             Return True
         End Function
 
-        'TODO perhaps experiment with not excluding the owner?
-        'TODO: log messages
-        Function RetractJobs(ByVal Owner As ContractNetContractor, ByVal RetractableJobs As List(Of CourierJob)) As List(Of CourierJob)
+        Function CNP5_ReallocateJobs(ByVal Owner As ContractNetContractor, ByVal RetractableJobs As List(Of CourierJob)) As List(Of CourierJob)
             Dim OtherContractors As New List(Of ContractNetContractor)(AvailableContractors)
             OtherContractors.Remove(Owner)
 
@@ -80,6 +78,7 @@
                 Next
                 If Winner IsNot Nothing Then
                     Winner.CNP5ImmediateAward()
+                    SimulationState.NewEvent(LogMessages.CNP5JobTransfer(Job.JobID, Owner.GetAgentID(), Winner.GetAgentID()))
                 Else
                     UnallocatedJobs.Add(Job)
                 End If

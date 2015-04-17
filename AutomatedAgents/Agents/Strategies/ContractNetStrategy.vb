@@ -116,16 +116,20 @@
                 NecessaryJobs.Add(Job)
             End If
         Next
-
-        'Order jobs by time left minus how long the route could take. TODO: experiment?
-        RetractableJobs = RetractableJobs.OrderBy(Function(Job)
-                                                      Return Job.Deadline - _
-                                                          Job.GetDirectRoute.GetEstimatedTime(NoticeBoard.CurrentTime)
-                                                  End Function).ToList
-        Dim JobsThatNoOtherAgentsCouldFulfil As List(Of CourierJob) = NoticeBoard.RetractJobs(Contractor, RetractableJobs)
-        Agent.Plan.WayPoints.Clear()
-        Agent.Plan.WayPoints.AddRange(WayPoint.CreateWayPointList(NecessaryJobs))
-        Agent.Plan.WayPoints.AddRange(WayPoint.CreateWayPointList(JobsThatNoOtherAgentsCouldFulfil))
+        If RetractableJobs.Count > 0 Then
+            'Order jobs by time left minus how long the route could take.
+            RetractableJobs = RetractableJobs.OrderBy(Function(Job)
+                                                          Return Job.Deadline - _
+                                                              Job.GetDirectRoute.GetEstimatedTime(NoticeBoard.CurrentTime)
+                                                      End Function).ToList
+            SimulationState.NewEvent(Agent.AgentID, LogMessages.CNP5JobsSentForTransfer(RetractableJobs.Count))
+            Dim JobsThatNoOtherAgentsCouldFulfil As List(Of CourierJob) = NoticeBoard.CNP5_ReallocateJobs(Contractor, RetractableJobs)
+            SimulationState.NewEvent(Agent.AgentID, LogMessages.CNP5JobTransferResult( _
+                  RetractableJobs.Count - JobsThatNoOtherAgentsCouldFulfil.Count, JobsThatNoOtherAgentsCouldFulfil.Count))
+            Agent.Plan.WayPoints.Clear()
+            Agent.Plan.WayPoints.AddRange(WayPoint.CreateWayPointList(NecessaryJobs))
+            Agent.Plan.WayPoints.AddRange(WayPoint.CreateWayPointList(JobsThatNoOtherAgentsCouldFulfil))
+        End If
 
         Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser)
         Return Solver.GetPlan

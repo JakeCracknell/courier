@@ -153,4 +153,9 @@
         Debug.Assert(TentativeSolver IsNot Nothing AndAlso TentativeSolver.GetPlan IsNot Nothing)
         Agent.Plan = TentativeSolver.GetPlan
     End Sub
+
+    Function GetAgentID() As Integer
+        Return Agent.AgentID
+    End Function
+
 End Class

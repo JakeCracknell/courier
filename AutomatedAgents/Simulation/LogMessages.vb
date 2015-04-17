@@ -48,5 +48,18 @@ Namespace LogMessages
             Return String.Format("Job {0} has been awarded to the contractor bidding {1}.", JobID, Math.Round(Bid, 2))
         End Function
 
+        Function CNP5JobsSentForTransfer(ByVal JobCount As Integer) As String
+            Return String.Format("{0} {1} been sent back to the server for reauction", JobCount, _
+                                 If(JobCount = 1, "job has", "jobs have"))
+        End Function
+        Function CNP5JobTransfer(ByVal JobID As Integer, ByVal AgentIDFrom As Integer, ByVal AgentIDTo As Integer) As String
+            Return String.Format("Job {0} has been reallocated from agent {1} to agent {2}", _
+                                 JobID, AgentIDFrom, AgentIDTo)
+        End Function
+        Function CNP5JobTransferResult(ByVal TransferredCount As Integer, ByVal UntransferredCount As Integer) As String
+            Return String.Format("Auction results: {0} successfully reallocated, {1} could not be reallocated.", _
+                                 TransferredCount, UntransferredCount)
+        End Function
+
     End Module
 End Namespace
