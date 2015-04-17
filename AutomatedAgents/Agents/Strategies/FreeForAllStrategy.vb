@@ -4,6 +4,8 @@
     Private Agent As Agent
     Private HopefulJob As CourierJob = Nothing
 
+    Private Const AGENT_KNOWS_WHEN_JOB_HAS_BEEN_PICKED As Boolean = False
+
     Public Sub New(ByVal Agent As Agent)
         Me.Agent = Agent
     End Sub
@@ -20,7 +22,7 @@
                 Exit Sub
             End If
         ElseIf HopefulJob IsNot Nothing Then
-            If HopefulJob.Status <> JobStatus.PENDING_PICKUP Then
+            If AGENT_KNOWS_WHEN_JOB_HAS_BEEN_PICKED AndAlso HopefulJob.Status <> JobStatus.PENDING_PICKUP Then
                 'Too late!
                 HopefulJob = Nothing
                 Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft)
@@ -49,6 +51,16 @@
                             SimulationState.NewEvent(Agent.AgentID, LogMessages.PickSuccess(Job.JobID))
                         End If
                     Case JobStatus.PENDING_DELIVERY
+                        If HopefulJob IsNot Nothing Then
+                            'Agent arrives and waits the maximum time, only to realise the job has been taken.
+                            If Not AGENT_KNOWS_WHEN_JOB_HAS_BEEN_PICKED Then
+                                Agent.Delayer = New Delayer(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+                            End If
+                            HopefulJob = Nothing
+                            Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft)
+                            Exit Sub
+                        End If
+
                         Agent.Delayer = New Delayer(Job.Deliver())
                         If Job.Status = JobStatus.COMPLETED Then
                             'Successful dropoff (perhaps late)

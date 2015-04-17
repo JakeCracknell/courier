@@ -30,8 +30,8 @@
         Me.Map = Map
         Me.Color = Color
         Me.VehicleType = VehicleType
-        Strategy = New ContractNetStrategy(Me, SimulationParameters.CNPVersion)
-        'Strategy = New FreeForAllStrategy(Me)
+        'Strategy = New ContractNetStrategy(Me, SimulationParameters.CNPVersion)
+        Strategy = New FreeForAllStrategy(Me)
         IdleStrategy = New ConvergeToPickupIdleStrategy(Me)
         Refuel()
 

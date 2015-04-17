@@ -19,7 +19,7 @@
     '6. Sleep until new jobs come in.
 
     Public Sub Run() Implements IIdleStrategy.Run
-        If Agent.TotalCompletedJobs = 0 Then
+        If Agent.PickupPoints.Count = 0 Then
             'Strategy cannot run if there are no pickup positions to consider
             Exit Sub
         End If
