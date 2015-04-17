@@ -16,7 +16,7 @@
         NoticeBoard.CurrentTime += SimulationParameters.SIMULATION_TIME_INCREMENT
         Dim Modified As Boolean = False
 
-        'Moved here for CNP
+        'Moved here for CNP. New job is broadcasted, bid for and then awarded in NoticeBoard.Tick()
         Dispatcher.Tick()
         NoticeBoard.Tick()
 

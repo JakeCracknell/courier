@@ -20,6 +20,7 @@
         Public Const REFUELLING_TIME_SECONDS As Integer = 60
         Public Const MAX_POSSIBLE_SPEED_KMH As Integer = 112
         Public Const CubicMetresMin As Double = 0.0004
+        Public Const StatisticsTickInterval As Integer = 20
 
         'These are supposed to take into account fluctuations in traffic,
         'waiting times at waypoints and emergency refuelling.

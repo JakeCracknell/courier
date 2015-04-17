@@ -110,6 +110,7 @@ Partial Class frmStatistics
         '
         'chartSimulationStatistics
         '
+        ChartArea1.AxisX.Minimum = 0.0R
         ChartArea1.Name = "ChartArea1"
         Me.chartSimulationStatistics.ChartAreas.Add(ChartArea1)
         Me.chartSimulationStatistics.Dock = System.Windows.Forms.DockStyle.Fill

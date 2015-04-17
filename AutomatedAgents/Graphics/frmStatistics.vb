@@ -26,11 +26,13 @@ Public Class frmStatistics
                 clbDataSeries.Items.Add(DC.ToString)
             Next
         End If
-        Dim DR As DataRow = Table.Rows(Table.Rows.Count - 1)
-        For i = 0 To Table.Columns.Count - 2 'Don't include "Time"
-            Dim DC As DataColumn = Table.Columns(i + 1)
-            clbDataSeries.Items(i) = String.Format(SERIES_LIST_ITEM_FORMAT, DC.ColumnName, DR(DC))
-        Next
+        If Table.Rows.Count > 0 Then
+            Dim DR As DataRow = Table.Rows(Table.Rows.Count - 1)
+            For i = 0 To Table.Columns.Count - 2 'Don't include "Time"
+                Dim DC As DataColumn = Table.Columns(i + 1)
+                clbDataSeries.Items(i) = String.Format(SERIES_LIST_ITEM_FORMAT, DC.ColumnName, DR(DC))
+            Next
+        End If
     End Sub
 
     Sub RefreshChart() 

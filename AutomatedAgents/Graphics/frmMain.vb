@@ -77,27 +77,30 @@
     End Sub
 
     Private Sub bwSimulator_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles bwSimulator.DoWork
-        Dim MapDrawCounter As Integer = 1
         While True
             If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
+                Dim StatisticsLogCounter As Integer = 0
                 SelectionMode = MapSelectionMode.AGENTS_ALL_ROUTE_TO
                 SyncLock AASimulation
                     If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
                         Dim SimulationStateChanged As Boolean = False
-                        For i = 1 To SimulationParameters.SimulationSpeed
+                        Dim TickCounter As Integer = 0
+                        Do
                             SimulationStateChanged = SimulationStateChanged Or AASimulation.Tick()
-                            AASimulation.LogStatistics()
+                            If StatisticsLogCounter Mod SimulationParameters.StatisticsTickInterval = 0 Then
+                                AASimulation.LogStatistics()
+                            End If
 
-                            If MapDrawCounter >= SimulationParameters.DisplayRefreshSpeed AndAlso Not PauseDisplayToolStripMenuItem.Checked Then
+                            If TickCounter Mod SimulationParameters.DisplayRefreshSpeed = 0 AndAlso Not PauseDisplayToolStripMenuItem.Checked Then
                                 If SimulationStateChanged Then
                                     SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, NoticeBoard.IncompleteJobs))
                                     SimulationState.CacheAASimulationStatus(AASimulation)
                                 End If
-                                MapDrawCounter = 1
-                            Else
-                                MapDrawCounter += 1
                             End If
-                        Next
+                            TickCounter += 1
+                            StatisticsLogCounter += 1
+                        Loop Until TickCounter >= SimulationParameters.SimulationSpeed
+
                     End If
 
                 End SyncLock
