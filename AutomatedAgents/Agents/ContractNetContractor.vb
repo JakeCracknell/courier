@@ -119,4 +119,40 @@
         Return Temp
     End Function
 
+    Function CNP5ImmediateBid(ByVal Job As CourierJob) As Double
+        'In case a job has just been awarded and the CNP strategy has not called CollectJob yet.
+        If AwardedJob IsNot Nothing Then
+            Agent.Plan = TentativeSolver.GetPlan
+            AwardedJob = Nothing
+        End If
+
+        'Common basic preliminary checks:
+        If JobToReview.CubicMetres > Agent.GetVehicleMaxCapacity Then
+            Return NO_BID
+        End If
+
+        'The current cost is 0 if idle or whatever the updated plan says. UpdateAndGetCost() necessary for all policies
+        Dim CurrentDrivingCost As Double = If(Solver Is Nothing, 0, Agent.Plan.UpdateAndGetCost())
+
+        'Check if the deadline is too slim, even if the agent fulfills it immediately
+        Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition)
+        Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
+        Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(NoticeBoard.CurrentTime)
+        Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(NoticeBoard.CurrentTime + Route1Time)
+        If NoticeBoard.CurrentTime + MinTime > _
+            JobToReview.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
+            Return NO_BID
+        End If
+
+        TentativeSolver = New NNSearchSolver(Agent.Plan, _
+                New SolverPunctualityStrategy(SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_ROUTE), _
+                Agent.RouteFindingMinimiser, JobToReview)
+
+        'Solution is Nothing iff impossible to fit into schedule (though as we only use NN, this is often untrue)
+        Return If(TentativeSolver.IsSuccessful, TentativeSolver.GetTotalCost - CurrentDrivingCost, NO_BID)
+    End Function
+    Sub CNP5ImmediateAward()
+        Debug.Assert(TentativeSolver IsNot Nothing AndAlso TentativeSolver.GetPlan IsNot Nothing)
+        Agent.Plan = TentativeSolver.GetPlan
+    End Sub
 End Class

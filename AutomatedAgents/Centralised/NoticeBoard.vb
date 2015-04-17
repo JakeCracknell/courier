@@ -52,11 +52,37 @@
                     Contractor.PlaceBid()
                 End Sub)
             SimulationState.NewEvent(LogMessages.JobBroadcasted(Job.JobID))
-            'For Each Contractor As ContractNetContractor In AvailableContractors
-            '    Contractor.AnnounceJob(Job)
-            '    Contractor.PlaceBid()
-            'Next
             Return True
+        End Function
+
+        'TODO perhaps experiment with not excluding the owner?
+        'TODO: log messages
+        Function RetractJobs(ByVal Owner As ContractNetContractor, ByVal RetractableJobs As List(Of CourierJob)) As List(Of CourierJob)
+            Dim OtherContractors As ContractNetContractor() = AvailableContractors.Except(Owner).ToArray
+            Dim OtherContractorsBids(OtherContractors.Length - 1) As Double
+            Dim UnallocatedJobs As New List(Of CourierJob)
+            For Each Job As CourierJob In RetractableJobs
+                Parallel.For(0, OtherContractors.Count, _
+                                Sub(c)
+                                    OtherContractorsBids(c) = OtherContractors(c).CNP5ImmediateBid(Job)
+                                End Sub)
+                Dim Winner As ContractNetContractor = Nothing
+                Dim BestBid As Double = Double.MaxValue
+                For i = 0 To OtherContractors.Length - 1
+                    If OtherContractorsBids(i) <> ContractNetContractor.NO_BID Then
+                        If OtherContractorsBids(i) < BestBid Then
+                            BestBid = OtherContractorsBids(i)
+                            Winner = OtherContractors(i)
+                        End If
+                    End If
+                Next
+                If Winner IsNot Nothing Then
+                    Winner.CNP5ImmediateAward()
+                Else
+                    UnallocatedJobs.Add(Job)
+                End If
+            Next
+            Return UnallocatedJobs
         End Function
 
         Sub AwardJobs()

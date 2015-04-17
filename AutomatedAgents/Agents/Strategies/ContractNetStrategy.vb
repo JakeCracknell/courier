@@ -21,8 +21,11 @@
                 Case ContractNetPolicy.CNP2
                     Agent.Plan.WayPoints.AddRange(WayPoint.CreateWayPointList(NewJob))
                     Agent.Plan.RecreateRouteListFromWaypoints()
-                Case ContractNetPolicy.CNP3, ContractNetPolicy.CNP4
+                Case ContractNetPolicy.CNP3, ContractNetPolicy.CNP4, ContractNetPolicy.CNP5
                     Agent.Plan = Contractor.Solver.GetPlan
+                    'With CNP5, the agent may have been awarded a new, fresh job, but
+                    'if it has been transferred a job from another agent, CollectJob
+                    'would return null. Agent.Plan would have already been updated.
             End Select
             Agent.PickupPoints.Add(NewJob.PickupPosition)
         End If
@@ -76,12 +79,21 @@
                                     'Go to the depot right now.
                                     Agent.Plan.WayPoints.Insert(0, DepotWaypoint)
                                     Agent.Plan.RecreateRouteListFromWaypoints() 'Routes(1) will have also changed!
-                                Case ContractNetPolicy.CNP4
+                                Case ContractNetPolicy.CNP4, ContractNetPolicy.CNP5
                                     'Go to the depot whenever it is optimal.
                                     Agent.Plan.WayPoints.Add(DepotWaypoint)
                                     Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser)
                                     Agent.Plan = Solver.GetPlan
                                     Debug.Assert(Agent.Plan IsNot Nothing)
+                                Case ContractNetPolicy.CNP5
+                                    'Try to replan and avoid late deliveries.
+                                    Agent.Plan.WayPoints.Add(DepotWaypoint)
+                                    Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.REDUNDANCY_TIME), Agent.RouteFindingMinimiser)
+                                    If Solver Is Nothing Then
+                                        'If it fails, try to retract bids on jobs.
+                                        Agent.Plan = CNP5Contingency()
+                                        Debug.Assert(Agent.Plan IsNot Nothing)
+                                    End If
                             End Select
                             SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliveryFail(Job.JobID, ImmediateRouteToDepot.GetKM))
                         End If
@@ -96,4 +108,30 @@
             End If
         End If
     End Sub
+
+    Function CNP5Contingency() As CourierPlan
+        Dim NecessaryJobs As New List(Of CourierJob)
+        Dim RetractableJobs As New List(Of CourierJob)
+        For Each Job As CourierJob In Agent.Plan.GetCurrentJobs
+            If Job.Status = JobStatus.PENDING_PICKUP Then
+                RetractableJobs.Add(Job)
+            ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
+                NecessaryJobs.Add(Job)
+            End If
+        Next
+
+        'Order jobs by time left minus how long the route could take. TODO: experiment?
+        RetractableJobs = RetractableJobs.OrderBy(Function(Job)
+                                                      Return Job.Deadline - _
+                                                          Job.GetDirectRoute.GetEstimatedTime(NoticeBoard.CurrentTime)
+                                                  End Function).ToList
+        Dim JobsThatNoOtherAgentsCouldFulfil As List(Of CourierJob) = NoticeBoard.RetractJobs(Contractor, RetractableJobs)
+        Agent.Plan.WayPoints.Clear()
+        Agent.Plan.WayPoints.AddRange(WayPoint.CreateWayPointList(NecessaryJobs))
+        Agent.Plan.WayPoints.AddRange(WayPoint.CreateWayPointList(JobsThatNoOtherAgentsCouldFulfil))
+
+        Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser)
+        Return Solver.GetPlan
+    End Function
+
 End Class
