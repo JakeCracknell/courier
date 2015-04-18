@@ -43,20 +43,58 @@ Public Class OSMLoader
                     reader.ReadStartElement()
                     reader.Skip()
 
+                    Dim RoadDelay As RoadDelay = RoadDelay.NONE
                     Dim NodeName As String = Nothing
                     Dim IsBusiness As Boolean = False
                     While reader.Name = "tag"
                         Dim AttributeName As String = reader.GetAttribute("k")
-                        If AttributeName = "shop" OrElse AttributeName = "office" Then
-                            IsBusiness = True
-                            NodeName = If(NodeName, reader.GetAttribute("v").Replace("_", " ") & " " & AttributeName)
-                        ElseIf AttributeName = "name" Then
-                            NodeName = reader.GetAttribute("v")
-                        ElseIf AttributeName = "amenity" Then
-                            If reader.GetAttribute("v") = "fuel" Then
-                                UnconfirmedFuelPoints.Add(Node)
-                            End If
-                        End If
+                        Select Case AttributeName
+                            'Businesses:
+                            Case "shop", "office"
+                                IsBusiness = True
+                                NodeName = If(NodeName, reader.GetAttribute("v").Replace("_", " ") & " " & AttributeName)
+                            Case "amenity"
+                                Select Case reader.GetAttribute("v")
+                                    Case "fuel"
+                                        UnconfirmedFuelPoints.Add(Node)
+                                    Case "school", "restaurant", "bank", "fast_food", "cafe", "kindergarten", "pharmacy", "hospital", "pub", "bar", "fire_station", "police", "townhall"
+                                        IsBusiness = True
+                                        NodeName = If(NodeName, reader.GetAttribute("v").Replace("_", " "))
+                                End Select
+                            Case "craft"
+                                IsBusiness = True
+                                NodeName = If(NodeName, reader.GetAttribute("v").Replace("_", " "))
+                            Case "name"
+                                NodeName = reader.GetAttribute("v")
+
+
+                                'Road delays. Enum is ordered by severity, so pick tag with highest severity
+                            Case "railway"
+                                If reader.GetAttribute("v") = "level_crossing" Then
+                                    RoadDelay = Math.Max(RoadDelay, RoadDelay.LEVEL_CROSSING)
+                                End If
+                            Case "crossing"
+                                Select Case reader.GetAttribute("v")
+                                    Case "traffic_signals"
+                                        RoadDelay = Math.Max(RoadDelay, RoadDelay.TRAFFIC_LIGHT_CROSSING)
+                                    Case "uncontrolled", "zebra"
+                                        RoadDelay = Math.Max(RoadDelay, RoadDelay.ZEBRA_CROSSING)
+                                End Select
+                            Case "highway"
+                                Select Case reader.GetAttribute("v")
+                                    Case "traffic_signals"
+                                        RoadDelay = Math.Max(RoadDelay, RoadDelay.TRAFFIC_LIGHTS)
+                                    Case "crossing"
+                                        RoadDelay = Math.Max(RoadDelay, RoadDelay.ZEBRA_CROSSING)
+                                End Select
+                            Case "crossing_ref"
+                                Select Case reader.GetAttribute("v")
+                                    Case "zebra"
+                                        RoadDelay = Math.Max(RoadDelay, RoadDelay.ZEBRA_CROSSING)
+                                    Case "pelican", "toucan", "pegasus", "puffin"
+                                        RoadDelay = Math.Max(RoadDelay, RoadDelay.TRAFFIC_LIGHT_CROSSING)
+                                End Select
+                        End Select
 
                         reader.ReadStartElement()
                         reader.Skip()

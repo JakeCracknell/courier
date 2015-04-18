@@ -7,6 +7,7 @@
     Public Longitude As Double
     Public Description As String
     Public Connected As Boolean = True 'by default
+    Public RoadDelay As RoadDelay = AutomatedAgents.RoadDelay.NONE
     Public SpeedAtTime As New Dictionary(Of Integer, Double)
 
     Public Sub New(ByVal ID As Long, ByVal Latitiude As Double, ByVal Longitude As Double)

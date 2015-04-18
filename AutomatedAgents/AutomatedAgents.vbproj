@@ -106,8 +106,8 @@
     <Compile Include="Graphics\frmStatistics.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="OSMData\Module1.vb" />
     <Compile Include="Geography\NodesGrid.vb" />
+    <Compile Include="OSMData\RoadDelay.vb" />
     <Compile Include="RouteFinding\RouteCache.vb" />
     <Compile Include="Simulation\LogMessages.vb" />
     <Compile Include="Simulation\SimulationState.vb" />
