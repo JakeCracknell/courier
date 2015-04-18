@@ -1,7 +1,8 @@
 ﻿Module MapGraphics
     Private BG_COLOR As Color = Color.White
     Private Const AGENT_DRAW_SIZE As Integer = 10
-    Private Const SPECIAL_NODE_DRAW_SIZE As Integer = 10
+    Private Const LANDMARK_NODE_DRAW_SIZE As Integer = 10
+    Private Const SPECIAL_NODE_DRAW_SIZE As Integer = 3
     Private OVERLAY_FONT As New Font("TimesNewRoman", 12)
     Private ERROR_FONT As New Font("TimesNewRoman", 36, FontStyle.Bold)
     Private DEPOT_FONT As New Font("TimesNewRoman", 7)
@@ -11,8 +12,9 @@
     Private ROAD_THIN_PEN As New Pen(New SolidBrush(Color.Black), 1)
     Private ROAD_THICK_PEN_OUTER As New Pen(New SolidBrush(Color.Black), 5)
     Private ROAD_THICK_PEN_INNER_TWOWAY As New Pen(New SolidBrush(Color.White), 3)
-    Private ROAD_THICK_PEN_INNER_ONEWAY As New Pen(New SolidBrush(Color.Red), 3)
+    Private ROAD_THICK_PEN_INNER_ONEWAY As New Pen(New SolidBrush(Color.SandyBrown), 3) With {.DashStyle = Drawing2D.DashStyle.Dot}
     Private NODE_BUSINESS_BRUSH As Brush = Brushes.Blue
+    Private NODE_ROAD_DELAY_BRUSH As Brush = Brushes.Red
     Private QUADRANT_GRID_PEN As New Pen(Brushes.Gray) With {.DashStyle = Drawing2D.DashStyle.Dash}
     Private DELIVERY_FAIL_CROSS_PEN As New Pen(New SolidBrush(Color.Black), 2)
     Private LANDMARK_BORDER_PEN As New Pen(Brushes.Black, 2)
@@ -25,6 +27,7 @@
     Private Height As Integer
     Private CC As CoordinateConverter
 
+    Public ConfigDrawRoadDelayNodes As Boolean = False
     Public ConfigDrawBusinessNodes As Boolean = False
     Public ConfigDrawRoads As Integer = 1
     Public ConfigDrawAgentLines As Boolean = True
@@ -47,19 +50,6 @@
         gr = Graphics.FromImage(MapBitmapOriginal)
         gr.Clear(BG_COLOR)
 
-        If ConfigDrawBusinessNodes Then
-            For Each N As Node In Map.Nodes
-                Dim Point As Point = CC.GetPoint(N)
-                Dim PointSize As Integer = 1 'Math.Min(Width * Height / 130000, ((Map.Nodes.Count / 10) * N.GetAgentTraffic / Node.TotalNodesTraffic))
-                If N.Description IsNot Nothing Then
-                    gr.FillRectangle(NODE_BUSINESS_BRUSH, Point.X, Point.Y, 2, 2)
-                End If
-                If ConfigDrawNodeLabels Then
-                    gr.DrawString(N.ID Mod 1000, OVERLAY_FONT, Brushes.Black, Point)
-                End If
-            Next
-        End If
-
         If ConfigDrawRoads <> 0 Then
             For Each W As Way In Map.Ways.Values
                 If W.Nodes.Length >= 2 Then
@@ -71,16 +61,34 @@
                             Case 1
                                 gr.DrawLine(ROAD_THIN_PEN, LastPoint, CurrentPoint)
                             Case 2
+                                'Draws white road with black outline. One-way roads have a dotted brown line on top.
                                 gr.DrawLine(ROAD_THICK_PEN_OUTER, LastPoint, CurrentPoint)
+                                gr.DrawLine(ROAD_THICK_PEN_INNER_TWOWAY, LastPoint, CurrentPoint)
                                 If W.OneWay Then
                                     gr.DrawLine(ROAD_THICK_PEN_INNER_ONEWAY, LastPoint, CurrentPoint)
-                                Else
-                                    gr.DrawLine(ROAD_THICK_PEN_INNER_TWOWAY, LastPoint, CurrentPoint)
                                 End If
 
                         End Select
                         LastPoint = CurrentPoint
                     Next
+                End If
+            Next
+        End If
+
+        If ConfigDrawBusinessNodes Or ConfigDrawRoadDelayNodes Then
+            Dim NodeDrawSize As Integer = If(ConfigDrawRoads = 2, ROAD_THICK_PEN_OUTER.Width, SPECIAL_NODE_DRAW_SIZE)
+            Dim Len2 As Integer = NodeDrawSize \ 2
+            For Each N As Node In Map.Nodes
+                Dim Point As Point = CC.GetPoint(N)
+                Dim PointSize As Integer = 1 'Math.Min(Width * Height / 130000, ((Map.Nodes.Count / 10) * N.GetAgentTraffic / Node.TotalNodesTraffic))
+                If ConfigDrawBusinessNodes AndAlso N.Description IsNot Nothing Then
+                    gr.FillRectangle(NODE_BUSINESS_BRUSH, Point.X - Len2, Point.Y - Len2, NodeDrawSize, NodeDrawSize)
+                End If
+                If ConfigDrawRoadDelayNodes AndAlso N.RoadDelay <> RoadDelay.NONE Then
+                    gr.FillRectangle(NODE_ROAD_DELAY_BRUSH, Point.X - Len2, Point.Y - Len2, NodeDrawSize, NodeDrawSize)
+                End If
+                If ConfigDrawNodeLabels Then
+                    gr.DrawString(N.ID Mod 1000, OVERLAY_FONT, Brushes.Black, Point)
                 End If
             Next
         End If
@@ -128,14 +136,14 @@
     End Sub
 
     Sub DrawLandmark(ByVal gr As Graphics, ByVal DrawPoint As Point, ByVal Character As Char)
-        Dim Len2 As Integer = SPECIAL_NODE_DRAW_SIZE \ 2
+        Dim Len2 As Integer = LANDMARK_NODE_DRAW_SIZE \ 2
         gr.FillRectangle(LANDMARK_BRUSH, DrawPoint.X - Len2, _
                          DrawPoint.Y - Len2, _
-                         SPECIAL_NODE_DRAW_SIZE, SPECIAL_NODE_DRAW_SIZE)
+                         LANDMARK_NODE_DRAW_SIZE, LANDMARK_NODE_DRAW_SIZE)
 
         gr.DrawRectangle(LANDMARK_BORDER_PEN, DrawPoint.X - Len2, _
                          DrawPoint.Y - Len2, _
-                         SPECIAL_NODE_DRAW_SIZE, SPECIAL_NODE_DRAW_SIZE)
+                         LANDMARK_NODE_DRAW_SIZE, LANDMARK_NODE_DRAW_SIZE)
         DrawPoint.Offset(0, 0)
         gr.DrawString(Character, DEPOT_FONT, Brushes.Black, DrawPoint, CENTRED_STRING_FORMAT)
     End Sub
@@ -158,10 +166,10 @@
     End Sub
 
     Private Sub DrawNodeRectangle(ByVal Point As Point, ByVal gr As Graphics)
-        Dim Len2 As Integer = SPECIAL_NODE_DRAW_SIZE \ 2
+        Dim Len2 As Integer = LANDMARK_NODE_DRAW_SIZE \ 2
         gr.DrawRectangle(Pens.Red, Point.X - Len2, Point.Y - Len2, _
-                         SPECIAL_NODE_DRAW_SIZE, _
-                         SPECIAL_NODE_DRAW_SIZE)
+                         LANDMARK_NODE_DRAW_SIZE, _
+                         LANDMARK_NODE_DRAW_SIZE)
     End Sub
 
     Function DrawHighlightedNode(ByVal Node As Node, ByVal Cursor As Point) As Image

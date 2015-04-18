@@ -43,7 +43,6 @@ Public Class OSMLoader
                     reader.ReadStartElement()
                     reader.Skip()
 
-                    Dim RoadDelay As RoadDelay = RoadDelay.NONE
                     Dim NodeName As String = Nothing
                     Dim IsBusiness As Boolean = False
                     While reader.Name = "tag"
@@ -71,28 +70,28 @@ Public Class OSMLoader
                                 'Road delays. Enum is ordered by severity, so pick tag with highest severity
                             Case "railway"
                                 If reader.GetAttribute("v") = "level_crossing" Then
-                                    RoadDelay = Math.Max(RoadDelay, RoadDelay.LEVEL_CROSSING)
+                                    Node.RoadDelay = Math.Max(Node.RoadDelay, RoadDelay.LEVEL_CROSSING)
                                 End If
                             Case "crossing"
                                 Select Case reader.GetAttribute("v")
                                     Case "traffic_signals"
-                                        RoadDelay = Math.Max(RoadDelay, RoadDelay.TRAFFIC_LIGHT_CROSSING)
+                                        Node.RoadDelay = Math.Max(Node.RoadDelay, RoadDelay.TRAFFIC_LIGHT_CROSSING)
                                     Case "uncontrolled", "zebra"
-                                        RoadDelay = Math.Max(RoadDelay, RoadDelay.ZEBRA_CROSSING)
+                                        Node.RoadDelay = Math.Max(Node.RoadDelay, RoadDelay.ZEBRA_CROSSING)
                                 End Select
                             Case "highway"
                                 Select Case reader.GetAttribute("v")
                                     Case "traffic_signals"
-                                        RoadDelay = Math.Max(RoadDelay, RoadDelay.TRAFFIC_LIGHTS)
+                                        Node.RoadDelay = Math.Max(Node.RoadDelay, RoadDelay.TRAFFIC_LIGHTS)
                                     Case "crossing"
-                                        RoadDelay = Math.Max(RoadDelay, RoadDelay.ZEBRA_CROSSING)
+                                        Node.RoadDelay = Math.Max(Node.RoadDelay, RoadDelay.ZEBRA_CROSSING)
                                 End Select
                             Case "crossing_ref"
                                 Select Case reader.GetAttribute("v")
                                     Case "zebra"
-                                        RoadDelay = Math.Max(RoadDelay, RoadDelay.ZEBRA_CROSSING)
+                                        Node.RoadDelay = Math.Max(Node.RoadDelay, RoadDelay.ZEBRA_CROSSING)
                                     Case "pelican", "toucan", "pegasus", "puffin"
-                                        RoadDelay = Math.Max(RoadDelay, RoadDelay.TRAFFIC_LIGHT_CROSSING)
+                                        Node.RoadDelay = Math.Max(Node.RoadDelay, RoadDelay.TRAFFIC_LIGHT_CROSSING)
                                 End Select
                         End Select
 
@@ -217,6 +216,7 @@ Public Class OSMLoader
         For Each N As Node In Map.Nodes
             If Not Map.NodesAdjacencyList.Rows.ContainsKey(N.ID) Then
                 N.Connected = False
+                N.RoadDelay = RoadDelay.NONE
             ElseIf N.Connected Then
                 Map.ConnectedNodesGrid.AddNode(N)
             End If

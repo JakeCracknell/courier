@@ -329,7 +329,10 @@
         MapGraphics.ConfigDrawGrid = GridToolStripMenuItem.Checked
         SetPictureBox(MapGraphics.DrawMap(Map))
     End Sub
-
+    Private Sub RoadDelayNodesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RoadDelayNodesToolStripMenuItem.Click
+        MapGraphics.ConfigDrawRoadDelayNodes = RoadDelayNodesToolStripMenuItem.Checked
+        SetPictureBox(MapGraphics.DrawMap(Map))
+    End Sub
 
     Private Sub CNP1ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CNP1ToolStripMenuItem.Click
         SimulationParameters.CNPVersion = ContractNetPolicy.CNP1
@@ -356,5 +359,6 @@
     Private Sub Lorry75TonneToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles Lorry75TonneToolStripMenuItem.Click
         SimulationParameters.VehicleType = Vehicles.Type.TRUCK
     End Sub
+
 
 End Class
