@@ -208,7 +208,7 @@ Partial Class frmAgentStatus
         'cDirect
         '
         Me.cDirect.Text = "Direct Route"
-        Me.cDirect.Width = 95
+        Me.cDirect.Width = 114
         '
         'cVolume
         '

@@ -1,11 +1,13 @@
 ﻿Public Class frmAgentStatus
     Private AASimulation As AASimulation
     Private LastStateHash As Integer
+    Private StrikeOutFont As Font
 
     Private Sub frmAgentStatus_Load(sender As Object, e As EventArgs) Handles Me.Load
         SetDoubleBuffered(lvAgentList)
         SetDoubleBuffered(lvJobList)
         SetDoubleBuffered(lvLog)
+        StrikeOutFont = New Font(lvJobList.Font.FontFamily, lvJobList.Font.Size, FontStyle.Strikeout)
     End Sub
 
     Sub RefreshLists()
@@ -37,6 +39,10 @@
             Next
             LVI.UseItemStyleForSubItems = False
             LVI.BackColor = GetSequentialColor(AgentID)
+            If JobList(7).Contains("DEL") Then
+                LVI.SubItems(2).Font = StrikeOutFont
+            End If
+
             lvJobList.Items.Add(LVI)
         Next
         lvAgentList.EndUpdate()
