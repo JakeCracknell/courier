@@ -31,7 +31,6 @@
     Public Sub Tick() Implements IDispatcher.Tick
         Dim DayOfWeek As DayOfWeek = (Int(NoticeBoard.CurrentTime.TotalDays) + 1) Mod 7
         Dim TimeOfDay As TimeSpan = TimeSpan.FromSeconds(NoticeBoard.CurrentTime.TotalSeconds Mod TimeSpan.FromDays(1).TotalSeconds)
-        SimulationParameters.DisplayedDebugVariable = DayOfWeek.ToString("G") & " " & TimeOfDay.ToString
 
         Dim ProbabilityOfDispatch As Double
         Select Case DayOfWeek

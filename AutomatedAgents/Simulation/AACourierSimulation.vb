@@ -7,7 +7,7 @@
         Me.Map = Map
         NoticeBoard.Clear()
         RouteCache.Initialise(Map.NodesAdjacencyList, RouteFindingMinimiser.DISTANCE)
-        Dispatcher = If(Map.Businesses.Count > 10, New CityDispatcher(Map), New SimpleDispatcher(Map))
+        Dispatcher = If(Map.Businesses.Count > 10, New CityDispatcher(Map), New RuralDispatcher(Map))
         InitialiseLoggingModules()
     End Sub
 

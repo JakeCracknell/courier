@@ -24,7 +24,8 @@
     End Function
 
     Function GetTimeString() As String
-        Return NoticeBoard.CurrentTime.ToString & If(IsRunning, "", " paused")
+        Dim DayOfWeek As DayOfWeek = (Int(NoticeBoard.CurrentTime.TotalDays) + 1) Mod 7
+        Return DayOfWeek.ToString("G") & " " & NoticeBoard.CurrentTime.ToString & If(IsRunning, "", " paused")
     End Function
 
     Sub InitialiseLoggingModules()
