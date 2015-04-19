@@ -61,18 +61,18 @@
 
                 'TrafficDistribution(HourOfWeek) * (1 / TrafficDistributionMax) = 1, at peak time. Means there will definitely be a delay sometime this period.
             Case RoadDelay.ZEBRA_CROSSING
-                Return RandomDelayHelper(Node.ID, Time, ZEBRA_CROSSING_PERIOD, ZEBRA_CROSSING_LENGTH, ZEBRA_CROSSING_COEFFICIENT)
+                Return PeriodicDelayHelper(Node.ID, Time, ZEBRA_CROSSING_PERIOD, ZEBRA_CROSSING_LENGTH, ZEBRA_CROSSING_COEFFICIENT)
             Case RoadDelay.TRAFFIC_LIGHT_CROSSING
-                Return RandomDelayHelper(Node.ID, Time, TRAFFICLIGHT_CROSSING_PERIOD, TRAFFICLIGHT_CROSSING_LENGTH, TRAFFICLIGHT_CROSSING_COEFFICIENT)
+                Return PeriodicDelayHelper(Node.ID, Time, TRAFFICLIGHT_CROSSING_PERIOD, TRAFFICLIGHT_CROSSING_LENGTH, TRAFFICLIGHT_CROSSING_COEFFICIENT)
             Case RoadDelay.UNEXPECTED
-                Dim MinorDelay As Boolean = RandomDelayHelper(Node.ID, Time, MINOR_UNEXPECTED_DELAY_PERIOD, MINOR_UNEXPECTED_DELAY_LENGTH, MINOR_UNEXPECTED_DELAY_COEFFICIENT)
-                Dim MajorDelay As Boolean = RandomDelayHelper(Node.ID, Time, MAJOR_UNEXPECTED_DELAY_PERIOD, MAJOR_UNEXPECTED_DELAY_LENGTH, MAJOR_UNEXPECTED_DELAY_COEFFICIENT)
+                Dim MinorDelay As Boolean = PeriodicDelayHelper(Node.ID, Time, MINOR_UNEXPECTED_DELAY_PERIOD, MINOR_UNEXPECTED_DELAY_LENGTH, MINOR_UNEXPECTED_DELAY_COEFFICIENT)
+                Dim MajorDelay As Boolean = PeriodicDelayHelper(Node.ID, Time, MAJOR_UNEXPECTED_DELAY_PERIOD, MAJOR_UNEXPECTED_DELAY_LENGTH, MAJOR_UNEXPECTED_DELAY_COEFFICIENT)
                 Return MinorDelay Or MajorDelay
         End Select
         Return False
     End Function
 
-    Function RandomDelayHelper(ByVal IDSeed As Long, ByVal Time As TimeSpan, ByVal Period As Integer, ByVal Length As Integer, ByVal Coefficient As Double) As Boolean
+    Function PeriodicDelayHelper(ByVal IDSeed As Long, ByVal Time As TimeSpan, ByVal Period As Integer, ByVal Length As Integer, ByVal Coefficient As Double) As Boolean
         Dim HourOfWeek As Integer = Int(TimeSpan.FromTicks(Time.Ticks Mod TimeSpan.FromDays(7).Ticks).TotalHours)
         Dim Seed As Long = (Time.TotalSeconds \ Period) + IDSeed
         Dim RNG As New Random(Seed Mod Integer.MaxValue)
@@ -87,7 +87,14 @@
         Return False
     End Function
 
-
+    Public Function GetAverageDelayLength(ByVal Hop As Hop, ByVal Time As TimeSpan) As Double
+        Dim Node As Node = TryCast(Hop.FromPoint, Node)
+        If Node IsNot Nothing Then
+            Return GetAverageDelayLength(Node, Hop.Way, Time)
+        Else
+            Return 0
+        End If
+    End Function
     Public Function GetAverageDelayLength(ByVal Node As Node, ByVal Way As Way) As Double
         'By default use the delay expected on a weekday at noon.
         Return GetAverageDelayLength(Node, Way, TimeSpan.FromHours(12))

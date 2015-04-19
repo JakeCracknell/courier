@@ -1,7 +1,8 @@
 ﻿Namespace Vehicles
     Public Module Vehicles
-        Public Const MILE_LENGTH_IN_KM = 1.609344
-        Public Const LITRES_TO_A_GALLON = 3.785
+        Public Const MILE_LENGTH_IN_KM As Double = 1.609344
+        Public Const LITRES_TO_A_GALLON As Double = 3.785
+        Public Const OPTIMAL_KMH As Double = 86.24
 
         Public Enum Type
             CAR
@@ -51,8 +52,8 @@
 
         'Function approximated from data here: http://blog.automatic.com/cost-speeding-save-little-time-spend-lot-money/
         'Multipliers
-        Function FuelEconomy(ByVal Type As Type, ByVal DistanceTravelledKM As Double) As Double
-            If Not DistanceTravelledKM > 0 Then
+        Function FuelEconomy(ByVal Type As Type, ByVal KMTravelledInSecond As Double) As Double
+            If Not KMTravelledInSecond > 0 Then
                 Return 0
             End If
 
@@ -67,11 +68,20 @@
                     Multiplier = 0.55
             End Select
 
-            Dim MilesTravelled As Double = DistanceTravelledKM / MILE_LENGTH_IN_KM
+            Dim MilesTravelled As Double = KMTravelledInSecond / MILE_LENGTH_IN_KM
             Dim SpeedMPH As Double = MilesTravelled * 3600
             Dim MPG As Double = Multiplier * (-0.0119 * SpeedMPH ^ 2 + SpeedMPH * 1.2754)
             Dim FuelUsedInGallons As Double = MilesTravelled / MPG
             Return FuelUsedInGallons * LITRES_TO_A_GALLON
+        End Function
+
+        Function OptimalFuelUsageAndTime(ByVal KM As Double, ByVal MaxSpeed As Double, _
+                                         Optional ByVal VehicleType As Type = Type.CAR) As Tuple(Of Double, Double)
+            Dim OptimalSpeedKMS As Double = Math.Min(MaxSpeed, OPTIMAL_KMH) / 3600
+            Dim FuelUsedInOneSecond As Double = FuelEconomy(VehicleType, OptimalSpeedKMS)
+            Dim TimeToTravelInSeconds As Double = KM / OptimalSpeedKMS
+
+            Return New Tuple(Of Double, Double)(TimeToTravelInSeconds * FuelUsedInOneSecond, TimeToTravelInSeconds)
         End Function
 
         'UK Petrol Prices for Thursday 9th April 2015

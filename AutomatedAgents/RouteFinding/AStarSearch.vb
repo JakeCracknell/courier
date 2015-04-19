@@ -7,13 +7,20 @@
     Private Route As Route
     Private NodesSearched As New List(Of Node)
     Private Minimiser As RouteFindingMinimiser
+    Private StartTime As TimeSpan
     Private Const EPSILON As Double = 0.0000001
 
-    Sub New(ByVal StartPoint As IPoint, ByVal EndPoint As IPoint, ByVal AdjacencyList As NodesAdjacencyList, ByVal Minimiser As RouteFindingMinimiser)
+    Sub New(ByVal StartPoint As IPoint, ByVal EndPoint As IPoint, ByVal AdjacencyList As NodesAdjacencyList, _
+            ByVal Minimiser As RouteFindingMinimiser)
+        Me.New(StartPoint, EndPoint, AdjacencyList, Minimiser, NoticeBoard.CurrentTime)
+    End Sub
+    Sub New(ByVal StartPoint As IPoint, ByVal EndPoint As IPoint, ByVal AdjacencyList As NodesAdjacencyList, _
+            ByVal Minimiser As RouteFindingMinimiser, ByVal StartTime As TimeSpan)
         Me.StartPoint = StartPoint
         Me.EndPoint = EndPoint
         Me.AdjacencyList = AdjacencyList
         Me.Minimiser = Minimiser
+        Me.StartTime = StartTime
         If Not StartPoint.Equals(EndPoint) Then
             If TypeOf StartPoint Is HopPosition AndAlso TypeOf EndPoint Is HopPosition Then
                 'Handle case where destination on same hop. o/w would have to route to end of hop and come back.
@@ -39,7 +46,7 @@
         Dim PriorityQueue As New SortedList(Of Double, AStarTreeNode)
         Dim AlreadyVisitedNodes As New HashSet(Of Long)
         Dim BestDistancesToNodes As New Dictionary(Of Long, Double)
-        PriorityQueue.Add(0, New AStarTreeNode(StartPoint))
+        PriorityQueue.Add(0, New AStarTreeNode(StartPoint, StartTime))
         Do
             Dim AStarTreeNode As AStarTreeNode = PriorityQueue.Values(0)
             PriorityQueue.RemoveAt(0)
@@ -57,20 +64,21 @@
             For Each Cell As NodesAdjacencyListCell In Row.Cells
                 If Not AlreadyVisitedNodes.Contains(Cell.Node.ID) Then
                     Dim NextAStarTreeNode As New AStarTreeNode(AStarTreeNode, Cell)
-                    NextAStarTreeNode.CalculateCost(Cell.Distance, Minimiser)
+                    NextAStarTreeNode.CalculateCostAndTime(Cell.Distance, Minimiser)
 
                     'Heuristic cost must not overestimate, must be admissible.
                     Dim HeuristicCost As Double
+                    Dim StraightLineDistanceKM As Double = HaversineDistance(Cell.Node, EndPoint)
                     Select Case Minimiser
                         Case RouteFindingMinimiser.DISTANCE
-                            HeuristicCost = HaversineDistance(Cell.Node, EndPoint)
-                        Case RouteFindingMinimiser.TIME_NO_TRAFFIC
-                            HeuristicCost = HaversineDistance(Cell.Node, EndPoint) / SimulationParameters.MAX_POSSIBLE_SPEED_KMH
-                        Case RouteFindingMinimiser.TIME_WITH_TRAFFIC
-                            HeuristicCost = HaversineDistance(Cell.Node, EndPoint) / SimulationParameters.MAX_POSSIBLE_SPEED_KMH
+                            HeuristicCost = StraightLineDistanceKM
+                        Case RouteFindingMinimiser.TIME_NO_TRAFFIC, RouteFindingMinimiser.TIME_WITH_TRAFFIC
+                            HeuristicCost = StraightLineDistanceKM / SimulationParameters.MAX_POSSIBLE_SPEED_KMH
+                        Case RouteFindingMinimiser.FUEL_WITH_TRAFFIC, RouteFindingMinimiser.FUEL_NO_TRAFFIC
+                            HeuristicCost = Vehicles.OptimalFuelUsageAndTime(StraightLineDistanceKM, SimulationParameters.MAX_POSSIBLE_SPEED_KMH).Item1
                     End Select
 
-                    HeuristicCost *= SimulationParameters.AStarAccelerator
+                    HeuristicCost *= SimulationParameters.AStarAccelerator 'Not admissible if >1, but makes search faster
 
                     Dim F_Cost As Double = HeuristicCost + NextAStarTreeNode.TotalCost
                     Do Until Not PriorityQueue.ContainsKey(F_Cost) 'Exception can occur otherwise
@@ -95,7 +103,7 @@
                 Dim EndHopPosition As HopPosition = CType(EndPoint, HopPosition)
                 If EndHopPosition.Hop.FromPoint.Equals(Row.NodeKey) OrElse (EndHopPosition.Hop.ToPoint.Equals(Row.NodeKey) AndAlso Not EndHopPosition.Hop.Way.OneWay) Then
                     Dim NextAStarTreeNode As New AStarTreeNode(AStarTreeNode, New Hop(Row.NodeKey, EndHopPosition, EndHopPosition.Hop.Way))
-                    NextAStarTreeNode.CalculateCost(HaversineDistance(Row.NodeKey, EndHopPosition), Minimiser)
+                    NextAStarTreeNode.CalculateCostAndTime(HaversineDistance(Row.NodeKey, EndHopPosition), Minimiser)
 
                     '0 heuristic cost.
                     Dim F_Cost As Double = 0 + NextAStarTreeNode.TotalCost
@@ -126,30 +134,41 @@
         Public Parent As AStarTreeNode
         Public Hop As Hop
         Public TotalCost As Double
+        Public WallTime As TimeSpan 'Only incremented for searches incorporating traffic
 
-        Public Sub New(ByVal StartNode As IPoint)
+        Public Sub New(ByVal StartNode As IPoint, ByVal StartTime As TimeSpan)
             Hop = New Hop(StartNode, StartNode, Nothing)
             TotalCost = 0
+            WallTime = StartTime
         End Sub
 
         Public Sub New(ByVal OldTree As AStarTreeNode, ByVal LastHop As Hop)
             Parent = OldTree
             Hop = LastHop
             TotalCost = OldTree.TotalCost
+            WallTime = OldTree.WallTime
         End Sub
 
         Public Sub New(ByVal OldTree As AStarTreeNode, ByVal LastNodeWay As NodesAdjacencyListCell)
             Me.New(OldTree, New Hop(OldTree.Hop.ToPoint, LastNodeWay))
         End Sub
 
-        Public Sub CalculateCost(ByVal Distance As Double, ByVal Minimiser As RouteFindingMinimiser)
+        Public Sub CalculateCostAndTime(ByVal Distance As Double, ByVal Minimiser As RouteFindingMinimiser)
             Select Case Minimiser
                 Case RouteFindingMinimiser.DISTANCE
                     TotalCost += Distance
                 Case RouteFindingMinimiser.TIME_NO_TRAFFIC
                     TotalCost += Hop.GetMinimumTravelTime
                 Case RouteFindingMinimiser.TIME_WITH_TRAFFIC
-                    TotalCost += Hop.GetEstimatedTravelTimeAtTime(NoticeBoard.CurrentTime) 'TODO: make this nicer
+                    TotalCost += Hop.GetEstimatedTravelTimeAtTime(WallTime)
+                    WallTime += TimeSpan.FromHours(Hop.GetEstimatedTravelTimeAtTime(WallTime)) 'Includes delay
+                Case RouteFindingMinimiser.FUEL_NO_TRAFFIC
+                    Dim FuelAndTime As Tuple(Of Double, Double) = Vehicles.OptimalFuelUsageAndTime(Distance, Hop.Way.GetSpeedLimit())
+                    TotalCost += FuelAndTime.Item1
+                Case RouteFindingMinimiser.FUEL_WITH_TRAFFIC
+                    Dim FuelAndTime As Tuple(Of Double, Double) = Vehicles.OptimalFuelUsageAndTime(Distance, Hop.Way.GetSpeedAtTime(WallTime))
+                    TotalCost += FuelAndTime.Item1
+                    WallTime += TimeSpan.FromSeconds(FuelAndTime.Item2 + GetAverageDelayLength(Hop, WallTime))
             End Select
         End Sub
 

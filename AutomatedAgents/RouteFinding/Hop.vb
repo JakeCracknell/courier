@@ -33,7 +33,7 @@
 
     Public Function GetEstimatedTravelTimeAtTime(ByVal Time As TimeSpan) As Double
         If Way IsNot Nothing Then
-            Return Distance / Way.GetSpeedAtTime(Time)
+            Return Distance / Way.GetSpeedAtTime(Time) + GetAverageDelayLength(Me, Time) / 3600
         Else
             Return 0
         End If

@@ -104,7 +104,7 @@ Public Class Route
                 Return GetHoursWithoutTraffic()
             Case AutomatedAgents.RouteFindingMinimiser.TIME_WITH_TRAFFIC
 
-            Case AutomatedAgents.RouteFindingMinimiser.FUEL
+            Case AutomatedAgents.RouteFindingMinimiser.FUEL_WITH_TRAFFIC
                 Return GetEstimatedFuelUsage(Agent.VehicleType)
         End Select
         Return 0

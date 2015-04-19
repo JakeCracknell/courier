@@ -89,7 +89,7 @@
                 Dim ExtraCost As Double
                 Select Case Minimiser
                     Case RouteFindingMinimiser.DISTANCE : ExtraCost = Route.GetKM
-                    Case RouteFindingMinimiser.FUEL : ExtraCost = Route.GetKM * 0.1
+                    Case RouteFindingMinimiser.FUEL_WITH_TRAFFIC : ExtraCost = Route.GetKM * 0.1
                     Case Else : ExtraCost = Route.GetHoursWithoutTraffic
                 End Select
 
@@ -161,7 +161,7 @@
                 Dim ExtraCost As Double
                 Select Case Minimiser
                     Case RouteFindingMinimiser.DISTANCE : ExtraCost = Route.GetKM
-                    Case RouteFindingMinimiser.FUEL : ExtraCost = Route.GetKM * 0.1
+                    Case RouteFindingMinimiser.FUEL_WITH_TRAFFIC : ExtraCost = Route.GetKM * 0.1
                     Case Else : ExtraCost = Route.GetHoursWithoutTraffic
                 End Select
 
