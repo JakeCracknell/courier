@@ -15,47 +15,34 @@
     Private Const TRAFFIC_LIGHT_LENGTH As Integer = 30
     Private Const LEVEL_CROSSING_FREQ As Integer = 600
     Private Const LEVEL_CROSSING_LENGTH As Integer = 120
-    Private Const ZEBRA_CROSSING_LENGTH As Integer = 15
+    Private Const ZEBRA_CROSSING_LENGTH As Integer = 10
     Private Const ZEBRA_CROSSING_PERIOD As Integer = 30
+    Private Const ZEBRA_CROSSING_COEFFICIENT As Double = 1.0
+    Private Const TRAFFICLIGHT_CROSSING_LENGTH As Integer = 15
+    Private Const TRAFFICLIGHT_CROSSING_PERIOD As Integer = 45
+    Private Const TRAFFICLIGHT_CROSSING_COEFFICIENT As Double = 1.0
+    Private Const MINOR_UNEXPECTED_DELAY_LENGTH As Integer = 2
+    Private Const MINOR_UNEXPECTED_DELAY_PERIOD As Integer = 2
+    Private Const MINOR_UNEXPECTED_DELAY_COEFFICIENT As Double = 4 / 3600 '4 times an hour at peak time
+    Private Const MAJOR_UNEXPECTED_DELAY_LENGTH As Integer = 30
+    Private Const MAJOR_UNEXPECTED_DELAY_PERIOD As Integer = 30
+    Private Const MAJOR_UNEXPECTED_DELAY_COEFFICIENT As Double = 0.5 / 3600 '0.5 times an hour at peak time
 
-
-    Public Function GetAverageDelay(ByVal Node As Node, ByVal Way As Way) As Double
-        'By default use the delay expected on a weekday at noon.
-        Return GetAverageDelay(Node, Way, TimeSpan.FromHours(36))
-    End Function
-    Public Function GetAverageDelay(ByVal Node As Node, ByVal Way As Way, ByVal Time As TimeSpan) As Double
-        Dim HourOfWeek As Double = TimeSpan.FromTicks(Time.Ticks Mod TimeSpan.FromDays(7).Ticks).TotalHours
-        'TODO check this = integer!
-
-        If Way.Type <> WayType.ROAD_MOTORWAY AndAlso Node.RoadDelay = RoadDelay.NONE Then
-            Return 0
-        End If
-
-        Dim TrafficIntensity As Double = TrafficDistribution(HourOfWeek)
-        Select Case Node.RoadDelay
-            Case RoadDelay.NONE
-                Return TrafficDistribution(HourOfWeek)
-
-        End Select
-
-    End Function
 
     Public Function IsDelayedAtTime(ByVal Node As Node, ByVal Way As Way, ByVal Time As TimeSpan) As Boolean
-        Dim HourOfWeek As Integer = TimeSpan.FromTicks(Time.Ticks Mod TimeSpan.FromDays(7).Ticks).TotalHours
-
         If Way.Type <> WayType.ROAD_MOTORWAY AndAlso Node.RoadDelay = RoadDelay.NONE Then
             Return False
         End If
 
-
         Select Case Node.RoadDelay
+            'Traffic lights and level crossing assumed to meet a fixed, regular schedule
             Case RoadDelay.TRAFFIC_LIGHTS
                 Return (Time.TotalSeconds + Node.ID) Mod TRAFFIC_LIGHT_FREQ < TRAFFIC_LIGHT_LENGTH
             Case RoadDelay.LEVEL_CROSSING
-                Return (Time.TotalSeconds + Node.ID) Mod LEVEL_CROSSING_FREQ < LEVEL_CROSSING_LENGTH
+                If Not (Time.Hours >= 1 And Time.Hours <= 4) Then
+                    Return (Time.TotalSeconds + Node.ID) Mod LEVEL_CROSSING_FREQ < LEVEL_CROSSING_LENGTH
+                End If
 
-
-                'TODO: NEED TO DISCUSS HOW TO DO THIS properly?
 
                 'First take a sample from Bounoulli(p) where p is proportional to TrafficDistribution(Now).
                 '   This determines wheteher a delay will occur this PERIOD.
@@ -63,24 +50,80 @@
                 '   At peak time, this will equate to once every PERIOD seconds there will be a delay
                 'Next spawn a random number uniformly to determine when the delay of set length L occurs within the period
                 '   and return TRUE iff the current time is within L.
-            Case RoadDelay.ZEBRA_CROSSING
-                Dim Seed As Long = (Time.TotalSeconds \ ZEBRA_CROSSING_PERIOD) + Node.ID
-                Dim RNG As New Random(Seed Mod Integer.MaxValue)
 
                 'TrafficDistribution(HourOfWeek) * (1 / TrafficDistributionMax) = 1, at peak time. Means there will definitely be a delay sometime this period.
-                Dim OccursThisPeriod As Boolean = RNG.NextDouble < TrafficDistribution(HourOfWeek) * (1 / TrafficDistributionMax)
-                If OccursThisPeriod Then
-                    Dim WhenDelayStartsThisPeriod As Integer = RNG.Next(0, ZEBRA_CROSSING_PERIOD - ZEBRA_CROSSING_LENGTH)
-                    Dim CurrentPositionInPeriod As Integer = Time.TotalSeconds Mod ZEBRA_CROSSING_PERIOD
-                    Return CurrentPositionInPeriod >= WhenDelayStartsThisPeriod AndAlso _
-                        CurrentPositionInPeriod <= WhenDelayStartsThisPeriod + ZEBRA_CROSSING_LENGTH
-                End If
-                Return False
+            Case RoadDelay.ZEBRA_CROSSING
+                Return RandomDelayHelper(Node.ID, Time, ZEBRA_CROSSING_PERIOD, ZEBRA_CROSSING_LENGTH, ZEBRA_CROSSING_COEFFICIENT)
             Case RoadDelay.TRAFFIC_LIGHT_CROSSING
-                Throw New NotImplementedException 'do same way, new consts
+                Return RandomDelayHelper(Node.ID, Time, TRAFFICLIGHT_CROSSING_PERIOD, TRAFFICLIGHT_CROSSING_LENGTH, TRAFFICLIGHT_CROSSING_COEFFICIENT)
             Case RoadDelay.NONE
-                'Account for short 2 second delays, plus rare 30 second delays
-                Throw New NotImplementedException
+                Dim MinorDelay As Boolean = RandomDelayHelper(Node.ID, Time, MINOR_UNEXPECTED_DELAY_PERIOD, MINOR_UNEXPECTED_DELAY_LENGTH, MINOR_UNEXPECTED_DELAY_COEFFICIENT)
+                Dim MajorDelay As Boolean = RandomDelayHelper(Node.ID, Time, MAJOR_UNEXPECTED_DELAY_PERIOD, MAJOR_UNEXPECTED_DELAY_LENGTH, MAJOR_UNEXPECTED_DELAY_COEFFICIENT)
+                Return MinorDelay Or MajorDelay
         End Select
+        Return False
     End Function
+
+    Function RandomDelayHelper(ByVal IDSeed As Integer, ByVal Time As TimeSpan, ByVal Period As Integer, ByVal Length As Integer, ByVal Coefficient As Double) As Boolean
+        Dim HourOfWeek As Integer = TimeSpan.FromTicks(Time.Ticks Mod TimeSpan.FromDays(7).Ticks).TotalHours
+        Dim Seed As Long = (Time.TotalSeconds \ Period) + IDSeed
+        Dim RNG As New Random(Seed Mod Integer.MaxValue)
+
+        Dim OccursThisPeriod As Boolean = RNG.NextDouble < TrafficDistribution(HourOfWeek) * (Coefficient / TrafficDistributionMax)
+        If OccursThisPeriod Then
+            Dim WhenDelayStartsThisPeriod As Integer = RNG.Next(0, Period - Length)
+            Dim CurrentPositionInPeriod As Integer = Time.TotalSeconds Mod Period
+            Return CurrentPositionInPeriod >= WhenDelayStartsThisPeriod AndAlso _
+                CurrentPositionInPeriod <= WhenDelayStartsThisPeriod + Length
+        End If
+        Return False
+    End Function
+
+
+    Public Function GetAverageDelayLength(ByVal Node As Node, ByVal Way As Way) As Double
+        'By default use the delay expected on a weekday at noon.
+        Return GetAverageDelayLength(Node, Way, TimeSpan.FromHours(36))
+    End Function
+    Public Function GetAverageDelayLength(ByVal Node As Node, ByVal Way As Way, ByVal Time As TimeSpan) As Double
+        Dim HourOfWeek As Integer = TimeSpan.FromTicks(Time.Ticks Mod TimeSpan.FromDays(7).Ticks).TotalHours
+
+        If Way.Type <> WayType.ROAD_MOTORWAY AndAlso Node.RoadDelay = RoadDelay.NONE Then
+            Return 0
+        End If
+
+        Dim TrafficIntensity As Double = TrafficDistribution(HourOfWeek)
+        Select Case Node.RoadDelay
+            'If level crossing will make the vehicle stop for 120s, every 600s:
+            '   The chance of being delayed is 120/600=0.2
+            '   The average length of the delay will be 120/2=60
+            '   So the average delay is 60*0.2=30s
+            Case RoadDelay.LEVEL_CROSSING
+                Return LEVEL_CROSSING_LENGTH ^ 2 / LEVEL_CROSSING_FREQ * 2
+            Case RoadDelay.TRAFFIC_LIGHTS
+                If Not (Time.Hours >= 1 And Time.Hours <= 4) Then
+                    Return TRAFFIC_LIGHT_LENGTH ^ 2 / TRAFFIC_LIGHT_FREQ * 2
+                End If
+
+
+                'Same as above but multiplied by the chance that the delay event will happen in this period.
+            Case RoadDelay.ZEBRA_CROSSING
+                Dim ChanceThisPeriod As Double = TrafficDistribution(HourOfWeek) * (ZEBRA_CROSSING_COEFFICIENT / TrafficDistributionMax)
+                Dim AverageLengthOfDelayInsidePeriod As Double = ZEBRA_CROSSING_LENGTH ^ 2 / ZEBRA_CROSSING_PERIOD * 2
+                Return ChanceThisPeriod * AverageLengthOfDelayInsidePeriod
+            Case RoadDelay.TRAFFIC_LIGHT_CROSSING
+                Dim ChanceThisPeriod As Double = TrafficDistribution(HourOfWeek) * (TRAFFICLIGHT_CROSSING_COEFFICIENT / TrafficDistributionMax)
+                Dim AverageLengthOfDelayInsidePeriod As Double = TRAFFICLIGHT_CROSSING_LENGTH ^ 2 / TRAFFICLIGHT_CROSSING_PERIOD * 2
+                Return ChanceThisPeriod * AverageLengthOfDelayInsidePeriod
+            Case RoadDelay.NONE
+                Dim MinorChanceThisPeriod As Double = TrafficDistribution(HourOfWeek) * (MINOR_UNEXPECTED_DELAY_COEFFICIENT / TrafficDistributionMax)
+                Dim MinorAverageLengthOfDelayInsidePeriod As Double = MINOR_UNEXPECTED_DELAY_LENGTH ^ 2 / MINOR_UNEXPECTED_DELAY_PERIOD * 2
+                Dim MinorChance As Double = MinorChanceThisPeriod * MinorAverageLengthOfDelayInsidePeriod
+                Dim MajorChanceThisPeriod As Double = TrafficDistribution(HourOfWeek) * (MAJOR_UNEXPECTED_DELAY_COEFFICIENT / TrafficDistributionMax)
+                Dim MajorAverageLengthOfDelayInsidePeriod As Double = MAJOR_UNEXPECTED_DELAY_LENGTH ^ 2 / MAJOR_UNEXPECTED_DELAY_PERIOD * 2
+                Dim MajorChance As Double = MajorChanceThisPeriod * MajorAverageLengthOfDelayInsidePeriod
+                Return MinorChance + MajorChance - (MinorChance * MajorChance)
+        End Select
+        Return 0
+    End Function
+
 End Module
