@@ -7,21 +7,23 @@
     Property Minimiser As RouteFindingMinimiser
     Property CapacityLeft As Double = 0
     Property RoutePosition As RoutePosition
+    Property VehicleType As Vehicles.Type
 
-    Public Sub New(ByVal StartPoint As HopPosition, ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser, ByVal CapacityLeft As Double)
+    Public Sub New(ByVal StartPoint As HopPosition, ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser, ByVal CapacityLeft As Double, ByVal VehicleType As Vehicles.Type)
         Me.StartPoint = StartPoint
         Me.Map = Map
         Me.Minimiser = Minimiser
         Me.CapacityLeft = CapacityLeft
+        Me.VehicleType = VehicleType
         RoutePosition = New RoutePosition(New Route(StartPoint))
     End Sub
-    Public Sub New(ByVal StartPoint As HopPosition, ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser, ByVal CapacityLeft As Double, ByVal WayPoints As List(Of WayPoint))
-        Me.New(StartPoint, Map, Minimiser, CapacityLeft)
+    Public Sub New(ByVal StartPoint As HopPosition, ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser, ByVal CapacityLeft As Double, ByVal VehicleType As Vehicles.Type, ByVal WayPoints As List(Of WayPoint))
+        Me.New(StartPoint, Map, Minimiser, CapacityLeft, VehicleType)
         Me.WayPoints = WayPoints
         RecreateRouteListFromWaypoints()
     End Sub
-    Public Sub New(ByVal StartPoint As HopPosition, ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser, ByVal CapacityLeft As Double, ByVal WayPoints As List(Of WayPoint), ByVal RouteList As List(Of Route))
-        Me.New(StartPoint, Map, Minimiser, CapacityLeft)
+    Public Sub New(ByVal StartPoint As HopPosition, ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser, ByVal CapacityLeft As Double, ByVal VehicleType As Vehicles.Type, ByVal WayPoints As List(Of WayPoint), ByVal RouteList As List(Of Route))
+        Me.New(StartPoint, Map, Minimiser, CapacityLeft, VehicleType)
         Me.WayPoints = WayPoints
         Me.Routes = RouteList
     End Sub
@@ -55,14 +57,25 @@
         Select Case Minimiser
             Case RouteFindingMinimiser.DISTANCE
                 For Each R As Route In Routes
-                    TotalCost += R.GetKM
+                    TotalCost += R.GetKM()
                 Next
-            Case RouteFindingMinimiser.TIME_NO_TRAFFIC, RouteFindingMinimiser.TIME_WITH_TRAFFIC
+            Case RouteFindingMinimiser.TIME_NO_TRAFFIC
                 For Each R As Route In Routes
-                    TotalCost += R.GetHoursWithoutTraffic + CourierJob.CUSTOMER_WAIT_TIME_MAX / 3600
+                    TotalCost += R.GetHoursWithoutTraffic() + CourierJob.CUSTOMER_WAIT_TIME_MAX / 3600
+                Next
+            Case RouteFindingMinimiser.TIME_WITH_TRAFFIC
+                'I am making the decision here to not reevaluate traffic WRT time. Route.StartTime will suffice.
+                For Each R As Route In Routes
+                    TotalCost += R.GetEstimatedHours() + CourierJob.CUSTOMER_WAIT_TIME_MAX / 3600
+                Next
+            Case RouteFindingMinimiser.FUEL_NO_TRAFFIC
+                For Each R As Route In Routes
+                    TotalCost += R.GetOptimalFuelUsageWithoutTraffic(VehicleType)
                 Next
             Case RouteFindingMinimiser.FUEL_WITH_TRAFFIC
-                Throw New NotImplementedException
+                For Each R As Route In Routes
+                    TotalCost += R.GetOptimalFuelUsageWithTraffic(VehicleType)
+                Next
         End Select
         Return TotalCost
     End Function

@@ -33,7 +33,7 @@
         State.Time = NoticeBoard.CurrentTime + Agent.Plan.GetDiversionTimeEstimate
         State.Point = Agent.Plan.StartPoint
         If JobSolution.Count > 0 Then
-            State.FuelLeft -= Agent.Plan.Routes(0).GetEstimatedFuelUsage(Agent.VehicleType)
+            State.FuelLeft -= Agent.Plan.Routes(0).GetOptimalFuelUsageWithoutTraffic(Agent.VehicleType)
             State.Time += Agent.Plan.Routes(0).GetEstimatedTime()
             State.Point = Agent.Plan.Routes(0).GetEndPoint
             TotalCost = Agent.Plan.Routes(0).GetCostForAgent(Agent)
@@ -63,8 +63,8 @@
                 State.Time += Route1.GetEstimatedTime _
                     + Route2.GetEstimatedTime _
                     + SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB
-                State.FuelLeft -= (Route1.GetEstimatedFuelUsage(Agent.VehicleType) _
-                    + Route2.GetEstimatedFuelUsage(Agent.VehicleType))
+                State.FuelLeft -= (Route1.GetOptimalFuelUsageWithoutTraffic(Agent.VehicleType) _
+                    + Route2.GetOptimalFuelUsageWithoutTraffic(Agent.VehicleType))
                 State.Point = BestNextJob.DeliveryPosition
                 JobsLeft.Remove(BestNextJob)
             Else
@@ -75,7 +75,7 @@
 
         'Route found
         Dim WayPoints As List(Of WayPoint) = WayPoint.CreateWayPointList(JobSolution)
-        Solution = New CourierPlan(Agent.Plan.StartPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft, WayPoints)
+        Solution = New CourierPlan(Agent.Plan.StartPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft, Agent.VehicleType, WayPoints)
     End Sub
 
     Public Function GetPlan() As CourierPlan Implements ISolver.GetPlan

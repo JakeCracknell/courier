@@ -1,19 +1,21 @@
 ﻿Public Class NNSearchSolver
     Implements ISolver
 
+    Private VehicleType As Vehicles.Type
     Private Minimiser As RouteFindingMinimiser
     Private PunctualityStrategy As SolverPunctualityStrategy
     Private StartState As CourierPlanState
     Public OldPlan As CourierPlan
     Private Solution As CourierPlan
     Private TotalCost As Double
-    Private Shared r As New Random
+    Private Shared r As New Random(44)
 
     'TODO: BYVAL locked waypoints - those that must occur first. EG wp ->1 and ->2 already got their courtesy call
-    Sub New(ByVal CourierPlan As CourierPlan, ByVal PunctualityStrategy As SolverPunctualityStrategy, ByVal Minimiser As RouteFindingMinimiser, Optional ByVal ExtraJob As CourierJob = Nothing)
+    Sub New(ByVal CourierPlan As CourierPlan, ByVal PunctualityStrategy As SolverPunctualityStrategy, ByVal Minimiser As RouteFindingMinimiser, ByVal VehicleType As Vehicles.Type, Optional ByVal ExtraJob As CourierJob = Nothing)
         OldPlan = CourierPlan
         Me.Minimiser = Minimiser
         Me.PunctualityStrategy = PunctualityStrategy
+        Me.VehicleType = VehicleType
         StartState.CapacityLeft = CourierPlan.CapacityLeft
         StartState.FuelLeft = Double.MaxValue
         StartState.Time = NoticeBoard.CurrentTime + OldPlan.GetDiversionTimeEstimate
@@ -44,7 +46,7 @@
             Routes.Add(RouteCache.GetRoute(LastPoint, W.Position))
             LastPoint = W.Position
         Next
-        Solution = New CourierPlan(OldPlan.StartPoint, OldPlan.Map, OldPlan.Minimiser, OldPlan.CapacityLeft, WayPoints, Routes)
+        Solution = New CourierPlan(OldPlan.StartPoint, OldPlan.Map, OldPlan.Minimiser, OldPlan.CapacityLeft, VehicleType, WayPoints, Routes)
     End Sub
 
     Private Function SolveUsingNNBFS()

@@ -52,6 +52,7 @@
             PriorityQueue.RemoveAt(0)
             If AStarTreeNode.GetCurrentPoint.Equals(EndPoint) Then
                 Route = AStarTreeNode.GetRoute
+                Route.StartTime = StartTime
                 Exit Sub
             End If
 
@@ -163,12 +164,10 @@
                     TotalCost += Hop.GetEstimatedTravelTimeAtTime(WallTime)
                     WallTime += TimeSpan.FromHours(Hop.GetEstimatedTravelTimeAtTime(WallTime)) 'Includes delay
                 Case RouteFindingMinimiser.FUEL_NO_TRAFFIC
-                    Dim FuelAndTime As Tuple(Of Double, Double) = Vehicles.OptimalFuelUsageAndTime(Distance, Hop.Way.GetSpeedLimit())
-                    TotalCost += FuelAndTime.Item1
+                    TotalCost += Hop.GetOptimalFuelUsage()
                 Case RouteFindingMinimiser.FUEL_WITH_TRAFFIC
-                    Dim FuelAndTime As Tuple(Of Double, Double) = Vehicles.OptimalFuelUsageAndTime(Distance, Hop.Way.GetSpeedAtTime(WallTime))
-                    TotalCost += FuelAndTime.Item1
-                    WallTime += TimeSpan.FromSeconds(FuelAndTime.Item2 + GetAverageDelayLength(Hop, WallTime))
+                    TotalCost += Hop.GetOptimalFuelUsageAtTime(WallTime)
+                    WallTime += TimeSpan.FromSeconds(Hop.GetEstimatedTravelTimeWithOptimalFuelUsage(WallTime) + GetAverageDelayLength(Hop, WallTime))
             End Select
         End Sub
 

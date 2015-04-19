@@ -123,7 +123,7 @@ FailedPermutation:
 
     Function GetPlan() As CourierPlan
         If WayPointList IsNot Nothing Then 'Impossible to solve
-            Return New CourierPlan(Start, Map, Minimiser, InitialCapacityLeft, WayPointList, RouteList)
+            Return New CourierPlan(Start, Map, Minimiser, InitialCapacityLeft, Vehicles.Type.CAR, WayPointList, RouteList)
         Else
             Return Nothing
         End If

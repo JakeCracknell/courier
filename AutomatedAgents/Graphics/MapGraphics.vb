@@ -21,7 +21,7 @@
     Private DELIVERY_FAIL_CROSS_PEN As New Pen(New SolidBrush(Color.Black), 2)
     Private LANDMARK_BORDER_PEN As New Pen(Brushes.Black, 2)
     Private LANDMARK_BRUSH As Brush = Brushes.White
-    Private Const ROUTE_TO_LABEL_FORMAT As String = "TO ({0} hops, {1} km, {2} min)"
+    Private Const ROUTE_TO_LABEL_FORMAT As String = "TO ({0} hops, {1} km, {2} - {3} min)"
 
     Private MapBitmapOriginal As Bitmap
     Private MapBitmapOverlay As Bitmap
@@ -234,7 +234,8 @@
             Next
 
             Dim ToLabel As String = String.Format(ROUTE_TO_LABEL_FORMAT, Route.HopCount, _
-                    Math.Round(Route.GetKM, 1), Math.Round(Route.GetHoursWithoutTraffic * 60, 1))
+                    Math.Round(Route.GetKM, 1), Math.Round(Route.GetHoursWithoutTraffic * 60, 1), _
+                    Math.Round(Route.GetEstimatedHours() * 60, 1))
             grOverlay.DrawString(ToLabel, OVERLAY_FONT, Brushes.Black, NodePoint)
 
 

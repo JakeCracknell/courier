@@ -15,7 +15,7 @@
             HopefulJob = FindBestJob()
             If HopefulJob IsNot Nothing Then
                 HopefulJob.Status = JobStatus.PENDING_PICKUP
-                Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft, WayPoint.CreateWayPointList(HopefulJob))
+                Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft, Agent.VehicleType, WayPoint.CreateWayPointList(HopefulJob))
                 Agent.PickupPoints.Add(HopefulJob.PickupPosition)
                 SimulationState.NewEvent(Agent.AgentID, LogMessages.JobAwarded(HopefulJob.JobID, Agent.Plan.Routes(0).GetEstimatedHours(NoticeBoard.CurrentTime)))
             Else
@@ -25,7 +25,7 @@
             If AGENT_KNOWS_WHEN_JOB_HAS_BEEN_PICKED AndAlso HopefulJob.Status <> JobStatus.PENDING_PICKUP Then
                 'Too late!
                 HopefulJob = Nothing
-                Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft)
+                Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft, Agent.VehicleType)
                 Exit Sub
             End If
         End If
@@ -57,7 +57,7 @@
                                 Agent.Delayer = New Delayer(CourierJob.CUSTOMER_WAIT_TIME_MAX)
                             End If
                             HopefulJob = Nothing
-                            Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft)
+                            Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft, Agent.VehicleType)
                             Exit Sub
                         End If
 

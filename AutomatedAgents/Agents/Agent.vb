@@ -37,7 +37,7 @@
 
         'Agents start at a randomly chosen depot.
         Dim StartingPoint As HopPosition = If(START_IN_RANDOM_POSITION, Map.NodesAdjacencyList.GetRandomPoint, Map.GetStartingPoint)
-        Plan = New CourierPlan(StartingPoint, Map, RouteFindingMinimiser, GetVehicleMaxCapacity)
+        Plan = New CourierPlan(StartingPoint, Map, RouteFindingMinimiser, GetVehicleMaxCapacity, VehicleType)
         Plan.RoutePosition.Move(VehicleType)
     End Sub
 
