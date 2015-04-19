@@ -93,7 +93,7 @@
 
                             If TickCounter Mod SimulationParameters.DisplayRefreshSpeed = 0 AndAlso Not PauseDisplayToolStripMenuItem.Checked Then
                                 If SimulationStateChanged Then
-                                    SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, NoticeBoard.IncompleteJobs))
+                                    SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, AASimulation.Map))
                                     SimulationState.CacheAASimulationStatus(AASimulation)
                                 End If
                             End If

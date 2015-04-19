@@ -1,7 +1,10 @@
 ﻿Public Class RoutePosition
+    Private Const EPSILON As Double = 0.000000001
+
     Public Route As Route
     Public PercentageTravelled As Double
     Public HopIndex As Integer
+    Public RoadDelay As Boolean = False
 
     Public Function GetOldNode() As Node
         Return Route.At(HopIndex).FromPoint
@@ -50,7 +53,7 @@
         Dim PercentageTravelledTemp As Double = PercentageTravelled
         Dim DistanceLeftTemp As Double = DistanceIncrementMetres
         Do
-            Dim FullHopDistance As Double = Route.At(HopIndex).GetDistance
+            Dim FullHopDistance As Double = Math.Max(Route.At(HopIndex).GetDistance, EPSILON)
             Dim NextHopDistance As Double = FullHopDistance * (1 - PercentageTravelledTemp)
             If NextHopDistance > DistanceLeftTemp Then
                 PercentageTravelled = PercentageTravelledTemp + DistanceLeftTemp / FullHopDistance
@@ -58,7 +61,13 @@
             Else
                 DistanceLeftTemp -= NextHopDistance
                 PercentageTravelledTemp = 0
-                HopIndex += 1
+                If TryIncrementHop() Then
+                    DistanceLeftTemp -= NextHopDistance
+                    PercentageTravelledTemp = 0
+                Else
+                    DistanceLeftTemp = 0
+                    PercentageTravelledTemp = 1 - EPSILON
+                End If
                 If HopIndex >= Route.HopCount Then
                     PercentageTravelled = 1
                     HopIndex = Route.HopCount - 1
@@ -67,6 +76,14 @@
             End If
         Loop
     End Sub
+
+    Private Function TryIncrementHop() As Boolean
+        RoadDelay = IsDelayedAtTime(Route.At(HopIndex).ToPoint, Route.At(HopIndex).Way, NoticeBoard.CurrentTime)
+        If Not RoadDelay Then
+            HopIndex += 1
+        End If
+        Return Not RoadDelay
+    End Function
 
     Function RouteCompleted() As Boolean
         Return Route Is Nothing OrElse (PercentageTravelled = 1 And HopIndex = Route.HopCount - 1)

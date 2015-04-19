@@ -2,7 +2,8 @@
     Private BG_COLOR As Color = Color.White
     Private Const AGENT_DRAW_SIZE As Integer = 10
     Private Const LANDMARK_NODE_DRAW_SIZE As Integer = 10
-    Private Const SPECIAL_NODE_DRAW_SIZE As Integer = 3
+    Private Const SPECIAL_NODE_DRAW_SIZE_THIN As Integer = 3
+    Private Const SPECIAL_NODE_DRAW_SIZE_THICK As Integer = 5
     Private OVERLAY_FONT As New Font("TimesNewRoman", 12)
     Private ERROR_FONT As New Font("TimesNewRoman", 36, FontStyle.Bold)
     Private DEPOT_FONT As New Font("TimesNewRoman", 7)
@@ -15,6 +16,7 @@
     Private ROAD_THICK_PEN_INNER_ONEWAY As New Pen(New SolidBrush(Color.SandyBrown), 3) With {.DashStyle = Drawing2D.DashStyle.Dot}
     Private NODE_BUSINESS_BRUSH As Brush = Brushes.Blue
     Private NODE_ROAD_DELAY_BRUSH As Brush = Brushes.Red
+    Private NODE_ROAD_DELAY_PEN As Pen = Pens.Red
     Private QUADRANT_GRID_PEN As New Pen(Brushes.Gray) With {.DashStyle = Drawing2D.DashStyle.Dash}
     Private DELIVERY_FAIL_CROSS_PEN As New Pen(New SolidBrush(Color.Black), 2)
     Private LANDMARK_BORDER_PEN As New Pen(Brushes.Black, 2)
@@ -76,7 +78,7 @@
         End If
 
         If ConfigDrawBusinessNodes Or ConfigDrawRoadDelayNodes Then
-            Dim NodeDrawSize As Integer = If(ConfigDrawRoads = 2, ROAD_THICK_PEN_OUTER.Width, SPECIAL_NODE_DRAW_SIZE)
+            Dim NodeDrawSize As Integer = If(ConfigDrawRoads = 2, SPECIAL_NODE_DRAW_SIZE_THICK, SPECIAL_NODE_DRAW_SIZE_THIN)
             Dim Len2 As Integer = NodeDrawSize \ 2
             For Each N As Node In Map.Nodes
                 Dim Point As Point = CC.GetPoint(N)
@@ -84,8 +86,8 @@
                 If ConfigDrawBusinessNodes AndAlso N.Description IsNot Nothing Then
                     gr.FillRectangle(NODE_BUSINESS_BRUSH, Point.X - Len2, Point.Y - Len2, NodeDrawSize, NodeDrawSize)
                 End If
-                If ConfigDrawRoadDelayNodes AndAlso N.RoadDelay <> RoadDelay.NONE Then
-                    gr.FillRectangle(NODE_ROAD_DELAY_BRUSH, Point.X - Len2, Point.Y - Len2, NodeDrawSize, NodeDrawSize)
+                If ConfigDrawRoadDelayNodes AndAlso N.RoadDelay > RoadDelay.UNEXPECTED Then
+                    gr.DrawRectangle(NODE_ROAD_DELAY_PEN, Point.X - Len2, Point.Y - Len2, NodeDrawSize, NodeDrawSize)
                 End If
                 If ConfigDrawNodeLabels Then
                     gr.DrawString(N.ID Mod 1000, OVERLAY_FONT, Brushes.Black, Point)
@@ -156,6 +158,10 @@
                            CInt(CurrentPoint.Y - AGENT_DRAW_SIZE / 2), _
                            AGENT_DRAW_SIZE, AGENT_DRAW_SIZE, 0, _
                            CSng(Agent.Delayer.GetPercentage * 360))
+
+            If Agent.Plan.RoutePosition.RoadDelay Then
+                gr.FillRectangle(New SolidBrush(Color.FromArgb(Agent.Color.ToArgb Xor &HFFFFFF)), CurrentPoint.X - 2, CurrentPoint.Y - 2, 4, 4)
+            End If
 
             If ConfigDrawAgentLines Then
                 Dim TargetPoint As Point = CC.GetPoint(Agent.Plan.RoutePosition.GetEndPoint)
@@ -242,9 +248,22 @@
         Return MapBitmapCopy
     End Function
 
-    Function DrawOverlay(ByVal Agents As List(Of Agent), ByVal UnpickedJobs As List(Of CourierJob)) As Image
+    Function DrawOverlay(ByVal Agents As List(Of Agent), ByVal Map As StreetMap) As Image
         Dim OverlayBitmapCopy As Bitmap = MapBitmapOriginal.Clone
         Dim grOverlay As Graphics = Graphics.FromImage(OverlayBitmapCopy)
+
+        If ConfigDrawRoadDelayNodes Then
+            Dim NodeDrawSize As Integer = If(ConfigDrawRoads = 2, SPECIAL_NODE_DRAW_SIZE_THICK, SPECIAL_NODE_DRAW_SIZE_THIN)
+            Dim Len2 As Integer = NodeDrawSize \ 2
+            For Each N As Node In Map.Nodes
+                If N.RoadDelay > RoadDelay.UNEXPECTED Then
+                    If IsDelayedAtTime(N, Nothing, NoticeBoard.CurrentTime) Then
+                        Dim Point As Point = CC.GetPoint(N)
+                        grOverlay.FillRectangle(NODE_ROAD_DELAY_BRUSH, Point.X - Len2, Point.Y - Len2, NodeDrawSize, NodeDrawSize)
+                    End If
+                End If
+            Next
+        End If
 
         For Each Agent As Agent In Agents
             DrawAgent(Agent, grOverlay)
@@ -292,8 +311,6 @@
                     Next
                 Next
             End If
-
-
         Next
 
         Dim MapBitmapCopy As Bitmap = MapBitmapOriginal.Clone

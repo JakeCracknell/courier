@@ -2,6 +2,7 @@
     'This enum is ordered by the severity of the potential driving delay.
     Public Enum RoadDelay
         NONE
+        UNEXPECTED
         ZEBRA_CROSSING
         TRAFFIC_LIGHT_CROSSING
         TRAFFIC_LIGHTS
@@ -28,9 +29,16 @@
     Private Const MAJOR_UNEXPECTED_DELAY_PERIOD As Integer = 30
     Private Const MAJOR_UNEXPECTED_DELAY_COEFFICIENT As Double = 0.5 / 3600 '0.5 times an hour at peak time
 
-
+    Public Function IsDelayedAtTime(ByVal NodeOrHopPosition As IPoint, ByVal Way As Way, ByVal Time As TimeSpan) As Boolean
+        Dim Node As Node = TryCast(NodeOrHopPosition, Node)
+        If Node IsNot Nothing Then
+            Return IsDelayedAtTime(Node, Way, Time)
+        Else
+            Return False
+        End If
+    End Function
     Public Function IsDelayedAtTime(ByVal Node As Node, ByVal Way As Way, ByVal Time As TimeSpan) As Boolean
-        If Way.Type <> WayType.ROAD_MOTORWAY AndAlso Node.RoadDelay = RoadDelay.NONE Then
+        If (Way Is Nothing OrElse Way.Type = WayType.ROAD_MOTORWAY) AndAlso Node.RoadDelay = RoadDelay.UNEXPECTED Then
             Return False
         End If
 
@@ -56,7 +64,7 @@
                 Return RandomDelayHelper(Node.ID, Time, ZEBRA_CROSSING_PERIOD, ZEBRA_CROSSING_LENGTH, ZEBRA_CROSSING_COEFFICIENT)
             Case RoadDelay.TRAFFIC_LIGHT_CROSSING
                 Return RandomDelayHelper(Node.ID, Time, TRAFFICLIGHT_CROSSING_PERIOD, TRAFFICLIGHT_CROSSING_LENGTH, TRAFFICLIGHT_CROSSING_COEFFICIENT)
-            Case RoadDelay.NONE
+            Case RoadDelay.UNEXPECTED
                 Dim MinorDelay As Boolean = RandomDelayHelper(Node.ID, Time, MINOR_UNEXPECTED_DELAY_PERIOD, MINOR_UNEXPECTED_DELAY_LENGTH, MINOR_UNEXPECTED_DELAY_COEFFICIENT)
                 Dim MajorDelay As Boolean = RandomDelayHelper(Node.ID, Time, MAJOR_UNEXPECTED_DELAY_PERIOD, MAJOR_UNEXPECTED_DELAY_LENGTH, MAJOR_UNEXPECTED_DELAY_COEFFICIENT)
                 Return MinorDelay Or MajorDelay
@@ -64,7 +72,7 @@
         Return False
     End Function
 
-    Function RandomDelayHelper(ByVal IDSeed As Integer, ByVal Time As TimeSpan, ByVal Period As Integer, ByVal Length As Integer, ByVal Coefficient As Double) As Boolean
+    Function RandomDelayHelper(ByVal IDSeed As Long, ByVal Time As TimeSpan, ByVal Period As Integer, ByVal Length As Integer, ByVal Coefficient As Double) As Boolean
         Dim HourOfWeek As Integer = TimeSpan.FromTicks(Time.Ticks Mod TimeSpan.FromDays(7).Ticks).TotalHours
         Dim Seed As Long = (Time.TotalSeconds \ Period) + IDSeed
         Dim RNG As New Random(Seed Mod Integer.MaxValue)
@@ -87,7 +95,7 @@
     Public Function GetAverageDelayLength(ByVal Node As Node, ByVal Way As Way, ByVal Time As TimeSpan) As Double
         Dim HourOfWeek As Integer = TimeSpan.FromTicks(Time.Ticks Mod TimeSpan.FromDays(7).Ticks).TotalHours
 
-        If Way.Type <> WayType.ROAD_MOTORWAY AndAlso Node.RoadDelay = RoadDelay.NONE Then
+        If Way.Type = WayType.ROAD_MOTORWAY AndAlso Node.RoadDelay = RoadDelay.UNEXPECTED Then
             Return 0
         End If
 
@@ -114,7 +122,7 @@
                 Dim ChanceThisPeriod As Double = TrafficDistribution(HourOfWeek) * (TRAFFICLIGHT_CROSSING_COEFFICIENT / TrafficDistributionMax)
                 Dim AverageLengthOfDelayInsidePeriod As Double = TRAFFICLIGHT_CROSSING_LENGTH ^ 2 / TRAFFICLIGHT_CROSSING_PERIOD * 2
                 Return ChanceThisPeriod * AverageLengthOfDelayInsidePeriod
-            Case RoadDelay.NONE
+            Case RoadDelay.UNEXPECTED
                 Dim MinorChanceThisPeriod As Double = TrafficDistribution(HourOfWeek) * (MINOR_UNEXPECTED_DELAY_COEFFICIENT / TrafficDistributionMax)
                 Dim MinorAverageLengthOfDelayInsidePeriod As Double = MINOR_UNEXPECTED_DELAY_LENGTH ^ 2 / MINOR_UNEXPECTED_DELAY_PERIOD * 2
                 Dim MinorChance As Double = MinorChanceThisPeriod * MinorAverageLengthOfDelayInsidePeriod

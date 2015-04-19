@@ -218,6 +218,7 @@ Public Class OSMLoader
                 N.Connected = False
                 N.RoadDelay = RoadDelay.NONE
             ElseIf N.Connected Then
+                N.RoadDelay = Math.Max(N.RoadDelay, RoadDelay.UNEXPECTED)
                 Map.ConnectedNodesGrid.AddNode(N)
             End If
         Next
