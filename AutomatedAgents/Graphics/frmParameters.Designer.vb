@@ -514,24 +514,23 @@ Partial Class frmParameters
         '
         Me.tbDispatchRate.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tbDispatchRate.Location = New System.Drawing.Point(152, 59)
-        Me.tbDispatchRate.Maximum = 3600
+        Me.tbDispatchRate.Maximum = 1000
         Me.tbDispatchRate.Name = "tbDispatchRate"
         Me.tbDispatchRate.Size = New System.Drawing.Size(143, 22)
         Me.tbDispatchRate.TabIndex = 7
         Me.tbDispatchRate.TickFrequency = 0
         Me.tbDispatchRate.TickStyle = System.Windows.Forms.TickStyle.None
-        Me.tbDispatchRate.Value = 60
+        Me.tbDispatchRate.Value = 100
         '
         'Label3
         '
         Me.Label3.AutoSize = True
         Me.Label3.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Label3.Enabled = False
         Me.Label3.Location = New System.Drawing.Point(3, 56)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(143, 28)
         Me.Label3.TabIndex = 6
-        Me.Label3.Text = "Dispatch Rate (per hour)"
+        Me.Label3.Text = "Dispatch Rate (x)"
         Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtSimSpeed

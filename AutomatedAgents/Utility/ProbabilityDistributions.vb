@@ -21,7 +21,7 @@
         End Function
 
         'http://www.codeproject.com/Articles/15102/NET-random-number-generators-and-distributions
-        Private RNGForGamma As New Random 'TODO: central random number factory
+        Private RNGForGamma As New Random(44) 'TODO: central random number factory
         Public Function Gamma(ByVal alpha As Double, ByVal theta As Double) As Double
             Dim helper1 As Double = alpha - Math.Floor(alpha)
             Dim helper2 As Double = Math.E / (Math.E + helper1)

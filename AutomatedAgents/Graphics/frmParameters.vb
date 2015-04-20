@@ -6,7 +6,7 @@
         tbSimSpeed.Value = SimulationParameters.SimulationSpeed
         txtSimSpeed.Text = SimulationParameters.SimulationSpeed
         txtDispatchRate.Text = SimulationParameters.DispatchRateCoefficient
-        tbDispatchRate.Value = SimulationParameters.DispatchRateCoefficient
+        tbDispatchRate.Value = SimulationParameters.DispatchRateCoefficient * 100
         txtCubicMetres.Text = SimulationParameters.PackageSizeLambda
         tbCubicMetres.Value = SimulationParameters.PackageSizeLambda * 100
         txtDeadlines.Text = SimulationParameters.DeadlineAverage
@@ -34,8 +34,8 @@
         SimulationParameters.DisplayRefreshSpeed = tbGraphicsRefreshRate.Value
     End Sub
     Private Sub tbDispatchRate_Scroll(sender As Object, e As EventArgs) Handles tbDispatchRate.Scroll
-        txtDispatchRate.Text = tbDispatchRate.Value
-        SimulationParameters.DispatchRateCoefficient = tbDispatchRate.Value
+        txtDispatchRate.Text = tbDispatchRate.Value / 100
+        SimulationParameters.DispatchRateCoefficient = tbDispatchRate.Value / 100
     End Sub
 
     Private Sub tbDeadlines_Scroll(sender As Object, e As EventArgs) Handles tbDeadlines.Scroll
@@ -88,10 +88,10 @@
     End Sub
     Private Sub txtDispatchRate_TextChanged(sender As Object, e As EventArgs) Handles txtDispatchRate.TextChanged
         If IsNumeric(txtDispatchRate.Text) Then
-            Dim txtValue As Integer = CInt(txtDispatchRate.Text)
+            Dim txtValue As Integer = CInt(txtDispatchRate.Text) * 100
             If txtValue >= tbDispatchRate.Minimum And txtValue <= tbDispatchRate.Maximum Then
                 tbDispatchRate.Value = txtValue
-                SimulationParameters.DispatchRateCoefficient = txtValue
+                SimulationParameters.DispatchRateCoefficient = txtValue / 100
             End If
         End If
     End Sub
