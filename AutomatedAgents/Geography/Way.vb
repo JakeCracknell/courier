@@ -93,11 +93,15 @@
             Dim SplitTrace() As String = WayTrafficLine.Split(",")
             If SplitTrace.Length >= 2016 Then
                 For i = 0 To 2015
-                    SpeedAtTime(i) = (Double.Parse(SplitTrace(i)))
+                    SpeedAtTime(i) = Math.Max(Math.Min(Double.Parse(SplitTrace(i)), SimulationParameters.MAX_POSSIBLE_SPEED_KMH), SimulationParameters.MIN_POSSIBLE_SPEED_KMH)
                 Next
             End If
         End If
     End Sub
+
+    Public Function HasRealTimeTraffic() As Boolean
+        Return SpeedAtTime IsNot Nothing
+    End Function
 
     Public Overrides Function ToString() As String
         Return If(Name <> "", Name, Type.ToString("G"))

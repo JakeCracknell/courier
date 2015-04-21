@@ -4,6 +4,7 @@
     Private Const LANDMARK_NODE_DRAW_SIZE As Integer = 10
     Private Const SPECIAL_NODE_DRAW_SIZE_THIN As Integer = 3
     Private Const SPECIAL_NODE_DRAW_SIZE_THICK As Integer = 5
+    Private Const TRAFFIC_WAY_THICKNESS As Integer = 5
     Private OVERLAY_FONT As New Font("TimesNewRoman", 12)
     Private ERROR_FONT As New Font("TimesNewRoman", 36, FontStyle.Bold)
     Private DEPOT_FONT As New Font("TimesNewRoman", 7)
@@ -14,14 +15,16 @@
     Private ROAD_THICK_PEN_OUTER As New Pen(New SolidBrush(Color.Black), 5)
     Private ROAD_THICK_PEN_INNER_TWOWAY As New Pen(New SolidBrush(Color.White), 3)
     Private ROAD_THICK_PEN_INNER_ONEWAY As New Pen(New SolidBrush(Color.SandyBrown), 3) With {.DashStyle = Drawing2D.DashStyle.Dot}
-    Private NODE_BUSINESS_BRUSH As Brush = Brushes.Blue
+    Private NODE_BUSINESS_BRUSH As Brush = Brushes.Yellow
     Private NODE_ROAD_DELAY_BRUSH As Brush = Brushes.Red
     Private NODE_ROAD_DELAY_PEN As Pen = Pens.Red
     Private QUADRANT_GRID_PEN As New Pen(Brushes.Gray) With {.DashStyle = Drawing2D.DashStyle.Dash}
     Private DELIVERY_FAIL_CROSS_PEN As New Pen(New SolidBrush(Color.Black), 2)
     Private LANDMARK_BORDER_PEN As New Pen(Brushes.Black, 2)
     Private LANDMARK_BRUSH As Brush = Brushes.White
+
     Private Const ROUTE_TO_LABEL_FORMAT As String = "TO ({0} hops, {1} km, {2} - {3} min)"
+
 
     Private MapBitmapOriginal As Bitmap
     Private MapBitmapOverlay As Bitmap
@@ -37,6 +40,7 @@
     Public ConfigDrawAgentRoutes As Integer = 0
     Public ConfigDrawLandmarks As Boolean = True
     Public ConfigDrawGrid As Boolean = False
+    Public ConfigDrawTrafficLayer As Boolean = True
 
     Sub Resize(ByVal _Width As Integer, ByVal _Height As Integer, ByVal Bounds As Bounds)
         Width = _Width
@@ -253,13 +257,30 @@
         Dim OverlayBitmapCopy As Bitmap = MapBitmapOriginal.Clone
         Dim grOverlay As Graphics = Graphics.FromImage(OverlayBitmapCopy)
 
+        If ConfigDrawTrafficLayer Then
+            Dim CC As New CoordinateConverter(Map.Bounds, Width, Height)
+            For Each Way As Way In Map.Ways.Values
+                If Way.HasRealTimeTraffic Then
+                    Dim SpeedNow As Double = Way.GetSpeedAtTime(NoticeBoard.CurrentTime)
+                    Dim TrafficPen As New Pen(Color.FromArgb(Math.Min(SpeedNow * SimulationParameters.PackageSizeLambda, 255), Color.Red), TRAFFIC_WAY_THICKNESS)
+                    Dim LastPoint As Point = CC.GetPoint(Way.Nodes(0))
+
+                    For i = 1 To Way.Nodes.Length - 1
+                        Dim CurrentPoint As Point = CC.GetPoint(Way.Nodes(i))                 
+                        grOverlay.DrawLine(TrafficPen, LastPoint, CurrentPoint)
+                        LastPoint = CurrentPoint
+                    Next
+                End If
+            Next
+        End If
+
         If ConfigDrawRoadDelayNodes Then
             Dim NodeDrawSize As Integer = If(ConfigDrawRoads = 2, SPECIAL_NODE_DRAW_SIZE_THICK, SPECIAL_NODE_DRAW_SIZE_THIN)
             Dim Len2 As Integer = NodeDrawSize \ 2
-            For Each N As Node In Map.Nodes
-                If N.RoadDelay > RoadDelay.UNEXPECTED Then
-                    If IsDelayedAtTime(N, Nothing, NoticeBoard.CurrentTime) Then
-                        Dim Point As Point = CC.GetPoint(N)
+            For Each Node As Node In Map.Nodes
+                If Node.RoadDelay > RoadDelay.UNEXPECTED Then
+                    If IsDelayedAtTime(Node, Nothing, NoticeBoard.CurrentTime) Then
+                        Dim Point As Point = CC.GetPoint(Node)
                         grOverlay.FillRectangle(NODE_ROAD_DELAY_BRUSH, Point.X - Len2, Point.Y - Len2, NodeDrawSize, NodeDrawSize)
                     End If
                 End If
