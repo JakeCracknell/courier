@@ -11,6 +11,7 @@
         Public FeeBasePrice As Double = 2
         Public FeeHourlyPrice As Double = 0.2
         Public AStarAccelerator As Double = 1.0
+        Public TrafficDisplayAlpha As Double = 3.0
         Public CNPVersion As ContractNetPolicy = ContractNetPolicy.CNP4
         Public VehicleType As Vehicles.Type = Vehicles.Type.CAR
 

@@ -5,6 +5,7 @@
     Public Type As WayType
     Public Name As String
     Private OSMSpeedLimit As Double = Double.MinValue
+    Private MaximumSpeedWithTraffic As Double = Double.MinValue
     Private SpeedAtTime As Double()
     Public OneWay As Boolean
 
@@ -93,11 +94,16 @@
             Dim SplitTrace() As String = WayTrafficLine.Split(",")
             If SplitTrace.Length >= 2016 Then
                 For i = 0 To 2015
-                    SpeedAtTime(i) = Math.Max(Math.Min(Double.Parse(SplitTrace(i)), SimulationParameters.MAX_POSSIBLE_SPEED_KMH), SimulationParameters.MIN_POSSIBLE_SPEED_KMH)
+                    SpeedAtTime(i) = Math.Max(Math.Min(Double.Parse(SplitTrace(i)), GetSpeedLimit), SimulationParameters.MIN_POSSIBLE_SPEED_KMH)
+                    MaximumSpeedWithTraffic = Math.Max(MaximumSpeedWithTraffic, SpeedAtTime(i))
                 Next
             End If
         End If
     End Sub
+
+    Public Function GetSpeedDifferenceAtTime(ByVal Time As TimeSpan) As Double
+        Return MaximumSpeedWithTraffic - GetSpeedAtTime(Time)
+    End Function
 
     Public Function HasRealTimeTraffic() As Boolean
         Return SpeedAtTime IsNot Nothing

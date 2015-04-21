@@ -4,6 +4,7 @@
 
     Public Nodes As New List(Of Node)
     Public Ways As New SortedList(Of Long, Way)
+    Public WaysWithTraffic As New List(Of Way)
     Public NodesAdjacencyList As New NodesAdjacencyList
     Public ConnectedNodesGrid As NodesGrid
 

@@ -197,8 +197,11 @@ Public Class OSMLoader
                 For i = 2 To AAFile.Length - 1
                     Dim WayTrafficLine() As String = AAFile(i).Split(":")
                     Dim WayID As Long = Long.Parse(WayTrafficLine(0))
-                    If Map.Ways.ContainsKey(WayID) Then
-                        Map.Ways(WayID).ParseTrafficTrace(WayTrafficLine(1))
+                    Dim TrafficWay As Way = Nothing
+                    Map.Ways.TryGetValue(WayID, TrafficWay)
+                    If TrafficWay IsNot Nothing Then
+                        TrafficWay.ParseTrafficTrace(WayTrafficLine(1))
+                        Map.WaysWithTraffic.Add(TrafficWay)
                     End If
                 Next
 

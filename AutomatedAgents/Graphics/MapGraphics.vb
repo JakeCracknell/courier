@@ -259,18 +259,16 @@
 
         If ConfigDrawTrafficLayer Then
             Dim CC As New CoordinateConverter(Map.Bounds, Width, Height)
-            For Each Way As Way In Map.Ways.Values
-                If Way.HasRealTimeTraffic Then
-                    Dim SpeedNow As Double = Way.GetSpeedAtTime(NoticeBoard.CurrentTime)
-                    Dim TrafficPen As New Pen(Color.FromArgb(Math.Min(SpeedNow * SimulationParameters.PackageSizeLambda, 255), Color.Red), TRAFFIC_WAY_THICKNESS)
-                    Dim LastPoint As Point = CC.GetPoint(Way.Nodes(0))
+            For Each Way As Way In Map.WaysWithTraffic
+                Dim TrafficIntensity As Double = Way.GetSpeedDifferenceAtTime(NoticeBoard.CurrentTime)
+                Dim TrafficPen As New Pen(Color.FromArgb(Math.Min(TrafficIntensity * SimulationParameters.TrafficDisplayAlpha, 255), Color.Red), TRAFFIC_WAY_THICKNESS)
+                Dim LastPoint As Point = CC.GetPoint(Way.Nodes(0))
 
-                    For i = 1 To Way.Nodes.Length - 1
-                        Dim CurrentPoint As Point = CC.GetPoint(Way.Nodes(i))                 
-                        grOverlay.DrawLine(TrafficPen, LastPoint, CurrentPoint)
-                        LastPoint = CurrentPoint
-                    Next
-                End If
+                For i = 1 To Way.Nodes.Length - 1
+                    Dim CurrentPoint As Point = CC.GetPoint(Way.Nodes(i))
+                    grOverlay.DrawLine(TrafficPen, LastPoint, CurrentPoint)
+                    LastPoint = CurrentPoint
+                Next
             Next
         End If
 
