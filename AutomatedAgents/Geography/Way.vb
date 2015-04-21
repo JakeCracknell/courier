@@ -63,15 +63,15 @@
         'UK speeds available from https://www.gov.uk/speed-limits
         'However will use estimates as simulation designed for built-up areas.
         Select Case Type
-            Case WayType.ROAD_MOTORWAY
+            Case WayType.MOTORWAY
                 Return 112
-            Case WayType.ROAD_TRUNK
+            Case WayType.TRUNK_ROAD
                 Return 80
-            Case WayType.ROAD_PRIMARY
+            Case WayType.PRIMARY_ROAD
                 Return 64
-            Case WayType.ROAD_RESIDENTIAL
+            Case WayType.RESIDENTIAL_ROAD
                 Return 32
-            Case WayType.ROAD_SERVICE
+            Case WayType.SERVICE_ROAD
                 Return 8
             Case Else
                 Return 48

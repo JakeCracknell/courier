@@ -1,4 +1,5 @@
 ﻿Module FirstNameAssigner
+    'Source: http://deron.meranda.us/data/census-derived-all-first.txt
     Private AllNames As String() = My.Resources.ResourceManager.GetString("AgentNames").Split(vbNewLine)
     Private NamesToAssign As New List(Of String)
 

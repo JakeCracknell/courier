@@ -38,7 +38,7 @@
         End If
     End Function
     Public Function IsDelayedAtTime(ByVal Node As Node, ByVal Way As Way, ByVal Time As TimeSpan) As Boolean
-        If (Way Is Nothing OrElse Way.Type = WayType.ROAD_MOTORWAY) AndAlso Node.RoadDelay = RoadDelay.UNEXPECTED Then
+        If (Way Is Nothing OrElse Way.Type = WayType.MOTORWAY) AndAlso Node.RoadDelay = RoadDelay.UNEXPECTED Then
             Return False
         End If
 
@@ -102,7 +102,7 @@
     Public Function GetAverageDelayLength(ByVal Node As Node, ByVal Way As Way, ByVal Time As TimeSpan) As Double
         Dim HourOfWeek As Integer = Int(TimeSpan.FromTicks(Time.Ticks Mod TimeSpan.FromDays(7).Ticks).TotalHours)
 
-        If Way.Type = WayType.ROAD_MOTORWAY AndAlso Node.RoadDelay = RoadDelay.UNEXPECTED Then
+        If Way.Type = WayType.MOTORWAY AndAlso Node.RoadDelay = RoadDelay.UNEXPECTED Then
             Return 0
         End If
 

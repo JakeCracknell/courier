@@ -116,7 +116,7 @@ Public Class OSMLoader
 
                 Do Until reader.Name = "relation" OrElse reader.NodeType = XmlNodeType.EndElement
                     Dim WayID As Long = Long.Parse(reader.GetAttribute("id"))
-                    Dim WayType As WayType = WayType.UNSPECIFIED
+                    Dim WayType As WayType = WayType.UNSPECIFIED_WAY
                     Dim WayName As String = ""
                     Dim MaxSpeedOverrideKMH As Integer = -1
                     Dim OneWay As String = ""
@@ -159,7 +159,7 @@ Public Class OSMLoader
                         reader.Skip()
                     End While
 
-                    If WayType <> WayType.UNSPECIFIED And AccessAllowed Then
+                    If WayType <> WayType.UNSPECIFIED_WAY And AccessAllowed Then
                         Dim Way As New Way(WayID, Nds.ToArray, WayType, WayName)
 
                         If OneWay <> "" Then
@@ -217,6 +217,7 @@ Public Class OSMLoader
             Map.FuelPoints.Add(CentralNode)
         End If
 
+        'Prune disconnected components
         Map.NodesAdjacencyList.RemoveDisconnectedComponents(Map.Depots(0))
         For Each N As Node In Map.Nodes
             If Not Map.NodesAdjacencyList.Rows.ContainsKey(N.ID) Then
@@ -225,6 +226,17 @@ Public Class OSMLoader
             ElseIf N.Connected Then
                 N.RoadDelay = Math.Max(N.RoadDelay, RoadDelay.UNEXPECTED)
                 Map.ConnectedNodesGrid.AddNode(N)
+            End If
+        Next
+
+        'Remove road delays that are crossings in residential roads. Too infrequent.
+        For Each W As Way In Map.Ways.Values
+            If W.Type <= WayType.UNCLASSIFIED_ROAD Then
+                For Each N As Node In W.Nodes
+                    If N.RoadDelay = RoadDelay.ZEBRA_CROSSING Then
+                        N.RoadDelay = RoadDelay.UNEXPECTED
+                    End If
+                Next
             End If
         Next
 
@@ -240,23 +252,23 @@ Public Class OSMLoader
     Private Function DecodeHighWayType(ByVal str As String) As WayType
         Select Case str
             Case "service"
-                Return WayType.ROAD_SERVICE
+                Return WayType.SERVICE_ROAD
             Case "unclassified"
-                Return WayType.ROAD_UNCLASSIFIED 'e.g. vine road
+                Return WayType.UNCLASSIFIED_ROAD 'e.g. vine road
             Case "residential"
-                Return WayType.ROAD_RESIDENTIAL
+                Return WayType.RESIDENTIAL_ROAD
             Case "tertiary", "tertiary_link"
-                Return WayType.ROAD_TERTIARY
+                Return WayType.TERTIARY_ROAD
             Case "secondary", "secondary_link"
-                Return WayType.ROAD_SECONDARY
+                Return WayType.SECONDARY_ROAD
             Case "primary", "primary_link"
-                Return WayType.ROAD_PRIMARY
+                Return WayType.PRIMARY_ROAD
             Case "trunk", "trunk_link"
-                Return WayType.ROAD_TRUNK
+                Return WayType.TRUNK_ROAD
             Case "motorway", "motorway_link"
-                Return WayType.ROAD_MOTORWAY
+                Return WayType.MOTORWAY
             Case Else
-                Return WayType.UNSPECIFIED
+                Return WayType.UNSPECIFIED_WAY
         End Select
     End Function
 

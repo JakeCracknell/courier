@@ -81,29 +81,35 @@
             If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
                 Dim StatisticsLogCounter As Integer = 0
                 SelectionMode = MapSelectionMode.AGENTS_ALL_ROUTE_TO
-                SyncLock AASimulation
-                    If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
-                        Dim SimulationStateChanged As Boolean = False
-                        Dim TickCounter As Integer = 0
-                        Do
-                            SimulationStateChanged = SimulationStateChanged Or AASimulation.Tick()
-                            If StatisticsLogCounter Mod SimulationParameters.StatisticsTickInterval = 0 Then
-                                AASimulation.LogStatistics()
-                            End If
 
-                            If TickCounter Mod SimulationParameters.DisplayRefreshSpeed = 0 AndAlso Not PauseDisplayToolStripMenuItem.Checked Then
-                                If SimulationStateChanged Then
-                                    SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, AASimulation.Map))
-                                    SimulationState.CacheAASimulationStatus(AASimulation)
+                If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
+                    Dim SimulationStateChanged As Boolean = False
+                    Dim TickCounter As Integer = 0
+                    Do
+                        If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
+                            SyncLock AASimulation
+                                If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
+
+                                    SimulationStateChanged = SimulationStateChanged Or AASimulation.Tick()
+                                    If StatisticsLogCounter Mod SimulationParameters.StatisticsTickInterval = 0 Then
+                                        AASimulation.LogStatistics()
+                                    End If
+
+                                    If TickCounter Mod SimulationParameters.DisplayRefreshSpeed = 0 AndAlso Not PauseDisplayToolStripMenuItem.Checked Then
+                                        If SimulationStateChanged Then
+                                            SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, AASimulation.Map))
+                                            SimulationState.CacheAASimulationStatus(AASimulation)
+                                        End If
+                                    End If
+                                    TickCounter += 1
+                                    StatisticsLogCounter += 1
                                 End If
-                            End If
-                            TickCounter += 1
-                            StatisticsLogCounter += 1
-                        Loop Until TickCounter >= SimulationParameters.SimulationSpeed
+                            End SyncLock
+                        End If
+                    Loop Until TickCounter >= SimulationParameters.SimulationSpeed
 
-                    End If
+                End If
 
-                End SyncLock
             End If
             Dim SleepTime As Integer = 1000 / SimulationParameters.SimulationSpeed
             If SleepTime > 0 Then
