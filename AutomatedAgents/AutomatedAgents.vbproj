@@ -107,6 +107,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Geography\NodesGrid.vb" />
+    <Compile Include="OSMData\HERETrafficData.vb" />
     <Compile Include="OSMData\RoadDelayUtils.vb" />
     <Compile Include="RouteFinding\RouteCache.vb" />
     <Compile Include="Simulation\LogMessages.vb" />

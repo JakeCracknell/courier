@@ -55,7 +55,6 @@
             End If
         Next
 
-        Debug.Assert(False) 'Only if the map has no nodes or maxradius is set.
         Return Nothing
     End Function
 
