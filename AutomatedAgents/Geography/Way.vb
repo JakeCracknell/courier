@@ -5,7 +5,7 @@
     Public Type As WayType
     Public Name As String
     Private OSMSpeedLimit As Double = Double.MinValue
-    Private SpeedAtTime As List(Of Double)
+    Private SpeedAtTime As Double()
     Public OneWay As Boolean
 
     Public Sub New(ByVal ID As Integer, ByVal Nodes As Node(), ByVal Type As WayType, ByVal Name As String)
@@ -88,11 +88,12 @@
 
     'Expected format is 34.56,36.89,32.67, ... 39.74
     Sub ParseTrafficTrace(ByVal WayTrafficLine As String)
+        ReDim SpeedAtTime(2016)
         If WayTrafficLine IsNot Nothing Then
             Dim SplitTrace() As String = WayTrafficLine.Split(",")
             If SplitTrace.Length >= 2016 Then
                 For i = 0 To 2015
-                    SpeedAtTime(i) = CDbl(SplitTrace(i))
+                    SpeedAtTime(i) = (Double.Parse(SplitTrace(i)))
                 Next
             End If
         End If

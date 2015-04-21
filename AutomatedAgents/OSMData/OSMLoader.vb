@@ -39,7 +39,7 @@ Public Class OSMLoader
                 Loop
 
                 Do Until reader.Name = "way"
-                    Dim Node As New Node(CLng(reader.GetAttribute("id")), CDbl(reader.GetAttribute("lat")), CDbl(reader.GetAttribute("lon")))
+                    Dim Node As New Node(Long.Parse(reader.GetAttribute("id")), Double.Parse(reader.GetAttribute("lat")), Double.Parse(reader.GetAttribute("lon")))
                     reader.ReadStartElement()
                     reader.Skip()
 
@@ -115,7 +115,7 @@ Public Class OSMLoader
                 Loop
 
                 Do Until reader.Name = "relation" OrElse reader.NodeType = XmlNodeType.EndElement
-                    Dim WayID As Long = CLng(reader.GetAttribute("id"))
+                    Dim WayID As Long = Long.Parse(reader.GetAttribute("id"))
                     Dim WayType As WayType = WayType.UNSPECIFIED
                     Dim WayName As String = ""
                     Dim MaxSpeedOverrideKMH As Integer = -1
@@ -127,7 +127,7 @@ Public Class OSMLoader
 
                     Dim Nds As New List(Of Node)
                     While reader.Name = "nd"
-                        Dim NodeRef As Long = CLng(reader.GetAttribute("ref"))
+                        Dim NodeRef As Long = Long.Parse(reader.GetAttribute("ref"))
                         Dim Node As Node = Nothing
                         NodeHashMap.TryGetValue(NodeRef, Node)
                         If Node IsNot Nothing Then
@@ -187,17 +187,19 @@ Public Class OSMLoader
             If IO.File.Exists(AAFilePath) Then
                 Dim AAFile() As String = IO.File.ReadAllLines(AAFilePath)
                 For Each NodeID As String In AAFile(0).Split(",")
-                    Map.Depots.Add(Map.NodesAdjacencyList.Rows(CLng(NodeID)).NodeKey)
-                    Map.FuelPoints.Add(Map.NodesAdjacencyList.Rows(CLng(NodeID)).NodeKey)
+                    Map.Depots.Add(Map.NodesAdjacencyList.Rows(Long.Parse(NodeID)).NodeKey)
+                    Map.FuelPoints.Add(Map.NodesAdjacencyList.Rows(Long.Parse(NodeID)).NodeKey)
                 Next
                 For Each NodeID As String In AAFile(1).Split(",")
-                    Map.FuelPoints.Add(Map.NodesAdjacencyList.Rows(CLng(NodeID)).NodeKey)
+                    Map.FuelPoints.Add(Map.NodesAdjacencyList.Rows(Long.Parse(NodeID)).NodeKey)
                 Next
 
                 For i = 2 To AAFile.Length - 1
                     Dim WayTrafficLine() As String = AAFile(i).Split(":")
-                    Dim WayID As Long = CLng(WayTrafficLine(0))
-                    Map.Ways(WayID).ParseTrafficTrace(WayTrafficLine(1))
+                    Dim WayID As Long = Long.Parse(WayTrafficLine(0))
+                    If Map.Ways.ContainsKey(WayID) Then
+                        Map.Ways(WayID).ParseTrafficTrace(WayTrafficLine(1))
+                    End If
                 Next
 
             End If

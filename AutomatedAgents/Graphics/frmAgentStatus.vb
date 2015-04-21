@@ -21,7 +21,7 @@
         lvAgentList.Items.Clear()
         lvJobList.Items.Clear()
         For Each AgentList As List(Of String) In State.Item1
-            Dim AgentID As Integer = CInt(AgentList(0))
+            Dim AgentID As Integer = Integer.Parse(AgentList(0))
             Dim LVI As New ListViewItem(AgentList(0))
             For i = 1 To AgentList.Count - 1
                 LVI.SubItems.Add(AgentList(i))
@@ -32,7 +32,7 @@
             lvAgentList.Items.Add(LVI)
         Next
         For Each JobList As List(Of String) In State.Item2
-            Dim AgentID As Integer = CInt(JobList(1))
+            Dim AgentID As Integer = Integer.Parse(JobList(1))
             Dim LVI As New ListViewItem(JobList(0))
             For i = 1 To JobList.Count - 1
                 LVI.SubItems.Add(JobList(i))
