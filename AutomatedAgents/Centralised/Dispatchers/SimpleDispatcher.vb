@@ -7,7 +7,7 @@
     End Sub
 
     Sub Tick() Implements IDispatcher.Tick
-        If Rnd() < SimulationParameters.DispatchRateCoefficient / 3600 Then
+        If RNG.R("dispatcher").NextDouble < SimulationParameters.DispatchRateCoefficient / 3600 Then
             Dim Job As New CourierJob(Map.NodesAdjacencyList.GetRandomPoint, _
                                       Map.NodesAdjacencyList.GetRandomPoint)
             NoticeBoard.PostJob(Job)

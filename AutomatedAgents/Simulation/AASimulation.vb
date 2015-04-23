@@ -28,10 +28,11 @@
         Return DayOfWeek.ToString("G") & " " & NoticeBoard.Time.ToString & If(IsRunning, "", " paused")
     End Function
 
-    Sub InitialiseLoggingModules()
+    Sub InitialiseAllModules()
         If Statistics Is Nothing Then 'without this frmStats could cause a synclock exception. TODO refactor
             Statistics = New StatisticsLogger(Now, Map)
         End If
+        RNG.Initialise()
         NoticeBoard.Initialise()
         SimulationState.Initialise()
     End Sub

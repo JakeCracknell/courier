@@ -52,7 +52,7 @@
     Function GetRandomNode() As Node
         Dim Node As Node
         Do
-            Node = Rows.Values(Int(Rnd() * Rows.Count)).NodeKey
+            Node = Rows.Values(Int(RNG.R("random_row").NextDouble * Rows.Count)).NodeKey
         Loop Until Node.Connected
         Return Node
     End Function
@@ -71,15 +71,15 @@
         Dim NodeB As Node = Nothing
         Dim Way As Way = Nothing
         Do
-            Dim RandomRow As NodesAdjacencyListRow = Rows.Values(Int(Rnd() * Rows.Count))
+            Dim RandomRow As NodesAdjacencyListRow = Rows.Values(Int(RNG.R("random_row").NextDouble * Rows.Count))
             If RandomRow.Cells.Count > 0 Then
-                Dim RandomCell As NodesAdjacencyListCell = RandomRow.Cells(Int(Rnd() * RandomRow.Cells.Count))
+                Dim RandomCell As NodesAdjacencyListCell = RandomRow.Cells(Int(RNG.R("random_cell").NextDouble * RandomRow.Cells.Count))
                 NodeA = RandomRow.NodeKey
                 NodeB = RandomCell.Node
                 Way = RandomCell.Way
             End If
         Loop Until NodeA IsNot Nothing AndAlso NodeB IsNot Nothing AndAlso NodeA.Connected AndAlso NodeB.Connected
-        Dim RandomPercentageTravelled As Double = Rnd()
+        Dim RandomPercentageTravelled As Double = RNG.R("random_hop_pc").NextDouble
         Return New HopPosition(New Hop(NodeA, NodeB, Way), RandomPercentageTravelled)
     End Function
 

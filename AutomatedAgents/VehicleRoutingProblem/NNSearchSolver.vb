@@ -8,10 +8,11 @@
     Public OldPlan As CourierPlan
     Private Solution As CourierPlan
     Private TotalCost As Double
-    Private Shared r As New Random(44)
+    Private Shared r As Random
 
     'TODO: BYVAL locked waypoints - those that must occur first. EG wp ->1 and ->2 already got their courtesy call
     Sub New(ByVal CourierPlan As CourierPlan, ByVal PunctualityStrategy As SolverPunctualityStrategy, ByVal Minimiser As RouteFindingMinimiser, ByVal VehicleType As Vehicles.Type, Optional ByVal ExtraJob As CourierJob = Nothing)
+        r = RNG.R("nnsearch")
         OldPlan = CourierPlan
         Me.Minimiser = Minimiser
         Me.PunctualityStrategy = PunctualityStrategy

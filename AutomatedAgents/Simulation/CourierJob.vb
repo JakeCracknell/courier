@@ -29,9 +29,9 @@
     End Sub
     Sub New(ByVal PickupPosition As HopPosition, ByVal DeliveryPosition As HopPosition)
         Me.New(PickupPosition, DeliveryPosition, PickupPosition.ToString, DeliveryPosition.ToString, _
-               Math.Max(SimulationParameters.CubicMetresMin, ProbabilityDistributions.Exponential(SimulationParameters.PackageSizeLambda, Rnd)), _
+               Math.Max(SimulationParameters.CubicMetresMin, ProbabilityDistributions.Exponential(SimulationParameters.PackageSizeLambda, RNG.R("simple_size").NextDouble)), _
                     NoticeBoard.Time.Add( _
-                    TimeSpan.FromMinutes(ProbabilityDistributions.Gaussian(SimulationParameters.DeadlineAverage))))
+                    TimeSpan.FromMinutes(ProbabilityDistributions.Gaussian(RNG.R("simple_job_deadline"), SimulationParameters.DeadlineAverage))))
     End Sub
 
     'These functions return the time taken to collect/deliver. If the customer
@@ -40,7 +40,7 @@
     'refund given or rerouted to the depot at some time (no deadline).
     Function Collect() As Integer
         Debug.Assert(Status = JobStatus.PENDING_PICKUP)
-        If Rnd() > SimulationParameters.ProbPickupFail Then
+        If RNG.R("pickup").NextDouble > SimulationParameters.ProbPickupFail Then
             Status = JobStatus.PENDING_DELIVERY
             Return GenerateRandomWaitTime()
         End If
@@ -55,7 +55,7 @@
         If IsGoingToDepot() Then
             Status = JobStatus.COMPLETED
             Return CUSTOMER_WAIT_TIME_MIN
-        ElseIf Rnd() > SimulationParameters.ProbDeliveryFail Then
+        ElseIf RNG.R("dropoff").NextDouble > SimulationParameters.ProbDeliveryFail Then
             Status = JobStatus.COMPLETED
             If Deadline < NoticeBoard.Time Then
                 'Still happens occasionally.
@@ -98,7 +98,7 @@
 
     'Uniform distribution
     Private Function GenerateRandomWaitTime()
-        Return New Random().Next(CUSTOMER_WAIT_TIME_MIN, CUSTOMER_WAIT_TIME_MAX)
+        Return RNG.R("job_wait").Next(CUSTOMER_WAIT_TIME_MIN, CUSTOMER_WAIT_TIME_MAX)
     End Function
 
     Public Overrides Function ToString() As String

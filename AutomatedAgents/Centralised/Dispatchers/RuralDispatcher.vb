@@ -6,7 +6,6 @@
     Private ReadOnly P_WE_Dispatch As Double() = {1, 1, 1, 1, 1, 1, 1, 5, 7, 10, 10, 10, 10, 10, 10, 10, 9, 7, 5, 3, 2, 1, 1, 1}
 
     Private Const SECONDS_IN_HOUR As Integer = 3600
-    Private RandomNumberGenerator As New Random(44)
     Private Map As StreetMap
 
     Sub New(ByVal Map As StreetMap)
@@ -28,7 +27,7 @@
         ProbabilityOfDispatch = ProbabilityOfDispatch * SimulationParameters.DispatchRateCoefficient / SECONDS_IN_HOUR
 
         'A Bernoulli(P) distribution, where P varies by day and hour.
-        If RandomNumberGenerator.NextDouble > ProbabilityOfDispatch Then
+        If RNG.R("dispatcher").NextDouble > ProbabilityOfDispatch Then
             Exit Sub 'No job is dispatched.
         End If
 
@@ -44,10 +43,10 @@
 
         Dim Deadline As TimeSpan = NoticeBoard.Time + _
             RouteCache.GetRoute(PickupLocation, DeliveryLocation).GetEstimatedTime + _
-            TimeSpan.FromHours(ProbabilityDistributions.Gamma(2, 1))
+            TimeSpan.FromHours(ProbabilityDistributions.Gamma(RNG.R("deadline"), 2, 1))
 
         'Generate a random package size from an exponential distribution (as many packages will be documents).
-        Dim Size As Double = ProbabilityDistributions.Exponential(SimulationParameters.PackageSizeLambda, RandomNumberGenerator.NextDouble)
+        Dim Size As Double = ProbabilityDistributions.Exponential(SimulationParameters.PackageSizeLambda, RNG.R("dispatcher").NextDouble)
         Size = Math.Min(Math.Max(Size, SimulationParameters.CubicMetresMin), SimulationParameters.CubicMetresMax)
 
         Dim CourierJob As New CourierJob(PickupLocation, DeliveryLocation, PickupName, DeliveryName, Size, Deadline)
@@ -58,7 +57,7 @@
     Function GenerateWaypointName(ByVal Position As HopPosition) As String
         Dim Name As String = FirstNameAssigner.AssignName()
         Name = Name(0) & Name.Substring(1).ToLower
-        Dim Age As Integer = Int(18 + Rnd() * 82)
+        Dim Age As Integer = Int(18 + RNG.R("age").NextDouble * 82)
         Dim WayName As String = Position.Hop.Way.Name
         If WayName = "" Then
             WayName = "Unnamed Road"

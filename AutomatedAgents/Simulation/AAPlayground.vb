@@ -4,7 +4,7 @@
     Public Sub New(ByVal Map As StreetMap)
         Me.Map = Map
         NoticeBoard.Initialise()
-        InitialiseLoggingModules()
+        InitialiseAllModules()
     End Sub
 
     Public Overrides Sub AddAgent()

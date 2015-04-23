@@ -20,7 +20,6 @@
     Private ReadOnly P_WE_NonB_Destinations As Double() = {0.2, 0.1, 0, 0.7}
 
     Private Const SECONDS_IN_HOUR As Integer = 3600
-    Private RandomNumberGenerator As New Random(44)
     Private Map As StreetMap
 
     Sub New(ByVal Map As StreetMap)
@@ -42,13 +41,13 @@
         ProbabilityOfDispatch = ProbabilityOfDispatch * SimulationParameters.DispatchRateCoefficient / SECONDS_IN_HOUR
 
         'A Bernoulli(P) distribution, where P varies by day and hour.
-        If RandomNumberGenerator.NextDouble > ProbabilityOfDispatch Then
+        If RNG.R("dispatcher").NextDouble > ProbabilityOfDispatch Then
             Exit Sub 'No job is dispatched.
         End If
 
 
         'Probabilistically determine whether the job is B2B, B2C, C2B or C2C:
-        Dim RandomSample As Double = RandomNumberGenerator.NextDouble
+        Dim RandomSample As Double = RNG.R("dispatcher").NextDouble
         Dim Distribution As Double()
         Select Case DayOfWeek
             Case DayOfWeek.Saturday, DayOfWeek.Sunday
@@ -82,21 +81,21 @@
         Dim DeliveryLocation As HopPosition = Nothing
         Select Case JobType
             Case 0 'B2B
-                Dim RandomBusinessFrom As Node = Map.Businesses(RandomNumberGenerator.Next(0, Map.Businesses.Count))
+                Dim RandomBusinessFrom As Node = Map.Businesses(RNG.R("dispatcher").Next(0, Map.Businesses.Count))
                 PickupLocation = Map.GetNearestPoint(RandomBusinessFrom)
-                Dim RandomBusinessTo As Node = Map.Businesses(RandomNumberGenerator.Next(0, Map.Businesses.Count))
+                Dim RandomBusinessTo As Node = Map.Businesses(RNG.R("dispatcher").Next(0, Map.Businesses.Count))
                 DeliveryLocation = Map.GetNearestPoint(RandomBusinessTo)
                 PickupName = GenerateWaypointName(PickupLocation, RandomBusinessFrom)
                 DeliveryName = GenerateWaypointName(DeliveryLocation, RandomBusinessTo)
             Case 1 'B2C
-                Dim RandomBusinessFrom As Node = Map.Businesses(RandomNumberGenerator.Next(0, Map.Businesses.Count))
+                Dim RandomBusinessFrom As Node = Map.Businesses(RNG.R("dispatcher").Next(0, Map.Businesses.Count))
                 PickupLocation = Map.GetNearestPoint(RandomBusinessFrom)
                 DeliveryLocation = Map.NodesAdjacencyList.GetRandomPoint
                 PickupName = GenerateWaypointName(PickupLocation, RandomBusinessFrom)
                 DeliveryName = GenerateWaypointName(DeliveryLocation)
             Case 2 'C2B
                 PickupLocation = Map.NodesAdjacencyList.GetRandomPoint
-                Dim RandomBusinessTo As Node = Map.Businesses(RandomNumberGenerator.Next(0, Map.Businesses.Count))
+                Dim RandomBusinessTo As Node = Map.Businesses(RNG.R("dispatcher").Next(0, Map.Businesses.Count))
                 DeliveryLocation = Map.GetNearestPoint(RandomBusinessTo)
                 PickupName = GenerateWaypointName(PickupLocation)
                 DeliveryName = GenerateWaypointName(DeliveryLocation, RandomBusinessTo)
@@ -117,16 +116,16 @@
                 TimeOfDay.Hours <= END_OF_BUSINESS_HOUR AndAlso _
                 TimeOfDay + DirectRoute.GetEstimatedTime < END_OF_BUSINESS_DAY_MIN Then
             Deadline = NoticeBoard.Time - TimeOfDay + _
-                TimeSpan.FromSeconds(RandomNumberGenerator.Next( _
+                TimeSpan.FromSeconds(RNG.R("dispatcher").Next( _
                                      END_OF_BUSINESS_DAY_MIN.TotalSeconds, END_OF_BUSINESS_DAY_MAX.TotalSeconds))
         Else
             'A gamma distribution, giving a range from 0 to infinity. Mode of (alpha-1)*theta = +1h
             'Spread mostly between 0.5 and 4
-            Deadline = NoticeBoard.Time + DirectRoute.GetEstimatedTime() + TimeSpan.FromHours(ProbabilityDistributions.Gamma(2, 1))
+            Deadline = NoticeBoard.Time + DirectRoute.GetEstimatedTime() + TimeSpan.FromHours(ProbabilityDistributions.Gamma(RNG.R("deadline"), 2, 1))
         End If
 
         'Generate a random package size from an exponential distribution (as many packages will be documents).
-        Dim Size As Double = ProbabilityDistributions.Exponential(SimulationParameters.PackageSizeLambda, RandomNumberGenerator.NextDouble)
+        Dim Size As Double = ProbabilityDistributions.Exponential(SimulationParameters.PackageSizeLambda, RNG.R("dispatcher").NextDouble)
         Size = Math.Min(Math.Max(Size, SimulationParameters.CubicMetresMin), SimulationParameters.CubicMetresMax)
 
         Dim CourierJob As New CourierJob(PickupLocation, DeliveryLocation, PickupName, DeliveryName, Size, Deadline)
@@ -137,7 +136,7 @@
     Function GenerateWaypointName(ByVal Position As HopPosition) As String
         Dim Name As String = FirstNameAssigner.AssignName()
         Name = Name(0) & Name.Substring(1).ToLower
-        Dim Age As Integer = Int(18 + Rnd() * 82)
+        Dim Age As Integer = Int(18 + RNG.R("age").NextDouble * 82)
         Dim WayName As String = Position.Hop.Way.Name
         If WayName = "" Then
             WayName = "Unnamed Road"

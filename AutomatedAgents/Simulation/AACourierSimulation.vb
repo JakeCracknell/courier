@@ -8,7 +8,7 @@
         NoticeBoard.Initialise()
         RouteCache.Initialise(Map.NodesAdjacencyList, RouteFindingMinimiser.DISTANCE)
         Dispatcher = If(Map.Businesses.Count > 10, New CityDispatcher(Map), New RuralDispatcher(Map))
-        InitialiseLoggingModules()
+        InitialiseAllModules()
     End Sub
 
     'Returns whether the state has changed.
@@ -21,7 +21,7 @@
         NoticeBoard.Tick()
 
         'Iterate through agents in semi-random order
-        Dim MidIndex As Integer = Int(Rnd() * Agents.Count)
+        Dim MidIndex As Integer = RNG.R("agent_tick").Next(0, Agents.Count)
         For i = MidIndex To MidIndex + Agents.Count - 1
             Agents(i Mod Agents.Count).Move()
             Dim MovedAmount As Double = HaversineDistance(NoticeBoard.AgentPositions(i Mod Agents.Count), Agents(i Mod Agents.Count).Plan.RoutePosition.GetPoint)

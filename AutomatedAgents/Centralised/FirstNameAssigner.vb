@@ -8,7 +8,7 @@
             NamesToAssign = AllNames.ToList
         End If
 
-        Dim Index As Integer = Int(Rnd() * NamesToAssign.Count)
+        Dim Index As Integer = Int(RNG.R("first_name").NextDouble * NamesToAssign.Count)
         Dim Name As String = NamesToAssign(Index).Trim
         NamesToAssign.RemoveAt(Index)
         Return Name
