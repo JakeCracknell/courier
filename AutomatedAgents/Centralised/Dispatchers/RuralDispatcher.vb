@@ -48,7 +48,7 @@
 
         'Generate a random package size from an exponential distribution (as many packages will be documents).
         Dim Size As Double = ProbabilityDistributions.Exponential(SimulationParameters.PackageSizeLambda, RandomNumberGenerator.NextDouble)
-        Size = Math.Max(Size, SimulationParameters.CubicMetresMin)
+        Size = Math.Min(Math.Max(Size, SimulationParameters.CubicMetresMin), SimulationParameters.CubicMetresMax)
 
         Dim CourierJob As New CourierJob(PickupLocation, DeliveryLocation, PickupName, DeliveryName, Size, Deadline)
         NoticeBoard.PostJob(CourierJob)
@@ -60,19 +60,10 @@
         Name = Name(0) & Name.Substring(1).ToLower
         Dim Age As Integer = Int(18 + Rnd() * 82)
         Dim WayName As String = Position.Hop.Way.Name
-        If WayName <> "" Then
-            WayName = "Unnamed Road"
-        End If
-        Dim HouseNo As Integer = 1 + Int(ProbabilityDistributions.Exponential(0.03))
-        Return String.Format("{0} ({1}), {2} {3}", Name, Age, HouseNo, WayName)
-    End Function
-    Function GenerateWaypointName(ByVal Position As HopPosition, ByVal Business As Node) As String
-        Dim Name As String = Char.ToUpper(Business.Description(0)) & Business.Description.Substring(1)
-        Dim WayName As String = Position.Hop.Way.Name
         If WayName = "" Then
             WayName = "Unnamed Road"
         End If
         Dim HouseNo As Integer = 1 + Int(ProbabilityDistributions.Exponential(0.03))
-        Return String.Format("{0}, {1} {2}", Name, HouseNo, WayName)
+        Return String.Format("{0} ({1}), {2} {3}", Name, Age, HouseNo, WayName)
     End Function
 End Class
