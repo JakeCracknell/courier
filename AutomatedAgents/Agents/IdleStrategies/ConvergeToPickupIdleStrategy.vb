@@ -79,7 +79,7 @@
 
      
 
-        Dim BestNode As Node = Agent.Map.NodesAdjacencyList.GetNearestNode(MeanLatitude, MeanLongitude)
+        Dim BestNode As Node = Agent.Map.ConnectedNodesGrid.GetNearestNode(MeanLatitude, MeanLongitude)
         Dim BestHopPosition As HopPosition = Agent.Map.NodesAdjacencyList.GetHopPositionFromNode(BestNode.ID)
 
 
