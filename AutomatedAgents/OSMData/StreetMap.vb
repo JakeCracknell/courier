@@ -20,7 +20,7 @@
 
     'Starting point is a randomly chosen depot
     Public Function GetStartingPoint() As HopPosition
-        Return NodesAdjacencyList.GetHopPositionFromNode(Depots(Int(Rnd() * Depots.Count)).ID)
+        Return NodesAdjacencyList.GetHopPositionFromNode(Depots(0).ID)
     End Function
     Public Function GetNearestDepot(ByVal Point As IPoint) As HopPosition
         Return NodesAdjacencyList.GetHopPositionFromNode(GetNearestLandmark(Point, Depots).ID)

@@ -2,7 +2,7 @@
     Private Const DEFAULT_KMH As Double = 48
     Private Const FUEL_TANK_FULL_THRESHOLD As Double = 0.95
     Private Const FUEL_TANK_LOW_THRESHOLD As Double = 0.05
-    Private Const START_IN_RANDOM_POSITION As Boolean = True
+    Private Const START_IN_RANDOM_POSITION As Boolean = False
 
     Public Const RouteFindingMinimiser As RouteFindingMinimiser = RouteFindingMinimiser.DISTANCE
     Public ReadOnly AgentID As Integer
@@ -32,6 +32,7 @@
         Me.VehicleType = VehicleType
         Strategy = New ContractNetStrategy(Me, SimulationParameters.CNPVersion)
         'Strategy = New FreeForAllStrategy(Me)
+        'Strategy = New RoundRobinStrategy(Me)
         IdleStrategy = New ConvergeToPickupIdleStrategy(Me)
         Refuel()
 

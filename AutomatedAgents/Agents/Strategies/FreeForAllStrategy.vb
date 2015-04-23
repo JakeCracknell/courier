@@ -32,6 +32,8 @@
         'No need to recompute A* route to first waypoint.
         Agent.Plan.Update(False)
 
+        Agent.Plan.ReplanForTrafficConditions()
+
         'If a route somewhere has just been completed...
         If Agent.Plan.RoutePosition.RouteCompleted Then
             If Agent.Plan.FirstWayPointReached() Then
@@ -41,7 +43,6 @@
                         HopefulJob = Nothing
                         Agent.Delayer = New Delayer(Job.Collect())
                         If Job.Status = JobStatus.CANCELLED Then
-                            'CNP policy invariant
                             Agent.Plan.ExtractCancelled() 'TODO partial refund based on time saved?
                             Agent.TotalCompletedJobs += 1 'Cancelled pick counts as completed job
                             SimulationState.NewEvent(Agent.AgentID, LogMessages.PickFail(Job.JobID))

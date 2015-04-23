@@ -85,7 +85,6 @@ Public Class frmStatistics
             Try
                 IO.File.Delete(FileName)
                 chartSimulationStatistics.SaveImage(FileName, Drawing.Imaging.ImageFormat.Png)
-                Console.Beep()
             Catch ex As Exception
                 MsgBox("Operation failed: " & ex.Message, MsgBoxStyle.Exclamation)
             End Try

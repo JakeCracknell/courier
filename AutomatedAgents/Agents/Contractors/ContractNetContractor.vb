@@ -112,7 +112,7 @@
         Return Temp
     End Function
 
-    Function CollectJob() As CourierJob
+    Function CollectJob() As CourierJob Implements IContractor.CollectJob
         Solver = TentativeSolver
         Dim Temp As CourierJob = AwardedJob
         AwardedJob = Nothing

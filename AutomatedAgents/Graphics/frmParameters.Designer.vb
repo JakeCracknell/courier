@@ -553,7 +553,7 @@ Partial Class frmParameters
         '
         Me.tbSimSpeed.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tbSimSpeed.Location = New System.Drawing.Point(152, 3)
-        Me.tbSimSpeed.Maximum = 10000
+        Me.tbSimSpeed.Maximum = 1000
         Me.tbSimSpeed.Minimum = 1
         Me.tbSimSpeed.Name = "tbSimSpeed"
         Me.tbSimSpeed.Size = New System.Drawing.Size(143, 22)
@@ -566,7 +566,7 @@ Partial Class frmParameters
         '
         Me.tbGraphicsRefreshRate.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tbGraphicsRefreshRate.Location = New System.Drawing.Point(152, 31)
-        Me.tbGraphicsRefreshRate.Maximum = 100
+        Me.tbGraphicsRefreshRate.Maximum = 1000
         Me.tbGraphicsRefreshRate.Minimum = 1
         Me.tbGraphicsRefreshRate.Name = "tbGraphicsRefreshRate"
         Me.tbGraphicsRefreshRate.Size = New System.Drawing.Size(143, 22)
