@@ -12,7 +12,7 @@
 
     Sub New(ByVal StartPoint As IPoint, ByVal EndPoint As IPoint, ByVal AdjacencyList As NodesAdjacencyList, _
             ByVal Minimiser As RouteFindingMinimiser)
-        Me.New(StartPoint, EndPoint, AdjacencyList, Minimiser, NoticeBoard.CurrentTime)
+        Me.New(StartPoint, EndPoint, AdjacencyList, Minimiser, NoticeBoard.Time)
     End Sub
     Sub New(ByVal StartPoint As IPoint, ByVal EndPoint As IPoint, ByVal AdjacencyList As NodesAdjacencyList, _
             ByVal Minimiser As RouteFindingMinimiser, ByVal StartTime As TimeSpan)

@@ -62,7 +62,7 @@
             Next
 
             'Ensure it meets all the deadlines - first estimate
-            Dim TimeAdded As TimeSpan = NoticeBoard.CurrentTime 'Safe/cloned
+            Dim TimeAdded As TimeSpan = NoticeBoard.Time 'Safe/cloned
             For i = 0 To Route.Count - 1
                 If AStarRoutes(i) IsNot Nothing Then
                     TimeAdded += AStarRoutes(i).GetEstimatedTime + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
@@ -88,7 +88,7 @@
             Next
 
             'Recompute time - properly this time!
-            TimeAdded = NoticeBoard.CurrentTime 'Safe/cloned
+            TimeAdded = NoticeBoard.Time 'Safe/cloned
             For i = 0 To Route.Count - 1
                 TimeAdded += AStarRoutes(i).GetEstimatedTime + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
                 If Route(i).Job.Deadline < TimeAdded Then

@@ -15,8 +15,8 @@
 
     'Simulation time starts on a MONDAY at midnight.
     Public Sub Tick() Implements IDispatcher.Tick
-        Dim DayOfWeek As DayOfWeek = (Int(NoticeBoard.CurrentTime.TotalDays) + 1) Mod 7
-        Dim TimeOfDay As TimeSpan = TimeSpan.FromSeconds(NoticeBoard.CurrentTime.TotalSeconds Mod TimeSpan.FromDays(1).TotalSeconds)
+        Dim DayOfWeek As DayOfWeek = (Int(NoticeBoard.Time.TotalDays) + 1) Mod 7
+        Dim TimeOfDay As TimeSpan = TimeSpan.FromSeconds(NoticeBoard.Time.TotalSeconds Mod TimeSpan.FromDays(1).TotalSeconds)
 
         Dim ProbabilityOfDispatch As Double
         Select Case DayOfWeek
@@ -42,7 +42,7 @@
         PickupName = GenerateWaypointName(PickupLocation)
         DeliveryName = GenerateWaypointName(DeliveryLocation)
 
-        Dim Deadline As TimeSpan = NoticeBoard.CurrentTime + _
+        Dim Deadline As TimeSpan = NoticeBoard.Time + _
             RouteCache.GetRoute(PickupLocation, DeliveryLocation).GetEstimatedTime + _
             TimeSpan.FromHours(ProbabilityDistributions.Gamma(2, 1))
 
@@ -51,7 +51,7 @@
         Size = Math.Max(Size, SimulationParameters.CubicMetresMin)
 
         Dim CourierJob As New CourierJob(PickupLocation, DeliveryLocation, PickupName, DeliveryName, Size, Deadline)
-        NoticeBoard.AddJob(CourierJob)
+        NoticeBoard.PostJob(CourierJob)
     End Sub
 
 

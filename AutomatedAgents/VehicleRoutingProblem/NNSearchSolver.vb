@@ -18,7 +18,7 @@
         Me.VehicleType = VehicleType
         StartState.CapacityLeft = CourierPlan.CapacityLeft
         StartState.FuelLeft = Double.MaxValue
-        StartState.Time = NoticeBoard.CurrentTime + OldPlan.GetDiversionTimeEstimate
+        StartState.Time = NoticeBoard.Time + OldPlan.GetDiversionTimeEstimate
         StartState.Point = CourierPlan.RoutePosition.GetPoint
         StartState.WayPointsLeft = New List(Of WayPoint)(CourierPlan.WayPoints)
 

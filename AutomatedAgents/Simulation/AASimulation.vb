@@ -14,7 +14,7 @@
 
     'Returns whether the state has changed.
     Overridable Function Tick() As Boolean
-        NoticeBoard.CurrentTime += SimulationParameters.SIMULATION_TIME_INCREMENT
+        NoticeBoard.Time += SimulationParameters.SIMULATION_TIME_INCREMENT
 
         For Each Agent As Agent In Agents
             Agent.Move()
@@ -24,15 +24,15 @@
     End Function
 
     Function GetTimeString() As String
-        Dim DayOfWeek As DayOfWeek = (Int(NoticeBoard.CurrentTime.TotalDays) + 1) Mod 7
-        Return DayOfWeek.ToString("G") & " " & NoticeBoard.CurrentTime.ToString & If(IsRunning, "", " paused")
+        Dim DayOfWeek As DayOfWeek = (Int(NoticeBoard.Time.TotalDays) + 1) Mod 7
+        Return DayOfWeek.ToString("G") & " " & NoticeBoard.Time.ToString & If(IsRunning, "", " paused")
     End Function
 
     Sub InitialiseLoggingModules()
         If Statistics Is Nothing Then 'without this frmStats could cause a synclock exception. TODO refactor
             Statistics = New StatisticsLogger(Now, Map)
         End If
-        NoticeBoard.Clear()
+        NoticeBoard.Initialise()
         SimulationState.Initialise()
     End Sub
 

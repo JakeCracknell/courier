@@ -36,7 +36,7 @@
     Public Function Move(ByVal Vehicle As Vehicles.Type) As Double
         Dim Way As Way = Route.At(HopIndex).Way
         If Way IsNot Nothing Then
-            Dim DistanceToTravel As Double = Way.GetSpeedAtTime(NoticeBoard.CurrentTime) / 3600
+            Dim DistanceToTravel As Double = Way.GetSpeedAtTime(NoticeBoard.Time) / 3600
             GetNextPosition(DistanceToTravel)
             Return DistanceToTravel
         Else
@@ -78,7 +78,7 @@
     End Sub
 
     Private Function TryIncrementHop() As Boolean
-        RoadDelay = IsDelayedAtTime(Route.At(HopIndex).ToPoint, Route.At(HopIndex).Way, NoticeBoard.CurrentTime)
+        RoadDelay = IsDelayedAtTime(Route.At(HopIndex).ToPoint, Route.At(HopIndex).Way, NoticeBoard.Time)
         If Not RoadDelay Then
             HopIndex += 1
         End If
@@ -92,7 +92,7 @@
     Function GetCurrentSpeed(ByVal VehicleSize As Vehicles.Type) As Double
         Dim Way As Way = GetCurrentWay()
         If Way IsNot Nothing Then
-            Return Way.GetSpeedAtTime(NoticeBoard.CurrentTime)
+            Return Way.GetSpeedAtTime(NoticeBoard.Time)
         Else
             Return 0
         End If

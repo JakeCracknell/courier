@@ -9,7 +9,7 @@
     Property RoutePosition As RoutePosition
     Property VehicleType As Vehicles.Type
 
-    Private LastTimeIndexOfTrafficReplan As Integer = GetTimeIndex(NoticeBoard.CurrentTime)
+    Private LastTimeIndexOfTrafficReplan As Integer = GetTimeIndex(NoticeBoard.Time)
 
     Public Sub New(ByVal StartPoint As HopPosition, ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser, ByVal CapacityLeft As Double, ByVal VehicleType As Vehicles.Type)
         Me.StartPoint = StartPoint
@@ -119,7 +119,7 @@
 
     'If traffic conditions have changed (check TimeIndex), replan and retrun true iff late.
     Function ReplanForTrafficConditions() As Boolean
-        Dim TimeIndex As Integer = GetTimeIndex(NoticeBoard.CurrentTime)
+        Dim TimeIndex As Integer = GetTimeIndex(NoticeBoard.Time)
         If TimeIndex <> LastTimeIndexOfTrafficReplan Then
             LastTimeIndexOfTrafficReplan = TimeIndex
             'TODO: REPLAN!!!!!!!!!!
@@ -148,7 +148,7 @@
     Function IsBehindSchedule() As Boolean
         Update(True)
 
-        Dim WorkingTime As TimeSpan = NoticeBoard.CurrentTime
+        Dim WorkingTime As TimeSpan = NoticeBoard.Time
         For i = 0 To WayPoints.Count - 1
             WorkingTime += Routes(i).GetTimeWithoutTraffic
             If WayPoints(i).Job.Deadline < WorkingTime Then

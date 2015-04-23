@@ -30,7 +30,7 @@
     Sub New(ByVal PickupPosition As HopPosition, ByVal DeliveryPosition As HopPosition)
         Me.New(PickupPosition, DeliveryPosition, PickupPosition.ToString, DeliveryPosition.ToString, _
                Math.Max(SimulationParameters.CubicMetresMin, ProbabilityDistributions.Exponential(SimulationParameters.PackageSizeLambda, Rnd)), _
-                    NoticeBoard.CurrentTime.Add( _
+                    NoticeBoard.Time.Add( _
                     TimeSpan.FromMinutes(ProbabilityDistributions.Gaussian(SimulationParameters.DeadlineAverage))))
     End Sub
 
@@ -57,9 +57,9 @@
             Return CUSTOMER_WAIT_TIME_MIN
         ElseIf Rnd() > SimulationParameters.ProbDeliveryFail Then
             Status = JobStatus.COMPLETED
-            If Deadline < NoticeBoard.CurrentTime Then
+            If Deadline < NoticeBoard.Time Then
                 'Still happens occasionally.
-                Debug.WriteLine("Minutes late: " & (NoticeBoard.CurrentTime - Deadline).TotalMinutes)
+                Debug.WriteLine("Minutes late: " & (NoticeBoard.Time - Deadline).TotalMinutes)
                 FullRefund()
             End If
             Return GenerateRandomWaitTime()

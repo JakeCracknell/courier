@@ -48,7 +48,7 @@
 
     Sub Log(ByVal Agents As List(Of Agent))
         Dim Row As DataRow = Table.NewRow
-        Row("Time") = NoticeBoard.CurrentTime.TotalSeconds
+        Row("Time") = NoticeBoard.Time.TotalSeconds
 
         Row("CompletedJobsCount") = NoticeBoard.CompletedJobs.Count
         Row("IncompleteJobsCount") = NoticeBoard.IncompleteJobs.Count
@@ -76,7 +76,7 @@
                                                     End Function)
             Row("CurrentVehicleTrafficDelta") = Agents.Sum(Function(x)
                                                                Dim Way As Way = x.Plan.RoutePosition.GetCurrentWay
-                                                               Return If(Way IsNot Nothing, Way.GetSpeedDifferenceAtTime(NoticeBoard.CurrentTime), 0)
+                                                               Return If(Way IsNot Nothing, Way.GetSpeedDifferenceAtTime(NoticeBoard.Time), 0)
                                                            End Function)
         End If
 

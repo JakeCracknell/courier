@@ -10,7 +10,7 @@
         If Rnd() < SimulationParameters.DispatchRateCoefficient / 3600 Then
             Dim Job As New CourierJob(Map.NodesAdjacencyList.GetRandomPoint, _
                                       Map.NodesAdjacencyList.GetRandomPoint)
-            NoticeBoard.AddJob(Job)
+            NoticeBoard.PostJob(Job)
         End If
     End Sub
 

@@ -9,7 +9,7 @@
         Me.Agent = Agent
         Me.Policy = Policy
         Contractor = New ContractNetContractor(Agent, Policy)
-        NoticeBoard.AvailableContractors.Add(Contractor)
+        NoticeBoard.Broadcaster.RegisterContractor(Contractor)
     End Sub
 
     Public Sub Run() Implements IAgentStrategy.Run
@@ -64,7 +64,7 @@
                             'Successful dropoff (perhaps late)
                             Agent.TotalCompletedJobs += 1
                             Agent.Plan.CapacityLeft += Job.CubicMetres
-                            Dim TimeLeft As TimeSpan = Job.Deadline - NoticeBoard.CurrentTime
+                            Dim TimeLeft As TimeSpan = Job.Deadline - NoticeBoard.Time
                             If TimeLeft < TimeSpan.Zero Then
                                 SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliveryLate(Job.JobID, -TimeLeft, Job.OriginalCustomerFee))
                             Else
@@ -124,10 +124,10 @@
             'Order jobs by time left minus how long the route could take.
             RetractableJobs = RetractableJobs.OrderBy(Function(Job)
                                                           Return Job.Deadline - _
-                                                              Job.GetDirectRoute.GetEstimatedTime(NoticeBoard.CurrentTime)
+                                                              Job.GetDirectRoute.GetEstimatedTime(NoticeBoard.Time)
                                                       End Function).ToList
             SimulationState.NewEvent(Agent.AgentID, LogMessages.CNP5JobsSentForTransfer(RetractableJobs.Count))
-            Dim JobsThatNoOtherAgentsCouldFulfil As List(Of CourierJob) = NoticeBoard.CNP5_ReallocateJobs(Contractor, RetractableJobs)
+            Dim JobsThatNoOtherAgentsCouldFulfil As List(Of CourierJob) = NoticeBoard.Broadcaster.ReallocateJobs(Contractor, RetractableJobs)
             SimulationState.NewEvent(Agent.AgentID, LogMessages.CNP5JobTransferResult( _
                   RetractableJobs.Count - JobsThatNoOtherAgentsCouldFulfil.Count, JobsThatNoOtherAgentsCouldFulfil.Count))
             Agent.Plan.WayPoints.Clear()

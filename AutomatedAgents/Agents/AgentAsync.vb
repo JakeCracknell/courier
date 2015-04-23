@@ -37,7 +37,7 @@
             Dim DistanceTravelled As Double = Plan.RoutePosition.Move(VehicleType)
             TotalKMTravelled += DistanceTravelled
             DepleteFuel(DistanceTravelled)
-            CurrentSpeedKMH = Plan.RoutePosition.GetCurrentWay.GetSpeedAtTime(NoticeBoard.CurrentTime)
+            CurrentSpeedKMH = Plan.RoutePosition.GetCurrentWay.GetSpeedAtTime(NoticeBoard.Time)
         End If
     End Sub
 

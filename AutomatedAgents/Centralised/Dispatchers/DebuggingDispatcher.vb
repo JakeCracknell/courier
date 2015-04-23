@@ -18,7 +18,7 @@
 
 
             Dim Job As New CourierJob(RosslynAve, Railwayside)
-            NoticeBoard.AddJob(Job)
+            NoticeBoard.PostJob(Job)
         End If
     End Sub
 End Class

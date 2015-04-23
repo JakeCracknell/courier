@@ -35,7 +35,7 @@
 
         Public Sub NewEvent(ByVal AgentID As Integer, ByVal Description As String)
             SyncLock Events
-                Events.Add(New LogEvent(NoticeBoard.CurrentTime, AgentID, Description))
+                Events.Add(New LogEvent(NoticeBoard.Time, AgentID, Description))
             End SyncLock
         End Sub
 
@@ -79,7 +79,7 @@
                         JobList.Add(Math.Round(J.CubicMetres, 3))
                         JobList.Add(J.Deadline.ToString("d\:hh\:mm\:ss"))
                         JobList.Add(J.Status.ToString("G"))
-                        Dim TimeLeft As TimeSpan = J.Deadline - NoticeBoard.CurrentTime
+                        Dim TimeLeft As TimeSpan = J.Deadline - NoticeBoard.Time
                         JobList.Add(TimeLeft.ToString("h\:mm\:ss") & If(TimeLeft < TimeSpan.Zero, " LATE", ""))
                         JobList.Add(FormatCurrency(J.CustomerFee))
                         'LVI.BackColor = Agent.Color

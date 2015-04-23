@@ -11,7 +11,7 @@ Class SingleDispatcher
         If NoticeBoard.IncompleteJobs.Count = 0 Then
             Dim Job As New CourierJob(Map.NodesAdjacencyList.GetRandomPoint, _
                                    Map.NodesAdjacencyList.GetRandomPoint)
-            NoticeBoard.AddJob(Job)
+            NoticeBoard.PostJob(Job)
         End If
     End Sub
 End Class

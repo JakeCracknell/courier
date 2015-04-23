@@ -30,7 +30,7 @@
         'Set starting state
         Dim State As New CourierPlanState
         State.FuelLeft = Double.MaxValue  'Agent.PetroleumLitres
-        State.Time = NoticeBoard.CurrentTime + Agent.Plan.GetDiversionTimeEstimate
+        State.Time = NoticeBoard.Time + Agent.Plan.GetDiversionTimeEstimate
         State.Point = Agent.Plan.StartPoint
         If JobSolution.Count > 0 Then
             State.FuelLeft -= Agent.Plan.Routes(0).GetOptimalFuelUsageWithoutTraffic(Agent.VehicleType)

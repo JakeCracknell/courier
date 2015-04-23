@@ -29,8 +29,8 @@
 
     'Simulation time starts on a MONDAY at midnight.
     Public Sub Tick() Implements IDispatcher.Tick
-        Dim DayOfWeek As DayOfWeek = (Int(NoticeBoard.CurrentTime.TotalDays) + 1) Mod 7
-        Dim TimeOfDay As TimeSpan = TimeSpan.FromSeconds(NoticeBoard.CurrentTime.TotalSeconds Mod TimeSpan.FromDays(1).TotalSeconds)
+        Dim DayOfWeek As DayOfWeek = (Int(NoticeBoard.Time.TotalDays) + 1) Mod 7
+        Dim TimeOfDay As TimeSpan = TimeSpan.FromSeconds(NoticeBoard.Time.TotalSeconds Mod TimeSpan.FromDays(1).TotalSeconds)
 
         Dim ProbabilityOfDispatch As Double
         Select Case DayOfWeek
@@ -116,13 +116,13 @@
                 TimeOfDay.Hours >= START_OF_BUSINESS_HOUR AndAlso _
                 TimeOfDay.Hours <= END_OF_BUSINESS_HOUR AndAlso _
                 TimeOfDay + DirectRoute.GetEstimatedTime < END_OF_BUSINESS_DAY_MIN Then
-            Deadline = NoticeBoard.CurrentTime - TimeOfDay + _
+            Deadline = NoticeBoard.Time - TimeOfDay + _
                 TimeSpan.FromSeconds(RandomNumberGenerator.Next( _
                                      END_OF_BUSINESS_DAY_MIN.TotalSeconds, END_OF_BUSINESS_DAY_MAX.TotalSeconds))
         Else
             'A gamma distribution, giving a range from 0 to infinity. Mode of (alpha-1)*theta = +1h
             'Spread mostly between 0.5 and 4
-            Deadline = NoticeBoard.CurrentTime + DirectRoute.GetEstimatedTime() + TimeSpan.FromHours(ProbabilityDistributions.Gamma(2, 1))
+            Deadline = NoticeBoard.Time + DirectRoute.GetEstimatedTime() + TimeSpan.FromHours(ProbabilityDistributions.Gamma(2, 1))
         End If
 
         'Generate a random package size from an exponential distribution (as many packages will be documents).
@@ -130,7 +130,7 @@
         Size = Math.Max(Size, SimulationParameters.CubicMetresMin)
 
         Dim CourierJob As New CourierJob(PickupLocation, DeliveryLocation, PickupName, DeliveryName, Size, Deadline)
-        NoticeBoard.AddJob(CourierJob)
+        NoticeBoard.PostJob(CourierJob)
     End Sub
 
 

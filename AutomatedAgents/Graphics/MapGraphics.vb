@@ -260,7 +260,7 @@
         If ConfigDrawTrafficLayer Then
             Dim CC As New CoordinateConverter(Map.Bounds, Width, Height)
             For Each Way As Way In Map.WaysWithTraffic
-                Dim TrafficIntensity As Double = Way.GetSpeedDifferenceAtTime(NoticeBoard.CurrentTime)
+                Dim TrafficIntensity As Double = Way.GetSpeedDifferenceAtTime(NoticeBoard.Time)
                 Dim TrafficPen As New Pen(Color.FromArgb(Math.Min(TrafficIntensity * SimulationParameters.TrafficDisplayAlpha, 255), Color.Red), TRAFFIC_WAY_THICKNESS)
                 Dim LastPoint As Point = CC.GetPoint(Way.Nodes(0))
 
@@ -277,7 +277,7 @@
             Dim Len2 As Integer = NodeDrawSize \ 2
             For Each Node As Node In Map.Nodes
                 If Node.RoadDelay > RoadDelay.UNEXPECTED Then
-                    If IsDelayedAtTime(Node, Nothing, NoticeBoard.CurrentTime) Then
+                    If IsDelayedAtTime(Node, Nothing, NoticeBoard.Time) Then
                         Dim Point As Point = CC.GetPoint(Node)
                         grOverlay.FillRectangle(NODE_ROAD_DELAY_BRUSH, Point.X - Len2, Point.Y - Len2, NodeDrawSize, NodeDrawSize)
                     End If

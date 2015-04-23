@@ -21,7 +21,7 @@
     Private Sub RunAlgorithm(ByVal Start As IPoint, ByVal Jobs As List(Of CourierJob), ByVal CapacityLeft As Double)
         Dim WayPoints As List(Of WayPoint) = WayPoint.CreateWayPointList(Jobs)
 
-        Dim Time As TimeSpan = NoticeBoard.CurrentTime
+        Dim Time As TimeSpan = NoticeBoard.Time
         Dim ReorderedWayPoints As New List(Of WayPoint)
         Dim LastPoint As IPoint = Start
 

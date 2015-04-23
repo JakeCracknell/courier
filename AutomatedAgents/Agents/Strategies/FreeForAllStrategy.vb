@@ -17,7 +17,7 @@
                 HopefulJob.Status = JobStatus.PENDING_PICKUP
                 Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft, Agent.VehicleType, WayPoint.CreateWayPointList(HopefulJob))
                 Agent.PickupPoints.Add(HopefulJob.PickupPosition)
-                SimulationState.NewEvent(Agent.AgentID, LogMessages.JobAwarded(HopefulJob.JobID, Agent.Plan.Routes(0).GetEstimatedHours(NoticeBoard.CurrentTime)))
+                SimulationState.NewEvent(Agent.AgentID, LogMessages.JobAwarded(HopefulJob.JobID, Agent.Plan.Routes(0).GetEstimatedHours(NoticeBoard.Time)))
             Else
                 Exit Sub
             End If
@@ -66,7 +66,7 @@
                             'Successful dropoff (perhaps late)
                             Agent.TotalCompletedJobs += 1
                             Agent.Plan.CapacityLeft += Job.CubicMetres
-                            Dim TimeLeft As TimeSpan = Job.Deadline - NoticeBoard.CurrentTime
+                            Dim TimeLeft As TimeSpan = Job.Deadline - NoticeBoard.Time
                             If TimeLeft < TimeSpan.Zero Then
                                 SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliveryLate(Job.JobID, -TimeLeft, Job.OriginalCustomerFee))
                             Else
@@ -107,9 +107,9 @@
 
             Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition)
             Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
-            Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(NoticeBoard.CurrentTime)
-            Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(NoticeBoard.CurrentTime + Route1Time)
-            If NoticeBoard.CurrentTime + Agent.Plan.GetDiversionTimeEstimate + MinTime > _
+            Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(NoticeBoard.Time)
+            Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(NoticeBoard.Time + Route1Time)
+            If NoticeBoard.Time + Agent.Plan.GetDiversionTimeEstimate + MinTime > _
                 JobToReview.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
                 Continue For
             End If

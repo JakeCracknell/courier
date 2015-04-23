@@ -77,6 +77,7 @@
     <Compile Include="Agents\ContractNetContractor.vb" />
     <Compile Include="Agents\ContractNetPolicy.vb" />
     <Compile Include="Agents\CourierPlan.vb" />
+    <Compile Include="Agents\IContractor.vb" />
     <Compile Include="Agents\IdleStrategies\ConvergeToPickupIdleStrategy.vb" />
     <Compile Include="Agents\IdleStrategies\IdleStrategyUtils.vb" />
     <Compile Include="Agents\IdleStrategies\IIdleStrategy.vb" />
@@ -91,6 +92,8 @@
     <None Include="Agents\Strategies\Non-CNP\NearestNeighbourAStarStrategy.vb" />
     <None Include="Agents\Strategies\Non-CNP\GreedyStrategy.vb" />
     <None Include="Agents\Strategies\Non-CNP\LazyStrategy.vb" />
+    <Compile Include="Centralised\Broadcasters\ContractNetBroadcaster.vb" />
+    <Compile Include="Centralised\Broadcasters\IBroadcaster.vb" />
     <Compile Include="Centralised\Dispatchers\CityDispatcher.vb" />
     <Compile Include="Centralised\Dispatchers\DebuggingDispatcher.vb" />
     <Compile Include="Centralised\Dispatchers\IDispatcher.vb" />
