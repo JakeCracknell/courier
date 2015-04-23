@@ -102,6 +102,9 @@
     End Sub
 
     Public Function GetSpeedDifferenceAtTime(ByVal Time As TimeSpan) As Double
+        If MaximumSpeedWithTraffic < 0 Then
+            Return 0
+        End If
         Return MaximumSpeedWithTraffic - GetSpeedAtTime(Time)
     End Function
 

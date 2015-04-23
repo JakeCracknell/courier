@@ -37,6 +37,10 @@
         'No need to recompute A* route to first waypoint.
         Agent.Plan.Update(False)
 
+        If Agent.Plan.ReplanForTrafficConditions() AndAlso Policy = ContractNetPolicy.CNP5 Then
+            Agent.Plan = CNP5Contingency()
+        End If
+
         'If a route somewhere has just been completed...
         If Agent.Plan.RoutePosition.RouteCompleted Then
             If Agent.Plan.FirstWayPointReached() Then

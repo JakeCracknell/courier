@@ -34,6 +34,9 @@
         Table.Columns.Add("CurrentAverageVehicleSpeed", GetType(Double))
         Table.Columns.Add("CurrentAverageVehicleSaturation", GetType(Double))
         Table.Columns.Add("CurrentTotalSaturation", GetType(Double))
+        Table.Columns.Add("CurrentFuelReserves", GetType(Double))
+        Table.Columns.Add("CurrentVehicleTrafficDelta", GetType(Double))
+
 
         Table.Columns.Add("CumulativeDrivingDistance", GetType(Double))
         Table.Columns.Add("CumulativeDrivingHours", GetType(Double))
@@ -63,11 +66,18 @@
                                                                    Return x.CurrentSpeedKMH
                                                                End Function)
             Row("CurrentAverageVehicleSaturation") = Agents.Average(Function(x)
-                                                                        Return x.Plan.CapacityLeft
+                                                                        Return x.GetVehicleMaxCapacity - x.GetVehicleCapacityLeft
                                                                     End Function)
             Row("CurrentTotalSaturation") = Agents.Sum(Function(x)
                                                            Return x.GetVehicleMaxCapacity - x.GetVehicleCapacityLeft
                                                        End Function)
+            Row("CurrentFuelReserves") = Agents.Sum(Function(x)
+                                                        Return x.FuelLitres
+                                                    End Function)
+            Row("CurrentVehicleTrafficDelta") = Agents.Sum(Function(x)
+                                                               Dim Way As Way = x.Plan.RoutePosition.GetCurrentWay
+                                                               Return If(Way IsNot Nothing, Way.GetSpeedDifferenceAtTime(NoticeBoard.CurrentTime), 0)
+                                                           End Function)
         End If
 
 

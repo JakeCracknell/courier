@@ -9,6 +9,8 @@
     Property RoutePosition As RoutePosition
     Property VehicleType As Vehicles.Type
 
+    Private LastTimeIndexOfTrafficReplan As Integer = GetTimeIndex(NoticeBoard.CurrentTime)
+
     Public Sub New(ByVal StartPoint As HopPosition, ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser, ByVal CapacityLeft As Double, ByVal VehicleType As Vehicles.Type)
         Me.StartPoint = StartPoint
         Me.Map = Map
@@ -115,6 +117,19 @@
         Loop
     End Sub
 
+    'If traffic conditions have changed (check TimeIndex), replan and retrun true iff late.
+    Function ReplanForTrafficConditions() As Boolean
+        Dim TimeIndex As Integer = GetTimeIndex(NoticeBoard.CurrentTime)
+        If TimeIndex <> LastTimeIndexOfTrafficReplan Then
+            LastTimeIndexOfTrafficReplan = TimeIndex
+            'TODO: REPLAN!!!!!!!!!!
+            'modify waypoints order and routes accordingly
+            '
+            Return IsBehindSchedule()
+        End If
+        Return False
+    End Function
+
     Function GetCurrentJobs() As List(Of CourierJob)
         Return (From W In WayPoints
                Where W.DefinedStatus = JobStatus.PENDING_DELIVERY
@@ -128,6 +143,20 @@
 
     Function IsStationary() As Boolean
         Return WayPoints.Count = 0 AndAlso RoutePosition.RouteCompleted
+    End Function
+
+    Function IsBehindSchedule() As Boolean
+        Update(True)
+
+        Dim WorkingTime As TimeSpan = NoticeBoard.CurrentTime
+        For i = 0 To WayPoints.Count - 1
+            WorkingTime += Routes(i).GetTimeWithoutTraffic
+            If WayPoints(i).Job.Deadline < WorkingTime Then
+                Return True
+            End If
+            WorkingTime += TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+        Next
+        Return False
     End Function
 
     '----------------------------Diversions-------------------------------------
