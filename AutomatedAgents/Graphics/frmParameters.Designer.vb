@@ -32,8 +32,8 @@ Partial Class frmParameters
         Me.TextBox10 = New System.Windows.Forms.TextBox()
         Me.TrackBar10 = New System.Windows.Forms.TrackBar()
         Me.Label12 = New System.Windows.Forms.Label()
-        Me.TextBox9 = New System.Windows.Forms.TextBox()
-        Me.TrackBar9 = New System.Windows.Forms.TrackBar()
+        Me.txtTrafficDisplay = New System.Windows.Forms.TextBox()
+        Me.tbTrafficDisplay = New System.Windows.Forms.TrackBar()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.txtAStarAccelerator = New System.Windows.Forms.TextBox()
         Me.tbAStarAccelerator = New System.Windows.Forms.TrackBar()
@@ -69,7 +69,7 @@ Partial Class frmParameters
         CType(Me.TrackBar12, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TrackBar11, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TrackBar10, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.TrackBar9, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.tbTrafficDisplay, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbAStarAccelerator, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbFeeHourly, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbFeeBase, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -97,8 +97,8 @@ Partial Class frmParameters
         Me.TableLayoutPanel1.Controls.Add(Me.TextBox10, 2, 11)
         Me.TableLayoutPanel1.Controls.Add(Me.TrackBar10, 1, 11)
         Me.TableLayoutPanel1.Controls.Add(Me.Label12, 0, 11)
-        Me.TableLayoutPanel1.Controls.Add(Me.TextBox9, 2, 10)
-        Me.TableLayoutPanel1.Controls.Add(Me.TrackBar9, 1, 10)
+        Me.TableLayoutPanel1.Controls.Add(Me.txtTrafficDisplay, 2, 10)
+        Me.TableLayoutPanel1.Controls.Add(Me.tbTrafficDisplay, 1, 10)
         Me.TableLayoutPanel1.Controls.Add(Me.Label11, 0, 10)
         Me.TableLayoutPanel1.Controls.Add(Me.txtAStarAccelerator, 2, 9)
         Me.TableLayoutPanel1.Controls.Add(Me.tbAStarAccelerator, 1, 9)
@@ -247,26 +247,26 @@ Partial Class frmParameters
         Me.Label12.Text = "Graphics Refresh Rate (ms)"
         Me.Label12.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'TextBox9
+        'txtTrafficDisplay
         '
-        Me.TextBox9.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TextBox9.Location = New System.Drawing.Point(301, 283)
-        Me.TextBox9.Name = "TextBox9"
-        Me.TextBox9.Size = New System.Drawing.Size(65, 20)
-        Me.TextBox9.TabIndex = 32
+        Me.txtTrafficDisplay.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.txtTrafficDisplay.Location = New System.Drawing.Point(301, 283)
+        Me.txtTrafficDisplay.Name = "txtTrafficDisplay"
+        Me.txtTrafficDisplay.Size = New System.Drawing.Size(65, 20)
+        Me.txtTrafficDisplay.TabIndex = 32
         '
-        'TrackBar9
+        'tbTrafficDisplay
         '
-        Me.TrackBar9.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TrackBar9.Location = New System.Drawing.Point(152, 283)
-        Me.TrackBar9.Maximum = 5000
-        Me.TrackBar9.Minimum = 10
-        Me.TrackBar9.Name = "TrackBar9"
-        Me.TrackBar9.Size = New System.Drawing.Size(143, 22)
-        Me.TrackBar9.TabIndex = 31
-        Me.TrackBar9.TickFrequency = 0
-        Me.TrackBar9.TickStyle = System.Windows.Forms.TickStyle.None
-        Me.TrackBar9.Value = 10
+        Me.tbTrafficDisplay.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tbTrafficDisplay.Location = New System.Drawing.Point(152, 283)
+        Me.tbTrafficDisplay.Maximum = 100
+        Me.tbTrafficDisplay.Minimum = 10
+        Me.tbTrafficDisplay.Name = "tbTrafficDisplay"
+        Me.tbTrafficDisplay.Size = New System.Drawing.Size(143, 22)
+        Me.tbTrafficDisplay.TabIndex = 31
+        Me.tbTrafficDisplay.TickFrequency = 0
+        Me.tbTrafficDisplay.TickStyle = System.Windows.Forms.TickStyle.None
+        Me.tbTrafficDisplay.Value = 30
         '
         'Label11
         '
@@ -276,7 +276,7 @@ Partial Class frmParameters
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(143, 28)
         Me.Label11.TabIndex = 30
-        Me.Label11.Text = "Graphics Refresh Rate (ms)"
+        Me.Label11.Text = "Traffic Display Darkness"
         Me.Label11.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtAStarAccelerator
@@ -612,7 +612,7 @@ Partial Class frmParameters
         CType(Me.TrackBar12, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.TrackBar11, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.TrackBar10, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.TrackBar9, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.tbTrafficDisplay, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbAStarAccelerator, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbFeeHourly, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbFeeBase, System.ComponentModel.ISupportInitialize).EndInit()
@@ -642,8 +642,8 @@ Partial Class frmParameters
     Friend WithEvents TextBox10 As System.Windows.Forms.TextBox
     Friend WithEvents TrackBar10 As System.Windows.Forms.TrackBar
     Friend WithEvents Label12 As System.Windows.Forms.Label
-    Friend WithEvents TextBox9 As System.Windows.Forms.TextBox
-    Friend WithEvents TrackBar9 As System.Windows.Forms.TrackBar
+    Friend WithEvents txtTrafficDisplay As System.Windows.Forms.TextBox
+    Friend WithEvents tbTrafficDisplay As System.Windows.Forms.TrackBar
     Friend WithEvents Label11 As System.Windows.Forms.Label
     Friend WithEvents txtAStarAccelerator As System.Windows.Forms.TextBox
     Friend WithEvents tbAStarAccelerator As System.Windows.Forms.TrackBar

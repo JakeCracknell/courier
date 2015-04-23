@@ -21,6 +21,8 @@
         tbFeeHourly.Value = SimulationParameters.FeeHourlyPrice * 100
         txtAStarAccelerator.Text = SimulationParameters.AStarAccelerator
         tbAStarAccelerator.Value = SimulationParameters.AStarAccelerator * 100
+        txtTrafficDisplay.Text = SimulationParameters.TrafficDisplayAlpha
+        tbTrafficDisplay.Value = SimulationParameters.TrafficDisplayAlpha * 10
 
         Label1.Focus()
     End Sub
@@ -66,7 +68,10 @@
         txtFeeHourly.Text = tbFeeHourly.Value / 100
         SimulationParameters.FeeHourlyPrice = tbFeeHourly.Value / 100
     End Sub
-
+    Private Sub tbTrafficDisplay_Scroll(sender As Object, e As EventArgs) Handles tbTrafficDisplay.Scroll
+        txtTrafficDisplay.Text = tbTrafficDisplay.Value / 10
+        SimulationParameters.TrafficDisplayAlpha = tbTrafficDisplay.Value / 10
+    End Sub
 
     Private Sub txtSimSpeed_TextChanged(sender As Object, e As EventArgs) Handles txtSimSpeed.TextChanged
         If IsNumeric(txtSimSpeed.Text) Then
@@ -137,6 +142,15 @@
             If txtValue >= tbAStarAccelerator.Minimum And txtValue <= tbAStarAccelerator.Maximum Then
                 tbAStarAccelerator.Value = txtValue
                 SimulationParameters.AStarAccelerator = txtValue / 100
+            End If
+        End If
+    End Sub
+    Private Sub txtTrafficDisplay_TextChanged(sender As Object, e As EventArgs) Handles txtTrafficDisplay.TextChanged
+        If IsNumeric(txtTrafficDisplay.Text) Then
+            Dim txtValue As Integer = CDec(txtTrafficDisplay.Text) * 10
+            If txtValue >= tbTrafficDisplay.Minimum And txtValue <= tbTrafficDisplay.Maximum Then
+                tbTrafficDisplay.Value = txtValue
+                SimulationParameters.TrafficDisplayAlpha = txtValue / 10
             End If
         End If
     End Sub
