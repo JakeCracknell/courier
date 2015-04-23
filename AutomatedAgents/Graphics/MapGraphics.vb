@@ -40,7 +40,7 @@
     Public ConfigDrawAgentRoutes As Integer = 0
     Public ConfigDrawLandmarks As Boolean = True
     Public ConfigDrawGrid As Boolean = False
-    Public ConfigDrawTrafficLayer As Boolean = True
+    Public ConfigDrawTrafficLayer As Boolean = False
 
     Sub Resize(ByVal _Width As Integer, ByVal _Height As Integer, ByVal Bounds As Bounds)
         Width = _Width

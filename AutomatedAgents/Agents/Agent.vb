@@ -64,7 +64,7 @@
             TotalDrivingTime += 1
             DepleteFuel(DistanceTravelled)
 
-            If EmergencyRefuelRequired() Then
+            If Not Plan.IsIdle AndAlso EmergencyRefuelRequired() Then
                 If Not Plan.IsOnDiversion Then
                     Dim RouteToFuel As Route = GetRouteForRefuel()
                     Plan.SetDiversion(RouteToFuel)

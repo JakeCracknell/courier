@@ -122,11 +122,12 @@
         Else
             'A gamma distribution, giving a range from 0 to infinity. Mode of (alpha-1)*theta = +1h
             'Spread mostly between 0.5 and 4
-            Deadline = NoticeBoard.CurrentTime + TimeSpan.FromHours(ProbabilityDistributions.Gamma(2, 1))
+            Deadline = NoticeBoard.CurrentTime + DirectRoute.GetEstimatedTime() + TimeSpan.FromHours(ProbabilityDistributions.Gamma(2, 1))
         End If
 
         'Generate a random package size from an exponential distribution (as many packages will be documents).
         Dim Size As Double = ProbabilityDistributions.Exponential(SimulationParameters.PackageSizeLambda, RandomNumberGenerator.NextDouble)
+        Size = Math.Max(Size, SimulationParameters.CubicMetresMin)
 
         Dim CourierJob As New CourierJob(PickupLocation, DeliveryLocation, PickupName, DeliveryName, Size, Deadline)
         NoticeBoard.AddJob(CourierJob)

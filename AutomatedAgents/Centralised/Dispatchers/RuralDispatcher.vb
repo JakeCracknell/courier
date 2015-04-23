@@ -42,10 +42,13 @@
         PickupName = GenerateWaypointName(PickupLocation)
         DeliveryName = GenerateWaypointName(DeliveryLocation)
 
-        Dim Deadline As TimeSpan = NoticeBoard.CurrentTime + TimeSpan.FromHours(ProbabilityDistributions.Gamma(2, 1))
+        Dim Deadline As TimeSpan = NoticeBoard.CurrentTime + _
+            RouteCache.GetRoute(PickupLocation, DeliveryLocation).GetEstimatedTime + _
+            TimeSpan.FromHours(ProbabilityDistributions.Gamma(2, 1))
 
         'Generate a random package size from an exponential distribution (as many packages will be documents).
         Dim Size As Double = ProbabilityDistributions.Exponential(SimulationParameters.PackageSizeLambda, RandomNumberGenerator.NextDouble)
+        Size = Math.Max(Size, SimulationParameters.CubicMetresMin)
 
         Dim CourierJob As New CourierJob(PickupLocation, DeliveryLocation, PickupName, DeliveryName, Size, Deadline)
         NoticeBoard.AddJob(CourierJob)
