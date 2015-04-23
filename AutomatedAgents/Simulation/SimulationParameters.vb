@@ -11,10 +11,13 @@
         Public FeeBasePrice As Double = 2
         Public FeeHourlyPrice As Double = 0.2
         Public AStarAccelerator As Double = 1.0
-        Public TrafficDisplayAlpha As Double = 3.0
+        Public TrafficDisplayAlpha As Double = 3.0 'TODO
+
+        'Options selected in frmMain GUI
         Public CNPVersion As ContractNetPolicy = ContractNetPolicy.CNP4
         Public VehicleType As Vehicles.Type = Vehicles.Type.CAR
-
+        Public RoutingStrategy As Integer = 0
+        Public IdleStrategy As Integer = 2
 
         '***** Global Constants
         Public SIMULATION_TIME_INCREMENT As TimeSpan = TimeSpan.FromSeconds(1)

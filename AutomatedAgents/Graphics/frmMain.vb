@@ -344,19 +344,48 @@
     End Sub
 
     Private Sub CNP1ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CNP1ToolStripMenuItem.Click
+        SimulationParameters.RoutingStrategy = 0
         SimulationParameters.CNPVersion = ContractNetPolicy.CNP1
     End Sub
     Private Sub CNP2ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CNP2ToolStripMenuItem.Click
+        SimulationParameters.RoutingStrategy = 0
         SimulationParameters.CNPVersion = ContractNetPolicy.CNP2
     End Sub
     Private Sub CNP3ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CNP3ToolStripMenuItem.Click
+        SimulationParameters.RoutingStrategy = 0
         SimulationParameters.CNPVersion = ContractNetPolicy.CNP3
     End Sub
     Private Sub CNP4ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CNP4ToolStripMenuItem.Click
+        SimulationParameters.RoutingStrategy = 0
         SimulationParameters.CNPVersion = ContractNetPolicy.CNP4
     End Sub
     Private Sub CNP5ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CNP5ToolStripMenuItem.Click
+        SimulationParameters.RoutingStrategy = 0
         SimulationParameters.CNPVersion = ContractNetPolicy.CNP5
+    End Sub
+
+    Private Sub FreeforallToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FreeforallToolStripMenuItem.Click
+        SimulationParameters.RoutingStrategy = 1
+    End Sub
+
+    Private Sub RoundRobinToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RoundRobinToolStripMenuItem.Click
+        SimulationParameters.RoutingStrategy = 2
+    End Sub
+
+    Private Sub NoneToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NoneToolStripMenuItem.Click
+        SimulationParameters.IdleStrategy = 0
+    End Sub
+
+    Private Sub SleepToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SleepToolStripMenuItem.Click
+        SimulationParameters.IdleStrategy = 1
+    End Sub
+
+    Private Sub PredictiveToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PredictiveToolStripMenuItem.Click
+        SimulationParameters.IdleStrategy = 2
+    End Sub
+
+    Private Sub ScatterToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ScatterToolStripMenuItem.Click
+        SimulationParameters.IdleStrategy = 3
     End Sub
 
     Private Sub CarToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CarToolStripMenuItem.Click

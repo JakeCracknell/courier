@@ -30,10 +30,25 @@
         Me.Map = Map
         Me.Color = Color
         Me.VehicleType = VehicleType
-        Strategy = New ContractNetStrategy(Me, SimulationParameters.CNPVersion)
-        'Strategy = New FreeForAllStrategy(Me)
-        'Strategy = New RoundRobinStrategy(Me)
-        IdleStrategy = New ConvergeToPickupIdleStrategy(Me)
+        Select Case SimulationParameters.RoutingStrategy
+            Case 0
+                Strategy = New ContractNetStrategy(Me, SimulationParameters.CNPVersion)
+            Case 1
+                Strategy = New FreeForAllStrategy(Me)
+            Case 2
+                Strategy = New RoundRobinStrategy(Me)
+        End Select
+        Select Case SimulationParameters.IdleStrategy
+            Case 0
+                IdleStrategy = New NoIdleStrategy()
+            Case 1
+                IdleStrategy = New SleepingIdleStrategy(Me)
+            Case 2
+                IdleStrategy = New ConvergeToPickupIdleStrategy(Me)
+            Case 3
+                IdleStrategy = New ScatterIdleStrategy(Me)
+        End Select
+
         Refuel()
 
         'Agents start at a randomly chosen depot.

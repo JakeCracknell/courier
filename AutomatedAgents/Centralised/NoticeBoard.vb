@@ -29,7 +29,13 @@
             IncompleteJobs = New List(Of CourierJob)
             CompletedJobs = New List(Of CourierJob)
             RefusedJobs = New List(Of CourierJob)
-            Broadcaster = New ContractNetBroadcaster()
+
+            If SimulationParameters.RoutingStrategy = 0 Then
+                Broadcaster = New ContractNetBroadcaster()
+            Else
+                Broadcaster = New RoundRobinBroadcaster()
+            End If
+
             Array.Clear(AgentPositions, 0, AgentPositions.Length)
         End Sub
 
