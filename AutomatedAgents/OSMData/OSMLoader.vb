@@ -194,6 +194,11 @@ Public Class OSMLoader
                     Map.FuelPoints.Add(Map.NodesAdjacencyList.Rows(Long.Parse(NodeID)).NodeKey)
                 Next
 
+                If AAFile.Length = 3 Then
+                    AAFilePath = AAFilePath.Replace(Map.Name, AAFile(2))
+                    AAFile = IO.File.ReadAllLines(AAFilePath)
+                End If
+
                 For i = 2 To AAFile.Length - 1
                     Dim WayTrafficLine() As String = AAFile(i).Split(":")
                     Dim WayID As Long = Long.Parse(WayTrafficLine(0))
