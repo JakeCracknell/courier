@@ -112,7 +112,7 @@
 
             End If
             Dim SleepTime As Integer = 1000 / SimulationParameters.SimulationSpeed
-            If SleepTime > 0 Then
+            If SleepTime > 0 AndAlso Not PauseDisplayToolStripMenuItem.Checked Then
                 Threading.Thread.Sleep(SleepTime)
             End If
         End While
