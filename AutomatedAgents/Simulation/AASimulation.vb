@@ -29,11 +29,13 @@
     End Function
 
     Sub InitialiseAllModules()
-        If Statistics Is Nothing Then 'without this frmStats could cause a synclock exception. TODO refactor
+        NoticeBoard.Initialise()
+        UIDAssigner.Initialise()
+        RouteCache.Initialise(Map.NodesAdjacencyList, RouteFindingMinimiser.DISTANCE)
+        If Statistics Is Nothing Then
             Statistics = New StatisticsLogger(Now, Map)
         End If
         RNG.Initialise()
-        NoticeBoard.Initialise()
         SimulationState.Initialise()
     End Sub
 

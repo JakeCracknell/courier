@@ -7,9 +7,11 @@
         End Sub
 
         Function R(ByVal Key As String) As Random
-            If Not RandomNumberGenerators.ContainsKey(Key) Then
-                RandomNumberGenerators.Add(Key, New Random(Key.GetHashCode))
-            End If
+            SyncLock RandomNumberGenerators
+                If Not RandomNumberGenerators.ContainsKey(Key) Then
+                    RandomNumberGenerators.Add(Key, New Random(Key.GetHashCode))
+                End If
+            End SyncLock
             Return RandomNumberGenerators(Key)
         End Function
 

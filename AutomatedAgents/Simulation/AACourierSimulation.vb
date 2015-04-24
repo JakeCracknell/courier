@@ -5,8 +5,6 @@
 
     Sub New(ByVal Map As StreetMap)
         Me.Map = Map
-        NoticeBoard.Initialise()
-        RouteCache.Initialise(Map.NodesAdjacencyList, RouteFindingMinimiser.DISTANCE)
         Dispatcher = If(Map.Businesses.Count > 10, New CityDispatcher(Map), New RuralDispatcher(Map))
         InitialiseAllModules()
     End Sub

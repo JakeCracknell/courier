@@ -6,7 +6,7 @@
 
     Private Const DEADLINE_TO_DEPOT As Integer = 60 * 60 * 12 ' 12 hours
 
-    Public ReadOnly JobID As Integer = NewID("job")
+    Public ReadOnly JobID As Integer = UIDAssigner.NewID("job")
     Public ReadOnly PickupPosition As HopPosition
     Public DeliveryPosition As HopPosition
     Public ReadOnly OriginalDeliveryPosition As HopPosition

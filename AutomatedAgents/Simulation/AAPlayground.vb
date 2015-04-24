@@ -3,7 +3,6 @@
 
     Public Sub New(ByVal Map As StreetMap)
         Me.Map = Map
-        NoticeBoard.Initialise()
         InitialiseAllModules()
     End Sub
 
