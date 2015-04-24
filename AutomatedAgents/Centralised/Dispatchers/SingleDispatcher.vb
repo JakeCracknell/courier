@@ -7,11 +7,13 @@ Class SingleDispatcher
         Me.Map = Map
     End Sub
 
-    Sub Tick() Implements IDispatcher.Tick
+    Public Function Tick() As Boolean Implements IDispatcher.Tick
         If NoticeBoard.IncompleteJobs.Count = 0 Then
             Dim Job As New CourierJob(Map.NodesAdjacencyList.GetRandomPoint, _
                                    Map.NodesAdjacencyList.GetRandomPoint)
             NoticeBoard.PostJob(Job)
+            Return True
         End If
-    End Sub
+        Return False
+    End Function
 End Class

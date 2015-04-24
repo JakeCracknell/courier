@@ -99,6 +99,7 @@
     <Compile Include="Centralised\Broadcasters\RoundRobinBroadcaster.vb" />
     <Compile Include="Centralised\Dispatchers\CityDispatcher.vb" />
     <Compile Include="Centralised\Dispatchers\DebuggingDispatcher.vb" />
+    <Compile Include="Centralised\Dispatchers\DepotDispatcher.vb" />
     <Compile Include="Centralised\Dispatchers\IDispatcher.vb" />
     <Compile Include="Centralised\Dispatchers\RuralDispatcher.vb" />
     <Compile Include="Centralised\UIDAssigner.vb" />

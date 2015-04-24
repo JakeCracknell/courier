@@ -17,6 +17,7 @@
     Public Status As JobStatus = JobStatus.UNALLOCATED
     Public PickupName As String
     Public DeliveryName As String
+    Public OriginalDeliveryName As String
 
     Sub New(ByVal PickupPosition As HopPosition, ByVal DeliveryPosition As HopPosition, ByVal PickupName As String, ByVal DeliveryName As String, ByVal Size As Double, ByVal Deadline As TimeSpan)
         Me.PickupPosition = PickupPosition
@@ -24,6 +25,7 @@
         Me.OriginalDeliveryPosition = DeliveryPosition
         Me.PickupName = PickupName
         Me.DeliveryName = DeliveryName
+        Me.OriginalDeliveryName = DeliveryName
         Me.CubicMetres = Size
         Me.Deadline = Deadline
     End Sub

@@ -1,3 +1,3 @@
 ﻿Public Interface IDispatcher
-    Sub Tick()
+    Function Tick() As Boolean
 End Interface

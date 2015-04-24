@@ -13,7 +13,7 @@
     End Sub
 
     'Simulation time starts on a MONDAY at midnight.
-    Public Sub Tick() Implements IDispatcher.Tick
+    Public Function Tick() As Boolean Implements IDispatcher.Tick
         Dim DayOfWeek As DayOfWeek = (Int(NoticeBoard.Time.TotalDays) + 1) Mod 7
         Dim TimeOfDay As TimeSpan = TimeSpan.FromSeconds(NoticeBoard.Time.TotalSeconds Mod TimeSpan.FromDays(1).TotalSeconds)
 
@@ -28,7 +28,7 @@
 
         'A Bernoulli(P) distribution, where P varies by day and hour.
         If RNG.R("dispatcher").NextDouble > ProbabilityOfDispatch Then
-            Exit Sub 'No job is dispatched.
+            Return False 'No job is dispatched.
         End If
 
         'Given the type of job, randomly pick the pickup and destination points.
@@ -51,7 +51,8 @@
 
         Dim CourierJob As New CourierJob(PickupLocation, DeliveryLocation, PickupName, DeliveryName, Size, Deadline)
         NoticeBoard.PostJob(CourierJob)
-    End Sub
+        Return True
+    End Function
 
 
     Function GenerateWaypointName(ByVal Position As HopPosition) As String

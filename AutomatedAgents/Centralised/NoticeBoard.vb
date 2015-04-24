@@ -12,6 +12,8 @@
         Property LateJobs As Integer
 
         Public Broadcaster As IBroadcaster
+        Private Dispatcher As IDispatcher
+        Private DepotDispatcher As DepotDispatcher
 
         Property AgentPositions As HopPosition() = {}
 
@@ -39,6 +41,11 @@
             Array.Clear(AgentPositions, 0, AgentPositions.Length)
         End Sub
 
+        Sub SetDispatcher(ByVal AppropriateDispatcher As IDispatcher)
+            Dispatcher = AppropriateDispatcher
+            DepotDispatcher = New DepotDispatcher()
+        End Sub
+
         Function PostJob(ByVal Job As CourierJob)
             IncompleteJobs.Add(Job)
             UnallocatedJobs.Add(Job)
@@ -48,6 +55,7 @@
         End Function
 
         Sub Tick()
+            Dim JobHasBeenGenerated As Boolean = DepotDispatcher.Tick OrElse Dispatcher.Tick()
             Broadcaster.AwardJobs()
 
             For i = UnallocatedJobs.Count - 1 To 0 Step -1
@@ -75,6 +83,10 @@
                         TotalTimeLate += -TimeSpare
                     Else
                         TotalTimeEarly += TimeSpare
+                    End If
+
+                    If Job.IsFailedDelivery AndAlso SimulationParameters.FailToDepot = True Then
+                        DepotDispatcher.AddPotentialJob(Job)
                     End If
                 End If
             Next

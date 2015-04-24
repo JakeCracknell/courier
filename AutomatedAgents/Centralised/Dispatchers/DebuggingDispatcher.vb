@@ -4,12 +4,9 @@
 
     Sub New(Map As StreetMap)
         Me.Map = Map
-
-
     End Sub
 
-    Sub Tick() Implements IDispatcher.Tick
-
+    Function Tick() As Boolean Implements IDispatcher.Tick
         If NoticeBoard.IncompleteJobs.Count = 0 Then
             Dim RosslynAve As HopPosition = Map.NodesAdjacencyList.GetHopPositionFromNode(2525720829)
             Dim AvenueGardens As HopPosition = Map.NodesAdjacencyList.GetHopPositionFromNode(32045458)
@@ -19,6 +16,8 @@
 
             Dim Job As New CourierJob(RosslynAve, Railwayside)
             NoticeBoard.PostJob(Job)
+            Return True
         End If
-    End Sub
+        Return False
+    End Function
 End Class
