@@ -138,23 +138,38 @@ Public Class OSMLoader
                         reader.Skip()
                     End While
 
+                    Dim IsBusiness As Boolean = False
                     While reader.Name = "tag"
                         Dim AttributeName As String = reader.GetAttribute("k")
-                        If AttributeName = "highway" Then
-                            WayType = DecodeHighWayType(reader.GetAttribute("v"))
-                        ElseIf AttributeName = "name" Then
-                            WayName = reader.GetAttribute("v")
-                        ElseIf AttributeName = "oneway" Then
-                            OneWay = reader.GetAttribute("v")
-                        ElseIf AttributeName = "access" Then
-                            AccessAllowed = AccessAllowed And DecodeHighWayAccessLevel(reader.GetAttribute("v"))
-                        ElseIf AttributeName = "maxspeed" Then
-                            MaxSpeedOverrideKMH = DecodeHighwayMaxSpeed(reader.GetAttribute("v"))
-                        ElseIf AttributeName = "amenity" Then
-                            If reader.GetAttribute("v") = "fuel" Then
-                                UnconfirmedFuelPoints.Add(Nds(0))
-                            End If
-                        End If
+                        Select Case AttributeName
+                            Case "name"
+                                WayName = reader.GetAttribute("v")
+                            Case "highway"
+                                WayType = DecodeHighWayType(reader.GetAttribute("v"))
+                            Case "oneway"
+                                OneWay = reader.GetAttribute("v")
+                            Case "access"
+                                AccessAllowed = AccessAllowed And DecodeHighWayAccessLevel(reader.GetAttribute("v"))
+                            Case "maxspeed"
+                                MaxSpeedOverrideKMH = DecodeHighwayMaxSpeed(reader.GetAttribute("v"))
+
+                                'Businesses:
+                            Case "shop", "office"
+                                IsBusiness = True
+                                WayName = If(WayName = "", reader.GetAttribute("v").Replace("_", " ") & " " & AttributeName, WayName)
+                            Case "amenity"
+                                Select Case reader.GetAttribute("v")
+                                    Case "fuel"
+                                        UnconfirmedFuelPoints.Add(Nds(0))
+                                    Case "school", "restaurant", "bank", "fast_food", "cafe", "kindergarten", "pharmacy", "hospital", "pub", "bar", "fire_station", "police", "townhall"
+                                        IsBusiness = True
+                                        WayName = If(WayName = "", reader.GetAttribute("v").Replace("_", " "), WayName)
+                                End Select
+                            Case "craft"
+                                IsBusiness = True
+                                WayName = If(WayName = "", reader.GetAttribute("v").Replace("_", " "), WayName)
+                        End Select
+
                         reader.ReadStartElement()
                         reader.Skip()
                     End While
@@ -172,6 +187,9 @@ Public Class OSMLoader
 
                         Map.Ways.Add(Way.ID, Way)
                         Map.NodesAdjacencyList.AddWay(Way)
+                    ElseIf IsBusiness Then
+                        Nds(0).Description = WayName
+                        Map.Businesses.Add(Nds(0))
                     End If
 
                     If reader.NodeType = XmlNodeType.EndElement Then
