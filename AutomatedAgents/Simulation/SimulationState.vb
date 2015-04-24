@@ -74,7 +74,7 @@
                         JobList.Add(J.JobID)
                         JobList.Add(Agent.AgentID)
                         JobList.Add(J.PickupName)
-                        JobList.Add(If(J.IsGoingToDepot(), "[D] <-", "") & J.DeliveryName)
+                        JobList.Add(If(J.IsFailedDelivery(), "[" & CType(J.DeliveryPosition.Hop.FromPoint, Node).ToString & "] <-", "") & J.DeliveryName)
                         JobList.Add(Math.Round(J.GetDirectRoute.GetKM, 3) & " km, " & J.GetDirectRoute.GetEstimatedTime.ToString("h\:mm\:ss"))
                         JobList.Add(Math.Round(J.CubicMetres, 3))
                         JobList.Add(J.Deadline.ToString("d\:hh\:mm\:ss"))

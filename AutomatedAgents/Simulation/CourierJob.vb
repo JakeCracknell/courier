@@ -52,7 +52,7 @@
     Function Deliver() As Integer
         Debug.Assert(Status = JobStatus.PENDING_DELIVERY)
 
-        If IsGoingToDepot() Then
+        If IsFailedDelivery() Then
             Status = JobStatus.COMPLETED
             Return CUSTOMER_WAIT_TIME_MIN
         ElseIf RNG.R("dropoff").NextDouble > SimulationParameters.ProbDeliveryFail Then
@@ -75,7 +75,7 @@
         Return RouteCache.GetRoute(PickupPosition, OriginalDeliveryPosition)
     End Function
 
-    Function IsGoingToDepot() As Boolean
+    Function IsFailedDelivery() As Boolean
         Return Not OriginalDeliveryPosition.Equals(DeliveryPosition)
     End Function
 

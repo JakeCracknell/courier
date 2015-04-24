@@ -66,8 +66,8 @@ Public Class WayPoint
             Case JobStatus.PENDING_PICKUP
                 Return "↑ " & Job.PickupName
             Case JobStatus.PENDING_DELIVERY
-                If Job.IsGoingToDepot Then
-                    Return "↓ DEPOT"
+                If Job.IsFailedDelivery Then
+                    Return "↓ " & CType(CType(Position, HopPosition).Hop.FromPoint, Node).ToString
                 Else
                     Return "↓ " & Job.DeliveryName
                 End If
