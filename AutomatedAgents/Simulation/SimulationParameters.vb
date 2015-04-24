@@ -18,6 +18,7 @@
         Public VehicleType As Vehicles.Type = Vehicles.Type.CAR
         Public RoutingStrategy As Integer = 0
         Public IdleStrategy As Integer = 2
+        Public FailToDepot As Boolean = True
 
         '***** Global Constants
         Public SIMULATION_TIME_INCREMENT As TimeSpan = TimeSpan.FromSeconds(1)

@@ -59,6 +59,7 @@
                         ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
                             'Customer is not in -> deliver to nearest depot.
                             Job.DeliveryPosition = Agent.Map.GetNearestDepot(Agent.Plan.StartPoint)
+                            Job.DeliveryName = If(Job.IsFailedDelivery(), "[" & If(SimulationParameters.FailToDepot, CType(Job.DeliveryPosition.Hop.FromPoint, Node).ToString, "↺") & "] <- ", "") & Job.DeliveryName
                             Dim DepotWaypoint As New WayPoint() With {.DefinedStatus = JobStatus.PENDING_DELIVERY, _
                                           .Job = Job, .Position = Job.DeliveryPosition, _
                                           .VolumeDelta = -Job.CubicMetres}

@@ -38,6 +38,13 @@ Partial Class frmMain
         Me.CNP3ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CNP4ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CNP5ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.FreeforallToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RoundRobinToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SelectIdleStrategyToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.NoneToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SleepToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PredictiveToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ScatterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SelectVehicleToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CarToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SmallCommercialVanToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -71,13 +78,9 @@ Partial Class frmMain
         Me.picMap = New System.Windows.Forms.PictureBox()
         Me.tmrStatus = New System.Windows.Forms.Timer(Me.components)
         Me.bwSimulator = New System.ComponentModel.BackgroundWorker()
-        Me.FreeforallToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.RoundRobinToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.SelectIdleStrategyToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.NoneToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.SleepToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.PredictiveToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ScatterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SelectFailurePointToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DeliverToDepotToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DeliverToPickupToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.picMap, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -132,7 +135,7 @@ Partial Class frmMain
         '
         'AgentsToolStripMenuItem
         '
-        Me.AgentsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AgentStatusToolStripMenuItem, Me.SelectStrategyToolStripMenuItem, Me.SelectIdleStrategyToolStripMenuItem, Me.SelectVehicleToolStripMenuItem})
+        Me.AgentsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AgentStatusToolStripMenuItem, Me.SelectStrategyToolStripMenuItem, Me.SelectIdleStrategyToolStripMenuItem, Me.SelectVehicleToolStripMenuItem, Me.SelectFailurePointToolStripMenuItem})
         Me.AgentsToolStripMenuItem.Name = "AgentsToolStripMenuItem"
         Me.AgentsToolStripMenuItem.Size = New System.Drawing.Size(56, 20)
         Me.AgentsToolStripMenuItem.Text = "Agents"
@@ -140,51 +143,94 @@ Partial Class frmMain
         'AgentStatusToolStripMenuItem
         '
         Me.AgentStatusToolStripMenuItem.Name = "AgentStatusToolStripMenuItem"
-        Me.AgentStatusToolStripMenuItem.Size = New System.Drawing.Size(173, 22)
+        Me.AgentStatusToolStripMenuItem.Size = New System.Drawing.Size(174, 22)
         Me.AgentStatusToolStripMenuItem.Text = "Agent Status..."
         '
         'SelectStrategyToolStripMenuItem
         '
         Me.SelectStrategyToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CNP1ToolStripMenuItem, Me.CNP2ToolStripMenuItem, Me.CNP3ToolStripMenuItem, Me.CNP4ToolStripMenuItem, Me.CNP5ToolStripMenuItem, Me.FreeforallToolStripMenuItem, Me.RoundRobinToolStripMenuItem})
         Me.SelectStrategyToolStripMenuItem.Name = "SelectStrategyToolStripMenuItem"
-        Me.SelectStrategyToolStripMenuItem.Size = New System.Drawing.Size(173, 22)
+        Me.SelectStrategyToolStripMenuItem.Size = New System.Drawing.Size(174, 22)
         Me.SelectStrategyToolStripMenuItem.Text = "Select Strategy"
         '
         'CNP1ToolStripMenuItem
         '
         Me.CNP1ToolStripMenuItem.Name = "CNP1ToolStripMenuItem"
-        Me.CNP1ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CNP1ToolStripMenuItem.Size = New System.Drawing.Size(143, 22)
         Me.CNP1ToolStripMenuItem.Text = "CNP1"
         '
         'CNP2ToolStripMenuItem
         '
         Me.CNP2ToolStripMenuItem.Name = "CNP2ToolStripMenuItem"
-        Me.CNP2ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CNP2ToolStripMenuItem.Size = New System.Drawing.Size(143, 22)
         Me.CNP2ToolStripMenuItem.Text = "CNP2"
         '
         'CNP3ToolStripMenuItem
         '
         Me.CNP3ToolStripMenuItem.Name = "CNP3ToolStripMenuItem"
-        Me.CNP3ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CNP3ToolStripMenuItem.Size = New System.Drawing.Size(143, 22)
         Me.CNP3ToolStripMenuItem.Text = "CNP3"
         '
         'CNP4ToolStripMenuItem
         '
         Me.CNP4ToolStripMenuItem.Name = "CNP4ToolStripMenuItem"
-        Me.CNP4ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CNP4ToolStripMenuItem.Size = New System.Drawing.Size(143, 22)
         Me.CNP4ToolStripMenuItem.Text = "CNP4"
         '
         'CNP5ToolStripMenuItem
         '
         Me.CNP5ToolStripMenuItem.Name = "CNP5ToolStripMenuItem"
-        Me.CNP5ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CNP5ToolStripMenuItem.Size = New System.Drawing.Size(143, 22)
         Me.CNP5ToolStripMenuItem.Text = "CNP5"
+        '
+        'FreeforallToolStripMenuItem
+        '
+        Me.FreeforallToolStripMenuItem.Name = "FreeforallToolStripMenuItem"
+        Me.FreeforallToolStripMenuItem.Size = New System.Drawing.Size(143, 22)
+        Me.FreeforallToolStripMenuItem.Text = "Free-for-all"
+        '
+        'RoundRobinToolStripMenuItem
+        '
+        Me.RoundRobinToolStripMenuItem.Name = "RoundRobinToolStripMenuItem"
+        Me.RoundRobinToolStripMenuItem.Size = New System.Drawing.Size(143, 22)
+        Me.RoundRobinToolStripMenuItem.Text = "Round Robin"
+        '
+        'SelectIdleStrategyToolStripMenuItem
+        '
+        Me.SelectIdleStrategyToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NoneToolStripMenuItem, Me.SleepToolStripMenuItem, Me.PredictiveToolStripMenuItem, Me.ScatterToolStripMenuItem})
+        Me.SelectIdleStrategyToolStripMenuItem.Name = "SelectIdleStrategyToolStripMenuItem"
+        Me.SelectIdleStrategyToolStripMenuItem.Size = New System.Drawing.Size(174, 22)
+        Me.SelectIdleStrategyToolStripMenuItem.Text = "Select Idle Strategy"
+        '
+        'NoneToolStripMenuItem
+        '
+        Me.NoneToolStripMenuItem.Name = "NoneToolStripMenuItem"
+        Me.NoneToolStripMenuItem.Size = New System.Drawing.Size(126, 22)
+        Me.NoneToolStripMenuItem.Text = "None"
+        '
+        'SleepToolStripMenuItem
+        '
+        Me.SleepToolStripMenuItem.Name = "SleepToolStripMenuItem"
+        Me.SleepToolStripMenuItem.Size = New System.Drawing.Size(126, 22)
+        Me.SleepToolStripMenuItem.Text = "Sleep"
+        '
+        'PredictiveToolStripMenuItem
+        '
+        Me.PredictiveToolStripMenuItem.Name = "PredictiveToolStripMenuItem"
+        Me.PredictiveToolStripMenuItem.Size = New System.Drawing.Size(126, 22)
+        Me.PredictiveToolStripMenuItem.Text = "Predictive"
+        '
+        'ScatterToolStripMenuItem
+        '
+        Me.ScatterToolStripMenuItem.Name = "ScatterToolStripMenuItem"
+        Me.ScatterToolStripMenuItem.Size = New System.Drawing.Size(126, 22)
+        Me.ScatterToolStripMenuItem.Text = "Scatter"
         '
         'SelectVehicleToolStripMenuItem
         '
         Me.SelectVehicleToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CarToolStripMenuItem, Me.SmallCommercialVanToolStripMenuItem, Me.Lorry75TonneToolStripMenuItem})
         Me.SelectVehicleToolStripMenuItem.Name = "SelectVehicleToolStripMenuItem"
-        Me.SelectVehicleToolStripMenuItem.Size = New System.Drawing.Size(173, 22)
+        Me.SelectVehicleToolStripMenuItem.Size = New System.Drawing.Size(174, 22)
         Me.SelectVehicleToolStripMenuItem.Text = "Select Vehicle"
         '
         'CarToolStripMenuItem
@@ -401,48 +447,24 @@ Partial Class frmMain
         'bwSimulator
         '
         '
-        'FreeforallToolStripMenuItem
+        'SelectFailurePointToolStripMenuItem
         '
-        Me.FreeforallToolStripMenuItem.Name = "FreeforallToolStripMenuItem"
-        Me.FreeforallToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-        Me.FreeforallToolStripMenuItem.Text = "Free-for-all"
+        Me.SelectFailurePointToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeliverToDepotToolStripMenuItem, Me.DeliverToPickupToolStripMenuItem})
+        Me.SelectFailurePointToolStripMenuItem.Name = "SelectFailurePointToolStripMenuItem"
+        Me.SelectFailurePointToolStripMenuItem.Size = New System.Drawing.Size(174, 22)
+        Me.SelectFailurePointToolStripMenuItem.Text = "Select Failure Point"
         '
-        'RoundRobinToolStripMenuItem
+        'DeliverToDepotToolStripMenuItem
         '
-        Me.RoundRobinToolStripMenuItem.Name = "RoundRobinToolStripMenuItem"
-        Me.RoundRobinToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-        Me.RoundRobinToolStripMenuItem.Text = "Round Robin"
+        Me.DeliverToDepotToolStripMenuItem.Name = "DeliverToDepotToolStripMenuItem"
+        Me.DeliverToDepotToolStripMenuItem.Size = New System.Drawing.Size(163, 22)
+        Me.DeliverToDepotToolStripMenuItem.Text = "Deliver to Depot"
         '
-        'SelectIdleStrategyToolStripMenuItem
+        'DeliverToPickupToolStripMenuItem
         '
-        Me.SelectIdleStrategyToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NoneToolStripMenuItem, Me.SleepToolStripMenuItem, Me.PredictiveToolStripMenuItem, Me.ScatterToolStripMenuItem})
-        Me.SelectIdleStrategyToolStripMenuItem.Name = "SelectIdleStrategyToolStripMenuItem"
-        Me.SelectIdleStrategyToolStripMenuItem.Size = New System.Drawing.Size(173, 22)
-        Me.SelectIdleStrategyToolStripMenuItem.Text = "Select Idle Strategy"
-        '
-        'NoneToolStripMenuItem
-        '
-        Me.NoneToolStripMenuItem.Name = "NoneToolStripMenuItem"
-        Me.NoneToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-        Me.NoneToolStripMenuItem.Text = "None"
-        '
-        'SleepToolStripMenuItem
-        '
-        Me.SleepToolStripMenuItem.Name = "SleepToolStripMenuItem"
-        Me.SleepToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-        Me.SleepToolStripMenuItem.Text = "Sleep"
-        '
-        'PredictiveToolStripMenuItem
-        '
-        Me.PredictiveToolStripMenuItem.Name = "PredictiveToolStripMenuItem"
-        Me.PredictiveToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-        Me.PredictiveToolStripMenuItem.Text = "Predictive"
-        '
-        'ScatterToolStripMenuItem
-        '
-        Me.ScatterToolStripMenuItem.Name = "ScatterToolStripMenuItem"
-        Me.ScatterToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-        Me.ScatterToolStripMenuItem.Text = "Scatter"
+        Me.DeliverToPickupToolStripMenuItem.Name = "DeliverToPickupToolStripMenuItem"
+        Me.DeliverToPickupToolStripMenuItem.Size = New System.Drawing.Size(163, 22)
+        Me.DeliverToPickupToolStripMenuItem.Text = "Deliver to Pickup"
         '
         'frmMain
         '
@@ -519,5 +541,8 @@ Partial Class frmMain
     Friend WithEvents SleepToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents PredictiveToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ScatterToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents SelectFailurePointToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents DeliverToDepotToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents DeliverToPickupToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class

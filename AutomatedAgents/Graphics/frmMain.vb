@@ -363,31 +363,24 @@
         SimulationParameters.RoutingStrategy = 0
         SimulationParameters.CNPVersion = ContractNetPolicy.CNP5
     End Sub
-
     Private Sub FreeforallToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FreeforallToolStripMenuItem.Click
         SimulationParameters.RoutingStrategy = 1
     End Sub
-
     Private Sub RoundRobinToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RoundRobinToolStripMenuItem.Click
         SimulationParameters.RoutingStrategy = 2
     End Sub
-
     Private Sub NoneToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NoneToolStripMenuItem.Click
         SimulationParameters.IdleStrategy = 0
     End Sub
-
     Private Sub SleepToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SleepToolStripMenuItem.Click
         SimulationParameters.IdleStrategy = 1
     End Sub
-
     Private Sub PredictiveToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PredictiveToolStripMenuItem.Click
         SimulationParameters.IdleStrategy = 2
     End Sub
-
     Private Sub ScatterToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ScatterToolStripMenuItem.Click
         SimulationParameters.IdleStrategy = 3
     End Sub
-
     Private Sub CarToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CarToolStripMenuItem.Click
         SimulationParameters.VehicleType = Vehicles.Type.CAR
     End Sub
@@ -396,5 +389,11 @@
     End Sub
     Private Sub Lorry75TonneToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles Lorry75TonneToolStripMenuItem.Click
         SimulationParameters.VehicleType = Vehicles.Type.TRUCK
+    End Sub
+    Private Sub DeliverToDepotToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeliverToDepotToolStripMenuItem.Click
+        SimulationParameters.FailToDepot = True
+    End Sub
+    Private Sub DeliverToPickupToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeliverToPickupToolStripMenuItem.Click
+        SimulationParameters.FailToDepot = False
     End Sub
 End Class
