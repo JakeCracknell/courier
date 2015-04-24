@@ -297,7 +297,7 @@
         End If
     End Sub
 
-    Private Sub AgentStatusToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AgentStatusToolStripMenuItem.Click
+    Private Sub ViewConsoleToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewConsoleToolStripMenuItem.Click
         frmAgentStatus.Show()
     End Sub
   
@@ -395,5 +395,11 @@
     End Sub
     Private Sub DeliverToPickupToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeliverToPickupToolStripMenuItem.Click
         SimulationParameters.FailToDepot = False
+    End Sub
+    Private Sub GeneralToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles GeneralToolStripMenuItem.Click
+        SimulationParameters.Dispatcher = 0
+    End Sub
+    Private Sub SingleBusinessToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SingleBusinessToolStripMenuItem.Click
+        SimulationParameters.Dispatcher = 1
     End Sub
 End Class

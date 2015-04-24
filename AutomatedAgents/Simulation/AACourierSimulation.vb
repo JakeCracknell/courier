@@ -6,7 +6,12 @@
     Sub New(ByVal Map As StreetMap)
         Me.Map = Map
         InitialiseAllModules()
-        NoticeBoard.SetDispatcher(If(Map.Businesses.Count > 10, New CityDispatcher(Map), New RuralDispatcher(Map)))
+        Select Case SimulationParameters.Dispatcher
+            Case 0
+                NoticeBoard.SetDispatcher(If(Map.Businesses.Count > 10, New CityDispatcher(Map), New RuralDispatcher(Map)))
+            Case 1
+                NoticeBoard.SetDispatcher(New SingleBusinessDispatcher(Map))
+        End Select
     End Sub
 
     'Returns whether the state has changed.

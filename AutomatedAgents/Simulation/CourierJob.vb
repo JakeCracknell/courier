@@ -5,6 +5,7 @@
         (CUSTOMER_WAIT_TIME_MAX + CUSTOMER_WAIT_TIME_MIN) / 2
 
     Private Const DEADLINE_TO_DEPOT As Integer = 60 * 60 * 12 ' 12 hours
+    Private Const DEPOT_STRING_IDENTIFIER As String = "DEPOT"
 
     Public ReadOnly JobID As Integer = UIDAssigner.NewID("job")
     Public ReadOnly PickupPosition As HopPosition
@@ -42,35 +43,52 @@
     'refund given or rerouted to the depot at some time (no deadline).
     Function Collect() As Integer
         Debug.Assert(Status = JobStatus.PENDING_PICKUP)
-        If RNG.R("pickup").NextDouble > SimulationParameters.ProbPickupFail Then
+
+        'Assume best case scenario with outbound depot jobbies.
+        If PickupName.Contains(DEPOT_STRING_IDENTIFIER) Then
             Status = JobStatus.PENDING_DELIVERY
-            Return GenerateRandomWaitTime()
+            Return CUSTOMER_WAIT_TIME_MIN
         End If
-        Status = JobStatus.CANCELLED
-        PartialRefund()
-        Return CUSTOMER_WAIT_TIME_MAX
+
+        'Pickup fails
+        If RNG.R("pickup").NextDouble < SimulationParameters.ProbPickupFail Then
+            Status = JobStatus.CANCELLED
+            PartialRefund()
+            Return CUSTOMER_WAIT_TIME_MAX
+        End If
+
+        'Usual case - pickup is successful
+        Status = JobStatus.PENDING_DELIVERY
+        Return GenerateRandomWaitTime()
     End Function
 
     Function Deliver() As Integer
         Debug.Assert(Status = JobStatus.PENDING_DELIVERY)
 
-        If IsFailedDelivery() Then
+        'Full refund if late - even if going to depot or 
+        If Deadline < NoticeBoard.Time Then
+            'Still happens occasionally.
+            Debug.WriteLine("Minutes late: " & (NoticeBoard.Time - Deadline).TotalMinutes)
+            FullRefund()
+        End If
+
+        'Assume best case scenario with returned jobs.
+        If IsFailedDelivery() OrElse DeliveryName.Contains(DEPOT_STRING_IDENTIFIER) Then
             Status = JobStatus.COMPLETED
             Return CUSTOMER_WAIT_TIME_MIN
-        ElseIf RNG.R("dropoff").NextDouble > SimulationParameters.ProbDeliveryFail Then
-            Status = JobStatus.COMPLETED
-            If Deadline < NoticeBoard.Time Then
-                'Still happens occasionally.
-                Debug.WriteLine("Minutes late: " & (NoticeBoard.Time - Deadline).TotalMinutes)
-                FullRefund()
-            End If
-            Return GenerateRandomWaitTime()
-        Else
+        End If
+
+        'Delivery fails. Never the case if the delivery position is a depot.
+        If RNG.R("dropoff").NextDouble < SimulationParameters.ProbDeliveryFail Then
             Status = JobStatus.PENDING_DELIVERY
             DeliveryPosition = Nothing
             Deadline += TimeSpan.FromSeconds(DEADLINE_TO_DEPOT)
             Return CUSTOMER_WAIT_TIME_MAX
         End If
+
+        'Usual case - delivery is successful.
+        Status = JobStatus.COMPLETED
+        Return GenerateRandomWaitTime()
     End Function
 
     Function GetDirectRoute() As Route

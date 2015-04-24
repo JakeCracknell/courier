@@ -102,6 +102,7 @@
     <Compile Include="Centralised\Dispatchers\DepotDispatcher.vb" />
     <Compile Include="Centralised\Dispatchers\IDispatcher.vb" />
     <Compile Include="Centralised\Dispatchers\RuralDispatcher.vb" />
+    <Compile Include="Centralised\Dispatchers\SingleBusinessDispatcher.vb" />
     <Compile Include="Centralised\UIDAssigner.vb" />
     <Compile Include="Geography\Bounds.vb" />
     <Compile Include="Centralised\NoticeBoard.vb" />
