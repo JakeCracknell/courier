@@ -61,6 +61,15 @@ Public Class WayPoint
         Return WayPoints
     End Function
 
+    Public Shared Function MakeFailedDeliveryWaypoint(ByVal Agent As Agent, ByVal Job As CourierJob) As WayPoint
+        Job.DeliveryPosition = Agent.Map.GetNearestDepot(Agent.Plan.StartPoint)
+        Job.DeliveryName = If(Job.IsFailedDelivery(), "[" & If(SimulationParameters.FailToDepot, CType(Job.DeliveryPosition.Hop.FromPoint, Node).ToString, "↺") & "] ← ", "") & Job.DeliveryName
+        Dim DepotWaypoint As New WayPoint() With {.DefinedStatus = JobStatus.PENDING_DELIVERY, _
+                                                  .Job = Job, .Position = Job.DeliveryPosition, _
+                                                  .VolumeDelta = -Job.CubicMetres}
+        Return DepotWaypoint
+    End Function
+
     Public Overrides Function ToString() As String
         Select Case DefinedStatus
             Case JobStatus.PENDING_PICKUP
