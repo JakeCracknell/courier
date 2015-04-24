@@ -6,6 +6,7 @@ Public Class OSMLoader
     Private OSMFilePath As String
     Private AAFilePath As String
     Private TrafficDirectory As String
+    Private Const DepotDescriptionFormat As String = "DEPOT {0}"
     Public Sub New(ByVal FilePath As String)
         Me.OSMFilePath = FilePath
         Me.AAFilePath = FilePath.Replace(".osm", ".aa")
@@ -203,10 +204,13 @@ Public Class OSMLoader
 
         Try
             If IO.File.Exists(AAFilePath) Then
-                Dim AAFile() As String = IO.File.ReadAllLines(AAFilePath)
-                For Each NodeID As String In AAFile(0).Split(",")
-                    Map.Depots.Add(Map.NodesAdjacencyList.Rows(Long.Parse(NodeID)).NodeKey)
-                    Map.FuelPoints.Add(Map.NodesAdjacencyList.Rows(Long.Parse(NodeID)).NodeKey)
+                Dim AAFile As String() = IO.File.ReadAllLines(AAFilePath)
+                Dim SplitDepots As String() = AAFile(0).Split(",")
+                For d = 0 To SplitDepots.Length - 1
+                    Dim DepotNode As Node = Map.NodesAdjacencyList.Rows(Long.Parse(SplitDepots(d))).NodeKey
+                    DepotNode.Description = String.Format(DepotDescriptionFormat, Chr(d + 65))
+                    Map.Depots.Add(DepotNode)
+                    Map.FuelPoints.Add(DepotNode)
                 Next
                 For Each NodeID As String In AAFile(1).Split(",")
                     Map.FuelPoints.Add(Map.NodesAdjacencyList.Rows(Long.Parse(NodeID)).NodeKey)
@@ -236,6 +240,7 @@ Public Class OSMLoader
         If Map.Depots.Count = 0 Then
             Dim CentralPoint As PointF = Bounds.GetCentralPoint
             Dim CentralNode As Node = Map.NodesAdjacencyList.GetNearestNode(CentralPoint.X, CentralPoint.Y)
+            CentralNode.Description = String.Format(DepotDescriptionFormat, "A")
             Map.Depots.Add(CentralNode)
             Map.FuelPoints.Add(CentralNode)
         End If

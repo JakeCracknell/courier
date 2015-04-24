@@ -21,7 +21,8 @@
     Private QUADRANT_GRID_PEN As New Pen(Brushes.Gray) With {.DashStyle = Drawing2D.DashStyle.Dash}
     Private DELIVERY_FAIL_CROSS_PEN As New Pen(New SolidBrush(Color.Black), 2)
     Private LANDMARK_BORDER_PEN As New Pen(Brushes.Black, 2)
-    Private LANDMARK_BRUSH As Brush = Brushes.White
+    Private FUEL_LANDMARK_BRUSH As Brush = Brushes.White
+    Private DEPOT_LANDMARK_BRUSH As Brush = Brushes.LightPink
 
     Private Const ROUTE_TO_LABEL_FORMAT As String = "TO ({0} hops, {1} km, {2} - {3} min)"
 
@@ -101,10 +102,10 @@
 
         If ConfigDrawLandmarks Then
             For Each FuelPoint As IPoint In Map.FuelPoints
-                DrawLandmark(gr, CC.GetPoint(FuelPoint), "F"c)
+                DrawLandmark(gr, CC.GetPoint(FuelPoint), "F"c, FUEL_LANDMARK_BRUSH)
             Next
-            For Each Depot As IPoint In Map.Depots
-                DrawLandmark(gr, CC.GetPoint(Depot), "D"c)
+            For Each Depot As Node In Map.Depots
+                DrawLandmark(gr, CC.GetPoint(Depot), Depot.Description(Depot.Description.Length - 1), DEPOT_LANDMARK_BRUSH)
             Next
         End If
 
@@ -141,9 +142,9 @@
         gr.FillPath(Brushes.Red, gp)
     End Sub
 
-    Sub DrawLandmark(ByVal gr As Graphics, ByVal DrawPoint As Point, ByVal Character As Char)
+    Sub DrawLandmark(ByVal gr As Graphics, ByVal DrawPoint As Point, ByVal Character As Char, ByVal Brush As Brush)
         Dim Len2 As Integer = LANDMARK_NODE_DRAW_SIZE \ 2
-        gr.FillRectangle(LANDMARK_BRUSH, DrawPoint.X - Len2, _
+        gr.FillRectangle(Brush, DrawPoint.X - Len2, _
                          DrawPoint.Y - Len2, _
                          LANDMARK_NODE_DRAW_SIZE, LANDMARK_NODE_DRAW_SIZE)
 
