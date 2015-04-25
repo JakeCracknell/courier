@@ -9,6 +9,7 @@
         LEVEL_CROSSING
     End Enum
 
+    'https://www.gov.uk/government/statistical-data-sets/tra03-motor-vehicle-flow
     Private TrafficDistribution() As Integer = {16, 10, 8, 10, 20, 50, 114, 182, 185, 152, 147, 150, 150, 150, 154, 165, 189, 195, 147, 96, 67, 51, 37, 23, 15, 11, 10, 11, 19, 45, 112, 188, 193, 154, 139, 139, 140, 144, 152, 169, 199, 204, 157, 100, 68, 51, 39, 25, 16, 11, 10, 11, 19, 44, 110, 189, 195, 156, 141, 141, 143, 147, 156, 173, 203, 209, 163, 107, 72, 55, 41, 27, 16, 12, 10, 12, 19, 44, 109, 188, 195, 157, 145, 146, 149, 154, 163, 180, 208, 212, 169, 117, 81, 60, 45, 29, 18, 13, 11, 13, 19, 42, 99, 171, 177, 149, 153, 166, 176, 182, 191, 201, 208, 200, 165, 126, 90, 64, 47, 34, 23, 15, 12, 12, 15, 24, 41, 65, 96, 129, 158, 172, 168, 158, 147, 141, 140, 136, 116, 88, 63, 47, 40, 33, 24, 15, 10, 9, 10, 15, 24, 37, 55, 90, 129, 153, 158, 152, 148, 152, 156, 147, 129, 108, 84, 61, 41, 26}
     Private Const TrafficDistributionMax As Integer = 212
 
@@ -24,10 +25,13 @@
     Private Const TRAFFICLIGHT_CROSSING_COEFFICIENT As Double = 1.0
     Private Const MINOR_UNEXPECTED_DELAY_LENGTH As Integer = 2
     Private Const MINOR_UNEXPECTED_DELAY_PERIOD As Integer = 2
-    Private Const MINOR_UNEXPECTED_DELAY_COEFFICIENT As Double = 4 / 3600 '4 times an hour at peak time
+    Private Const MINOR_UNEXPECTED_DELAY_COEFFICIENT As Double = 4 / (3600 / MINOR_UNEXPECTED_DELAY_PERIOD)
+    '4 times an hour per node => 0.2% of periods at peak time
+
     Private Const MAJOR_UNEXPECTED_DELAY_LENGTH As Integer = 30
     Private Const MAJOR_UNEXPECTED_DELAY_PERIOD As Integer = 30
-    Private Const MAJOR_UNEXPECTED_DELAY_COEFFICIENT As Double = 0.5 / 3600 '0.5 times an hour at peak time
+    Private Const MAJOR_UNEXPECTED_DELAY_COEFFICIENT As Double = 0.5 / (3600 / MAJOR_UNEXPECTED_DELAY_PERIOD)
+    '0.5 times an hour per node => 0.4% of periods at peak time (of which there are much fewer!)
 
     Public Function IsDelayedAtTime(ByVal NodeOrHopPosition As IPoint, ByVal Way As Way, ByVal Time As TimeSpan) As Boolean
         Dim Node As Node = TryCast(NodeOrHopPosition, Node)
@@ -111,7 +115,7 @@
             'If level crossing will make the vehicle stop for 120s, every 600s:
             '   The chance of being delayed is 120/600=0.2
             '   The average length of the delay will be 120/2=60
-            '   So the average delay is 60*0.2=30s
+            '   So the average delay is 60*0.2=12s
             Case RoadDelay.LEVEL_CROSSING
                 Return LEVEL_CROSSING_LENGTH ^ 2 / LEVEL_CROSSING_FREQ * 2
             Case RoadDelay.TRAFFIC_LIGHTS
