@@ -80,6 +80,12 @@
                                                            End Function)
         End If
 
+        Row("CumulativeDrivingDistance") = Agents.Sum(Function(x)
+                                                          Return x.TotalKMTravelled
+                                                      End Function)
+        Row("CumulativeDrivingHours") = Agents.Sum(Function(x)
+                                                       Return x.TotalDrivingTime
+                                                   End Function) / 3600
 
         Row("CumulativeCost") = NoticeBoard.FuelBill
         Row("CumulativeRevenue") = NoticeBoard.JobRevenue

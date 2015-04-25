@@ -271,6 +271,7 @@ Public Class OSMLoader
         Debug.WriteLine("All Nodes: " & Map.Nodes.Count)
         Debug.WriteLine("Connected Nodes: " & Map.ConnectedNodesGrid.Count)
         Debug.WriteLine("Ways: " & Map.Ways.Count)
+        Debug.WriteLine("Business nodes: " & Map.Businesses.Count)
 
         Return Map
     End Function

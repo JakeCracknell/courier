@@ -192,7 +192,9 @@
         If SelectionMode = MapSelectionMode.ROUTE_FROM Or SelectionMode = MapSelectionMode.ROUTE_TO Then
             Dim CC As New CoordinateConverter(Map.Bounds, picMap.Width, picMap.Height)
             Dim Node As Node = CC.GetNearestNodeFromPoint(MapMousePosition, Map.ConnectedNodesGrid)
-            SetPictureBox(DrawHighlightedNode(Node, MapMousePosition))
+            If Node IsNot Nothing Then
+                SetPictureBox(DrawHighlightedNode(Node, MapMousePosition))
+            End If
         End If
     End Sub
 
@@ -330,6 +332,9 @@
 
     Private Sub ViewStatisticsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewStatisticsToolStripMenuItem.Click
         frmStatistics.Show()
+        If AASimulation IsNot Nothing Then
+            frmStatistics.SetAASimulation(AASimulation)
+        End If
     End Sub
     Private Sub GridToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles GridToolStripMenuItem.Click
         MapGraphics.ConfigDrawGrid = GridToolStripMenuItem.Checked

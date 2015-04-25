@@ -8,7 +8,7 @@
         InitialiseAllModules()
         Select Case SimulationParameters.Dispatcher
             Case 0
-                NoticeBoard.SetDispatcher(If(Map.Businesses.Count > 10, New CityDispatcher(Map), New RuralDispatcher(Map)))
+                NoticeBoard.SetDispatcher(If(Map.Businesses.Count > 50, New CityDispatcher(Map), New RuralDispatcher(Map)))
             Case 1
                 NoticeBoard.SetDispatcher(New SingleBusinessDispatcher(Map))
         End Select

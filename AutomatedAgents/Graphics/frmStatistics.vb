@@ -35,23 +35,27 @@ Public Class frmStatistics
         End If
     End Sub
 
-    Sub RefreshChart() 
-            Dim Table As DataTable = AASimulation.Statistics.Table
+    Sub RefreshChart()
+        Dim Table As DataTable = AASimulation.Statistics.Table
 
-            Dim DataColumns As New List(Of DataColumn)
-            For Each ColumnIndex In clbDataSeries.CheckedIndices
-                DataColumns.Add(Table.Columns(ColumnIndex + 1))
-            Next
+        Dim DataColumns As New List(Of DataColumn)
+        For Each ColumnIndex In clbDataSeries.CheckedIndices
+            DataColumns.Add(Table.Columns(ColumnIndex + 1))
+        Next
 
-            chartSimulationStatistics.Series.Clear()
-            chartSimulationStatistics.DataSource = Table
+        chartSimulationStatistics.Series.Clear()
+        chartSimulationStatistics.DataSource = Table
 
-            For Each DC As DataColumn In DataColumns
-                Dim Series As New Series(DC.ColumnName)
-                Series.XValueMember = "Time"
-                Series.YValueMembers = DC.ColumnName
-                Series.ChartType = SeriesChartType.Line
-                chartSimulationStatistics.Series.Add(Series)
+        'Hourly interval if < 3 days, then daily.
+        chartSimulationStatistics.ChartAreas(0).AxisX.MajorGrid.Interval = 86400
+        chartSimulationStatistics.ChartAreas(0).AxisX.Interval = If(NoticeBoard.Time.TotalSeconds > 260000, 86400, 3600)
+
+        For Each DC As DataColumn In DataColumns
+            Dim Series As New Series(DC.ColumnName)
+            Series.XValueMember = "Time"
+            Series.YValueMembers = DC.ColumnName
+            Series.ChartType = SeriesChartType.FastLine
+            chartSimulationStatistics.Series.Add(Series)
         Next
 
         SyncLock Table

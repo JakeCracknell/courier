@@ -110,7 +110,10 @@ Partial Class frmStatistics
         '
         'chartSimulationStatistics
         '
+        ChartArea1.AxisX.MajorGrid.Interval = 86400.0R
         ChartArea1.AxisX.Minimum = 0.0R
+        ChartArea1.AxisX.MinorTickMark.Interval = Double.NaN
+        ChartArea1.AxisX.Title = "Simulation Time (seconds)"
         ChartArea1.Name = "ChartArea1"
         Me.chartSimulationStatistics.ChartAreas.Add(ChartArea1)
         Me.chartSimulationStatistics.Dock = System.Windows.Forms.DockStyle.Fill
