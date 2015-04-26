@@ -141,9 +141,9 @@
 
         'Starting from a given (or randomly chosen) node, run DFS and discover all connected nodes
         'that are reachable somehow from this node.
-        Dim RandomStartRow As NodesAdjacencyListRow = Rows(CentralStartingNode.ID)
-        DFSStack.Push(RandomStartRow)
-        VerifiedNodes.Add(RandomStartRow.NodeKey)
+        Dim StartRow As NodesAdjacencyListRow = Rows(CentralStartingNode.ID)
+        DFSStack.Push(StartRow)
+        VerifiedNodes.Add(StartRow.NodeKey)
         Do
             Dim CurrentRow As NodesAdjacencyListRow = DFSStack.Peek
             For Each AdjacentCell As NodesAdjacencyListCell In CurrentRow.Cells
@@ -167,6 +167,8 @@
 
         'For each node discovered, verify them using a DFS to any known verified node.
         'Remove any that cannot find its way. This sections out inescapable node clusters.
+        'Parallel.Foreach would require manual locking of all hashsets and did not bring
+        'better performance due to this overhead.
         For Each Node As Node In UnverifiedNodes
             If Not VerifiedNodes.Contains(Node) Then
                 'VerifiedNodes will be modified, as paths are found
