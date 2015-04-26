@@ -172,7 +172,7 @@
     <Compile Include="NodesAdjacencyList\NodesAdjacencyListCell.vb" />
     <Compile Include="NodesAdjacencyList\NodesAdjacencyListRow.vb" />
     <Compile Include="OSMData\OSMFileSystemManager.vb" />
-    <Compile Include="RouteFinding\Hop.vb" />
+    <Compile Include="Geography\Hop.vb" />
     <Compile Include="RouteFinding\IRouteFinder.vb" />
     <Compile Include="RouteFinding\RoutingUtils.vb" />
     <Compile Include="Simulation\SimulationParameters.vb" />

@@ -2,7 +2,7 @@
     Public Module Vehicles
         Public Const MILE_LENGTH_IN_KM As Double = 1.609344
         Public Const LITRES_TO_A_GALLON As Double = 3.785
-        Public Const OPTIMAL_KMH As Double = 86.24
+        Public Const OPTIMAL_KMH As Double = 86.242
 
         Public Enum Type
             CAR
