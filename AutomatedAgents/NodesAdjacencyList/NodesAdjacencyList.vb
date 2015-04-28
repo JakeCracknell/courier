@@ -121,16 +121,6 @@
         Return BestNode
     End Function
 
-    'Tests for a single hop link from Node1 to Node2. Cannot be one-way in opposite direction.
-    Function AreNodesLinked(ByVal Node1 As Node, ByVal Node2 As Node)
-        For Each Cell As NodesAdjacencyListCell In Rows(Node1.ID).Cells
-            If Cell.Node = Node2 Then
-                Return True
-            End If
-        Next
-        Return False
-    End Function
-
     Sub RemoveDisconnectedComponents(ByVal CentralStartingNode As Node)
         Dim t As Stopwatch = Stopwatch.StartNew
 

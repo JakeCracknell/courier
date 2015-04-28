@@ -176,7 +176,7 @@
     <Compile Include="RouteFinding\IRouteFinder.vb" />
     <Compile Include="RouteFinding\RoutingUtils.vb" />
     <Compile Include="Simulation\SimulationParameters.vb" />
-    <Compile Include="OSMData\StreetMap.vb" />
+    <Compile Include="Geography\StreetMap.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>

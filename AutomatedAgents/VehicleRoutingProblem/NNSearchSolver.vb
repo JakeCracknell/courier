@@ -242,10 +242,12 @@
         Dim BestCost As Double = Double.MaxValue
         Dim t As New Stopwatch
         t.Start()
+        Dim sols As Integer = 0
         Do
             Dim Solution As TSPSolution = FindRandomSolution()
             Dim Cost As Double = Solution.Cost(StartState)
             'Debug.WriteLine(Cost & " at " & t.ElapsedMilliseconds)
+            sols += 1
             If Cost < BestCost Then
                 BestCost = Cost
                 BestSolution = Solution
