@@ -55,7 +55,7 @@
         End Function
 
         Sub Tick()
-            Dim JobHasBeenGenerated As Boolean = DepotDispatcher.Tick OrElse Dispatcher.Tick()
+            Dim JobHasBeenGenerated As Boolean = DepotDispatcher.Tick() OrElse Dispatcher.Tick()
             Broadcaster.AwardJobs()
 
             For i = UnallocatedJobs.Count - 1 To 0 Step -1

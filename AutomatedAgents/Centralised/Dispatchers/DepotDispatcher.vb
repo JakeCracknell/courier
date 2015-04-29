@@ -3,7 +3,7 @@
 
     'Half of failed deliveries will be retried within 48 hours, so use Exp(1/48), which has a mean of 48.
     Private Const RETRY_TIME_LAMBDA As Double = 1 / 48
-    Private MAX_RETRY_TIME As Double = 48
+    Private MAX_RETRY_TIME As Double = 48 * Math.Log(2)
 
     Private PotentialJobs As New SortedList(Of TimeSpan, CourierJob)
 

@@ -34,7 +34,7 @@
         Me.New(PickupPosition, DeliveryPosition, PickupPosition.ToString, DeliveryPosition.ToString, _
                Math.Max(SimulationParameters.CubicMetresMin, ProbabilityDistributions.Exponential(SimulationParameters.PackageSizeLambda, RNG.R("simple_size").NextDouble)), _
                     NoticeBoard.Time.Add( _
-                    TimeSpan.FromMinutes(ProbabilityDistributions.Gaussian(RNG.R("simple_job_deadline"), SimulationParameters.DeadlineAverage))))
+                    TimeSpan.FromMinutes(ProbabilityDistributions.Gaussian(RNG.R("simple_job_deadline"), SimulationParameters.SimpleDeadlineAverage))))
     End Sub
 
     'These functions return the time taken to collect/deliver. If the customer

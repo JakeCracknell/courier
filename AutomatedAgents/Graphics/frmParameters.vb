@@ -9,8 +9,8 @@
         tbDispatchRate.Value = SimulationParameters.DispatchRateCoefficient * 100
         txtCubicMetres.Text = SimulationParameters.PackageSizeLambda
         tbCubicMetres.Value = SimulationParameters.PackageSizeLambda * 100
-        txtDeadlines.Text = SimulationParameters.DeadlineAverage
-        tbDeadlines.Value = SimulationParameters.DeadlineAverage
+        txtDeadlines.Text = SimulationParameters.SimpleDeadlineAverage
+        tbDeadlines.Value = SimulationParameters.SimpleDeadlineAverage
         txtFailedPickup.Text = SimulationParameters.ProbPickupFail
         tbFailedPickup.Value = SimulationParameters.ProbPickupFail * 100
         txtFailedDelivery.Text = SimulationParameters.ProbDeliveryFail
@@ -42,7 +42,7 @@
 
     Private Sub tbDeadlines_Scroll(sender As Object, e As EventArgs) Handles tbDeadlines.Scroll
         txtDeadlines.Text = tbDeadlines.Value
-        SimulationParameters.DeadlineAverage = tbDeadlines.Value
+        'SimulationParameters.SimpleDeadlineAverage = tbDeadlines.Value
     End Sub
     Private Sub tbCubicMetres_Scroll(sender As Object, e As EventArgs) Handles tbCubicMetres.Scroll
         txtCubicMetres.Text = tbCubicMetres.Value / 100
@@ -105,7 +105,7 @@
             Dim txtValue As Integer = CInt(txtDeadlines.Text)
             If txtValue >= tbDeadlines.Minimum And txtValue <= tbDeadlines.Maximum Then
                 tbDeadlines.Value = txtValue
-                SimulationParameters.DeadlineAverage = txtValue
+                'SimulationParameters.SimpleDeadlineAverage = txtValue
             End If
         End If
     End Sub

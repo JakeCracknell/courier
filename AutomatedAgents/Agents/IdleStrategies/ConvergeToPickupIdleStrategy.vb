@@ -86,7 +86,7 @@
 
 
         If Not Agent.Map.Bounds.Encloses(BestHopPosition) Then
-            'This happened once for Guernsey. Longitude was way off. When fixed, refactor above to use grid.
+            'This happened once for Guernsey. Longitude was way off. When fixed, refactor above to use grid. TODO!!!
             FindOptimalSleepingPosition()
         End If
 

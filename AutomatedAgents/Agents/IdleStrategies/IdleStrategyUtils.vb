@@ -11,7 +11,6 @@
     'If that route is impossible given current fuel restraints, route to the nearest point first.
     Public Function GetOptimalFuelRoute(ByVal Agent As Agent, ByVal EndPoint As HopPosition) As Route
         Dim Start As HopPosition = Agent.Plan.RoutePosition.GetPoint
-        Dim MidPoint As PointF = GetMidpointOfTwoPoints(Start, EndPoint)
         Dim FuelPoints As IOrderedEnumerable(Of Node) = Agent.Map.FuelPoints.OrderBy(Function(N)
                                                                                          Return HaversineDistance(Agent.Plan.RoutePosition.GetPoint, N) + HaversineDistance(N, EndPoint)
                                                                                      End Function)
