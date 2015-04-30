@@ -107,8 +107,10 @@
             Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
             Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(NoticeBoard.Time)
             Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(NoticeBoard.Time + Route1Time)
-            If NoticeBoard.Time + Agent.Plan.GetDiversionTimeEstimate + MinTime > _
-                JobToReview.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
+            If NoticeBoard.Time + Agent.Plan.GetDiversionTimeEstimate + MinTime + _
+                SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB + _
+                TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX) > _
+                JobToReview.Deadline Then
                 Continue For
             End If
             Dim JobValue As Double = Route2.GetCostForAgent(Agent) / Route1.GetCostForAgent(Agent)

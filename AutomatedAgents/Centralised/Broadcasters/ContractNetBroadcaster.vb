@@ -14,13 +14,13 @@
                                                                         End Sub)
     End Sub
 
-    Public Function ReallocateJobs(Owner As IContractor, RetractableJobs As List(Of CourierJob)) As List(Of CourierJob) Implements IBroadcaster.ReallocateJobs
+    Public Function ReallocateJobs(Owner As IContractor, ReallocatableJobs As List(Of CourierJob)) As List(Of CourierJob) Implements IBroadcaster.ReallocateJobs
         Dim OtherContractors As New List(Of ContractNetContractor)(AvailableContractors)
         OtherContractors.Remove(Owner)
 
         Dim OtherContractorsBids(OtherContractors.Count - 1) As Double
         Dim UnallocatedJobs As New List(Of CourierJob)
-        For Each Job As CourierJob In RetractableJobs
+        For Each Job As CourierJob In ReallocatableJobs
             Parallel.For(0, OtherContractors.Count, _
                             Sub(c)
                                 OtherContractorsBids(c) = OtherContractors(c).CNP5ImmediateBid(Job)

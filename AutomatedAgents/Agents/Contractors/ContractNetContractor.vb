@@ -53,6 +53,7 @@
                 End If
             Case ContractNetPolicy.CNP2
                 'Sum current route times and bid only if the job can be done by the deadline. Bid the cost of appending it to the end of its route.
+                'It will still bid if older jobs are goinjg to be delivered late. It only care sabout the new one :).
                 Dim TimeSum As TimeSpan = TimeSpan.Zero
                 For Each R As Route In Agent.Plan.Routes
                     TimeSum += R.GetEstimatedTime(NoticeBoard.Time + TimeSum) + SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB

@@ -33,7 +33,7 @@
     End Sub
 
     'Distance to travel based on speed of current way.
-    Public Function Move(ByVal Vehicle As Vehicles.Type, Optional ByVal SpeedCap As Double = SimulationParameters.MAX_POSSIBLE_SPEED_KMH) As Double
+    Public Function Move(Optional ByVal SpeedCap As Double = SimulationParameters.MAX_POSSIBLE_SPEED_KMH) As Double
         Dim Way As Way = Route.At(HopIndex).Way
         If Way IsNot Nothing Then
             Dim DistanceToTravel As Double = Math.Min(Way.GetSpeedAtTime(NoticeBoard.Time), SpeedCap) / 3600
@@ -44,8 +44,6 @@
             Return 0
         End If
     End Function
-
-    'Public Function MoveDistance
 
     Public Sub GetNextPosition(ByVal DistanceIncrementMetres As Double)
         If DistanceIncrementMetres = 0 Then

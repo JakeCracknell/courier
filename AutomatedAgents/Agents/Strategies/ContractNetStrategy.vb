@@ -109,24 +109,24 @@
 
     Function CNP5Contingency() As CourierPlan
         Dim NecessaryJobs As New List(Of CourierJob)
-        Dim RetractableJobs As New List(Of CourierJob)
+        Dim ReallocatableJobs As New List(Of CourierJob)
         For Each Job As CourierJob In Agent.Plan.GetCurrentJobs
             If Job.Status = JobStatus.PENDING_PICKUP Then
-                RetractableJobs.Add(Job)
+                ReallocatableJobs.Add(Job)
             ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
                 NecessaryJobs.Add(Job)
             End If
         Next
-        If RetractableJobs.Count > 0 Then
+        If ReallocatableJobs.Count > 0 Then
             'Order jobs by time left minus how long the route could take.
-            RetractableJobs = RetractableJobs.OrderBy(Function(Job)
-                                                          Return Job.Deadline - _
-                                                              Job.GetDirectRoute.GetEstimatedTime(NoticeBoard.Time)
-                                                      End Function).ToList
-            SimulationState.NewEvent(Agent.AgentID, LogMessages.CNP5JobsSentForTransfer(RetractableJobs.Count))
-            Dim JobsThatNoOtherAgentsCouldFulfil As List(Of CourierJob) = NoticeBoard.Broadcaster.ReallocateJobs(Contractor, RetractableJobs)
+            ReallocatableJobs = ReallocatableJobs.OrderBy(Function(Job)
+                                                              Return Job.Deadline - _
+                                                                  Job.GetDirectRoute.GetEstimatedTime(NoticeBoard.Time)
+                                                          End Function).ToList
+            SimulationState.NewEvent(Agent.AgentID, LogMessages.CNP5JobsSentForTransfer(ReallocatableJobs.Count))
+            Dim JobsThatNoOtherAgentsCouldFulfil As List(Of CourierJob) = NoticeBoard.Broadcaster.ReallocateJobs(Contractor, ReallocatableJobs)
             SimulationState.NewEvent(Agent.AgentID, LogMessages.CNP5JobTransferResult( _
-                  RetractableJobs.Count - JobsThatNoOtherAgentsCouldFulfil.Count, JobsThatNoOtherAgentsCouldFulfil.Count))
+                  ReallocatableJobs.Count - JobsThatNoOtherAgentsCouldFulfil.Count, JobsThatNoOtherAgentsCouldFulfil.Count))
             Agent.Plan.WayPoints.Clear()
             Agent.Plan.WayPoints.AddRange(WayPoint.CreateWayPointList(NecessaryJobs))
             Agent.Plan.WayPoints.AddRange(WayPoint.CreateWayPointList(JobsThatNoOtherAgentsCouldFulfil))
