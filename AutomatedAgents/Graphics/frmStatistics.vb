@@ -63,7 +63,7 @@ Public Class frmStatistics
         End SyncLock
     End Sub
 
-    Private Sub controlRefreshData_Event(sender As Object, e As EventArgs) Handles btnRefreshData.Click, clbDataSeries.Click, tmrStatisticsRefresh.Tick
+    Private Sub controlRefreshData_Event(sender As Object, e As EventArgs) Handles btnRefreshData.Click, tmrStatisticsRefresh.Tick
         If AASimulation IsNot Nothing Then
             RefreshSeriesList()
             RefreshChart()

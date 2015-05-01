@@ -57,7 +57,10 @@
         Sub Tick()
             Dim JobHasBeenGenerated As Boolean = DepotDispatcher.Tick() OrElse Dispatcher.Tick()
             Broadcaster.AwardJobs()
+            TidyJobs()
+        End Sub
 
+        Private Sub TidyJobs()
             For i = UnallocatedJobs.Count - 1 To 0 Step -1
                 Dim Job As CourierJob = UnallocatedJobs(i)
                 If Job.Status = JobStatus.CANCELLED OrElse Job.Deadline < Time Then
@@ -106,6 +109,5 @@
                 End If
             Next
         End Sub
-
     End Module
 End Namespace

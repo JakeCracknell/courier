@@ -1,6 +1,5 @@
 ﻿Namespace SimulationState
     Module SimulationState
-
         Structure LogEvent
             Implements IComparable(Of LogEvent)
 
