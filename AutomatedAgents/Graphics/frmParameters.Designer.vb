@@ -292,7 +292,7 @@ Partial Class frmParameters
         Me.tbAStarAccelerator.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tbAStarAccelerator.LargeChange = 1
         Me.tbAStarAccelerator.Location = New System.Drawing.Point(152, 255)
-        Me.tbAStarAccelerator.Maximum = 500
+        Me.tbAStarAccelerator.Maximum = 2000
         Me.tbAStarAccelerator.Minimum = 100
         Me.tbAStarAccelerator.Name = "tbAStarAccelerator"
         Me.tbAStarAccelerator.Size = New System.Drawing.Size(143, 22)

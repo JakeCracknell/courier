@@ -295,6 +295,11 @@
 
         For Each Agent As Agent In Agents
             DrawAgent(Agent, grOverlay)
+
+            If Agent.Plan.Routes.Count = 0 Then
+                Continue For
+            End If
+
             If ConfigDrawAgentRoutes = 0 Then ' Lines for jobs, not for driving route
                 Dim Brush As New SolidBrush(Agent.Color)
                 Dim RoutePen As New Pen(New SolidBrush(Agent.Color), 3)
@@ -329,15 +334,14 @@
                     LastPoint = Point
                 Next
             ElseIf ConfigDrawAgentRoutes = 2 Then 'Complex, hop by hop routes for whole plan
-                Dim RoutePen As New Pen(New SolidBrush(Agent.Color), 3)
-                Dim LastPoint As Point = CC.GetPoint(Agent.Plan.RoutePosition.GetPoint)
+                Dim PointRoute As New List(Of Point)
                 For Each Route As Route In Agent.Plan.Routes
                     For Each Hop As Hop In Route.GetHopList
-                        Dim FromPoint As Point = CC.GetPoint(Hop.FromPoint)
-                        Dim ToPoint As Point = CC.GetPoint(Hop.ToPoint)
-                        grOverlay.DrawLine(RoutePen, FromPoint, ToPoint)
+                        PointRoute.Add(CC.GetPoint(Hop.ToPoint))
                     Next
                 Next
+                Dim RoutePen As New Pen(New SolidBrush(Agent.Color), 3)
+                grOverlay.DrawLines(RoutePen, PointRoute.ToArray)
             End If
         Next
 

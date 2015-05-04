@@ -95,7 +95,8 @@
                                         AASimulation.LogStatistics()
                                     End If
 
-                                    If TickCounter Mod SimulationParameters.DisplayRefreshSpeed = 0 AndAlso Not PauseDisplayToolStripMenuItem.Checked Then
+                                    If TickCounter Mod SimulationParameters.DisplayRefreshSpeed = 0 AndAlso _
+                                        Not PauseDisplayToolStripMenuItem.Checked Then
                                         If SimulationStateChanged Then
                                             SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, AASimulation.Map))
                                             SimulationState.CacheAASimulationStatus(AASimulation)
@@ -126,9 +127,14 @@
         If AASimulation IsNot Nothing AndAlso AASimulation.Agents.Count > 0 Then
             frmAgentStatus.RefreshLists()
         End If
+
+        If KeepRefreshingRoute Then
+            FindAndDisplayRoute()
+        End If
     End Sub
 
     Private Sub CancelSimulation()
+        KeepRefreshingRoute = False
         If AASimulation IsNot Nothing Then
             SyncLock AASimulation
                 AASimulation = Nothing 'Cancels previous sims/playgrounds if any.
@@ -146,6 +152,7 @@
     Dim RouteFromNode As Node
     Dim RouteToNode As Node
     Dim MapMousePosition As Point
+    Dim KeepRefreshingRoute As Boolean = False
     Private Sub RouteFromToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RouteFromToolStripMenuItem.Click
         SelectionMode = MapSelectionMode.ROUTE_FROM
         RouteFromNode = Nothing
@@ -165,16 +172,7 @@
                         SelectionMode = MapSelectionMode.ROUTE_TO
                     End If
                 Case MapSelectionMode.ROUTE_TO
-                    RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.ConnectedNodesGrid)
-                    If Not RouteFromNode.Equals(RouteToNode) Then
-                        Dim RouteFinder As IRouteFinder = New AStarSearch(RouteFromNode, RouteToNode, Map.NodesAdjacencyList, RouteFindingMinimiser.DISTANCE)
-                        If RouteFinder.GetRoute() IsNot Nothing Then
-                            SetPictureBox(MapGraphics.DrawRoute(RouteFinder.GetRoute, RouteFinder.GetNodesSearched))
-                        Else
-                            SetPictureBox(MapGraphics.DrawQuestionMark(MapMousePosition))
-                        End If
-                        SelectionMode = MapSelectionMode.NONE
-                    End If
+                    FindAndDisplayRoute()
                 Case MapSelectionMode.AGENTS_ALL_ROUTE_TO
                     If AASimulation IsNot Nothing AndAlso AASimulation.Agents IsNot Nothing Then
                         SyncLock AASimulation
@@ -187,11 +185,29 @@
             End Select
         End If
     End Sub
+    Sub FindAndDisplayRoute()
+        If RouteFromNode IsNot Nothing Then
+            Dim CC As New CoordinateConverter(Map.Bounds, picMap.Width, picMap.Height)
+            RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.ConnectedNodesGrid)
+            If Not RouteFromNode.Equals(RouteToNode) Then
+                Dim RouteFinder As IRouteFinder = New AStarSearch(RouteFromNode, RouteToNode, _
+                                                                  Map.NodesAdjacencyList, _
+                                                                  SimulationParameters.RouteFindingMinimiser, _
+                                                                  TimeSpan.FromHours(12))
+                If RouteFinder.GetRoute() IsNot Nothing Then
+                    SetPictureBox(MapGraphics.DrawRoute(RouteFinder.GetRoute, RouteFinder.GetNodesSearched))
+                Else
+                    SetPictureBox(MapGraphics.DrawQuestionMark(MapMousePosition))
+                End If
+                SelectionMode = MapSelectionMode.NONE
+            End If
+        End If
 
+    End Sub
     'Highlights nodes on mouse over, if selection mode is on
     Private Sub picMap_MouseMove(sender As Object, e As MouseEventArgs) Handles picMap.MouseMove
-        MapMousePosition = e.Location
         If SelectionMode = MapSelectionMode.ROUTE_FROM Or SelectionMode = MapSelectionMode.ROUTE_TO Then
+            MapMousePosition = e.Location
             Dim CC As New CoordinateConverter(Map.Bounds, picMap.Width, picMap.Height)
             Dim Node As Node = CC.GetNearestNodeFromPoint(MapMousePosition, Map.ConnectedNodesGrid)
             If Node IsNot Nothing Then
@@ -408,5 +424,34 @@
     End Sub
     Private Sub SingleBusinessToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SingleBusinessToolStripMenuItem.Click
         SimulationParameters.Dispatcher = 1
+    End Sub
+
+    Private Sub DistanceToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DistanceToolStripMenuItem.Click
+        SimulationParameters.RouteFindingMinimiser = RouteFindingMinimiser.DISTANCE
+        FindAndDisplayRoute()
+    End Sub
+
+    Private Sub TimeWith8AMTrafficToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TimeWith8AMTrafficToolStripMenuItem.Click
+        SimulationParameters.RouteFindingMinimiser = RouteFindingMinimiser.TIME_WITH_TRAFFIC
+        FindAndDisplayRoute()
+    End Sub
+
+    Private Sub TimeWithoutTrafficToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TimeWithoutTrafficToolStripMenuItem.Click
+        SimulationParameters.RouteFindingMinimiser = RouteFindingMinimiser.TIME_NO_TRAFFIC
+        FindAndDisplayRoute()
+    End Sub
+
+    Private Sub FuelWith8AMTrafficToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FuelWith8AMTrafficToolStripMenuItem.Click
+        SimulationParameters.RouteFindingMinimiser = RouteFindingMinimiser.FUEL_WITH_TRAFFIC
+        FindAndDisplayRoute()
+    End Sub
+
+    Private Sub FuelWithoutTrafficToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FuelWithoutTrafficToolStripMenuItem.Click
+        SimulationParameters.RouteFindingMinimiser = RouteFindingMinimiser.FUEL_NO_TRAFFIC
+        FindAndDisplayRoute()
+    End Sub
+
+    Private Sub KeepRefreshingRouteToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles KeepRefreshingRouteToolStripMenuItem.Click
+        KeepRefreshingRoute = KeepRefreshingRouteToolStripMenuItem.Checked
     End Sub
 End Class

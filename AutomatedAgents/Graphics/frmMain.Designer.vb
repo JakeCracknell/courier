@@ -51,6 +51,9 @@ Partial Class frmMain
         Me.SelectFailurePointToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeliverToDepotToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeliverToPickupToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SelectDispatcherToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.GeneralToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SingleBusinessToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RouteTestingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RouteFromToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BenchmarkToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -76,14 +79,18 @@ Partial Class frmMain
         Me.ResetToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SpeedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewStatisticsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ViewConsoleToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.tmrRedraw = New System.Windows.Forms.Timer(Me.components)
         Me.picMap = New System.Windows.Forms.PictureBox()
         Me.tmrStatus = New System.Windows.Forms.Timer(Me.components)
         Me.bwSimulator = New System.ComponentModel.BackgroundWorker()
-        Me.ViewConsoleToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.SelectDispatcherToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.GeneralToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.SingleBusinessToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MinimiserToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DistanceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TimeWith8AMTrafficToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TimeWithoutTrafficToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.FuelWith8AMTrafficToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.FuelWithoutTrafficToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.KeepRefreshingRouteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.picMap, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -153,43 +160,43 @@ Partial Class frmMain
         'CNP1ToolStripMenuItem
         '
         Me.CNP1ToolStripMenuItem.Name = "CNP1ToolStripMenuItem"
-        Me.CNP1ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CNP1ToolStripMenuItem.Size = New System.Drawing.Size(143, 22)
         Me.CNP1ToolStripMenuItem.Text = "CNP1"
         '
         'CNP2ToolStripMenuItem
         '
         Me.CNP2ToolStripMenuItem.Name = "CNP2ToolStripMenuItem"
-        Me.CNP2ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CNP2ToolStripMenuItem.Size = New System.Drawing.Size(143, 22)
         Me.CNP2ToolStripMenuItem.Text = "CNP2"
         '
         'CNP3ToolStripMenuItem
         '
         Me.CNP3ToolStripMenuItem.Name = "CNP3ToolStripMenuItem"
-        Me.CNP3ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CNP3ToolStripMenuItem.Size = New System.Drawing.Size(143, 22)
         Me.CNP3ToolStripMenuItem.Text = "CNP3"
         '
         'CNP4ToolStripMenuItem
         '
         Me.CNP4ToolStripMenuItem.Name = "CNP4ToolStripMenuItem"
-        Me.CNP4ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CNP4ToolStripMenuItem.Size = New System.Drawing.Size(143, 22)
         Me.CNP4ToolStripMenuItem.Text = "CNP4"
         '
         'CNP5ToolStripMenuItem
         '
         Me.CNP5ToolStripMenuItem.Name = "CNP5ToolStripMenuItem"
-        Me.CNP5ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CNP5ToolStripMenuItem.Size = New System.Drawing.Size(143, 22)
         Me.CNP5ToolStripMenuItem.Text = "CNP5"
         '
         'FreeforallToolStripMenuItem
         '
         Me.FreeforallToolStripMenuItem.Name = "FreeforallToolStripMenuItem"
-        Me.FreeforallToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.FreeforallToolStripMenuItem.Size = New System.Drawing.Size(143, 22)
         Me.FreeforallToolStripMenuItem.Text = "Free-for-all"
         '
         'RoundRobinToolStripMenuItem
         '
         Me.RoundRobinToolStripMenuItem.Name = "RoundRobinToolStripMenuItem"
-        Me.RoundRobinToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.RoundRobinToolStripMenuItem.Size = New System.Drawing.Size(143, 22)
         Me.RoundRobinToolStripMenuItem.Text = "Round Robin"
         '
         'SelectIdleStrategyToolStripMenuItem
@@ -267,9 +274,28 @@ Partial Class frmMain
         Me.DeliverToPickupToolStripMenuItem.Size = New System.Drawing.Size(163, 22)
         Me.DeliverToPickupToolStripMenuItem.Text = "Deliver to Pickup"
         '
+        'SelectDispatcherToolStripMenuItem
+        '
+        Me.SelectDispatcherToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.GeneralToolStripMenuItem, Me.SingleBusinessToolStripMenuItem})
+        Me.SelectDispatcherToolStripMenuItem.Name = "SelectDispatcherToolStripMenuItem"
+        Me.SelectDispatcherToolStripMenuItem.Size = New System.Drawing.Size(174, 22)
+        Me.SelectDispatcherToolStripMenuItem.Text = "Select Dispatcher"
+        '
+        'GeneralToolStripMenuItem
+        '
+        Me.GeneralToolStripMenuItem.Name = "GeneralToolStripMenuItem"
+        Me.GeneralToolStripMenuItem.Size = New System.Drawing.Size(154, 22)
+        Me.GeneralToolStripMenuItem.Text = "General"
+        '
+        'SingleBusinessToolStripMenuItem
+        '
+        Me.SingleBusinessToolStripMenuItem.Name = "SingleBusinessToolStripMenuItem"
+        Me.SingleBusinessToolStripMenuItem.Size = New System.Drawing.Size(154, 22)
+        Me.SingleBusinessToolStripMenuItem.Text = "Single Business"
+        '
         'RouteTestingToolStripMenuItem
         '
-        Me.RouteTestingToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RouteFromToolStripMenuItem, Me.BenchmarkToolStripMenuItem})
+        Me.RouteTestingToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RouteFromToolStripMenuItem, Me.BenchmarkToolStripMenuItem, Me.MinimiserToolStripMenuItem, Me.KeepRefreshingRouteToolStripMenuItem})
         Me.RouteTestingToolStripMenuItem.Name = "RouteTestingToolStripMenuItem"
         Me.RouteTestingToolStripMenuItem.Size = New System.Drawing.Size(92, 20)
         Me.RouteTestingToolStripMenuItem.Text = "Route Testing"
@@ -442,6 +468,12 @@ Partial Class frmMain
         Me.ViewStatisticsToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
         Me.ViewStatisticsToolStripMenuItem.Text = "View Statistics..."
         '
+        'ViewConsoleToolStripMenuItem
+        '
+        Me.ViewConsoleToolStripMenuItem.Name = "ViewConsoleToolStripMenuItem"
+        Me.ViewConsoleToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
+        Me.ViewConsoleToolStripMenuItem.Text = "View Console..."
+        '
         'tmrRedraw
         '
         Me.tmrRedraw.Enabled = True
@@ -463,30 +495,49 @@ Partial Class frmMain
         'bwSimulator
         '
         '
-        'ViewConsoleToolStripMenuItem
+        'MinimiserToolStripMenuItem
         '
-        Me.ViewConsoleToolStripMenuItem.Name = "ViewConsoleToolStripMenuItem"
-        Me.ViewConsoleToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
-        Me.ViewConsoleToolStripMenuItem.Text = "View Console..."
+        Me.MinimiserToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DistanceToolStripMenuItem, Me.TimeWith8AMTrafficToolStripMenuItem, Me.TimeWithoutTrafficToolStripMenuItem, Me.FuelWith8AMTrafficToolStripMenuItem, Me.FuelWithoutTrafficToolStripMenuItem})
+        Me.MinimiserToolStripMenuItem.Name = "MinimiserToolStripMenuItem"
+        Me.MinimiserToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.MinimiserToolStripMenuItem.Text = "Minimiser"
         '
-        'SelectDispatcherToolStripMenuItem
+        'DistanceToolStripMenuItem
         '
-        Me.SelectDispatcherToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.GeneralToolStripMenuItem, Me.SingleBusinessToolStripMenuItem})
-        Me.SelectDispatcherToolStripMenuItem.Name = "SelectDispatcherToolStripMenuItem"
-        Me.SelectDispatcherToolStripMenuItem.Size = New System.Drawing.Size(174, 22)
-        Me.SelectDispatcherToolStripMenuItem.Text = "Select Dispatcher"
+        Me.DistanceToolStripMenuItem.Name = "DistanceToolStripMenuItem"
+        Me.DistanceToolStripMenuItem.Size = New System.Drawing.Size(189, 22)
+        Me.DistanceToolStripMenuItem.Text = "Distance"
         '
-        'GeneralToolStripMenuItem
+        'TimeWith8AMTrafficToolStripMenuItem
         '
-        Me.GeneralToolStripMenuItem.Name = "GeneralToolStripMenuItem"
-        Me.GeneralToolStripMenuItem.Size = New System.Drawing.Size(154, 22)
-        Me.GeneralToolStripMenuItem.Text = "General"
+        Me.TimeWith8AMTrafficToolStripMenuItem.Name = "TimeWith8AMTrafficToolStripMenuItem"
+        Me.TimeWith8AMTrafficToolStripMenuItem.Size = New System.Drawing.Size(189, 22)
+        Me.TimeWith8AMTrafficToolStripMenuItem.Text = "Time with 8AM traffic"
         '
-        'SingleBusinessToolStripMenuItem
+        'TimeWithoutTrafficToolStripMenuItem
         '
-        Me.SingleBusinessToolStripMenuItem.Name = "SingleBusinessToolStripMenuItem"
-        Me.SingleBusinessToolStripMenuItem.Size = New System.Drawing.Size(154, 22)
-        Me.SingleBusinessToolStripMenuItem.Text = "Single Business"
+        Me.TimeWithoutTrafficToolStripMenuItem.Name = "TimeWithoutTrafficToolStripMenuItem"
+        Me.TimeWithoutTrafficToolStripMenuItem.Size = New System.Drawing.Size(189, 22)
+        Me.TimeWithoutTrafficToolStripMenuItem.Text = "Time without traffic"
+        '
+        'FuelWith8AMTrafficToolStripMenuItem
+        '
+        Me.FuelWith8AMTrafficToolStripMenuItem.Name = "FuelWith8AMTrafficToolStripMenuItem"
+        Me.FuelWith8AMTrafficToolStripMenuItem.Size = New System.Drawing.Size(189, 22)
+        Me.FuelWith8AMTrafficToolStripMenuItem.Text = "Fuel with 8AM traffic"
+        '
+        'FuelWithoutTrafficToolStripMenuItem
+        '
+        Me.FuelWithoutTrafficToolStripMenuItem.Name = "FuelWithoutTrafficToolStripMenuItem"
+        Me.FuelWithoutTrafficToolStripMenuItem.Size = New System.Drawing.Size(189, 22)
+        Me.FuelWithoutTrafficToolStripMenuItem.Text = "Fuel without traffic"
+        '
+        'KeepRefreshingRouteToolStripMenuItem
+        '
+        Me.KeepRefreshingRouteToolStripMenuItem.CheckOnClick = True
+        Me.KeepRefreshingRouteToolStripMenuItem.Name = "KeepRefreshingRouteToolStripMenuItem"
+        Me.KeepRefreshingRouteToolStripMenuItem.Size = New System.Drawing.Size(193, 22)
+        Me.KeepRefreshingRouteToolStripMenuItem.Text = "Keep Refreshing Route"
         '
         'frmMain
         '
@@ -569,5 +620,12 @@ Partial Class frmMain
     Friend WithEvents SelectDispatcherToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents GeneralToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents SingleBusinessToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents MinimiserToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents DistanceToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents TimeWith8AMTrafficToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents TimeWithoutTrafficToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents FuelWith8AMTrafficToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents FuelWithoutTrafficToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents KeepRefreshingRouteToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class
