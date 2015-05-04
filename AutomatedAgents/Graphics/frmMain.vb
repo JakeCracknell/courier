@@ -9,7 +9,7 @@
 
     'On form load, add menu items to load each som file, spawn agents.
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Randomize()
+        RNG.Initialise()
         Threading.Thread.CurrentThread.Priority = Threading.ThreadPriority.Highest
         bwSimulator.RunWorkerAsync()
         For Each File As String In OSMFileSystemManager.GetAllFilenames()
@@ -160,8 +160,10 @@
                     Exit Sub
                 Case MapSelectionMode.ROUTE_FROM
                     RouteFromNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.ConnectedNodesGrid)
-                    SetPictureBox(MapGraphics.DrawRouteStart(RouteFromNode))
-                    SelectionMode = MapSelectionMode.ROUTE_TO
+                    If RouteFromNode IsNot Nothing Then
+                        SetPictureBox(MapGraphics.DrawRouteStart(RouteFromNode))
+                        SelectionMode = MapSelectionMode.ROUTE_TO
+                    End If
                 Case MapSelectionMode.ROUTE_TO
                     RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.ConnectedNodesGrid)
                     If Not RouteFromNode.Equals(RouteToNode) Then
