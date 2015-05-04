@@ -34,7 +34,7 @@
             TotalCompletedJobs += 1
             SetRouteTo(Map.NodesAdjacencyList.GetRandomPoint)
         Else
-            Dim DistanceTravelled As Double = Plan.RoutePosition.Move(VehicleType)
+            Dim DistanceTravelled As Double = Plan.RoutePosition.Move()
             TotalKMTravelled += DistanceTravelled
             DepleteFuel(DistanceTravelled)
             CurrentSpeedKMH = Plan.RoutePosition.GetCurrentWay.GetSpeedAtTime(NoticeBoard.Time)

@@ -3,7 +3,7 @@
     Private Const FUEL_TANK_FULL_THRESHOLD As Double = 0.95
     Private Const FUEL_TANK_LOW_THRESHOLD As Double = 0.05
     Private Const START_IN_RANDOM_POSITION As Boolean = False
-    Private SpeedCap As Double
+    Private SpeedCap As Double = SimulationParameters.MAX_POSSIBLE_SPEED_KMH
 
     Public Const RouteFindingMinimiser As RouteFindingMinimiser = RouteFindingMinimiser.DISTANCE
     Public ReadOnly AgentID As Integer
