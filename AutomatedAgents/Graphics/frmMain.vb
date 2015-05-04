@@ -135,6 +135,8 @@
 
     Private Sub CancelSimulation()
         KeepRefreshingRoute = False
+        KeepRefreshingRouteToolStripMenuItem.Checked = False
+
         If AASimulation IsNot Nothing Then
             SyncLock AASimulation
                 AASimulation = Nothing 'Cancels previous sims/playgrounds if any.
@@ -332,12 +334,12 @@
     Private Sub JobViewToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles JobViewToolStripMenuItem.Click
         MapGraphics.ConfigDrawAgentRoutes = If(JobViewToolStripMenuItem.Checked, 0, -1)
         LineViewToolStripMenuItem.Checked = False
-        RouteFromToolStripMenuItem.Checked = False
+        RouteViewToolStripMenuItem.Checked = False
     End Sub
     Private Sub LineViewToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LineViewToolStripMenuItem.Click
         MapGraphics.ConfigDrawAgentRoutes = If(LineViewToolStripMenuItem.Checked, 1, -1)
         JobViewToolStripMenuItem.Checked = False
-        RouteFromToolStripMenuItem.Checked = False
+        RouteViewToolStripMenuItem.Checked = False
     End Sub
     Private Sub RouteViewToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RouteViewToolStripMenuItem.Click
         MapGraphics.ConfigDrawAgentRoutes = If(RouteViewToolStripMenuItem.Checked, 2, -1)

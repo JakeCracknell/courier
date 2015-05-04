@@ -5,7 +5,7 @@
     Private Const SPECIAL_NODE_DRAW_SIZE_THIN As Integer = 3
     Private Const SPECIAL_NODE_DRAW_SIZE_THICK As Integer = 5
     Private Const TRAFFIC_WAY_THICKNESS As Integer = 5
-    Private OVERLAY_FONT As New Font("Courier New", 12)
+    Private OVERLAY_FONT As New Font("TimesNewRoman", 12)
     Private ERROR_FONT As New Font("TimesNewRoman", 36, FontStyle.Bold)
     Private DEPOT_FONT As New Font("TimesNewRoman", 7)
     Private CENTRED_STRING_FORMAT As New StringFormat With _
@@ -211,8 +211,10 @@
     End Function
 
     Sub DrawTextOnBox(ByVal Text As String, ByVal Point As Point, ByVal gr As Graphics)
-        gr.DrawString("".PadRight(Text.Length, "█"), OVERLAY_FONT, Brushes.White, Point)
-        gr.DrawString(Text, OVERLAY_FONT, Brushes.Black, Point)
+        Dim SizeF As SizeF = gr.MeasureString(Text, OVERLAY_FONT)
+        Dim XStart As Integer = If(Point.X + SizeF.Width > Width, Width - SizeF.Width, Point.X)
+        gr.FillRectangle(Brushes.White, XStart, Point.Y, SizeF.Width, SizeF.Height)
+        gr.DrawString(Text, OVERLAY_FONT, Brushes.Black, XStart, Point.Y)
     End Sub
 
     Function DrawRouteStart(ByVal Point As IPoint) As Image
