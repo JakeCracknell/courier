@@ -136,6 +136,7 @@
     Private Sub CancelSimulation()
         KeepRefreshingRoute = False
         KeepRefreshingRouteToolStripMenuItem.Checked = False
+        RouteFromNode = Nothing
 
         If AASimulation IsNot Nothing Then
             SyncLock AASimulation
@@ -197,7 +198,7 @@
                 Dim RouteFinder As IRouteFinder = New AStarSearch(RouteFromNode, RouteToNode, _
                                                                   Map.NodesAdjacencyList, _
                                                                   SimulationParameters.RouteFindingMinimiser, _
-                                                                  TimeSpan.FromHours(12))
+                                                                  TimeSpan.FromHours(8))
                 If RouteFinder.GetRoute() IsNot Nothing Then
                     SetPictureBox(MapGraphics.DrawRoute(RouteFinder.GetRoute, RouteFinder.GetNodesSearched))
                 Else

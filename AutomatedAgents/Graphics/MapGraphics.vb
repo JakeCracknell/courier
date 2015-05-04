@@ -10,7 +10,8 @@
     Private DEPOT_FONT As New Font("TimesNewRoman", 7)
     Private CENTRED_STRING_FORMAT As New StringFormat With _
         {.LineAlignment = StringAlignment.Center, .Alignment = StringAlignment.Center}
-    Private ROUTE_PEN As New Pen(New SolidBrush(Color.Black), 3)
+    Private ROUTE_PEN_OUTER As New Pen(New SolidBrush(Color.FromArgb(128, Color.Black)), 10)
+    Private ROUTE_PEN_INNER As New Pen(New SolidBrush(Color.Gold), 5)
     Private ROAD_THIN_PEN As New Pen(New SolidBrush(Color.Black), 1)
     Private ROAD_THICK_PEN_OUTER As New Pen(New SolidBrush(Color.Black), 5)
     Private ROAD_THICK_PEN_INNER_TWOWAY As New Pen(New SolidBrush(Color.White), 3)
@@ -152,7 +153,6 @@
         gr.DrawRectangle(LANDMARK_BORDER_PEN, DrawPoint.X - Len2, _
                          DrawPoint.Y - Len2, _
                          LANDMARK_NODE_DRAW_SIZE, LANDMARK_NODE_DRAW_SIZE)
-        DrawPoint.Offset(0, 0)
         gr.DrawString(Character, DEPOT_FONT, Brushes.Black, DrawPoint, CENTRED_STRING_FORMAT)
     End Sub
 
@@ -214,6 +214,7 @@
         Dim SizeF As SizeF = gr.MeasureString(Text, OVERLAY_FONT)
         Dim XStart As Integer = If(Point.X + SizeF.Width > Width, Width - SizeF.Width, Point.X)
         gr.FillRectangle(Brushes.White, XStart, Point.Y, SizeF.Width, SizeF.Height)
+        gr.DrawRectangle(Pens.Black, XStart, Point.Y, SizeF.Width, SizeF.Height)
         gr.DrawString(Text, OVERLAY_FONT, Brushes.Black, XStart, Point.Y)
     End Sub
 
@@ -228,13 +229,13 @@
         Dim grOverlay As Graphics = Graphics.FromImage(MapBitmapOverlay)
 
         Dim RouteFromPoint As IPoint = Route.GetStartPoint
-        Dim NodePoint As Point = CC.GetPoint(RouteFromPoint)
+        Dim FromNodePoint As Point = CC.GetPoint(RouteFromPoint)
         grOverlay.Clear(Color.Transparent)
 
-        DrawNodeRectangle(NodePoint, grOverlay)
-        DrawTextOnBox("FROM", NodePoint, grOverlay)
+        DrawNodeRectangle(FromNodePoint, grOverlay)
+        DrawTextOnBox("FROM", FromNodePoint, grOverlay)
 
-        If Route.HopCount > 0 Then
+        If Route.HopCount > 1 Then
             If NodesSearched IsNot Nothing Then
                 For i = 0 To NodesSearched.Count - 1
                     Dim Point As Point = CC.GetPoint(NodesSearched(i))
@@ -244,22 +245,32 @@
             End If
 
             Dim RouteToNode = Route.GetEndPoint
-            NodePoint = CC.GetPoint(RouteToNode)
-            DrawNodeRectangle(NodePoint, grOverlay)
+            Dim ToNodePoint = CC.GetPoint(RouteToNode)
+            DrawNodeRectangle(ToNodePoint, grOverlay)
 
             For Each Hop As Hop In Route.GetHopList()
                 Dim FromPoint As Point = CC.GetPoint(Hop.FromPoint)
                 Dim ToPoint As Point = CC.GetPoint(Hop.ToPoint)
-                grOverlay.DrawLine(ROUTE_PEN, FromPoint, ToPoint)
+                grOverlay.DrawLine(ROUTE_PEN_OUTER, FromPoint, ToPoint)
+                grOverlay.DrawLine(ROUTE_PEN_INNER, FromPoint, ToPoint)
             Next
+
+            Dim Len2 As Integer = LANDMARK_NODE_DRAW_SIZE \ 2
+            grOverlay.FillRectangle(Brushes.Black, FromNodePoint.X - Len2, _
+                                         FromNodePoint.Y - Len2, _
+                                         LANDMARK_NODE_DRAW_SIZE, LANDMARK_NODE_DRAW_SIZE)
+            grOverlay.FillRectangle(Brushes.Black, ToNodePoint.X - Len2, _
+                                         ToNodePoint.Y - Len2, _
+                                         LANDMARK_NODE_DRAW_SIZE, LANDMARK_NODE_DRAW_SIZE)
+
+            DrawTextOnBox("FROM", FromNodePoint, grOverlay)
 
             Dim ToLabel As String = String.Format(ROUTE_TO_LABEL_FORMAT, Route.HopCount, _
                     Math.Round(Route.GetKM, 1), Math.Round(Route.GetHoursWithoutTraffic * 60, 1), _
                     Math.Round(Route.GetEstimatedHours() * 60, 1), _
-                    Math.Round(Route.GetOptimalFuelUsageWithoutTraffic(), 5), _
-                    Math.Round(Route.GetOptimalFuelUsageWithTraffic(), 5))
-            DrawTextOnBox(ToLabel, NodePoint, grOverlay)
-
+                    Math.Round(Route.GetOptimalFuelUsageWithoutTraffic(), 2), _
+                    Math.Round(Route.GetOptimalFuelUsageWithTraffic(), 2))
+            DrawTextOnBox(ToLabel, ToNodePoint, grOverlay)
 
         End If
 
