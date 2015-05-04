@@ -40,17 +40,29 @@
     End Function
 
     Public Function GetOptimalFuelUsage(Optional ByVal VehicleType As Vehicles.Type = Vehicles.Type.CAR) As Double
-        Dim FuelAndTime As Tuple(Of Double, Double) = Vehicles.OptimalFuelUsageAndTime(Distance, Way.GetSpeedLimit(), VehicleType)
-        Return FuelAndTime.Item1
+        If Way IsNot Nothing Then
+            Dim FuelAndTime As Tuple(Of Double, Double) = Vehicles.OptimalFuelUsageAndTime(Distance, Way.GetSpeedLimit(), VehicleType)
+            Return FuelAndTime.Item1
+        Else
+            Return 0
+        End If
     End Function
 
     Public Function GetOptimalFuelUsageAtTime(ByVal Time As TimeSpan, Optional ByVal VehicleType As Vehicles.Type = Vehicles.Type.CAR) As Double
-        Dim FuelAndTime As Tuple(Of Double, Double) = Vehicles.OptimalFuelUsageAndTime(Distance, Way.GetSpeedAtTime(Time), VehicleType)
-        Return FuelAndTime.Item1
+        If Way IsNot Nothing Then
+            Dim FuelAndTime As Tuple(Of Double, Double) = Vehicles.OptimalFuelUsageAndTime(Distance, Way.GetSpeedAtTime(Time), VehicleType)
+            Return FuelAndTime.Item1
+        Else
+            Return 0
+        End If
     End Function
     Public Function GetEstimatedTravelTimeWithOptimalFuelUsage(ByVal Time As TimeSpan, Optional ByVal VehicleType As Vehicles.Type = Vehicles.Type.CAR) As Double
-        Dim FuelAndTime As Tuple(Of Double, Double) = Vehicles.OptimalFuelUsageAndTime(Distance, Way.GetSpeedAtTime(Time), VehicleType)
-        Return FuelAndTime.Item2
+        If Way IsNot Nothing Then
+            Dim FuelAndTime As Tuple(Of Double, Double) = Vehicles.OptimalFuelUsageAndTime(Distance, Way.GetSpeedAtTime(Time), VehicleType)
+            Return FuelAndTime.Item2
+        Else
+            Return 0
+        End If
     End Function
 
     Public Overrides Function Equals(ByVal obj As Object) As Boolean

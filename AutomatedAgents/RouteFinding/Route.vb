@@ -96,21 +96,21 @@ Public Class Route
     End Function
 
 
-    Public Function GetOptimalFuelUsageWithoutTraffic(ByVal VehicleSize As Vehicles.Type) As Double
+    Public Function GetOptimalFuelUsageWithoutTraffic(Optional ByVal VehicleSize As Vehicles.Type = Vehicles.Type.CAR) As Double
         Dim TotalLitres As Double = 0
         Dim WorkingTime As TimeSpan = StartTime
         For Each Hop As Hop In Hops
-            TotalLitres += Hop.GetOptimalFuelUsageAtTime(WorkingTime, VehicleSize)
-            WorkingTime += TimeSpan.FromHours(Hop.GetEstimatedTravelTimeWithOptimalFuelUsage(WorkingTime, VehicleSize))
+            TotalLitres += Hop.GetOptimalFuelUsage(VehicleSize)
+            WorkingTime += TimeSpan.FromSeconds(Hop.GetEstimatedTravelTimeWithOptimalFuelUsage(WorkingTime, VehicleSize))
         Next
         Return TotalLitres
     End Function
-    Public Function GetOptimalFuelUsageWithTraffic(ByVal VehicleSize As Vehicles.Type) As Double
+    Public Function GetOptimalFuelUsageWithTraffic(Optional ByVal VehicleSize As Vehicles.Type = Vehicles.Type.CAR) As Double
         Dim TotalLitres As Double = 0
         Dim WorkingTime As TimeSpan = StartTime
         For Each Hop As Hop In Hops
             TotalLitres += Hop.GetOptimalFuelUsageAtTime(WorkingTime)
-            WorkingTime += TimeSpan.FromHours(Hop.GetEstimatedTravelTimeWithOptimalFuelUsage(WorkingTime, VehicleSize))
+            WorkingTime += TimeSpan.FromSeconds(Hop.GetEstimatedTravelTimeWithOptimalFuelUsage(WorkingTime, VehicleSize))
         Next
         Return TotalLitres
     End Function
