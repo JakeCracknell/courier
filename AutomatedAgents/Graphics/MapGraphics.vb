@@ -121,7 +121,7 @@
         Return MapBitmapOriginal.Clone
     End Function
 
-    Sub DrawTriangle(ByVal gr As Graphics, ByVal Point As Point, ByVal Upwards As Boolean)
+    Sub DrawTriangle(ByVal gr As Graphics, ByVal Point As Point, ByVal Color As Color, ByVal Upwards As Boolean)
         Dim y1 As Integer = Point.Y - AGENT_DRAW_SIZE \ 2
         Dim y2 As Integer = Point.Y + AGENT_DRAW_SIZE \ 2
         Dim x1 As Integer = Point.X - AGENT_DRAW_SIZE \ 2
@@ -139,7 +139,7 @@
 
         End If
         gp.CloseFigure()
-        gr.FillPath(Brushes.Red, gp)
+        gr.FillPath(New SolidBrush(Color), gp)
     End Sub
 
     Sub DrawLandmark(ByVal gr As Graphics, ByVal DrawPoint As Point, ByVal Character As Char, ByVal Brush As Brush)
@@ -159,10 +159,16 @@
         If Agent.Plan.RoutePosition IsNot Nothing Then
             Dim CurrentPoint As Point = CC.GetPoint(Agent.Plan.RoutePosition.GetPoint)
             Dim Brush As New SolidBrush(Agent.Color)
-            gr.FillPie(Brush, CInt(CurrentPoint.X - AGENT_DRAW_SIZE / 2), _
-                           CInt(CurrentPoint.Y - AGENT_DRAW_SIZE / 2), _
-                           AGENT_DRAW_SIZE, AGENT_DRAW_SIZE, 0, _
-                           CSng(Agent.Delayer.GetPercentage * 360))
+            Dim Rectangle As New Rectangle(CInt(CurrentPoint.X - AGENT_DRAW_SIZE / 2), _
+                               CInt(CurrentPoint.Y - AGENT_DRAW_SIZE / 2), _
+                               AGENT_DRAW_SIZE, AGENT_DRAW_SIZE)
+            If Agent.Delayer.IsWaiting Then             
+                gr.DrawEllipse(New Pen(Brush), Rectangle)
+                gr.FillPie(Brush, Rectangle, 0, CSng(Agent.Delayer.GetPercentage * 360))
+            Else
+                gr.FillEllipse(Brush, Rectangle)
+            End If
+
 
             If Agent.Plan.RoutePosition.RoadDelay Then
                 gr.FillRectangle(New SolidBrush(Color.FromArgb(Agent.Color.ToArgb Xor &HFFFFFF)), CurrentPoint.X - 2, CurrentPoint.Y - 2, 4, 4)
@@ -297,7 +303,7 @@
                 HalfRoutePen.DashCap = Drawing2D.DashCap.Triangle
                 For Each WP As WayPoint In Agent.Plan.WayPoints
                     Dim Point As Point = CC.GetPoint(WP.Position)
-                    DrawTriangle(grOverlay, Point, WP.VolumeDelta < 0)
+                    DrawTriangle(grOverlay, Point, Agent.Color, WP.VolumeDelta < 0)
                     If WP.Predecessor IsNot Nothing Then
                         Dim FromPoint As Point = CC.GetPoint(WP.Predecessor.Position)
                         If WP.Job.Status = JobStatus.PENDING_PICKUP Then
