@@ -23,6 +23,7 @@
     Private LANDMARK_BORDER_PEN As New Pen(Brushes.Black, 2)
     Private FUEL_LANDMARK_BRUSH As Brush = Brushes.White
     Private DEPOT_LANDMARK_BRUSH As Brush = Brushes.LightPink
+    Private WAYPOINT_BRUSH As Brush = Brushes.Black
 
     Private Const ROUTE_TO_LABEL_FORMAT As String = "TO ({0} hops, {1} km, {2} - {3} min)"
 
@@ -121,7 +122,7 @@
         Return MapBitmapOriginal.Clone
     End Function
 
-    Sub DrawTriangle(ByVal gr As Graphics, ByVal Point As Point, ByVal Color As Color, ByVal Upwards As Boolean)
+    Sub DrawTriangle(ByVal gr As Graphics, ByVal Point As Point, ByVal Upwards As Boolean)
         Dim y1 As Integer = Point.Y - AGENT_DRAW_SIZE \ 2
         Dim y2 As Integer = Point.Y + AGENT_DRAW_SIZE \ 2
         Dim x1 As Integer = Point.X - AGENT_DRAW_SIZE \ 2
@@ -139,7 +140,7 @@
 
         End If
         gp.CloseFigure()
-        gr.FillPath(New SolidBrush(Color), gp)
+        gr.FillPath(WAYPOINT_BRUSH, gp)
     End Sub
 
     Sub DrawLandmark(ByVal gr As Graphics, ByVal DrawPoint As Point, ByVal Character As Char, ByVal Brush As Brush)
@@ -303,7 +304,7 @@
                 HalfRoutePen.DashCap = Drawing2D.DashCap.Triangle
                 For Each WP As WayPoint In Agent.Plan.WayPoints
                     Dim Point As Point = CC.GetPoint(WP.Position)
-                    DrawTriangle(grOverlay, Point, Agent.Color, WP.VolumeDelta < 0)
+                    DrawTriangle(grOverlay, Point, WP.VolumeDelta < 0)
                     If WP.Predecessor IsNot Nothing Then
                         Dim FromPoint As Point = CC.GetPoint(WP.Predecessor.Position)
                         If WP.Job.Status = JobStatus.PENDING_PICKUP Then
