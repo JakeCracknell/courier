@@ -128,7 +128,7 @@
             frmAgentStatus.RefreshLists()
         End If
 
-        If KeepRefreshingRoute Then
+        If KeepRefreshingRoute AndAlso LastAStarEpsilon <> SimulationParameters.AStarAccelerator Then
             FindAndDisplayRoute()
         End If
     End Sub
@@ -153,6 +153,7 @@
     Dim RouteToNode As Node
     Dim MapMousePosition As Point
     Dim KeepRefreshingRoute As Boolean = False
+    Dim LastAStarEpsilon As Double
     Private Sub RouteFromToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RouteFromToolStripMenuItem.Click
         SelectionMode = MapSelectionMode.ROUTE_FROM
         RouteFromNode = Nothing
@@ -187,6 +188,7 @@
     End Sub
     Sub FindAndDisplayRoute()
         If RouteFromNode IsNot Nothing Then
+            LastAStarEpsilon = SimulationParameters.AStarAccelerator
             Dim CC As New CoordinateConverter(Map.Bounds, picMap.Width, picMap.Height)
             RouteToNode = CC.GetNearestNodeFromPoint(MapMousePosition, Map.ConnectedNodesGrid)
             If Not RouteFromNode.Equals(RouteToNode) Then

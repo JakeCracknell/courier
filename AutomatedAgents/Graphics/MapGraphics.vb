@@ -5,12 +5,12 @@
     Private Const SPECIAL_NODE_DRAW_SIZE_THIN As Integer = 3
     Private Const SPECIAL_NODE_DRAW_SIZE_THICK As Integer = 5
     Private Const TRAFFIC_WAY_THICKNESS As Integer = 5
-    Private OVERLAY_FONT As New Font("TimesNewRoman", 12)
+    Private OVERLAY_FONT As New Font("Courier New", 12)
     Private ERROR_FONT As New Font("TimesNewRoman", 36, FontStyle.Bold)
     Private DEPOT_FONT As New Font("TimesNewRoman", 7)
     Private CENTRED_STRING_FORMAT As New StringFormat With _
         {.LineAlignment = StringAlignment.Center, .Alignment = StringAlignment.Center}
-    Private ROUTE_PEN As New Pen(New SolidBrush(Color.Gold), 3)
+    Private ROUTE_PEN As New Pen(New SolidBrush(Color.Black), 3)
     Private ROAD_THIN_PEN As New Pen(New SolidBrush(Color.Black), 1)
     Private ROAD_THICK_PEN_OUTER As New Pen(New SolidBrush(Color.Black), 5)
     Private ROAD_THICK_PEN_INNER_TWOWAY As New Pen(New SolidBrush(Color.White), 3)
@@ -25,7 +25,7 @@
     Private DEPOT_LANDMARK_BRUSH As Brush = Brushes.LightPink
     Private WAYPOINT_BRUSH As Brush = Brushes.Black
 
-    Private Const ROUTE_TO_LABEL_FORMAT As String = "TO ({0} hops, {1} km, {2} - {3} min)"
+    Private Const ROUTE_TO_LABEL_FORMAT As String = "TO ({0} hops, {1} km, {2}-{3} min, {4}-{5} L)"
 
 
     Private MapBitmapOriginal As Bitmap
@@ -210,6 +210,11 @@
         Return MapBitmapCopy
     End Function
 
+    Sub DrawTextOnBox(ByVal Text As String, ByVal Point As Point, ByVal gr As Graphics)
+        gr.DrawString("".PadRight(Text.Length, "█"), OVERLAY_FONT, Brushes.White, Point)
+        gr.DrawString(Text, OVERLAY_FONT, Brushes.Black, Point)
+    End Sub
+
     Function DrawRouteStart(ByVal Point As IPoint) As Image
         Return DrawRoute(New Route(Point), Nothing)
     End Function
@@ -225,13 +230,14 @@
         grOverlay.Clear(Color.Transparent)
 
         DrawNodeRectangle(NodePoint, grOverlay)
-        grOverlay.DrawString("FROM", OVERLAY_FONT, Brushes.Black, NodePoint)
+        DrawTextOnBox("FROM", NodePoint, grOverlay)
 
         If Route.HopCount > 0 Then
             If NodesSearched IsNot Nothing Then
-                For Each N As Node In NodesSearched
-                    Dim Point As Point = CC.GetPoint(N)
-                    grOverlay.FillRectangle(New SolidBrush(Color.Green), Point.X - 1, Point.Y - 1, 2, 2)
+                For i = 0 To NodesSearched.Count - 1
+                    Dim Point As Point = CC.GetPoint(NodesSearched(i))
+                    Dim Color As Color = GetRainbowColour(i / NodesSearched.Count)
+                    grOverlay.FillRectangle(New SolidBrush(Color), Point.X - 1, Point.Y - 1, 2, 2)
                 Next
             End If
 
@@ -247,8 +253,10 @@
 
             Dim ToLabel As String = String.Format(ROUTE_TO_LABEL_FORMAT, Route.HopCount, _
                     Math.Round(Route.GetKM, 1), Math.Round(Route.GetHoursWithoutTraffic * 60, 1), _
-                    Math.Round(Route.GetEstimatedHours() * 60, 1))
-            grOverlay.DrawString(ToLabel, OVERLAY_FONT, Brushes.Black, NodePoint)
+                    Math.Round(Route.GetEstimatedHours() * 60, 1), _
+                    Math.Round(Route.GetOptimalFuelUsageWithoutTraffic(), 5), _
+                    Math.Round(Route.GetOptimalFuelUsageWithTraffic(), 5))
+            DrawTextOnBox(ToLabel, NodePoint, grOverlay)
 
 
         End If

@@ -16,6 +16,29 @@
         Return Color.FromArgb(Rnd() * 255, Rnd() * 255, Rnd() * 255)
     End Function
 
+    Public Function GetRainbowColour(progress As Single) As Color
+        Dim div As Single = (Math.Abs(progress Mod 1) * 6)
+        Dim ascending As Integer = CInt((div Mod 1) * 255)
+        Dim descending As Integer = 255 - ascending
+
+        Select Case CInt(div)
+            Case 0
+                Return Color.FromArgb(255, 255, ascending, 0)
+            Case 1
+                Return Color.FromArgb(255, descending, 255, 0)
+            Case 2
+                Return Color.FromArgb(255, 0, 255, ascending)
+            Case 3
+                Return Color.FromArgb(255, 0, descending, 255)
+            Case 4
+                Return Color.FromArgb(255, ascending, 0, 255)
+            Case Else
+                ' case 5:
+                Return Color.FromArgb(255, 255, 0, descending)
+        End Select
+    End Function
+
+
     Function GetTimeIndex(ByVal Time As TimeSpan) As Integer
         Dim DayIndex As Integer = Int(Time.TotalDays) Mod 7
         Dim FiveMinuteIndex As Integer = TimeSpan.FromSeconds(Time.TotalSeconds Mod TimeSpan.FromDays(1).TotalSeconds).TotalMinutes \ 5
