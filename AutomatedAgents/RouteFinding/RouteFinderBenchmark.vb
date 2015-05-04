@@ -1,4 +1,6 @@
-﻿Module RouteFinderBenchmark
+﻿Imports System.Text
+
+Module RouteFinderBenchmark
     Private Const BENCHMARK_MSGBOX_FORMAT As String = _
         "{0} routes found in {1} ms." & vbNewLine & "{2} ms each, on average"
     Private Const COMPARATIVE_BENCHMARK_MSGBOX_FORMAT As String = _
@@ -24,7 +26,7 @@
 
     Private Class RouteFinderBenchmarkEngine
         Sub RunAsync()
-            Threading.ThreadPool.QueueUserWorkItem(AddressOf RunBenchmark)
+            Threading.ThreadPool.QueueUserWorkItem(AddressOf HaversineVsAStar)
         End Sub
 
         Protected Sub Test()
@@ -186,6 +188,25 @@
             SimulationParameters.AStarAccelerator = OldAccelerator
 
             MsgBox(SB.ToString)
+        End Sub
+
+        Protected Sub HaversineVsAStar()
+            Dim t As Stopwatch = Stopwatch.StartNew
+            Dim sb As New StringBuilder
+            Dim Count As Integer = 0
+            Do
+                Dim p1 As HopPosition = AdjacencyList.GetRandomPoint
+                Dim p2 As HopPosition = AdjacencyList.GetRandomPoint
+                Dim AStar As New AStarSearch(p1, p2, AdjacencyList, RouteFindingMinimiser.TIME_WITH_TRAFFIC, TimeSpan.FromHours(12))
+                sb.Append(HaversineDistance(p1, p2))
+                sb.Append(",")
+                sb.Append(AStar.GetRoute.GetEstimatedHours)
+                sb.AppendLine()
+                Count += 1
+            Loop Until t.ElapsedMilliseconds > 5000
+            Debug.WriteLine(sb.ToString)
+            MsgBox(Count & " routes generated. See console for results.")
+
         End Sub
     End Class
 End Module
