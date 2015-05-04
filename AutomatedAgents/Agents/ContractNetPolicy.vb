@@ -6,5 +6,5 @@
 
     'Agents fulfil many jobs at a time
     CNP4 'Agents reorder waypoints in an optimal manner, minimising lateness and then total time.
-    CNP5 'TODO: agents tentatively bid for jobs, but then prior to fulfilling another auction takes place
+    CNP5 'Agents tentatively bid for jobs, can ask broadcaster to reallocate when circumstances change.
 End Enum

@@ -39,13 +39,13 @@
                     If Map IsNot Nothing Then
                         Dim AStar As New AStarSearch(LastPoint, WP.Position, Map.NodesAdjacencyList, Minimiser)
                         Cost = AStar.GetRoute.GetKM
-                        ExtraTime += TimeSpan.FromHours(AStar.GetRoute.GetHoursWithoutTraffic()) 'TODO: vehicle type
+                        ExtraTime += TimeSpan.FromHours(AStar.GetRoute.GetHoursWithoutTraffic())
                     Else
                         Cost = HaversineDistance(LastPoint, WP.Position)
                         ExtraTime += TimeSpan.FromHours(Cost / 48) ' Agent.GetAverageKMH)
                     End If
 
-                    If WP.Job.Deadline - Time < SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then 'TODO: or run out of fuel!
+                    If WP.Job.Deadline - Time < SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
                         'If any job cannot be delivered in time (e.g. this one)
                         'and assuming optimal route up to this point
                         'This route has failed, so short circuit out of here

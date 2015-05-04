@@ -67,7 +67,6 @@ Public Class Route
         Return TotalHours
     End Function
 
-    'TODO: delete this comment once this is verified as working.
     'GetEstimatedTravelTimeAtTime includes RoadDelays
     Public Function GetEstimatedHours(ByVal Time As TimeSpan) As Double
         Dim TimeIndex As Integer = GetTimeIndex(Time)

@@ -8,7 +8,6 @@
     Private PotentialJobs As New SortedList(Of TimeSpan, CourierJob)
 
     Public Sub AddPotentialJob(ByVal Job As CourierJob)
-        'TODO: ask Krysia if there's a better way she can think of. It should be less likely this job is spawned, or deadline createed around midnight.
         Dim TimeToRetry As Double = ProbabilityDistributions.Exponential(RETRY_TIME_LAMBDA, RNG.R("retry_depot").NextDouble)
 
         If TimeToRetry <= MAX_RETRY_TIME Then

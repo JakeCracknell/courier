@@ -56,8 +56,6 @@
             Next
             'End waiting time is ignored, as it counts as on time even if < 2 min to spare.
 
-            'Fuel TODO
-
             'Is it any better?
             Dim Cost As Double = 0
             Select Case Minimiser

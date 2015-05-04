@@ -77,7 +77,7 @@
 
                 Dim Route As Route = RouteCache.GetRoute(Node.State.Point, W.Position)
                 NextState.Time = Node.State.Time + Route.GetEstimatedTime + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
-                NextState.FuelLeft = Node.State.FuelLeft - Route.GetKM * 0.1 'TODO fuel, also maybe leave extra time?
+                NextState.FuelLeft = Node.State.FuelLeft - Route.GetKM * 0.1 'TODO  maybe leave extra time?
                 'PRUNE this branch if it is unreachable given fuel reserves
                 If NextState.FuelLeft < 0 Then
                     FailedBranches += 1
@@ -87,8 +87,6 @@
                 NextState.WayPointsLeft = New List(Of WayPoint)(Node.State.WayPointsLeft)
                 NextState.WayPointsLeft.Remove(W)
 
-
-                'TODO: this part needs an Agent object to calc fuel.
                 Dim ExtraCost As Double
                 Select Case Minimiser
                     Case RouteFindingMinimiser.DISTANCE : ExtraCost = Route.GetKM

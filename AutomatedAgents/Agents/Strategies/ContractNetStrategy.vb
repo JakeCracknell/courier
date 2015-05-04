@@ -16,7 +16,7 @@
         Dim NewJob As CourierJob = Contractor.CollectJob
         If NewJob IsNot Nothing Then
             Select Case Policy
-                Case ContractNetPolicy.CNP1 'TODO test 1-3 works with the idle strats
+                Case ContractNetPolicy.CNP1
                     Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft, Agent.VehicleType, WayPoint.CreateWayPointList(NewJob))
                 Case ContractNetPolicy.CNP2
                     Agent.Plan.WayPoints.AddRange(WayPoint.CreateWayPointList(NewJob))

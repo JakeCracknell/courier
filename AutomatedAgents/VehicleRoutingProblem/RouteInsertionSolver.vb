@@ -96,8 +96,6 @@
                 End If
             Next
 
-            'Fuel TODO
-
             'Is it any better?
             Dim Cost As Double = 0
             Select Case Minimiser

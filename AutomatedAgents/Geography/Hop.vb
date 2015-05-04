@@ -22,7 +22,6 @@
         Return Distance
     End Function
 
-    'TODO traffic
     Public Function GetMinimumTravelTime() As Double
         If Way IsNot Nothing Then
             Return Distance / Way.GetSpeedLimit()
