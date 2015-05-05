@@ -2,6 +2,7 @@
     Implements ISolver
 
     Private _OldPlan As CourierPlan
+    Private _Start As HopPosition
     Private _ExtraJob As CourierJob
     Private _AllWaypoints As List(Of WayPoint)
     Private _Agent As Agent
@@ -12,6 +13,7 @@
     Sub New(ByVal Agent As Agent, Optional ByVal ExtraJob As CourierJob = Nothing)
         _Agent = Agent
         _OldPlan = Agent.Plan
+        _Start = _OldPlan.RoutePosition.GetPoint
         _AllWaypoints = New List(Of WayPoint)(_OldPlan.WayPoints)
         If ExtraJob IsNot Nothing Then
             _ExtraJob = ExtraJob
@@ -24,9 +26,53 @@
     Sub Solve()
         _WaypointsToLock = GetWaypointsToLock()
 
-        Dim NNSolution As List(Of WayPoint) = GetNearestNeighbourSolution()
+        If _AllWaypoints.Count > 2 Then
+            Console.Beep()
+        End If
 
-        _NewPlan = New CourierPlan(_OldPlan.RoutePosition.GetPoint, _OldPlan.Map, _OldPlan.Minimiser, _OldPlan.CapacityLeft, _OldPlan.VehicleType, NNSolution)
+        Dim NNSolution As List(Of WayPoint) = GetNearestNeighbourSolution()
+        Dim SolutionPool As New SortedList(Of Double, List(Of WayPoint))
+        Dim TopSolutions As New List(Of List(Of WayPoint))
+        Dim SolutionsEvaluated As New HashSet(Of Integer)
+        SolutionsEvaluated.Add(GetSolutionHashCode(NNSolution))
+        SolutionPool.Add(0, NNSolution)
+
+        For i = 1 To 500
+            Dim SolutionToMutate As List(Of WayPoint) = SolutionPool.Values(0)
+            SolutionPool.RemoveAt(0)
+            TopSolutions.Add(SolutionToMutate)
+            For Each Mutation As List(Of WayPoint) In GetAllMutations(SolutionToMutate)
+                Dim Hash As Integer = GetSolutionHashCode(Mutation)
+                If Not SolutionsEvaluated.Contains(Hash) Then
+                    SolutionsEvaluated.Add(Hash)
+                    SolutionPool.Add(GetFuzzySolutionScore(Mutation), Mutation)
+                End If
+            Next
+
+            If SolutionPool.Count = 0 Then
+                Exit For
+            End If
+        Next
+
+
+        TopSolutions = TopSolutions.OrderBy(Function(S) GetFuzzySolutionScore(S)).ToList
+
+        Debug.WriteLine("Top solutions" & vbNewLine)
+        For Each Solution In TopSolutions
+            Debug.WriteLine(GetFuzzySolutionScore(Solution))
+        Next
+        Debug.WriteLine("Pool solutions" & vbNewLine)
+        For Each SolutionPoolItem In SolutionPool
+            Debug.WriteLine(SolutionPoolItem.Key)
+        Next
+
+
+        _NewPlan = New CourierPlan(_Start, _OldPlan.Map, _OldPlan.Minimiser, _OldPlan.CapacityLeft, _OldPlan.VehicleType, NNSolution)
+        Dim NNPlan = New CourierPlan(_Start, _OldPlan.Map, _OldPlan.Minimiser, _OldPlan.CapacityLeft, _OldPlan.VehicleType, NNSolution)
+        Debug.WriteLine("NN Cost: " & NNPlan.UpdateAndGetCost & NNPlan.IsBehindSchedule)
+        Debug.WriteLine("GA Cost: " & _NewPlan.UpdateAndGetCost & _NewPlan.IsBehindSchedule)
+
+
     End Sub
 
     Private Function GetWaypointsToLock() As Integer
@@ -47,7 +93,7 @@
         Dim WaypointListSolution As New List(Of WayPoint)(_AllWaypoints.Count)
         Dim WaypointsLeft As New List(Of WayPoint)(_AllWaypoints)
         Dim CapacityLeft As Double = _Agent.GetVehicleCapacityLeft
-        Dim Position As HopPosition = _OldPlan.RoutePosition.GetPoint
+        Dim Position As HopPosition = _Start
         Dim Time As TimeSpan = NoticeBoard.Time
 
         For i = 0 To _WaypointsToLock - 1
@@ -80,10 +126,65 @@
 
 
 
+    Private Function GetFuzzySolutionScore(ByVal Solution As List(Of WayPoint)) As Double
+        'Assumes solution is valid.
+        Dim Distance As Double = 0
+        Dim Latenesses As Integer = 0
+        Dim LastPoint As IPoint = _Start
+        Dim Time As TimeSpan = NoticeBoard.Time
+        For Each WayPoint As WayPoint In Solution
+            Distance += GetFuzzyDistance(LastPoint, WayPoint.Position)
+            Time += TimeSpan.FromHours(Distance / 20) 'TODO constify
+            If Time > WayPoint.Job.Deadline Then
+                Latenesses += 1
+            End If
+            Time += TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+            LastPoint = WayPoint.Position
+        Next
+        Return Distance + Latenesses * 1000
+    End Function
 
+    'Gives at most n-1 mutations.
+    Function GetAllMutations(ByVal Solution As List(Of WayPoint)) As List(Of List(Of WayPoint))
+        Dim Mutations As New List(Of List(Of WayPoint))
 
+        'The capacity just before the waypoint is fulfilled. We know it to be 100% at the end.
+        Dim SolutionCapacityLefts As New List(Of Double)(Solution.Count)
+        SolutionCapacityLefts.Add(_Agent.GetVehicleCapacityLeft)
+        For i = 0 To Solution.Count - 2
+            SolutionCapacityLefts.Add(SolutionCapacityLefts.Last - Solution(i).VolumeDelta)
+        Next
+        Debug.Assert(SolutionCapacityLefts.Min > 0) 'TODO REMOVE FOR EFFICIENCY
 
+        For i = _WaypointsToLock To Solution.Count - 2
 
+            '1. Swapping any two waypoints of the same status
+            '2. Swapping ' -> pick(X) -> del(Y) -> ', as long as X <> Y!
+            '3. Swapping ' -> del(X) -> pick(Y) -> ', as long as there is enough space for Y at X
+
+            Dim Swappable As Boolean = Solution(i).DefinedStatus = Solution(i + 1).DefinedStatus _
+                                       OrElse (Solution(i + 1).DefinedStatus = JobStatus.PENDING_DELIVERY AndAlso Not Solution(i).Job.Equals(Solution(i + 1).Job)) _
+                                       OrElse (Solution(i + 1).DefinedStatus = JobStatus.PENDING_PICKUP AndAlso Solution(i + 1).VolumeDelta < SolutionCapacityLefts(i))
+
+            If Swappable Then
+                Dim Mutation As New List(Of WayPoint)(Solution)
+                Mutation(i) = Solution(i + 1)
+                Mutation(i + 1) = Solution(i)
+                Mutations.Add(Mutation)
+            End If
+        Next
+
+        Return Mutations
+    End Function
+
+    Private Function GetSolutionHashCode(ByVal Solution As List(Of WayPoint)) As Integer
+        Const Prime As Integer = 31
+        Dim Hashcode As Long = 1
+        For Each WayPoint As WayPoint In Solution
+            Hashcode = Hashcode * Prime + WayPoint.GetHashCode
+        Next
+        Return CInt(Hashcode And &H7FFFFFFFL) 'Avoids overflow
+    End Function
 
 
 
@@ -96,6 +197,6 @@
     End Function
 
     Public Function IsSuccessful() As Boolean Implements ISolver.IsSuccessful
-        Return True
+        Return Not _NewPlan.IsBehindSchedule
     End Function
 End Class
