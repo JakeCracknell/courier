@@ -159,6 +159,20 @@
         Return False
     End Function
 
+    Function LateWaypointsCount() As Integer
+        Update(True)
+        Dim LateWaypoints As Integer = 0
+        Dim WorkingTime As TimeSpan = NoticeBoard.Time
+        For i = 0 To WayPoints.Count - 1
+            WorkingTime += Routes(i).GetTimeWithoutTraffic
+            If WayPoints(i).Job.Deadline < WorkingTime Then
+                LateWaypoints += 1
+            End If
+            WorkingTime += TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+        Next
+        Return LateWaypoints
+    End Function
+
     '----------------------------Diversions-------------------------------------
     Private ForcedDiversion As Route = Nothing
     Sub SetNewRoute(ByVal Route As Route) 'Only for use whilst idle - will be overridden if jobs come in.

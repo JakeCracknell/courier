@@ -5,7 +5,7 @@
     Private Const START_IN_RANDOM_POSITION As Boolean = False
     Private SpeedCap As Double = SimulationParameters.MAX_POSSIBLE_SPEED_KMH
 
-    Public Const RouteFindingMinimiser As RouteFindingMinimiser = RouteFindingMinimiser.DISTANCE
+    Public Const RouteFindingMinimiser As RouteFindingMinimiser = RouteFindingMinimiser.TIME_WITH_TRAFFIC
     Public ReadOnly AgentID As Integer
     Public ReadOnly PickupPoints As New List(Of HopPosition)
     Public FuelLitres As Double
