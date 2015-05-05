@@ -26,9 +26,9 @@
     Sub Solve()
         _WaypointsToLock = GetWaypointsToLock()
 
-        If _AllWaypoints.Count > 2 Then
-            Console.Beep()
-        End If
+        'If _AllWaypoints.Count > 2 Then
+        '    Console.Beep()
+        'End If
 
         Dim NNSolution As List(Of WayPoint) = GetNearestNeighbourSolution()
         Dim SolutionPool As New SortedList(Of Double, List(Of WayPoint))
@@ -37,7 +37,7 @@
         SolutionsEvaluated.Add(GetSolutionHashCode(NNSolution))
         SolutionPool.Add(0, NNSolution)
 
-        For i = 1 To 500
+        For i = 1 To 1 '500
             Dim SolutionToMutate As List(Of WayPoint) = SolutionPool.Values(0)
             SolutionPool.RemoveAt(0)
             TopSolutions.Add(SolutionToMutate)
@@ -45,7 +45,11 @@
                 Dim Hash As Integer = GetSolutionHashCode(Mutation)
                 If Not SolutionsEvaluated.Contains(Hash) Then
                     SolutionsEvaluated.Add(Hash)
-                    SolutionPool.Add(GetFuzzySolutionScore(Mutation), Mutation)
+                    Dim Score As Double = GetFuzzySolutionScore(Mutation)
+                    Do Until Not SolutionPool.ContainsKey(Score)
+                        Score += Double.Epsilon
+                    Loop
+                    SolutionPool.Add(Score, Mutation)
                 End If
             Next
 
@@ -57,14 +61,17 @@
 
         TopSolutions = TopSolutions.OrderBy(Function(S) GetFuzzySolutionScore(S)).ToList
 
-        Debug.WriteLine("Top solutions" & vbNewLine)
-        For Each Solution In TopSolutions
-            Debug.WriteLine(GetFuzzySolutionScore(Solution))
-        Next
-        Debug.WriteLine("Pool solutions" & vbNewLine)
-        For Each SolutionPoolItem In SolutionPool
-            Debug.WriteLine(SolutionPoolItem.Key)
-        Next
+        If IsInDebugMode() Then
+            Debug.WriteLine("Top solutions" & vbNewLine)
+            For Each Solution In TopSolutions
+                Debug.WriteLine(GetFuzzySolutionScore(Solution))
+            Next
+            Debug.WriteLine("Pool solutions" & vbNewLine)
+            For Each SolutionPoolItem In SolutionPool
+                Debug.WriteLine(SolutionPoolItem.Key)
+            Next
+        End If
+        Debug.WriteLine(TopSolutions.Count & "   " & SolutionPool.Count)
 
 
         _NewPlan = New CourierPlan(_Start, _OldPlan.Map, _OldPlan.Minimiser, _OldPlan.CapacityLeft, _OldPlan.VehicleType, NNSolution)
@@ -75,12 +82,20 @@
 
     End Sub
 
+
+    'This protects against a rare edge case that would otherwise force an agent to pickup from a locked waypoint when it does not have enough capacity.
+    'Scenario: job A is 0.999m3 and is about to be delivered. Call to nearby job B saying about to pickup in 5 min.
+    '           job A is a failed delivery. Job B pickup in 5 promise must be revoked.
+    'This function protects aginst this by locking waypoints until the capcity would be exceeded.
     Private Function GetWaypointsToLock() As Integer
         Dim GuarenteedTime As Double
         Dim WaypointsToLock As Integer = 0
+        Dim CapacityLeft As Double = _Agent.GetVehicleCapacityLeft
+
         For i = 0 To _OldPlan.Routes.Count - 1
+            CapacityLeft -= _OldPlan.WayPoints(i).VolumeDelta
             GuarenteedTime += _OldPlan.Routes(i).GetEstimatedHours
-            If GuarenteedTime <= SimulationParameters.COURTESY_CALL_LOCK_TIME_HOURS Then
+            If GuarenteedTime <= SimulationParameters.COURTESY_CALL_LOCK_TIME_HOURS AndAlso CapacityLeft > 0 Then
                 WaypointsToLock += 1
             Else
                 Exit For
@@ -181,7 +196,7 @@
         Const Prime As Integer = 31
         Dim Hashcode As Long = 1
         For Each WayPoint As WayPoint In Solution
-            Hashcode = Hashcode * Prime + WayPoint.GetHashCode
+            Hashcode = (Hashcode * Prime + WayPoint.GetHashCode) And &H7FFFFFFFL
         Next
         Return CInt(Hashcode And &H7FFFFFFFL) 'Avoids overflow
     End Function
