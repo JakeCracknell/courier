@@ -26,8 +26,11 @@
     End Function
 
     'Inaccurate. Can be up to 50m above actual sometimes
+    Function GetFuzzyDistance(ByVal Node1 As IPoint, ByVal Node2 As IPoint) As Double
+        Return GetFuzzyDistance(Node1.GetLatitude, Node1.GetLongitude, Node2.GetLatitude, Node2.GetLongitude)
+    End Function
     Function GetFuzzyDistance(ByVal lat1 As Double, ByVal lon1 As Double, ByVal lat2 As Double, ByVal lon2 As Double) As Double
-        Return Math.Sqrt((lat1 - lat2) ^ 2 + (lon1 - lon2) ^ 2) * 111.2
+        Return Math.Sqrt((lat1 - lat2) ^ 2 + (lon1 - lon2) ^ 2) * 79.45
     End Function
 
     Function GetCentralPointInPlane(ByVal X1 As Double, ByVal Y1 As Double, ByVal X2 As Double, ByVal Y2 As Double) As PointF
