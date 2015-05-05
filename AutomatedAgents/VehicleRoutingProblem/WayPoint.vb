@@ -80,4 +80,9 @@ Public Class WayPoint
                 Return ""
         End Select
     End Function
+
+    Public Overrides Function GetHashCode() As Integer
+        Const Prime As Integer = 31
+        Return Job.JobID * Prime + DefinedStatus
+    End Function
 End Class
