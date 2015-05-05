@@ -59,8 +59,6 @@
                 PercentageTravelled = PercentageTravelledTemp + DistanceLeftTemp / FullHopDistance
                 Exit Do
             Else
-                DistanceLeftTemp -= NextHopDistance
-                PercentageTravelledTemp = 0
                 If TryIncrementHop() Then
                     DistanceLeftTemp -= NextHopDistance
                     PercentageTravelledTemp = 0

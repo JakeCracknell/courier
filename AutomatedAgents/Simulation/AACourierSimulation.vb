@@ -26,6 +26,7 @@
         Dim MidIndex As Integer = RNG.R("agent_tick").Next(0, Agents.Count)
         For i = MidIndex To MidIndex + Agents.Count - 1
             Agents(i Mod Agents.Count).Move()
+
             Dim MovedAmount As Double = HaversineDistance(NoticeBoard.AgentPositions(i Mod Agents.Count), Agents(i Mod Agents.Count).Plan.RoutePosition.GetPoint)
             If Not MovedAmount < 0.05 Then
                 Debug.WriteLine(MovedAmount * 1000 & "m in one second?")
