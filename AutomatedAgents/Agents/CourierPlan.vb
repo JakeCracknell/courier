@@ -39,7 +39,7 @@
         Next
     End Sub
 
-
+    'TODO: don't do a new AStar, just iterate through Hops . Fuel diversion edge case tho? This took up 16% of computation from traffic replan.
     'Agent has made progress on its plan, perhaps completing waypoints.
     Public Sub Update(ByVal RecalculateFirstAStar As Boolean)
         StartPoint = RoutePosition.GetPoint

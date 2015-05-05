@@ -67,21 +67,6 @@
 
     Dim tripped = False
     Public Overridable Sub Move()
-        'TODO remove
-        'If NoticeBoard.Time > TimeSpan.FromHours(65) And Not tripped Then
-        '    tripped = True
-        '    SimulationParameters.SimulationSpeed = 1
-        '    Console.Beep()
-        'ElseIf tripped Then
-        '    Debug.Write(GetVehicleCapacityLeft)
-        '    For Each W In Plan.WayPoints
-        '        Debug.Write(", " & W.VolumeDelta)
-        '    Next
-        '    Debug.WriteLine("")
-        'End If
-
-
-
         Plan.CapacityLeft = Math.Round(Plan.CapacityLeft, 5)
         If Plan.CapacityLeft > GetVehicleMaxCapacity() Then
             'Throw New OverflowException

@@ -122,7 +122,7 @@
     <Compile Include="Simulation\LogMessages.vb" />
     <Compile Include="Simulation\SimulationState.vb" />
     <Compile Include="Simulation\StatisticsLogger.vb" />
-    <Compile Include="Utility\GeometryUtils.vb" />
+    <Compile Include="Geography\GeometryUtils.vb" />
     <Compile Include="Utility\ProbabilityDistributions.vb" />
     <Compile Include="Utility\RNG.vb" />
     <Compile Include="VehicleRoutingProblem\CNP3Solver.vb" />

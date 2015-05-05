@@ -3,7 +3,6 @@
         Return HaversineDistance(Node1.GetLatitude, Node1.GetLongitude, Node2.GetLatitude, Node2.GetLongitude)
     End Function
     Function HaversineDistance(ByVal lat1 As Double, ByVal lon1 As Double, ByVal lat2 As Double, ByVal lon2 As Double) As Double
-        Dim dDistance As Double
         Dim dLat1InRad As Double = lat1 * (Math.PI / 180.0)
         Dim dLong1InRad As Double = lon1 * (Math.PI / 180.0)
         Dim dLat2InRad As Double = lat2 * (Math.PI / 180.0)
@@ -12,15 +11,19 @@
         Dim dLongitude As Double = dLong2InRad - dLong1InRad
         Dim dLatitude As Double = dLat2InRad - dLat1InRad
 
-        ' Intermediate result a.
-        Dim a As Double = Math.Sin(dLatitude / 2.0) ^ 2 + Math.Cos(dLat1InRad) * Math.Cos(dLat2InRad) * Math.Sin(dLongitude / 2.0) ^ 2
+        ' Intermediate result a. Math.Pow(_, 2) is much slower than *.
+        Dim slat As Double = Math.Sin(dLatitude / 2.0)
+        slat = slat * slat
+        Dim slon As Double = Math.Sin(dLongitude / 2.0) ^ 2
+        slon = slon * slon
+        Dim a As Double = slat + Math.Cos(dLat1InRad) * Math.Cos(dLat2InRad) * slon
 
         ' Intermediate result c (great circle distance in Radians).
         Dim c As Double = 2.0 * Math.Asin(Math.Sqrt(a))
 
         ' Distance.
         Const kEarthRadiusKms As Double = 6371
-        dDistance = kEarthRadiusKms * c
+        Dim dDistance As Double = kEarthRadiusKms * c
 
         Return dDistance
     End Function
