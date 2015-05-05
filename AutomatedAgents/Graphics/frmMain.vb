@@ -211,6 +211,9 @@
     End Sub
     'Highlights nodes on mouse over, if selection mode is on
     Private Sub picMap_MouseMove(sender As Object, e As MouseEventArgs) Handles picMap.MouseMove
+        If Not KeepRefreshingRouteToolStripMenuItem.Checked Then
+            MapMousePosition = e.Location
+        End If
         If SelectionMode = MapSelectionMode.ROUTE_FROM Or SelectionMode = MapSelectionMode.ROUTE_TO Then
             MapMousePosition = e.Location
             Dim CC As New CoordinateConverter(Map.Bounds, picMap.Width, picMap.Height)
