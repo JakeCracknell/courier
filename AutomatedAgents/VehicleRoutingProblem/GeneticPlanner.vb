@@ -10,6 +10,8 @@
 
     Private _NewPlan As CourierPlan
 
+    Private _HaversineToTimeRatio As Double
+
     Sub New(ByVal Agent As Agent, Optional ByVal ExtraJob As CourierJob = Nothing)
         _Agent = Agent
         _OldPlan = Agent.Plan
@@ -26,10 +28,6 @@
     Sub Solve()
         _WaypointsToLock = GetWaypointsToLock()
 
-        'If _AllWaypoints.Count > 2 Then
-        '    Console.Beep()
-        'End If
-
         Dim NNSolution As List(Of WayPoint) = GetNearestNeighbourSolution()
         Dim SolutionPool As New SortedList(Of Double, List(Of WayPoint))
         Dim TopSolutions As New List(Of List(Of WayPoint))
@@ -37,7 +35,7 @@
         SolutionsEvaluated.Add(GetSolutionHashCode(NNSolution))
         SolutionPool.Add(0, NNSolution)
 
-        For i = 1 To 1 '500
+        For i = 1 To 500
             Dim SolutionToMutate As List(Of WayPoint) = SolutionPool.Values(0)
             SolutionPool.RemoveAt(0)
             TopSolutions.Add(SolutionToMutate)
@@ -47,7 +45,7 @@
                     SolutionsEvaluated.Add(Hash)
                     Dim Score As Double = GetFuzzySolutionScore(Mutation)
                     Do Until Not SolutionPool.ContainsKey(Score)
-                        Score += Double.Epsilon
+                        Score += 0.000001
                     Loop
                     SolutionPool.Add(Score, Mutation)
                 End If
@@ -64,20 +62,22 @@
         If IsInDebugMode() Then
             Debug.WriteLine("Top solutions" & vbNewLine)
             For Each Solution In TopSolutions
+                Debug.Write(GetRealSolutionScore(Solution))
                 Debug.WriteLine(GetFuzzySolutionScore(Solution))
             Next
             Debug.WriteLine("Pool solutions" & vbNewLine)
             For Each SolutionPoolItem In SolutionPool
+                Debug.Write(GetRealSolutionScore(SolutionPoolItem.Value))
                 Debug.WriteLine(SolutionPoolItem.Key)
             Next
         End If
-        Debug.WriteLine(TopSolutions.Count & "   " & SolutionPool.Count)
+        'Debug.WriteLine(TopSolutions.Count & "   " & SolutionPool.Count)
 
 
-        _NewPlan = New CourierPlan(_Start, _OldPlan.Map, _OldPlan.Minimiser, _OldPlan.CapacityLeft, _OldPlan.VehicleType, NNSolution)
+        _NewPlan = New CourierPlan(_Start, _OldPlan.Map, _OldPlan.Minimiser, _OldPlan.CapacityLeft, _OldPlan.VehicleType, TopSolutions(0))
         Dim NNPlan = New CourierPlan(_Start, _OldPlan.Map, _OldPlan.Minimiser, _OldPlan.CapacityLeft, _OldPlan.VehicleType, NNSolution)
-        Debug.WriteLine("NN Cost: " & NNPlan.UpdateAndGetCost & NNPlan.IsBehindSchedule)
-        Debug.WriteLine("GA Cost: " & _NewPlan.UpdateAndGetCost & _NewPlan.IsBehindSchedule)
+        'Debug.WriteLine("NN Cost: " & GetRealSolutionScore(NNSolution) & NNPlan.IsBehindSchedule)
+        'Debug.WriteLine("GA Cost: " & GetRealSolutionScore(TopSolutions(0)) & _NewPlan.IsBehindSchedule)
 
 
     End Sub
@@ -105,6 +105,8 @@
     End Function
 
     Private Function GetNearestNeighbourSolution() As List(Of WayPoint)
+        Dim TotalStraightLineDistance As Double = 0
+
         Dim WaypointListSolution As New List(Of WayPoint)(_AllWaypoints.Count)
         Dim WaypointsLeft As New List(Of WayPoint)(_AllWaypoints)
         Dim CapacityLeft As Double = _Agent.GetVehicleCapacityLeft
@@ -115,9 +117,10 @@
             Dim NextWaypoint As WayPoint = _OldPlan.WayPoints(i)
             WaypointListSolution.Add(NextWaypoint)
             WaypointsLeft.Remove(NextWaypoint)
+            TotalStraightLineDistance += HaversineDistance(Position, NextWaypoint.Position)
             Position = NextWaypoint.Position
             CapacityLeft -= NextWaypoint.VolumeDelta
-            Time += _OldPlan.Routes(i).GetEstimatedTime(Time)
+            Time += _OldPlan.Routes(i).GetEstimatedTime(Time) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
         Next
 
 
@@ -126,20 +129,24 @@
             OrderedWaypoints = WaypointsLeft.Where( _
                 Function(W) CapacityLeft - W.VolumeDelta >= 0 AndAlso _
                     Not WaypointsLeft.Contains(W.Predecessor)). _
-                        OrderBy(Function(W) GetFuzzyDistance(Position, W.Position)). _
-                            Take(3).OrderBy(Function(W) RouteCache.GetRoute(Position, W.Position).GetCostForAgent(_Agent, Time))
+                        OrderBy(Function(W) HaversineDistance(Position, W.Position)). _
+                            Take(2).OrderBy(Function(W) RouteCache.GetRoute(Position, W.Position).GetCostForAgent(_Agent, Time))
 
             Dim NextWaypoint As WayPoint = OrderedWaypoints(0)
+            Dim Route As Route = RouteCache.GetRoute(Position, NextWaypoint.Position)
             WaypointsLeft.Remove(NextWaypoint)
             WaypointListSolution.Add(NextWaypoint)
+            TotalStraightLineDistance += HaversineDistance(Position, NextWaypoint.Position)
             Position = NextWaypoint.Position
             CapacityLeft -= NextWaypoint.VolumeDelta
-            Time += RouteCache.GetRoute(Position, NextWaypoint.Position).GetEstimatedTime(Time)
+            Time += Route.GetEstimatedTime(Time) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
         Loop
+
+        _HaversineToTimeRatio = TotalStraightLineDistance / _
+            (Time - NoticeBoard.Time - TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG * _AllWaypoints.Count)).TotalHours
+
         Return WaypointListSolution
     End Function
-
-
 
     Private Function GetFuzzySolutionScore(ByVal Solution As List(Of WayPoint)) As Double
         'Assumes solution is valid.
@@ -148,8 +155,8 @@
         Dim LastPoint As IPoint = _Start
         Dim Time As TimeSpan = NoticeBoard.Time
         For Each WayPoint As WayPoint In Solution
-            Distance += GetFuzzyDistance(LastPoint, WayPoint.Position)
-            Time += TimeSpan.FromHours(Distance / 20) 'TODO constify
+            Distance += HaversineDistance(LastPoint, WayPoint.Position)
+            Time += TimeSpan.FromHours(Distance / _HaversineToTimeRatio)
             If Time > WayPoint.Job.Deadline Then
                 Latenesses += 1
             End If
@@ -158,6 +165,26 @@
         Next
         Return Distance + Latenesses * 1000
     End Function
+
+    Private Function GetRealSolutionScore(ByVal Solution As List(Of WayPoint)) As Double
+        'Assumes solution is valid.
+        Dim Cost As Double = 0
+        Dim Latenesses As Integer = 0
+        Dim LastPoint As IPoint = _Start
+        Dim Time As TimeSpan = NoticeBoard.Time
+        For Each WayPoint As WayPoint In Solution
+            Dim Route As Route = RouteCache.GetRoute(LastPoint, WayPoint.Position) 'TODO at time.
+            Cost += Route.GetCostForAgent(_Agent)
+            Time += Route.GetEstimatedTime()
+            If Time > WayPoint.Job.Deadline Then
+                Latenesses += 1
+            End If
+            Time += TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX) + SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB
+            LastPoint = WayPoint.Position
+        Next
+        Return Cost + Latenesses * 1000
+    End Function
+
 
     'Gives at most n-1 mutations.
     Function GetAllMutations(ByVal Solution As List(Of WayPoint)) As List(Of List(Of WayPoint))
