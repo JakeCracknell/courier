@@ -115,14 +115,17 @@ Public Class Route
     End Function
 
     Function GetCostForAgent(ByVal Agent As Agent) As Double
+        Return GetCostForAgent(Agent, StartTime)
+    End Function
+    Function GetCostForAgent(ByVal Agent As Agent, ByVal Time As TimeSpan) As Double
         Select Case Agent.RouteFindingMinimiser
             Case AutomatedAgents.RouteFindingMinimiser.DISTANCE
                 Return GetKM()
             Case AutomatedAgents.RouteFindingMinimiser.TIME_NO_TRAFFIC
                 Return GetHoursWithoutTraffic()
             Case AutomatedAgents.RouteFindingMinimiser.TIME_WITH_TRAFFIC
-                Return GetEstimatedHours(StartTime)
-            Case AutomatedAgents.RouteFindingMinimiser.FUEL_NO_TRAFFIC
+                Return GetEstimatedHours(Time)
+            Case AutomatedAgents.RouteFindingMinimiser.FUEL_NO_TRAFFIC 'TODO???????? time
                 Return GetOptimalFuelUsageWithoutTraffic(Agent.VehicleType)
             Case AutomatedAgents.RouteFindingMinimiser.FUEL_WITH_TRAFFIC
                 Return GetOptimalFuelUsageWithTraffic(Agent.VehicleType)

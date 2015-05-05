@@ -110,8 +110,8 @@
                     Loop Until TickCounter >= SimulationParameters.SimulationSpeed
 
                 End If
-
             End If
+
             Dim SleepTime As Integer = 1000 / SimulationParameters.SimulationSpeed
             If SleepTime > 0 AndAlso Not PauseDisplayToolStripMenuItem.Checked Then
                 Threading.Thread.Sleep(SleepTime)

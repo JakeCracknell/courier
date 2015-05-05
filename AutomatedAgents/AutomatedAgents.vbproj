@@ -127,6 +127,7 @@
     <Compile Include="Utility\RNG.vb" />
     <Compile Include="VehicleRoutingProblem\CNP3Solver.vb" />
     <Compile Include="VehicleRoutingProblem\CourierPlanState.vb" />
+    <Compile Include="VehicleRoutingProblem\GeneticPlanner.vb" />
     <Compile Include="VehicleRoutingProblem\ISolver.vb" />
     <Compile Include="VehicleRoutingProblem\NNSearchSolver.vb" />
     <Compile Include="VehicleRoutingProblem\RouteInsertionSolver.vb" />

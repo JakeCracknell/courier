@@ -44,7 +44,7 @@
     Public Sub Update(ByVal RecalculateFirstAStar As Boolean)
         StartPoint = RoutePosition.GetPoint
         If WayPoints.Count > 0 Then
-            If RecalculateFirstAStar Then
+            If RecalculateFirstAStar AndAlso Not Routes(0).GetStartPoint.Equals(WayPoints(0).Position) Then
                 'Debug.WriteLineIf(FuelDiversion IsNot Nothing, "On refuel diversion, so not sure what to recalculate")
                 Dim AStar As New AStarSearch(StartPoint, WayPoints(0).Position, Map.NodesAdjacencyList, Minimiser)
                 Routes(0) = AStar.GetRoute
@@ -52,7 +52,7 @@
         End If
     End Sub
 
-    Public Function UpdateAndGetCost()
+    Public Function UpdateAndGetCost() As Double
         Update(True)
 
         Dim TotalCost As Double = 0

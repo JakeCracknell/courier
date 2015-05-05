@@ -83,7 +83,8 @@
                                 Case ContractNetPolicy.CNP4
                                     'Go to the depot whenever it is optimal.
                                     Agent.Plan.WayPoints.Add(DepotWaypoint)
-                                    Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser, Agent.VehicleType)
+                                    'Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser, Agent.VehicleType)
+                                    Dim Solver As New GeneticPlanner(Agent)
                                     Agent.Plan = Solver.GetPlan
                                     Debug.Assert(Agent.Plan IsNot Nothing)
                                 Case ContractNetPolicy.CNP5
