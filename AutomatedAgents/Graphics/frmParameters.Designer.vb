@@ -154,6 +154,7 @@ Partial Class frmParameters
         'TextBox12
         '
         Me.TextBox12.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TextBox12.Enabled = False
         Me.TextBox12.Location = New System.Drawing.Point(301, 367)
         Me.TextBox12.Name = "TextBox12"
         Me.TextBox12.Size = New System.Drawing.Size(65, 20)
@@ -162,6 +163,7 @@ Partial Class frmParameters
         'TrackBar12
         '
         Me.TrackBar12.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TrackBar12.Enabled = False
         Me.TrackBar12.Location = New System.Drawing.Point(152, 367)
         Me.TrackBar12.Maximum = 5000
         Me.TrackBar12.Minimum = 10
@@ -180,12 +182,13 @@ Partial Class frmParameters
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(143, 32)
         Me.Label14.TabIndex = 39
-        Me.Label14.Text = "Graphics Refresh Rate (ms)"
+        Me.Label14.Text = " "
         Me.Label14.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'TextBox11
         '
         Me.TextBox11.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TextBox11.Enabled = False
         Me.TextBox11.Location = New System.Drawing.Point(301, 339)
         Me.TextBox11.Name = "TextBox11"
         Me.TextBox11.Size = New System.Drawing.Size(65, 20)
@@ -194,6 +197,7 @@ Partial Class frmParameters
         'TrackBar11
         '
         Me.TrackBar11.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TrackBar11.Enabled = False
         Me.TrackBar11.Location = New System.Drawing.Point(152, 339)
         Me.TrackBar11.Maximum = 5000
         Me.TrackBar11.Minimum = 10
@@ -212,12 +216,13 @@ Partial Class frmParameters
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(143, 28)
         Me.Label13.TabIndex = 36
-        Me.Label13.Text = "Graphics Refresh Rate (ms)"
+        Me.Label13.Text = " "
         Me.Label13.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'TextBox10
         '
         Me.TextBox10.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TextBox10.Enabled = False
         Me.TextBox10.Location = New System.Drawing.Point(301, 311)
         Me.TextBox10.Name = "TextBox10"
         Me.TextBox10.Size = New System.Drawing.Size(65, 20)
@@ -226,6 +231,7 @@ Partial Class frmParameters
         'TrackBar10
         '
         Me.TrackBar10.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TrackBar10.Enabled = False
         Me.TrackBar10.Location = New System.Drawing.Point(152, 311)
         Me.TrackBar10.Maximum = 5000
         Me.TrackBar10.Minimum = 10
@@ -244,7 +250,7 @@ Partial Class frmParameters
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(143, 28)
         Me.Label12.TabIndex = 33
-        Me.Label12.Text = "Graphics Refresh Rate (ms)"
+        Me.Label12.Text = " "
         Me.Label12.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtTrafficDisplay
