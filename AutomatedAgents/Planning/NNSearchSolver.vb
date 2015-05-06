@@ -10,7 +10,6 @@
     Private TotalCost As Double
     Private Shared r As Random
 
-    'TODO: BYVAL locked waypoints - those that must occur first. EG wp ->1 and ->2 already got their courtesy call
     Sub New(ByVal CourierPlan As CourierPlan, ByVal PunctualityStrategy As SolverPunctualityStrategy, ByVal Minimiser As RouteFindingMinimiser, ByVal VehicleType As Vehicles.Type, Optional ByVal ExtraJob As CourierJob = Nothing)
         r = RNG.R("nnsearch")
         OldPlan = CourierPlan
@@ -77,7 +76,7 @@
 
                 Dim Route As Route = RouteCache.GetRoute(Node.State.Point, W.Position)
                 NextState.Time = Node.State.Time + Route.GetEstimatedTime + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
-                NextState.FuelLeft = Node.State.FuelLeft - Route.GetKM * 0.1 'TODO  maybe leave extra time?
+                NextState.FuelLeft = Node.State.FuelLeft - Route.GetKM * 0.1
                 'PRUNE this branch if it is unreachable given fuel reserves
                 If NextState.FuelLeft < 0 Then
                     FailedBranches += 1
@@ -149,7 +148,7 @@
 
                 Dim Route As Route = RouteCache.GetRoute(Node.State.Point, W.Position)
                 NextState.Time = Node.State.Time + Route.GetEstimatedTime
-                NextState.FuelLeft = Node.State.FuelLeft - Route.GetKM * 0.1 'TODO fuel, also maybe leave extra time?
+                NextState.FuelLeft = Node.State.FuelLeft - Route.GetKM * 0.1
                 'PRUNE this branch if it is unreachable given fuel reserves
                 If NextState.FuelLeft < 0 Then
                     'Debug.Write("F")
@@ -173,7 +172,6 @@
                     HeuristicCost += Double.MinValue
                 Loop
                 PriorityQueue.Add(HeuristicCost, NextNode)
-                'TODO:try combining with extra cost?
             Next
 
         Loop Until PriorityQueue.Count = 0
@@ -318,7 +316,6 @@
             Exit Sub
         End If
 
-        'TODO: use this strat
         If PunctualityStrategy.Strategy = SolverPunctualityStrategy.PStrategy.REDUNDANCY_TIME Then
             Solution = Nothing
             Exit Sub

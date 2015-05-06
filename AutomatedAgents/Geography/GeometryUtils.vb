@@ -25,6 +25,8 @@
         Const kEarthRadiusKms As Double = 6371
         Dim dDistance As Double = kEarthRadiusKms * c
 
+        'SimulationParameters.DisplayedDebugVariable += 1
+
         Return dDistance
     End Function
 
