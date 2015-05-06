@@ -88,7 +88,7 @@
                 'TentativeSolver = New NNSearchSolver(Agent.Plan, _
                 '        New SolverPunctualityStrategy(SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_ROUTE), _
                 '        Agent.RouteFindingMinimiser, Agent.VehicleType, JobToReview)
-                TentativeSolver = New GeneticPlanner(Agent, JobToReview)
+                TentativeSolver = New NNGAPlanner(Agent, JobToReview)
 
                 'Solution is Nothing iff impossible to fit into schedule (though as we only use NN, this is often untrue)
                 CurrentBid = If(TentativeSolver.IsSuccessful, TentativeSolver.GetTotalCost - CurrentDrivingCost, NO_BID)

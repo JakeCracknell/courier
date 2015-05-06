@@ -72,6 +72,8 @@
             'Throw New OverflowException
             Debug.WriteLine("ERROR: Vehicle is too full by: " & GetVehicleCapacityPercentage() & "%")
         ElseIf Plan.IsIdle() AndAlso Plan.CapacityLeft <> GetVehicleMaxCapacity() Then
+            SimulationState.NewEvent("ERROR: Capacity left is non-empty, but vehicle is empty: " & Plan.CapacityLeft)
+            SimulationParameters.SimulationSpeed = 1
             Debug.WriteLine("ERROR: Capacity left is non-empty, but vehicle is empty: " & Plan.CapacityLeft)
         ElseIf FuelLitres <= 0 Then
             Debug.WriteLine("ERROR: Out of fuel! Fuel level is: " & FuelLitres)
