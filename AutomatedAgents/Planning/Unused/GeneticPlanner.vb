@@ -35,7 +35,7 @@
         SolutionsEvaluated.Add(GetSolutionHashCode(NNSolution))
         SolutionPool.Add(0, NNSolution)
 
-        For i = 1 To SimulationParameters.SimulationSpeed * 10
+        For i = 1 To 500
             Dim SolutionToMutate As List(Of WayPoint) = SolutionPool.Values(0)
             SolutionPool.RemoveAt(0)
             TopSolutions.Add(SolutionToMutate)
