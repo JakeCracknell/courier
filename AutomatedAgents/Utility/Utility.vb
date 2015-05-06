@@ -41,7 +41,7 @@
 
     Function GetTimeIndex(ByVal Time As TimeSpan) As Integer
         Dim DayIndex As Integer = Int(Time.TotalDays) Mod 7
-        Dim FiveMinuteIndex As Integer = TimeSpan.FromSeconds(Time.TotalSeconds Mod TimeSpan.FromDays(1).TotalSeconds).TotalMinutes \ 5
+        Dim FiveMinuteIndex As Integer = Int(TimeSpan.FromSeconds(Time.TotalSeconds Mod TimeSpan.FromDays(1).TotalSeconds).TotalMinutes) \ 5
         Dim TimeIndex As Integer = DayIndex * 288 + FiveMinuteIndex
         Return TimeIndex
     End Function
