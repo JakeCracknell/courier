@@ -2,8 +2,8 @@
 
 Namespace LogMessages
     Module LogMessages
-        Function PickFail(ByVal JobID As Integer) As String
-            Return String.Format("Pickup failed for job {0}. It has been cancelled.", JobID)
+        Function PickFail(ByVal Job As CourierJob) As String
+            Return String.Format("Pickup failed for job {0}. The customer is partially refunded {1} from {2}.", Job.JobID, FormatCurrency(Job.OriginalCustomerFee - Job.CustomerFee), FormatCurrency(Job.OriginalCustomerFee))
         End Function
         Function DeliveryFail(ByVal JobID As Integer, ByVal DepotKMAway As Double) As String
             Return String.Format("Delivery failed for job {0}. It will be delivered to the nearest depot, {1} km away.", _

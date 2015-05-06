@@ -77,20 +77,8 @@
         MeanLatitude /= PickupPositionsCount
         MeanLongitude /= PickupPositionsCount
 
-     
-
         Dim BestNode As Node = Agent.Map.ConnectedNodesGrid.GetNearestNode(MeanLatitude, MeanLongitude)
         Dim BestHopPosition As HopPosition = Agent.Map.NodesAdjacencyList.GetHopPositionFromNode(BestNode.ID)
-
-
-
-
-        If Not Agent.Map.Bounds.Encloses(BestHopPosition) Then
-            'This happened once for Guernsey. Longitude was way off. When fixed, refactor above to use grid. TODO!!!
-            FindOptimalSleepingPosition()
-        End If
-
-
 
         Return BestHopPosition
     End Function

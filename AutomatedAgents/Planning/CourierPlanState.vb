@@ -1,4 +1,4 @@
-﻿Public Structure CourierPlanState 'TODO: Is class faster?
+﻿Public Structure CourierPlanState
     Dim Point As IPoint
     Dim Time As TimeSpan
     Dim FuelLeft As Double

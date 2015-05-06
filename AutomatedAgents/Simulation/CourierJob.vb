@@ -53,7 +53,6 @@
         'Pickup fails
         If RNG.R("pickup").NextDouble < SimulationParameters.ProbPickupFail Then
             Status = JobStatus.CANCELLED
-            PartialRefund()
             Return CUSTOMER_WAIT_TIME_MAX
         End If
 
@@ -106,9 +105,11 @@
 
     'Uncollected deliveries are partially refunded to the base fee
     'Or if the customer was charged less than this, no refund.
-    'TODO: should recalculate based on what solver says or triangle inequality
-    Private Sub PartialRefund()
-        CustomerFee = Math.Min(SimulationParameters.FeeBasePrice, CustomerFee) 'WRONG
+    'Cost saving could be in the 1000s if late deliveries were avoided.
+    'eg. the delivery waypoint of this job that would otherwise be late.
+    Public Sub PartialRefund(ByVal CostSaving As Double)
+        Dim AmountToRefund As Double = CostSaving * SimulationParameters.FeeHourlyPrice
+        CustomerFee = Math.Round(Math.Max(SimulationParameters.FeeBasePrice, CustomerFee - AmountToRefund), 2)
     End Sub
 
     'Full refund if the deadline is missed.

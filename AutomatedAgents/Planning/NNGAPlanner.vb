@@ -294,7 +294,6 @@
         For i = 0 To Solution.Count - 2
             SolutionCapacityLefts.Add(SolutionCapacityLefts.Last - Solution(i).VolumeDelta)
         Next
-        Debug.Assert(SolutionCapacityLefts.Min > 0) 'TODO REMOVE FOR EFFICIENCY
 
         For i = _WaypointsToLock To Solution.Count - 2
 

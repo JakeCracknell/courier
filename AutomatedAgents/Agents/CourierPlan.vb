@@ -173,6 +173,10 @@
         Return LateWaypoints
     End Function
 
+    Function CostScore() As Double
+        Return UpdateAndGetCost() + LateWaypointsCount() * 1000
+    End Function
+
     '----------------------------Diversions-------------------------------------
     Private ForcedDiversion As Route = Nothing
     Sub SetNewRoute(ByVal Route As Route) 'Only for use whilst idle - will be overridden if jobs come in.

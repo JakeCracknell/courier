@@ -43,9 +43,20 @@
                         HopefulJob = Nothing
                         Agent.Delayer = New Delayer(Job.Collect())
                         If Job.Status = JobStatus.CANCELLED Then
-                            Agent.Plan.ExtractCancelled() 'TODO partial refund based on time saved?
+                            'CNP policy invariant - replan or just skip waypoint, whatever is cheaper.
+                            'Partial refund cost saving
+                            Dim OldCost As Double = Agent.Plan.CostScore
+                            Agent.Plan.ExtractCancelled()
+                            Dim TriangleInequalityCost As Double = Agent.Plan.CostScore
+                            Dim Replan As CourierPlan = New NNGAPlanner(Agent).GetPlan
+                            Dim ReplanCost As Double = Replan.CostScore
+                            If ReplanCost < TriangleInequalityCost Then
+                                Agent.Plan = Replan
+                            End If
+                            Dim CostSaving As Double = OldCost - Math.Min(ReplanCost, OldCost)
+                            Job.PartialRefund(CostSaving)
                             Agent.TotalCompletedJobs += 1 'Cancelled pick counts as completed job
-                            SimulationState.NewEvent(Agent.AgentID, LogMessages.PickFail(Job.JobID))
+                            SimulationState.NewEvent(Agent.AgentID, LogMessages.PickFail(Job))
                         ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
                             'Successful pickup
                             Agent.Plan.CapacityLeft -= Job.CubicMetres
