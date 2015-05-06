@@ -55,7 +55,7 @@
     End Function
 
 
-    Function GenerateWaypointName(ByVal Position As HopPosition) As String
+    Private Function GenerateWaypointName(ByVal Position As HopPosition) As String
         Dim Name As String = FirstNameAssigner.AssignName()
         Name = Name(0) & Name.Substring(1).ToLower
         Dim Age As Integer = Int(18 + RNG.R("age").NextDouble * 82)

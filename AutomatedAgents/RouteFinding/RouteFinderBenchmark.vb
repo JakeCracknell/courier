@@ -13,8 +13,10 @@ Module RouteFinderBenchmark
     Private SourceNode As Node
     Private DestinationNode As Node
     Private AdjacencyList As NodesAdjacencyList
-    Sub RunRouteFinderBenchmark(ByVal _AdjacencyList As NodesAdjacencyList)
-        AdjacencyList = _AdjacencyList
+    Private Map As StreetMap
+    Sub RunRouteFinderBenchmark(ByVal _Map As StreetMap)
+        AdjacencyList = _Map.NodesAdjacencyList
+        Map = _Map
 
         'Get far apart coordinates
         SourceNode = AdjacencyList.GetNearestNode(90, -180)
@@ -26,7 +28,7 @@ Module RouteFinderBenchmark
 
     Private Class RouteFinderBenchmarkEngine
         Sub RunAsync()
-            Threading.ThreadPool.QueueUserWorkItem(AddressOf HaversineVsAStar)
+            Threading.ThreadPool.QueueUserWorkItem(AddressOf PlannerTestEasy)
         End Sub
 
         Protected Sub Test()
@@ -207,6 +209,25 @@ Module RouteFinderBenchmark
             Debug.WriteLine(sb.ToString)
             MsgBox(Count & " routes generated. See console for results.")
 
+        End Sub
+
+        Protected Sub PlannerTestEasy()
+            RNG.Initialise()
+            RouteCache.Initialise(Map.NodesAdjacencyList, RouteFindingMinimiser.FUEL_WITH_TRAFFIC)
+            Dim A As New Agent(123, Map, Color.AliceBlue)
+            Dim Dispatcher As New CityDispatcher(Map)
+            Dim OldPlan As New CourierPlan(AdjacencyList.GetRandomPoint, Map, RouteFindingMinimiser.TIME_WITH_TRAFFIC, 1, Vehicles.Type.CAR)
+            For i = 1 To 10
+                Dim J As CourierJob = Dispatcher.GenerateJob()
+                J.Deadline += TimeSpan.FromHours(12)
+                OldPlan.WayPoints.AddRange(WayPoint.CreateWayPointList(J))
+            Next
+            OldPlan.RecreateRouteListFromWaypoints()
+            A.Plan = OldPlan
+
+            Dim Planner As New GeneticPlanner(A)
+            Dim NewPlan As CourierPlan = Planner.GetPlan
+            MsgBox(Planner.GetTotalCost + NewPlan.LateWaypointsCount * 1000)
         End Sub
     End Class
 End Module

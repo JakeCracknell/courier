@@ -33,9 +33,11 @@
         End Sub
 
         Public Sub NewEvent(ByVal AgentID As Integer, ByVal Description As String)
-            SyncLock Events
-                Events.Add(New LogEvent(NoticeBoard.Time, AgentID, Description))
-            End SyncLock
+            If Events IsNot Nothing Then
+                SyncLock Events
+                    Events.Add(New LogEvent(NoticeBoard.Time, AgentID, Description))
+                End SyncLock
+            End If
         End Sub
 
         Public Function GetEvents() As LogEvent()

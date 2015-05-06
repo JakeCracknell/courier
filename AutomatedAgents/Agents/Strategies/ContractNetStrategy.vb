@@ -9,7 +9,9 @@
         Me.Agent = Agent
         Me.Policy = Policy
         Contractor = New ContractNetContractor(Agent, Policy)
-        NoticeBoard.Broadcaster.RegisterContractor(Contractor)
+        If NoticeBoard.Broadcaster IsNot Nothing Then
+            NoticeBoard.Broadcaster.RegisterContractor(Contractor)
+        End If
     End Sub
 
     Public Sub Run() Implements IAgentStrategy.Run

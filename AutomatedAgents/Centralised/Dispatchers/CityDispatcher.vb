@@ -45,6 +45,14 @@
             Return False 'No job is dispatched.
         End If
 
+        Dim CourierJob As CourierJob = GenerateJob()
+        NoticeBoard.PostJob(CourierJob)
+        Return True
+    End Function
+
+    Function GenerateJob() As CourierJob
+        Dim DayOfWeek As DayOfWeek = (Int(NoticeBoard.Time.TotalDays) + 1) Mod 7
+        Dim TimeOfDay As TimeSpan = TimeSpan.FromSeconds(NoticeBoard.Time.TotalSeconds Mod TimeSpan.FromDays(1).TotalSeconds)
 
         'Probabilistically determine whether the job is B2B, B2C, C2B or C2C:
         Dim RandomSample As Double = RNG.R("dispatcher").NextDouble
@@ -129,12 +137,10 @@
         Size = Math.Min(Math.Max(Size, SimulationParameters.CubicMetresMin), SimulationParameters.CubicMetresMax)
 
         Dim CourierJob As New CourierJob(PickupLocation, DeliveryLocation, PickupName, DeliveryName, Size, Deadline)
-        NoticeBoard.PostJob(CourierJob)
-        Return True
+        Return CourierJob
     End Function
 
-
-    Function GenerateWaypointName(ByVal Position As HopPosition) As String
+    Private Function GenerateWaypointName(ByVal Position As HopPosition) As String
         Dim Name As String = FirstNameAssigner.AssignName()
         Name = Name(0) & Name.Substring(1).ToLower
         Dim Age As Integer = Int(18 + RNG.R("age").NextDouble * 82)
@@ -145,7 +151,7 @@
         Dim HouseNo As Integer = 1 + Int(ProbabilityDistributions.Exponential(0.03))
         Return String.Format("{0} ({1}), {2} {3}", Name, Age, HouseNo, WayName)
     End Function
-    Function GenerateWaypointName(ByVal Position As HopPosition, ByVal Business As Node) As String
+    Private Function GenerateWaypointName(ByVal Position As HopPosition, ByVal Business As Node) As String
         Dim Name As String = Char.ToUpper(Business.Description(0)) & Business.Description.Substring(1)
         Dim WayName As String = Position.Hop.Way.Name
         If WayName = "" Then

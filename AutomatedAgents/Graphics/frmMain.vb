@@ -321,7 +321,7 @@
 
     Private Sub BenchmarkToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BenchmarkToolStripMenuItem.Click
         If Map IsNot Nothing AndAlso Map.NodesAdjacencyList IsNot Nothing Then
-            RouteFinderBenchmark.RunRouteFinderBenchmark(Map.NodesAdjacencyList)
+            RouteFinderBenchmark.RunRouteFinderBenchmark(Map)
         End If
     End Sub
 
