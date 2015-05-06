@@ -31,7 +31,7 @@
     Sub InitialiseAllModules()
         NoticeBoard.Initialise()
         UIDAssigner.Initialise()
-        RouteCache.Initialise(Map.NodesAdjacencyList, RouteFindingMinimiser.DISTANCE)
+        RouteCache.Initialise(Map.NodesAdjacencyList, RouteFindingMinimiser.TIME_WITH_TRAFFIC)
         If Statistics Is Nothing Then
             Statistics = New StatisticsLogger(Now, Map)
         End If

@@ -15,6 +15,7 @@
     Private StartState As CourierPlanState
 
     Private Const MAX_FAILED_NNS_BRANCHES As Integer = 720
+    Private Const NEAREST_NEIGHBOUR_ROUTES_TO_CALCULATE As Integer = 3
 
     Sub New(ByVal Agent As Agent, Optional ByVal ExtraJob As CourierJob = Nothing)
         _Agent = Agent
@@ -91,12 +92,21 @@
                 Return Solution
             End If
 
-            'Evaluate all next nodes that could be taken. Are they valid and on-time?
-            'If so, add them to a sorted list and in reverse order, push these onto the stack.
+            'Evaluate all next nodes that could be taken. Are they valid?
+            'If so, properly evaluate the top 3 and add them to a sorted list if all
+            'next waypoints are on time. Then in reverse order, push these onto the stack.
             'Allow backtracking when deliveries are expected to be late, but cap the
             'number of failed branches, as there are potentially n! of them.
             Dim NextNodes As New SortedList(Of Double, NNSearchNode)
-            For Each W As WayPoint In Node.State.WayPointsLeft
+            Dim WaypointsToConsider As IOrderedEnumerable(Of WayPoint)
+            WaypointsToConsider = Node.State.WayPointsLeft.Where( _
+                Function(W) Node.State.CapacityLeft - W.VolumeDelta >= 0 AndAlso _
+                    Not Node.State.WayPointsLeft.Contains(W.Predecessor)). _
+                         OrderBy(Function(W) HaversineDistance(Node.State.Point, W.Position)). _
+                            Take(NEAREST_NEIGHBOUR_ROUTES_TO_CALCULATE). _
+                            OrderBy(Function(W) RouteCache.GetRoute(Node.State.Point, W.Position). _
+                                        GetCostForAgent(_Agent, Node.State.Time)) 'TODO route time.
+            For Each W As WayPoint In WaypointsToConsider
                 Dim NextState As CourierPlanState
                 NextState.Point = W.Position
                 NextState.CapacityLeft = Node.State.CapacityLeft - W.VolumeDelta
@@ -121,13 +131,11 @@
                 NextState.WayPointsLeft = New List(Of WayPoint)(Node.State.WayPointsLeft)
                 NextState.WayPointsLeft.Remove(W)
                 Dim ExtraCost As Double = Route.GetCostForAgent(_Agent, Node.State.Time)
-
                 Dim NextNode As New NNSearchNode(Node, NextState, W, ExtraCost)
-
                 'SortedList cannot contain dupe keys. Will occur if there are 2+ depot waypoints.
-                Do Until Not NextNodes.ContainsKey(ExtraCost)
+                While NextNodes.ContainsKey(ExtraCost)
                     ExtraCost += 0.0000000001
-                Loop
+                End While
                 NextNodes.Add(ExtraCost, NextNode)
 
             Next
@@ -167,7 +175,8 @@
                 Function(W) CapacityLeft - W.VolumeDelta >= 0 AndAlso _
                     Not WaypointsLeft.Contains(W.Predecessor)). _
                         OrderBy(Function(W) HaversineDistance(Position, W.Position)). _
-                            Take(2).OrderBy(Function(W) RouteCache.GetRoute(Position, W.Position).GetCostForAgent(_Agent, Time))
+                            Take(NEAREST_NEIGHBOUR_ROUTES_TO_CALCULATE). _
+                            OrderBy(Function(W) RouteCache.GetRoute(Position, W.Position).GetCostForAgent(_Agent, Time))
 
             Dim NextWaypoint As WayPoint = OrderedWaypoints(0)
             Dim Route As Route = RouteCache.GetRoute(Position, NextWaypoint.Position)
