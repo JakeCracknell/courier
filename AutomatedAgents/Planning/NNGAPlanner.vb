@@ -84,7 +84,9 @@
         Do
             Dim Node As NNSearchNode = BFSStack.Pop
             If Node.State.WayPointsLeft.Count = 0 Then
-                Return Node.GetWaypointsList
+                Dim Solution As List(Of WayPoint) = _OldPlan.WayPoints.GetRange(0, _WaypointsToLock)
+                Solution.AddRange(Node.GetWaypointsList)
+                Return Solution
             End If
 
             'Evaluate all next nodes that could be taken. Are they valid and on-time?
