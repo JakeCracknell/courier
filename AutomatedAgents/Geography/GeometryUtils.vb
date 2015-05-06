@@ -14,7 +14,7 @@
         ' Intermediate result a. Math.Pow(_, 2) is much slower than *.
         Dim slat As Double = Math.Sin(dLatitude / 2.0)
         slat = slat * slat
-        Dim slon As Double = Math.Sin(dLongitude / 2.0) ^ 2
+        Dim slon As Double = Math.Sin(dLongitude / 2.0)
         slon = slon * slon
         Dim a As Double = slat + Math.Cos(dLat1InRad) * Math.Cos(dLat2InRad) * slon
 
