@@ -98,7 +98,9 @@
 
     Function GetSubRoute() As Route
         Dim HopList As List(Of Hop) = Route.GetHopList()
-        Dim SubRoute As New Route(HopList.GetRange(HopIndex, HopList.Count - HopIndex))
+        HopList = HopList.GetRange(HopIndex, HopList.Count - HopIndex)
+        HopList(0) = New Hop(GetPoint, HopList(0).ToPoint, HopList(0).Way)
+        Dim SubRoute As New Route(HopList)
         Return SubRoute
     End Function
 

@@ -107,6 +107,8 @@
 
     Function FindBestJob() As CourierJob
         'Find best job based on the value of the job and whether the agent can perform it given its current resources.
+
+        'TODO: maybe Take(5) by haversine diatnce?
         Dim BestJob As CourierJob = Nothing
         Dim BestValue As Double = Double.MinValue
         For Each JobToReview As CourierJob In NoticeBoard.UnallocatedJobs

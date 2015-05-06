@@ -39,15 +39,15 @@
         Next
     End Sub
 
-    'TODO: don't do a new AStar, just iterate through Hops . Fuel diversion edge case tho? This took up 16% of computation from traffic replan.
     'Agent has made progress on its plan, perhaps completing waypoints.
-    Public Sub Update(ByVal RecalculateFirstAStar As Boolean)
+    'Sets StartPoint and Routes(0)
+    Public Sub Update(ByVal RecreateRoute As Boolean)
         StartPoint = RoutePosition.GetPoint
         If WayPoints.Count > 0 Then
-            If RecalculateFirstAStar AndAlso Not Routes(0).GetStartPoint.Equals(WayPoints(0).Position) Then
-                'Debug.WriteLineIf(FuelDiversion IsNot Nothing, "On refuel diversion, so not sure what to recalculate")
-                Dim AStar As New AStarSearch(StartPoint, WayPoints(0).Position, Map.NodesAdjacencyList, Minimiser)
-                Routes(0) = AStar.GetRoute
+            If RecreateRoute AndAlso Not Routes(0).GetStartPoint.Equals(WayPoints(0).Position) Then
+                If RoutePosition.Route.Equals(Routes(0)) Then
+                    Routes(0) = RoutePosition.GetSubRoute
+                End If
             End If
         End If
     End Sub
