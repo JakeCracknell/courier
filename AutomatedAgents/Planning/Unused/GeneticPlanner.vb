@@ -179,7 +179,7 @@
             If Time > WayPoint.Job.Deadline Then
                 Latenesses += 1
             End If
-            Time += Customers.WaitTimeMax + SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB
+            Time += Customers.WaitTimeMax + SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_WAYPOINT
             LastPoint = WayPoint.Position
         Next
         Return Cost + Latenesses * 1000

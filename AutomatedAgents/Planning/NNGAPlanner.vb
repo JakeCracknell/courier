@@ -122,7 +122,7 @@
                 'If any jobs' deadlines (not just the current waypoint's) come before the time of this route, 
                 ' subtracting redundancy time (if any), PRUNE this branch
                 If Node.State.WayPointsLeft.Any(Function(x)
-                                                    Return x.Job.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB < NextState.Time
+                                                    Return x.Job.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_WAYPOINT < NextState.Time
                                                 End Function) Then
                     FailedBranches += 1
                     Continue For
