@@ -58,7 +58,7 @@
             If BestNextJob IsNot Nothing Then
                 JobSolution.Add(BestNextJob)
                 TotalCost += BestNextCost + BestNextJob.GetDirectRoute.GetCostForAgent(Agent)
-                Dim Route1 As Route = RouteCache.GetRoute(State.Point, BestNextJob.PickupPosition)
+                Dim Route1 As Route = RouteCache.GetRoute(State.Point, BestNextJob.PickupPosition) 'TODO route time????????????
                 Dim Route2 As Route = BestNextJob.GetDirectRoute
                 State.Time += Route1.GetEstimatedTime _
                     + Route2.GetEstimatedTime _

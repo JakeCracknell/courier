@@ -91,7 +91,10 @@
     End Function
 
     Function GetDirectRoute() As Route
-        Return RouteCache.GetRoute(PickupPosition, OriginalDeliveryPosition)
+        Return GetDirectRoute(NoticeBoard.Time)
+    End Function
+    Function GetDirectRoute(ByVal Time As TimeSpan) As Route
+        Return RouteCache.GetRoute(PickupPosition, OriginalDeliveryPosition, Time)
     End Function
 
     Function IsFailedDelivery() As Boolean

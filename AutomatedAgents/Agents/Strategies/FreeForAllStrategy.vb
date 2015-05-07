@@ -108,7 +108,7 @@
     Function FindBestJob() As CourierJob
         'Find best job based on the value of the job and whether the agent can perform it given its current resources.
 
-        'TODO: maybe Take(5) by haversine diatnce?
+        'TODO: maybe Take(5) by haversine distance?
         Dim BestJob As CourierJob = Nothing
         Dim BestValue As Double = Double.MinValue
         For Each JobToReview As CourierJob In NoticeBoard.UnallocatedJobs
@@ -116,14 +116,12 @@
                 Continue For
             End If
 
+            Dim StartTime As TimeSpan = NoticeBoard.Time + Agent.Plan.GetDiversionTimeEstimate
             Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition)
-            Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
-            Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(NoticeBoard.Time)
-            Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(NoticeBoard.Time + Route1Time)
-            If NoticeBoard.Time + Agent.Plan.GetDiversionTimeEstimate + MinTime + _
-                SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB + _
-                TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX) > _
-                JobToReview.Deadline Then
+            Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(StartTime) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
+            Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition, StartTime + Route1Time)
+            Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(StartTime + Route1Time)
+            If StartTime + MinTime + SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB > JobToReview.Deadline Then
                 Continue For
             End If
             Dim JobValue As Double = Route2.GetCostForAgent(Agent) / Route1.GetCostForAgent(Agent)
