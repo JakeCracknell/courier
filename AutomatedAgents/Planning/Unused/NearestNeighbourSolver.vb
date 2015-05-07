@@ -54,7 +54,7 @@
 
                     'The expected wait time should not make THIS job late
                     'but it should be factored in to the route in general
-                    ExtraTime += TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+                    ExtraTime += Customers.WaitTimeMax
 
 
                     If ClosestCost > Cost Then

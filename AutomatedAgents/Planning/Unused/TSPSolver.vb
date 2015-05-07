@@ -49,7 +49,7 @@
             'Ensure it meets all the deadlines
             Dim TimeAdded As TimeSpan = NoticeBoard.Time 'Safe/cloned
             For i = 0 To Route.Count - 2
-                TimeAdded += AStarRoutes(i).GetEstimatedTime + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+                TimeAdded += AStarRoutes(i).GetEstimatedTime + Customers.WaitTimeMax
                 If Route(i).Job.Deadline < TimeAdded Then
                     Continue For
                 End If

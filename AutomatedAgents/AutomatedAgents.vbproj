@@ -104,6 +104,7 @@
     <Compile Include="Centralised\Dispatchers\RuralDispatcher.vb" />
     <Compile Include="Centralised\Dispatchers\SingleBusinessDispatcher.vb" />
     <Compile Include="Centralised\UIDAssigner.vb" />
+    <Compile Include="Customers\Customers.vb" />
     <Compile Include="Geography\Bounds.vb" />
     <Compile Include="Centralised\NoticeBoard.vb" />
     <Compile Include="Centralised\Dispatchers\SimpleDispatcher.vb" />
@@ -139,7 +140,7 @@
     <Compile Include="Planning\WayPoint.vb" />
     <Compile Include="Simulation\AAPlayground.vb" />
     <Compile Include="Simulation\AASimulation.vb" />
-    <Compile Include="Simulation\CourierJob.vb" />
+    <Compile Include="Customers\CourierJob.vb" />
     <Compile Include="Graphics\frmAgentStatus.Designer.vb">
       <DependentUpon>frmAgentStatus.vb</DependentUpon>
     </Compile>

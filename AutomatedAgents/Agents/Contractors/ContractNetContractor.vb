@@ -42,7 +42,7 @@
                 'Only if idle, bid S->A->B cost. No bid if cannot be done on time
                 If Agent.Plan.IsIdle() Then
                     Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition, StartingTime)
-                    Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(StartingTime) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
+                    Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(StartingTime) + Customers.WaitTimeAvg
                     Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition, StartingTime + Route1Time)
                     Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(StartingTime + Route1Time)
                     If StartingTime + MinTime > _
@@ -58,11 +58,11 @@
                 For Each R As Route In Agent.Plan.Routes
                     TimeSum += R.GetEstimatedTime(StartingTime + TimeSum) + _
                         SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB + _
-                            TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
+                            Customers.WaitTimeAvg
                 Next
                 Dim StartingPoint As IPoint = If(Agent.Plan.IsIdle, Agent.Plan.RoutePosition.GetPoint, Agent.Plan.WayPoints.Last.Position)
                 Dim Route1 As Route = RouteCache.GetRoute(StartingPoint, JobToReview.PickupPosition, StartingTime + TimeSum)
-                TimeSum += Route1.GetEstimatedTime(StartingTime + TimeSum) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
+                TimeSum += Route1.GetEstimatedTime(StartingTime + TimeSum) + Customers.WaitTimeAvg
                 Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition, StartingTime + TimeSum)
                 TimeSum += Route2.GetEstimatedTime(StartingTime + TimeSum)
                 If StartingTime + TimeSum > JobToReview.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
@@ -78,7 +78,7 @@
             Case ContractNetPolicy.CNP4, ContractNetPolicy.CNP5
                 'Check if the deadline is too slim, even if the agent fulfills it immediately
                 Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition, StartingTime)
-                Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(StartingTime) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
+                Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(StartingTime) + Customers.WaitTimeAvg
                 Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition, StartingTime + Route1Time)
                 Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(NoticeBoard.Time + Route1Time)
                 If StartingTime + MinTime > _
@@ -136,7 +136,7 @@
 
         'Check if the deadline is too slim, even if the agent fulfills it immediately
         Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, Job.PickupPosition, StartingTime)
-        Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(StartingTime) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
+        Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(StartingTime) + Customers.WaitTimeAvg
         Dim Route2 As Route = RouteCache.GetRoute(Job.PickupPosition, Job.DeliveryPosition, StartingTime + Route1Time)
         Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(NoticeBoard.Time + Route1Time)
         If StartingTime + MinTime > _

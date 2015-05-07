@@ -1,10 +1,5 @@
 ﻿Public Class CourierJob
-    Public Const CUSTOMER_WAIT_TIME_MIN As Integer = 20 ' 20 sekonds
-    Public Const CUSTOMER_WAIT_TIME_MAX As Integer = 2 * 60 ' 2 minutes
-    Public Const CUSTOMER_WAIT_TIME_AVG As Integer = _
-        (CUSTOMER_WAIT_TIME_MAX + CUSTOMER_WAIT_TIME_MIN) / 2
-
-    Private Const DEADLINE_TO_DEPOT As Integer = 60 * 60 * 12 ' 12 hours
+    Private Const DEADLINE_TO_DEPOT As Integer = 60 * 60 * 12 ' 12 hours TODO poo
     Private Const DEPOT_STRING_IDENTIFIER As String = "DEPOT"
 
     Public ReadOnly JobID As Integer = UIDAssigner.NewID("job")
@@ -47,13 +42,13 @@
         'Assume best case scenario with outbound depot jobbies.
         If PickupName.Contains(DEPOT_STRING_IDENTIFIER) Then
             Status = JobStatus.PENDING_DELIVERY
-            Return CUSTOMER_WAIT_TIME_MIN
+            Return Customers.WaitTimeMinSeconds
         End If
 
         'Pickup fails
         If RNG.R("pickup").NextDouble < SimulationParameters.ProbPickupFail Then
             Status = JobStatus.CANCELLED
-            Return CUSTOMER_WAIT_TIME_MAX
+            Return Customers.WaitTimeMaxSeconds
         End If
 
         'Usual case - pickup is successful
@@ -74,7 +69,7 @@
         'Assume best case scenario with returned jobs.
         If IsFailedDelivery() OrElse DeliveryName.Contains(DEPOT_STRING_IDENTIFIER) Then
             Status = JobStatus.COMPLETED
-            Return CUSTOMER_WAIT_TIME_MIN
+            Return Customers.WaitTimeMinSeconds
         End If
 
         'Delivery fails. Never the case if the delivery position is a depot.
@@ -82,7 +77,7 @@
             Status = JobStatus.PENDING_DELIVERY
             DeliveryPosition = Nothing
             Deadline += TimeSpan.FromSeconds(DEADLINE_TO_DEPOT)
-            Return CUSTOMER_WAIT_TIME_MAX
+            Return Customers.WaitTimeMaxSeconds
         End If
 
         'Usual case - delivery is successful.
@@ -122,7 +117,7 @@
 
     'Uniform distribution
     Private Function GenerateRandomWaitTime()
-        Return RNG.R("job_wait").Next(CUSTOMER_WAIT_TIME_MIN, CUSTOMER_WAIT_TIME_MAX)
+        Return RNG.R("job_wait").Next(Customers.WaitTimeMinSeconds, Customers.WaitTimeMaxSeconds)
     End Function
 
     Public Overrides Function ToString() As String

@@ -71,7 +71,7 @@
             If GuarenteedTime <= SimulationParameters.COURTESY_CALL_LOCK_TIME_HOURS AndAlso CapacityLeft > 0 Then
                 _WaypointsToLock += 1
                 StartState.CapacityLeft = CapacityLeft
-                StartState.Time += RouteTime + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
+                StartState.Time += RouteTime + Customers.WaitTimeAvg
                 StartState.WayPointsLeft.Remove(_OldPlan.WayPoints(i))
                 StartState.Point = _OldPlan.WayPoints(i).Position
             Else
@@ -117,7 +117,7 @@
                 End If
 
                 Dim Route As Route = RouteCache.GetRoute(Node.State.Point, W.Position, Node.State.Time)
-                NextState.Time = Node.State.Time + Route.GetEstimatedTime + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+                NextState.Time = Node.State.Time + Route.GetEstimatedTime + Customers.WaitTimeMax
 
                 'If any jobs' deadlines (not just the current waypoint's) come before the time of this route, 
                 ' subtracting redundancy time (if any), PRUNE this branch
@@ -165,7 +165,7 @@
             TotalStraightLineDistance += HaversineDistance(Position, NextWaypoint.Position)
             Position = NextWaypoint.Position
             CapacityLeft -= NextWaypoint.VolumeDelta
-            Time += _OldPlan.Routes(i).GetEstimatedTime(Time) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
+            Time += _OldPlan.Routes(i).GetEstimatedTime(Time) + Customers.WaitTimeAvg
         Next
 
 
@@ -185,11 +185,11 @@
             TotalStraightLineDistance += HaversineDistance(Position, NextWaypoint.Position)
             Position = NextWaypoint.Position
             CapacityLeft -= NextWaypoint.VolumeDelta
-            Time += Route.GetEstimatedTime(Time) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
+            Time += Route.GetEstimatedTime(Time) + Customers.WaitTimeAvg
         Loop
 
         _HaversineToTimeRatio = TotalStraightLineDistance / _
-            (Time - NoticeBoard.Time - TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG * _AllWaypoints.Count)).TotalHours
+            ((Time - NoticeBoard.Time).TotalHours + Customers.WaitTimeAvgHours * _AllWaypoints.Count)
 
         Return WaypointListSolution
     End Function
@@ -238,7 +238,7 @@
             If Time > WayPoint.Job.Deadline Then
                 Latenesses += 1
             End If
-            Time += TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+            Time += Customers.WaitTimeMax
             LastPoint = WayPoint.Position
         Next
         Return Distance + Latenesses * 1000

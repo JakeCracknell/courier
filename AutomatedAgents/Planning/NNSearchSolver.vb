@@ -75,7 +75,7 @@
                 End If
 
                 Dim Route As Route = RouteCache.GetRoute(Node.State.Point, W.Position)
-                NextState.Time = Node.State.Time + Route.GetEstimatedTime + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+                NextState.Time = Node.State.Time + Route.GetEstimatedTime + Customers.WaitTimeMax
                 NextState.FuelLeft = Node.State.FuelLeft - Route.GetKM * 0.1
                 'PRUNE this branch if it is unreachable given fuel reserves
                 If NextState.FuelLeft < 0 Then
@@ -204,7 +204,7 @@
             State = StartState
             Dim LateDeliveries As Integer = 0
             For Each W As WayPoint In CandidateList
-                State.Time += RouteCache.GetRoute(State.Point, W.Position).GetEstimatedTime + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+                State.Time += RouteCache.GetRoute(State.Point, W.Position).GetEstimatedTime + Customers.WaitTimeMax
                 If W.Job.Deadline < State.Time Then
                     LateDeliveries += 1
                 End If
@@ -394,7 +394,7 @@
                 State = StartState
                 Dim MLateDeliveries As Integer = 0
                 For Each W As WayPoint In CandidateList
-                    State.Time += RouteCache.GetRoute(State.Point, W.Position).GetEstimatedTime + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+                    State.Time += RouteCache.GetRoute(State.Point, W.Position).GetEstimatedTime + Customers.WaitTimeMax
                     If W.Job.Deadline < State.Time Then
                         MLateDeliveries += 1
                     End If

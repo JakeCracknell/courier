@@ -37,7 +37,7 @@
         Dim LastPoint As IPoint = RoutePosition.GetPoint
         For Each W As WayPoint In WayPoints
             Routes.Add(RouteCache.GetRoute(LastPoint, W.Position, WorkingTime))
-            WorkingTime += Routes.Last.GetEstimatedTime(WorkingTime) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
+            WorkingTime += Routes.Last.GetEstimatedTime(WorkingTime) + Customers.WaitTimeAvg
             LastPoint = W.Position
         Next
     End Sub
@@ -66,12 +66,12 @@
                 Next
             Case RouteFindingMinimiser.TIME_NO_TRAFFIC
                 For Each R As Route In Routes
-                    TotalCost += R.GetHoursWithoutTraffic() + CourierJob.CUSTOMER_WAIT_TIME_MAX / 3600
+                    TotalCost += R.GetHoursWithoutTraffic() + Customers.WaitTimeAvgHours
                 Next
             Case RouteFindingMinimiser.TIME_WITH_TRAFFIC
                 'I am making the decision here to not reevaluate traffic WRT time. Route.StartTime will suffice.
                 For Each R As Route In Routes
-                    TotalCost += R.GetEstimatedHours() + CourierJob.CUSTOMER_WAIT_TIME_MAX / 3600
+                    TotalCost += R.GetEstimatedHours() + Customers.WaitTimeAvgHours
                 Next
             Case RouteFindingMinimiser.FUEL_NO_TRAFFIC
                 For Each R As Route In Routes
@@ -157,7 +157,7 @@
             If WayPoints(i).Job.Deadline < WorkingTime Then
                 Return True
             End If
-            WorkingTime += TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+            WorkingTime += Customers.WaitTimeAvg
         Next
         Return False
     End Function
@@ -171,7 +171,7 @@
             If WayPoints(i).Job.Deadline < WorkingTime Then
                 LateWaypoints += 1
             End If
-            WorkingTime += TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+            WorkingTime += Customers.WaitTimeAvg
         Next
         Return LateWaypoints
     End Function

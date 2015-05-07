@@ -65,10 +65,10 @@
             Dim TimeAdded As TimeSpan = NoticeBoard.Time 'Safe/cloned
             For i = 0 To Route.Count - 1
                 If AStarRoutes(i) IsNot Nothing Then
-                    TimeAdded += AStarRoutes(i).GetEstimatedTime + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+                    TimeAdded += AStarRoutes(i).GetEstimatedTime + Customers.WaitTimeMax
                 Else
                     LastPoint = If(i = 0, Start, Route(i - 1).Position)
-                    TimeAdded += TimeSpan.FromSeconds(HaversineDistance(LastPoint, Route(i).Position) * SECONDS_PER_KM_STRAIGHTLINE + CourierJob.CUSTOMER_WAIT_TIME_MAX)
+                    TimeAdded += TimeSpan.FromSeconds(HaversineDistance(LastPoint, Route(i).Position) * SECONDS_PER_KM_STRAIGHTLINE + Customers.WaitTimeMaxSeconds)
                 End If
                 If Route(i).Job.Deadline < TimeAdded Then
                     GoTo FailedPermutation
@@ -90,7 +90,7 @@
             'Recompute time - properly this time!
             TimeAdded = NoticeBoard.Time 'Safe/cloned
             For i = 0 To Route.Count - 1
-                TimeAdded += AStarRoutes(i).GetEstimatedTime + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+                TimeAdded += AStarRoutes(i).GetEstimatedTime + Customers.WaitTimeMax
                 If Route(i).Job.Deadline < TimeAdded Then
                     GoTo FailedPermutation
                 End If

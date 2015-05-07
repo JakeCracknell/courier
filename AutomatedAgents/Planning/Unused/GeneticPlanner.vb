@@ -120,7 +120,7 @@
             TotalStraightLineDistance += HaversineDistance(Position, NextWaypoint.Position)
             Position = NextWaypoint.Position
             CapacityLeft -= NextWaypoint.VolumeDelta
-            Time += _OldPlan.Routes(i).GetEstimatedTime(Time) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
+            Time += _OldPlan.Routes(i).GetEstimatedTime(Time) + Customers.WaitTimeAvg
         Next
 
 
@@ -139,11 +139,11 @@
             TotalStraightLineDistance += HaversineDistance(Position, NextWaypoint.Position)
             Position = NextWaypoint.Position
             CapacityLeft -= NextWaypoint.VolumeDelta
-            Time += Route.GetEstimatedTime(Time) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
+            Time += Route.GetEstimatedTime(Time) + Customers.WaitTimeAvg
         Loop
 
         _HaversineToTimeRatio = TotalStraightLineDistance / _
-            (Time - NoticeBoard.Time - TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG * _AllWaypoints.Count)).TotalHours
+            (Time - NoticeBoard.Time - TimeSpan.FromSeconds(Customers.WaitTimeAvgSeconds * _AllWaypoints.Count)).TotalHours
 
         Return WaypointListSolution
     End Function
@@ -160,7 +160,7 @@
             If Time > WayPoint.Job.Deadline Then
                 Latenesses += 1
             End If
-            Time += TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+            Time += Customers.WaitTimeMax
             LastPoint = WayPoint.Position
         Next
         Return Distance + Latenesses * 1000
@@ -179,7 +179,7 @@
             If Time > WayPoint.Job.Deadline Then
                 Latenesses += 1
             End If
-            Time += TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX) + SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB
+            Time += Customers.WaitTimeMax + SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB
             LastPoint = WayPoint.Position
         Next
         Return Cost + Latenesses * 1000

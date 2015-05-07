@@ -66,7 +66,7 @@
                         If HopefulJob IsNot Nothing Then
                             'Agent arrives and waits the maximum time, only to realise the job has been taken.
                             If Not AGENT_KNOWS_WHEN_JOB_HAS_BEEN_PICKED Then
-                                Agent.Delayer = New Delayer(CourierJob.CUSTOMER_WAIT_TIME_MAX)
+                                Agent.Delayer = New Delayer(Customers.WaitTimeMaxSeconds)
                             End If
                             HopefulJob = Nothing
                             Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft, Agent.VehicleType)
@@ -118,7 +118,7 @@
 
             Dim StartTime As TimeSpan = NoticeBoard.Time + Agent.Plan.GetDiversionTimeEstimate
             Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition, StartTime)
-            Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(StartTime) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
+            Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(StartTime) + Customers.WaitTimeAvg
             Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition, StartTime + Route1Time)
             Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(StartTime + Route1Time)
             If StartTime + MinTime + SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB > JobToReview.Deadline Then
