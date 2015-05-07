@@ -54,7 +54,8 @@
         Return New PointF((X1 + X2) / 2, (Y1 + Y2) / 2)
     End Function
 
+    'Euclidian is too inaccurate. This is only called after each waypoint completion.
     Function PointsAreApproximatelyEqual(ByVal p1 As IPoint, ByVal p2 As IPoint) As Boolean
-        Return Math.Abs(p1.GetLatitude - p2.GetLatitude) < 0.001 AndAlso Math.Abs(p1.GetLongitude - p2.GetLongitude) < 0.001
+        Return HaversineDistance(p1, p2) < 0.001 ' 1 metre radius allowed.
     End Function
 End Module

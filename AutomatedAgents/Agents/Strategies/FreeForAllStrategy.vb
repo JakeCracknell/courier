@@ -1,16 +1,15 @@
 ﻿Public Class FreeForAllStrategy
-    Implements IAgentStrategy
+    Inherits AgentStrategy
 
-    Private Agent As Agent
     Private HopefulJob As CourierJob = Nothing
 
-    Private Const AGENT_KNOWS_WHEN_JOB_HAS_BEEN_PICKED As Boolean = False
-
     Public Sub New(ByVal Agent As Agent)
-        Me.Agent = Agent
+        MyBase.New(Agent)
     End Sub
 
-    Public Sub Run() Implements IAgentStrategy.Run
+    Overrides Sub Run()
+        CollectJobs()
+
         If Agent.Plan.IsIdle() Then
             HopefulJob = FindBestJob()
             If HopefulJob IsNot Nothing Then
@@ -29,78 +28,17 @@
                 Exit Sub
             End If
         End If
-        'No need to recompute A* route to first waypoint.
+
         Agent.Plan.Update(False)
 
         'If a route somewhere has just been completed...
-        If Agent.Plan.RoutePosition.RouteCompleted Then
-            If Agent.Plan.FirstWayPointReached() Then
-                Dim Job As CourierJob = Agent.Plan.RemoveFirstWayPoint().Job
-                Select Case Job.Status
-                    Case JobStatus.PENDING_PICKUP
-                        HopefulJob = Nothing
-                        Agent.Delayer = New Delayer(Job.Collect())
-                        If Job.Status = JobStatus.CANCELLED Then
-                            'CNP policy invariant - replan or just skip waypoint, whatever is cheaper.
-                            'Partial refund cost saving
-                            Dim OldCost As Double = Agent.Plan.CostScore
-                            Agent.Plan.ExtractCancelled()
-                            Dim TriangleInequalityCost As Double = Agent.Plan.CostScore
-                            Dim Replan As CourierPlan = New NNGAPlanner(Agent, True).GetPlan
-                            Dim ReplanCost As Double = Replan.CostScore
-                            If ReplanCost < TriangleInequalityCost Then
-                                Agent.Plan = Replan
-                            End If
-                            Dim CostSaving As Double = OldCost - Math.Min(ReplanCost, OldCost)
-                            Job.PartialRefund(CostSaving)
-                            Agent.TotalCompletedJobs += 1 'Cancelled pick counts as completed job
-                            SimulationState.NewEvent(Agent.AgentID, LogMessages.PickFail(Job))
-                        ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
-                            'Successful pickup
-                            Agent.Plan.CapacityLeft -= Job.CubicMetres
-                            SimulationState.NewEvent(Agent.AgentID, LogMessages.PickSuccess(Job.JobID))
-                        End If
-                    Case JobStatus.PENDING_DELIVERY
-                        If HopefulJob IsNot Nothing Then
-                            'Agent arrives and waits the maximum time, only to realise the job has been taken.
-                            If Not AGENT_KNOWS_WHEN_JOB_HAS_BEEN_PICKED Then
-                                Agent.Delayer = New Delayer(Customers.WaitTimeMaxSeconds)
-                            End If
-                            HopefulJob = Nothing
-                            Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft, Agent.VehicleType)
-                            Exit Sub
-                        End If
-
-                        Agent.Delayer = New Delayer(Job.Deliver())
-                        If Job.Status = JobStatus.COMPLETED Then
-                            'Successful dropoff (perhaps late)
-                            Agent.TotalCompletedJobs += 1
-                            Agent.Plan.CapacityLeft += Job.CubicMetres
-                            Dim TimeLeft As TimeSpan = Job.Deadline - NoticeBoard.Time
-                            If TimeLeft < TimeSpan.Zero Then
-                                SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliveryLate(Job.JobID, -TimeLeft, Job.OriginalCustomerFee))
-                            Else
-                                SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliverySuccess(Job.JobID, TimeLeft))
-                            End If
-                        ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
-                            'Customer is not in -> deliver to nearest depot.
-                            Dim DepotWaypoint As WayPoint = WayPoint.MakeFailedDeliveryWaypoint(Agent, Job)
-                            Dim ImmediateRouteToDepot As Route = RouteCache.GetRoute(Agent.Plan.StartPoint, DepotWaypoint.Position)
-
-                            'Go to the depot right now.
-                            Agent.Plan.WayPoints.Insert(0, DepotWaypoint)
-                            Agent.Plan.Routes.Insert(0, ImmediateRouteToDepot)
-
-                            SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliveryFail(Job.JobID, ImmediateRouteToDepot.GetKM))
-                        End If
-                End Select
-
-            End If
-
-            If Agent.Plan.Routes.Count > 0 Then
-                Agent.Plan.RoutePosition = New RoutePosition(Agent.Plan.Routes(0))
-            End If
+        If RouteCompletion(ContractNetPolicy.CNP1) Then
+            HopefulJob = Nothing
         End If
+    End Sub
+
+    Public Overrides Sub CollectJobs()
+        'TODO
     End Sub
 
     Function FindBestJob() As CourierJob

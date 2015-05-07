@@ -9,5 +9,5 @@
     Sub AwardJobs()
 
     'For CNP5
-    Function ReallocateJobs(ByVal Owner As IContractor, ByVal ReallocatableJobs As List(Of CourierJob)) As List(Of CourierJob)
+    Function ReallocateJobs(ByVal OwnerID As Integer, ByVal ReallocatableJobs As List(Of CourierJob)) As List(Of CourierJob)
 End Interface

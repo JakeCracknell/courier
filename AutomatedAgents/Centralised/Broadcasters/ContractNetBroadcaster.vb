@@ -14,9 +14,9 @@
                                                                         End Sub)
     End Sub
 
-    Public Function ReallocateJobs(Owner As IContractor, ReallocatableJobs As List(Of CourierJob)) As List(Of CourierJob) Implements IBroadcaster.ReallocateJobs
-        Dim OtherContractors As New List(Of ContractNetContractor)(AvailableContractors)
-        OtherContractors.Remove(Owner)
+    Public Function ReallocateJobs(OwnerID As Integer, ReallocatableJobs As List(Of CourierJob)) As List(Of CourierJob) Implements IBroadcaster.ReallocateJobs
+        Dim OtherContractors As List(Of ContractNetContractor)
+        OtherContractors = AvailableContractors.Where(Function(C) C.GetID <> OwnerID).ToList
 
         Dim OtherContractorsBids(OtherContractors.Count - 1) As Double
         Dim UnallocatedJobs As New List(Of CourierJob)
@@ -37,7 +37,7 @@
             Next
             If Winner IsNot Nothing Then
                 Winner.CNP5ImmediateAward()
-                SimulationState.NewEvent(LogMessages.CNP5JobTransfer(Job.JobID, Owner.GetID(), Winner.GetID()))
+                SimulationState.NewEvent(LogMessages.CNP5JobTransfer(Job.JobID, OwnerID, Winner.GetID()))
             Else
                 UnallocatedJobs.Add(Job)
             End If

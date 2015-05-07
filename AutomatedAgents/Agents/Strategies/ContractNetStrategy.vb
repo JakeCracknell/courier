@@ -1,12 +1,11 @@
 ﻿Class ContractNetStrategy
-    Implements IAgentStrategy
+    Inherits AgentStrategy
 
-    Private Agent As Agent
     Private Contractor As ContractNetContractor
     Private Policy As ContractNetPolicy
 
     Public Sub New(ByVal Agent As Agent, ByVal Policy As ContractNetPolicy)
-        Me.Agent = Agent
+        MyBase.New(Agent)
         Me.Policy = Policy
         Contractor = New ContractNetContractor(Agent, Policy)
         If NoticeBoard.Broadcaster IsNot Nothing Then
@@ -14,7 +13,23 @@
         End If
     End Sub
 
-    Public Sub Run() Implements IAgentStrategy.Run
+    Overrides Sub Run()
+        CollectJobs()
+
+        If Agent.Plan.IsIdle() Then
+            Exit Sub
+        End If
+
+        Agent.Plan.Update(False)
+
+        'Periodically, check for changed traffic conditions that might warrant a replan.
+        PeriodicReplan(Policy)
+
+        'If a route somewhere has just been completed...
+        RouteCompletion(Policy)
+    End Sub
+
+    Public Overrides Sub CollectJobs()
         Dim NewJob As CourierJob = Contractor.CollectJob
         If NewJob IsNot Nothing Then
             Select Case Policy
@@ -31,109 +46,9 @@
             End Select
             Agent.PickupPoints.Add(NewJob.PickupPosition)
         End If
-
-        If Agent.Plan.IsIdle() Then
-            Exit Sub
-        End If
-
-        Agent.Plan.Update(False) 'TODO: needed?
-
-        'Periodically, check for changed traffic conditions that might warrant a replan.
-        If SimulationParameters.PERIODIC_REPLAN AndAlso Agent.Plan.NeedToReplan() Then
-            Dim NewPlan As CourierPlan = Nothing
-            Select Case Policy
-                Case ContractNetPolicy.CNP3
-                    NewPlan = New CNP3Planner(Agent).GetPlan
-                Case ContractNetPolicy.CNP4, ContractNetPolicy.CNP5
-                    NewPlan = New NNGAPlanner(Agent, True).GetPlan
-            End Select
-            If NewPlan IsNot Nothing AndAlso NewPlan.CostScore < Agent.Plan.CostScore Then
-                Agent.Plan = NewPlan
-            End If
-            If Policy = ContractNetPolicy.CNP5 AndAlso Agent.Plan.IsBehindSchedule Then
-                Agent.Plan = CNP5Contingency()
-            End If
-        End If
-
-        'If a route somewhere has just been completed...
-        If Agent.Plan.RoutePosition.RouteCompleted Then
-            If Agent.Plan.FirstWayPointReached() Then
-                Dim Job As CourierJob = Agent.Plan.RemoveFirstWayPoint().Job
-                Select Case Job.Status
-                    Case JobStatus.PENDING_PICKUP
-                        Agent.Delayer = New Delayer(Job.Collect())
-                        If Job.Status = JobStatus.CANCELLED Then
-                            'CNP policy invariant - replan or just skip waypoint, whatever is cheaper.
-                            'Partial refund cost saving
-                            Dim OldCost As Double = Agent.Plan.CostScore
-                            Agent.Plan.ExtractCancelled()
-                            Dim TriangleInequalityCost As Double = Agent.Plan.CostScore
-                            Dim Replan As CourierPlan = New NNGAPlanner(Agent, True).GetPlan
-                            Dim ReplanCost As Double = Replan.CostScore
-                            If ReplanCost < TriangleInequalityCost Then
-                                Agent.Plan = Replan
-                            End If
-                            Dim CostSaving As Double = OldCost - Math.Min(ReplanCost, OldCost)
-                            Job.PartialRefund(CostSaving)
-                            Agent.TotalCompletedJobs += 1 'Cancelled pick counts as completed job
-                            SimulationState.NewEvent(Agent.AgentID, LogMessages.PickFail(Job))
-                        ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
-                            'Successful pickup
-                            Agent.Plan.CapacityLeft -= Job.CubicMetres
-                            SimulationState.NewEvent(Agent.AgentID, LogMessages.PickSuccess(Job.JobID))
-                        End If
-                    Case JobStatus.PENDING_DELIVERY
-                        Agent.Delayer = New Delayer(Job.Deliver())
-                        If Job.Status = JobStatus.COMPLETED Then
-                            'Successful dropoff (perhaps late)
-                            Agent.TotalCompletedJobs += 1
-                            Agent.Plan.CapacityLeft += Job.CubicMetres
-                            Dim TimeLeft As TimeSpan = Job.Deadline - NoticeBoard.Time
-                            If TimeLeft < TimeSpan.Zero Then
-                                SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliveryLate(Job.JobID, -TimeLeft, Job.OriginalCustomerFee))
-                            Else
-                                SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliverySuccess(Job.JobID, TimeLeft))
-                            End If
-                        ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
-                            'Customer is not in -> deliver to nearest depot.
-                            Dim DepotWaypoint As WayPoint = WayPoint.MakeFailedDeliveryWaypoint(Agent, Job)
-
-
-                            Select Case Policy
-                                Case ContractNetPolicy.CNP1, ContractNetPolicy.CNP2, ContractNetPolicy.CNP3
-                                    'Go to the depot right now.
-                                    Agent.Plan.WayPoints.Insert(0, DepotWaypoint)
-                                    Agent.Plan.RecreateRouteListFromWaypoints() 'Routes(1) will have also changed!
-                                Case ContractNetPolicy.CNP4
-                                    'Go to the depot whenever it is optimal.
-                                    Agent.Plan.WayPoints.Add(DepotWaypoint)
-                                    Dim Planner As New NNGAPlanner(Agent, True)
-                                    Agent.Plan = Planner.GetPlan
-                                    Debug.Assert(Agent.Plan IsNot Nothing)
-                                Case ContractNetPolicy.CNP5
-                                    'Try to replan and avoid late deliveries.
-                                    Agent.Plan.WayPoints.Add(DepotWaypoint)
-
-                                    Dim Planner As New NNGAPlanner(Agent, True)
-                                    Agent.Plan = If(Planner.IsSuccessful, Planner.GetPlan, CNP5Contingency())
-                                    Debug.Assert(Agent.Plan IsNot Nothing)
-                            End Select
-                            SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliveryFail(Job.JobID, _
-                                           HaversineDistance(Agent.Plan.StartPoint, DepotWaypoint.Position)))
-                        End If
-                End Select
-            End If
-
-            If Agent.Plan.Routes.Count > 0 Then
-                If Not PointsAreApproximatelyEqual(Agent.Plan.Routes(0).GetStartPoint, Agent.Plan.RoutePosition.GetPoint) Then
-                    Agent.Plan.RecreateRouteListFromWaypoints()
-                End If
-                Agent.Plan.RoutePosition = New RoutePosition(Agent.Plan.Routes(0))
-            End If
-        End If
     End Sub
 
-    Function CNP5Contingency() As CourierPlan
+    Public Shared Function CNP5Contingency(ByVal Agent As Agent) As CourierPlan
         Dim NecessaryJobs As New List(Of CourierJob)
         Dim ReallocatableJobs As New List(Of CourierJob)
         For Each Job As CourierJob In Agent.Plan.GetCurrentJobs
@@ -150,7 +65,7 @@
                                                                   Job.GetDirectRoute.GetEstimatedTime(NoticeBoard.Time)
                                                           End Function).ToList
             SimulationState.NewEvent(Agent.AgentID, LogMessages.CNP5JobsSentForTransfer(ReallocatableJobs.Count))
-            Dim JobsThatNoOtherAgentsCouldFulfil As List(Of CourierJob) = NoticeBoard.Broadcaster.ReallocateJobs(Contractor, ReallocatableJobs)
+            Dim JobsThatNoOtherAgentsCouldFulfil As List(Of CourierJob) = NoticeBoard.Broadcaster.ReallocateJobs(Agent.AgentID, ReallocatableJobs)
             SimulationState.NewEvent(Agent.AgentID, LogMessages.CNP5JobTransferResult( _
                   ReallocatableJobs.Count - JobsThatNoOtherAgentsCouldFulfil.Count, JobsThatNoOtherAgentsCouldFulfil.Count))
             Agent.Plan.WayPoints.Clear()

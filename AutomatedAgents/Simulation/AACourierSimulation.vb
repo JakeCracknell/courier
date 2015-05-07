@@ -30,6 +30,7 @@
             Dim MovedAmount As Double = HaversineDistance(NoticeBoard.AgentPositions(i Mod Agents.Count), Agents(i Mod Agents.Count).Plan.RoutePosition.GetPoint)
             If Not MovedAmount < 0.05 Then
                 Debug.WriteLine(MovedAmount * 1000 & "m in one second?")
+                SimulationParameters.SimulationSpeed = 1
                 Console.Beep() 'TODO: Occasionally might flit by one node. 0.05 is 112mph, so this never should be called.
             End If
             'If Agents(i Mod Agents.Count).Plan.Routes.Count > 0 Then

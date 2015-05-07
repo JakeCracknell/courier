@@ -10,7 +10,7 @@
         'Don't need to broadcast!
     End Sub
 
-    Public Function ReallocateJobs(Owner As IContractor, ReallocatableJobs As List(Of CourierJob)) As List(Of CourierJob) Implements IBroadcaster.ReallocateJobs
+    Public Function ReallocateJobs(Owner As Integer, ReallocatableJobs As List(Of CourierJob)) As List(Of CourierJob) Implements IBroadcaster.ReallocateJobs
         Return ReallocatableJobs
         'No reallocation allowed. >:(
     End Function

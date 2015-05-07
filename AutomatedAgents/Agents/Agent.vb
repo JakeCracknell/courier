@@ -20,7 +20,7 @@
 
     Public VehicleType As Vehicles.Type
     Public Plan As CourierPlan
-    Protected Strategy As IAgentStrategy
+    Protected Strategy As AgentStrategy
     Protected IdleStrategy As IIdleStrategy
 
     Public Sub New(ByVal ID As Integer, ByVal Map As StreetMap, ByVal Color As Color)
