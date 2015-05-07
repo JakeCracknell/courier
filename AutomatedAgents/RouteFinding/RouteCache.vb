@@ -2,37 +2,55 @@
     Private Minimiser As RouteFindingMinimiser
     Private NodesAdjacencyList As NodesAdjacencyList
     Private RouteCount As Integer = 0
-    Private OuterDictionary As New Dictionary(Of IPoint, Dictionary(Of IPoint, Route))
-    'Use ConcurrentDictionary if not thread safe
+    Private OuterDictionary As New Dictionary(Of IPoint, Dictionary(Of IPoint, List(Of Route)))
+
+    Private HOURS_UNTIL_STALE As Double = 0.5
 
     Sub Initialise(NAL As AutomatedAgents.NodesAdjacencyList, RouteFindingMinimiser As RouteFindingMinimiser)
         NodesAdjacencyList = NAL
         Minimiser = RouteFindingMinimiser
     End Sub
 
-
     Function GetRouteIfCached(ByVal FromPoint As IPoint, ByVal ToPoint As IPoint) As Route
-        Dim IntermDict As Dictionary(Of IPoint, Route) = Nothing
-        Dim Route As Route = Nothing
-        If OuterDictionary.TryGetValue(FromPoint, IntermDict) Then
-            IntermDict.TryGetValue(ToPoint, Route)
-        End If
-        Return Route
+        Return GetRouteIfCached(FromPoint, ToPoint, NoticeBoard.Time)
     End Function
-
-    Function GetRoute(ByVal FromPoint As IPoint, ByVal ToPoint As IPoint) As Route
-        Dim Route As Route = GetRouteIfCached(FromPoint, ToPoint)
-        If Route Is Nothing Then
-            Route = New AStarSearch(FromPoint, ToPoint, NodesAdjacencyList, Minimiser).GetRoute
+    Function GetRouteIfCached(ByVal FromPoint As IPoint, ByVal ToPoint As IPoint, ByVal StartTime As TimeSpan) As Route
+        Dim InternalDict As Dictionary(Of IPoint, List(Of Route)) = Nothing
+        Dim RouteList As List(Of Route) = Nothing
+        If OuterDictionary.TryGetValue(FromPoint, InternalDict) Then
+            InternalDict.TryGetValue(ToPoint, RouteList)
+            If RouteList IsNot Nothing Then
+                Return RouteList.Find(Function(R) Math.Abs(R.StartTime.TotalHours - StartTime.TotalHours) < HOURS_UNTIL_STALE)
+            End If
         End If
+        Return Nothing
+    End Function
+    Function GetRoute(ByVal FromPoint As IPoint, ByVal ToPoint As IPoint) As Route
+        Return GetRoute(FromPoint, ToPoint, NoticeBoard.Time)
+    End Function
+    Function GetRoute(ByVal FromPoint As IPoint, ByVal ToPoint As IPoint, ByVal StartTime As TimeSpan) As Route
+        Dim Route As Route = GetRouteIfCached(FromPoint, ToPoint, StartTime)
+        If Route IsNot Nothing Then
+            Return Route
+        End If
+        Route = New AStarSearch(FromPoint, ToPoint, NodesAdjacencyList, Minimiser, StartTime).GetRoute
+
         SyncLock OuterDictionary
-            If Not OuterDictionary.ContainsKey(FromPoint) Then
-                OuterDictionary.Add(FromPoint, New Dictionary(Of IPoint, Route))
+            Dim InternalDict As Dictionary(Of IPoint, List(Of Route)) = Nothing
+            Dim RouteList As List(Of Route) = Nothing
+            OuterDictionary.TryGetValue(FromPoint, InternalDict)
+            If InternalDict Is Nothing Then
+                InternalDict = New Dictionary(Of IPoint, List(Of Route))
+                OuterDictionary.Add(FromPoint, InternalDict)
             End If
-            If Not OuterDictionary(FromPoint).ContainsKey(ToPoint) Then
-                OuterDictionary(FromPoint).Add(ToPoint, Route)
-                RouteCount += 1
+            InternalDict.TryGetValue(ToPoint, RouteList)
+            If RouteList Is Nothing Then
+                RouteList = New List(Of Route)(1) 'Most lists are of length 1.
+                InternalDict.Add(ToPoint, RouteList)
             End If
+            RouteList.Add(Route)
+            RouteCount += 1
+            SimulationParameters.DisplayedDebugVariable = RouteCount
         End SyncLock
         Return Route
     End Function

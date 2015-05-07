@@ -38,7 +38,6 @@
         End Select
     End Function
 
-
     Function GetTimeIndex(ByVal Time As TimeSpan) As Integer
         Dim DayIndex As Integer = Int(Time.TotalDays) Mod 7
         Dim FiveMinuteIndex As Integer = Int(TimeSpan.FromSeconds(Time.TotalSeconds Mod TimeSpan.FromDays(1).TotalSeconds).TotalMinutes) \ 5
@@ -46,7 +45,13 @@
         Return TimeIndex
     End Function
 
-
+    'Micro-optimisation for GetSpeedAtTime, which is called a lot.
+    Private TicksPerWeek As Double = TimeSpan.FromDays(7).Ticks
+    Private TicksPerHour As Double = 1 / TimeSpan.TicksPerHour
+    <Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)>
+    Function GetHourOfWeek(ByVal Time As TimeSpan) As Integer
+        Return Int((Time.Ticks Mod TicksPerWeek) * TicksPerHour)
+    End Function
 
 
     Public Sub SetDoubleBuffered(ByVal c As System.Windows.Forms.Control)

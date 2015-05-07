@@ -104,8 +104,7 @@
         Return GetAverageDelayLength(Node, Way, TimeSpan.FromHours(12))
     End Function
     Public Function GetAverageDelayLength(ByVal Node As Node, ByVal Way As Way, ByVal Time As TimeSpan) As Double
-        Dim HourOfWeek As Integer = Int(TimeSpan.FromTicks(Time.Ticks Mod TimeSpan.FromDays(7).Ticks).TotalHours)
-
+        Dim HourOfWeek As Integer = GetHourOfWeek(Time)
         If Way.Type = WayType.MOTORWAY AndAlso Node.RoadDelay = RoadDelay.UNEXPECTED Then
             Return 0
         End If
