@@ -33,7 +33,7 @@
     End Sub
 
     Private Sub frmMain_Resize(sender As Object, e As EventArgs) Handles Me.Resize
-        If Map IsNot Nothing Then
+        If Map IsNot Nothing And picMap.Width * picMap.Height > 0 Then
             MapGraphics.Resize(picMap.Width, picMap.Height, Map.Bounds)
             SetPictureBox(MapGraphics.DrawMap(Map))
         End If

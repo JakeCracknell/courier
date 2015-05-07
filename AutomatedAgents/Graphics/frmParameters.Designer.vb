@@ -519,10 +519,12 @@ Partial Class frmParameters
         'tbDispatchRate
         '
         Me.tbDispatchRate.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tbDispatchRate.LargeChange = 200
         Me.tbDispatchRate.Location = New System.Drawing.Point(152, 59)
         Me.tbDispatchRate.Maximum = 1000
         Me.tbDispatchRate.Name = "tbDispatchRate"
         Me.tbDispatchRate.Size = New System.Drawing.Size(143, 22)
+        Me.tbDispatchRate.SmallChange = 50
         Me.tbDispatchRate.TabIndex = 7
         Me.tbDispatchRate.TickFrequency = 0
         Me.tbDispatchRate.TickStyle = System.Windows.Forms.TickStyle.None

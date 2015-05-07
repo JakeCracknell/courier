@@ -93,7 +93,7 @@
     End Sub
     Private Sub txtDispatchRate_TextChanged(sender As Object, e As EventArgs) Handles txtDispatchRate.TextChanged
         If IsNumeric(txtDispatchRate.Text) Then
-            Dim txtValue As Integer = CInt(txtDispatchRate.Text) * 100
+            Dim txtValue As Integer = CDec(txtDispatchRate.Text) * 100
             If txtValue >= tbDispatchRate.Minimum And txtValue <= tbDispatchRate.Maximum Then
                 tbDispatchRate.Value = txtValue
                 SimulationParameters.DispatchRateCoefficient = txtValue / 100
