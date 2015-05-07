@@ -11,22 +11,7 @@
         CollectJobs()
 
         If Agent.Plan.IsIdle() Then
-            HopefulJob = FindBestJob()
-            If HopefulJob IsNot Nothing Then
-                HopefulJob.Status = JobStatus.PENDING_PICKUP
-                Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft, Agent.VehicleType, WayPoint.CreateWayPointList(HopefulJob))
-                Agent.PickupPoints.Add(HopefulJob.PickupPosition)
-                SimulationState.NewEvent(Agent.AgentID, LogMessages.JobAwarded(HopefulJob.JobID, Agent.Plan.Routes(0).GetEstimatedHours(NoticeBoard.Time)))
-            Else
-                Exit Sub
-            End If
-        ElseIf HopefulJob IsNot Nothing Then
-            If AGENT_KNOWS_WHEN_JOB_HAS_BEEN_PICKED AndAlso HopefulJob.Status <> JobStatus.PENDING_PICKUP Then
-                'Too late!
-                HopefulJob = Nothing
-                Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft, Agent.VehicleType)
-                Exit Sub
-            End If
+            Exit Sub
         End If
 
         Agent.Plan.Update(False)
@@ -38,7 +23,24 @@
     End Sub
 
     Public Overrides Sub CollectJobs()
-        'TODO
+        If Agent.Plan.IsIdle() Then
+            HopefulJob = FindBestJob()
+            If HopefulJob IsNot Nothing Then
+                HopefulJob.Status = JobStatus.PENDING_PICKUP
+                Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, Agent.RouteFindingMinimiser, _
+                                             Agent.GetVehicleCapacityLeft, Agent.VehicleType, WayPoint.CreateWayPointList(HopefulJob))
+                Agent.PickupPoints.Add(HopefulJob.PickupPosition)
+                SimulationState.NewEvent(Agent.AgentID, LogMessages.JobAwarded(HopefulJob.JobID, Agent.Plan.Routes(0).GetEstimatedHours(NoticeBoard.Time)))
+            End If
+        ElseIf HopefulJob IsNot Nothing Then
+            If AGENT_KNOWS_WHEN_JOB_HAS_BEEN_PICKED AndAlso HopefulJob.Status <> JobStatus.PENDING_PICKUP Then
+                'Too late!
+                HopefulJob = Nothing
+                Agent.Plan = New CourierPlan(Agent.Plan.RoutePosition.GetPoint, Agent.Map, _
+                                             Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft, Agent.VehicleType)
+                Exit Sub
+            End If
+        End If
     End Sub
 
     Function FindBestJob() As CourierJob
