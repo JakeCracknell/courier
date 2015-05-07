@@ -30,11 +30,14 @@
         Me.Routes = RouteList
     End Sub
 
+    'TODO: make routes(0) perfectly optimised wiith admissible h(n)?
     Public Sub RecreateRouteListFromWaypoints()
         Routes = New List(Of Route)
+        Dim WorkingTime As TimeSpan = NoticeBoard.Time
         Dim LastPoint As IPoint = RoutePosition.GetPoint
         For Each W As WayPoint In WayPoints
-            Routes.Add(RouteCache.GetRoute(LastPoint, W.Position))
+            Routes.Add(RouteCache.GetRoute(LastPoint, W.Position, WorkingTime))
+            WorkingTime += Routes.Last.GetEstimatedTime(WorkingTime) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
             LastPoint = W.Position
         Next
     End Sub

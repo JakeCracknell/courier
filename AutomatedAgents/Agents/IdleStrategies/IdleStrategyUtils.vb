@@ -20,7 +20,8 @@
         'Check the top three results
         For i = 0 To FuelPoints.Count - 1
             Dim Route1 As Route = RouteCache.GetRoute(Start, FuelPoints(i))
-            Dim Route2 As Route = RouteCache.GetRoute(FuelPoints(i), EndPoint)
+            Dim Route1Time As TimeSpan = Route1.GetEstimatedTime
+            Dim Route2 As Route = RouteCache.GetRoute(FuelPoints(i), EndPoint, NoticeBoard.Time + Route1Time)
             Dim Cost As Double = Route1.GetCostForAgent(Agent) + Route2.GetCostForAgent(Agent)
             If Cost < BestCost And Route1.GetOptimalFuelUsageWithTraffic(Agent.VehicleType) < Agent.FuelLitres Then
                 BestCost = Cost

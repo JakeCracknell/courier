@@ -132,20 +132,22 @@
 
         'The current cost is 0 if idle or whatever the updated plan says. UpdateAndGetCost() necessary for all policies
         Dim CurrentDrivingCost As Double = If(Solver Is Nothing, 0, Agent.Plan.UpdateAndGetCost())
+        Dim StartingTime As TimeSpan = NoticeBoard.Time + Agent.Plan.GetDiversionTimeEstimate
 
         'Check if the deadline is too slim, even if the agent fulfills it immediately
-        Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, Job.PickupPosition)
-        Dim Route2 As Route = RouteCache.GetRoute(Job.PickupPosition, Job.DeliveryPosition)
-        Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(NoticeBoard.Time)
+        Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition, StartingTime)
+        Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(StartingTime) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
+        Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition, StartingTime + Route1Time)
         Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(NoticeBoard.Time + Route1Time)
-        If NoticeBoard.Time + MinTime > _
-            Job.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
+        If StartingTime + MinTime > _
+            JobToReview.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
             Return NO_BID
         End If
 
-        TentativeSolver = New NNSearchSolver(Agent.Plan, _
-                New SolverPunctualityStrategy(SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_ROUTE), _
-                Agent.RouteFindingMinimiser, Agent.VehicleType, Job)
+        'TentativeSolver = New NNSearchSolver(Agent.Plan, _
+        '        New SolverPunctualityStrategy(SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_ROUTE), _
+        '        Agent.RouteFindingMinimiser, Agent.VehicleType, Job)
+        TentativeSolver = New NNGAPlanner(Agent, Job)
 
         'Solution is Nothing iff impossible to fit into schedule (though as we only use NN, this is often untrue)
         Return If(TentativeSolver.IsSuccessful, TentativeSolver.GetTotalCost - CurrentDrivingCost, NO_BID)

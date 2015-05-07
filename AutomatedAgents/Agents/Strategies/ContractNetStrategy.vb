@@ -85,7 +85,7 @@
                         ElseIf Job.Status = JobStatus.PENDING_DELIVERY Then
                             'Customer is not in -> deliver to nearest depot.
                             Dim DepotWaypoint As WayPoint = WayPoint.MakeFailedDeliveryWaypoint(Agent, Job)
-                            Dim ImmediateRouteToDepot As Route = RouteCache.GetRoute(Agent.Plan.StartPoint, DepotWaypoint.Position)
+
 
                             Select Case Policy
                                 Case ContractNetPolicy.CNP1, ContractNetPolicy.CNP2, ContractNetPolicy.CNP3
@@ -95,18 +95,19 @@
                                 Case ContractNetPolicy.CNP4
                                     'Go to the depot whenever it is optimal.
                                     Agent.Plan.WayPoints.Add(DepotWaypoint)
-                                    'Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser, Agent.VehicleType)
                                     Dim Solver As New NNGAPlanner(Agent)
                                     Agent.Plan = Solver.GetPlan
                                     Debug.Assert(Agent.Plan IsNot Nothing)
                                 Case ContractNetPolicy.CNP5
                                     'Try to replan and avoid late deliveries.
-                                    Agent.Plan.WayPoints.Add(DepotWaypoint)
+                                    Agent.Plan.WayPoints.Add(DepotWaypoint) 'TODO START HERE                                     Dim Solver As New NNGAPlanner(Agent)
+
                                     Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.REDUNDANCY_TIME), Agent.RouteFindingMinimiser, Agent.VehicleType)
                                     Agent.Plan = If(Solver.GetPlan, CNP5Contingency())
                                     Debug.Assert(Agent.Plan IsNot Nothing)
                             End Select
-                            SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliveryFail(Job.JobID, ImmediateRouteToDepot.GetKM))
+                            SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliveryFail(Job.JobID, _
+                                           HaversineDistance(Agent.Plan.StartPoint, DepotWaypoint.Position)))
                         End If
                 End Select
             End If
