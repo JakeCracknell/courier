@@ -116,7 +116,7 @@
                     Continue For
                 End If
 
-                Dim Route As Route = RouteCache.GetRoute(Node.State.Point, W.Position) 'TODO: at time.
+                Dim Route As Route = RouteCache.GetRoute(Node.State.Point, W.Position, Node.State.Time)
                 NextState.Time = Node.State.Time + Route.GetEstimatedTime + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX)
 
                 'If any jobs' deadlines (not just the current waypoint's) come before the time of this route, 
@@ -156,7 +156,7 @@
         Dim WaypointsLeft As New List(Of WayPoint)(_AllWaypoints)
         Dim CapacityLeft As Double = _Agent.GetVehicleCapacityLeft
         Dim Position As HopPosition = _Start
-        Dim Time As TimeSpan = NoticeBoard.Time
+        Dim Time As TimeSpan = NoticeBoard.Time + _OldPlan.GetDiversionTimeEstimate
 
         For i = 0 To _WaypointsToLock - 1
             Dim NextWaypoint As WayPoint = _OldPlan.WayPoints(i)
@@ -176,10 +176,10 @@
                     Not WaypointsLeft.Contains(W.Predecessor)). _
                         OrderBy(Function(W) HaversineDistance(Position, W.Position)). _
                             Take(NEAREST_NEIGHBOUR_ROUTES_TO_CALCULATE). _
-                            OrderBy(Function(W) RouteCache.GetRoute(Position, W.Position).GetCostForAgent(_Agent, Time))
+                            OrderBy(Function(W) RouteCache.GetRoute(Position, W.Position, Time).GetCostForAgent(_Agent, Time))
 
             Dim NextWaypoint As WayPoint = OrderedWaypoints(0)
-            Dim Route As Route = RouteCache.GetRoute(Position, NextWaypoint.Position)
+            Dim Route As Route = RouteCache.GetRoute(Position, NextWaypoint.Position, Time)
             WaypointsLeft.Remove(NextWaypoint)
             WaypointListSolution.Add(NextWaypoint)
             TotalStraightLineDistance += HaversineDistance(Position, NextWaypoint.Position)
@@ -231,7 +231,7 @@
         Dim Distance As Double = 0
         Dim Latenesses As Integer = 0
         Dim LastPoint As IPoint = _Start
-        Dim Time As TimeSpan = NoticeBoard.Time
+        Dim Time As TimeSpan = NoticeBoard.Time + _OldPlan.GetDiversionTimeEstimate
         For Each WayPoint As WayPoint In Solution
             Distance += HaversineDistance(LastPoint, WayPoint.Position)
             Time += TimeSpan.FromHours(Distance / _HaversineToTimeRatio)

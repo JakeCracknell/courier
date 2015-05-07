@@ -135,12 +135,12 @@
         Dim StartingTime As TimeSpan = NoticeBoard.Time + Agent.Plan.GetDiversionTimeEstimate
 
         'Check if the deadline is too slim, even if the agent fulfills it immediately
-        Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition, StartingTime)
+        Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, Job.PickupPosition, StartingTime)
         Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(StartingTime) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
-        Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition, StartingTime + Route1Time)
+        Dim Route2 As Route = RouteCache.GetRoute(Job.PickupPosition, Job.DeliveryPosition, StartingTime + Route1Time)
         Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(NoticeBoard.Time + Route1Time)
         If StartingTime + MinTime > _
-            JobToReview.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
+            Job.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
             Return NO_BID
         End If
 

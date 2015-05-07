@@ -100,10 +100,10 @@
                                     Debug.Assert(Agent.Plan IsNot Nothing)
                                 Case ContractNetPolicy.CNP5
                                     'Try to replan and avoid late deliveries.
-                                    Agent.Plan.WayPoints.Add(DepotWaypoint) 'TODO START HERE                                     Dim Solver As New NNGAPlanner(Agent)
+                                    Agent.Plan.WayPoints.Add(DepotWaypoint)
 
-                                    Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.REDUNDANCY_TIME), Agent.RouteFindingMinimiser, Agent.VehicleType)
-                                    Agent.Plan = If(Solver.GetPlan, CNP5Contingency())
+                                    Dim Planner As New NNGAPlanner(Agent)
+                                    Agent.Plan = If(Planner.IsSuccessful, Planner.GetPlan, CNP5Contingency())
                                     Debug.Assert(Agent.Plan IsNot Nothing)
                             End Select
                             SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliveryFail(Job.JobID, _
@@ -132,7 +132,7 @@
             End If
         Next
         If ReallocatableJobs.Count > 0 Then
-            'Order jobs by time left minus how long the route could take.
+            'Order jobs by time left minus how long the original planned route could take (given current traffic).
             ReallocatableJobs = ReallocatableJobs.OrderBy(Function(Job)
                                                               Return Job.Deadline - _
                                                                   Job.GetDirectRoute.GetEstimatedTime(NoticeBoard.Time)
@@ -144,10 +144,11 @@
             Agent.Plan.WayPoints.Clear()
             Agent.Plan.WayPoints.AddRange(WayPoint.CreateWayPointList(NecessaryJobs))
             Agent.Plan.WayPoints.AddRange(WayPoint.CreateWayPointList(JobsThatNoOtherAgentsCouldFulfil))
+            Agent.Plan.RecreateRouteListFromWaypoints()
         End If
 
-        Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser, Agent.VehicleType)
-        Return Solver.GetPlan
+        Dim Planner As New NNGAPlanner(Agent)
+        Return Planner.GetPlan
     End Function
 
 End Class
