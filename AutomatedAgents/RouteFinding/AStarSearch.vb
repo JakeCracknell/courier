@@ -161,8 +161,9 @@
                 Case RouteFindingMinimiser.TIME_NO_TRAFFIC
                     TotalCost += Hop.GetMinimumTravelTime
                 Case RouteFindingMinimiser.TIME_WITH_TRAFFIC
-                    TotalCost += Hop.GetEstimatedTravelTimeAtTime(WallTime)
-                    WallTime += TimeSpan.FromHours(Hop.GetEstimatedTravelTimeAtTime(WallTime)) 'Includes delay
+                    Dim HopTime As Double = Hop.GetEstimatedTravelTimeAtTime(WallTime)
+                    TotalCost += HopTime
+                    WallTime += TimeSpan.FromHours(HopTime)
                 Case RouteFindingMinimiser.FUEL_NO_TRAFFIC
                     TotalCost += Hop.GetOptimalFuelUsage()
                 Case RouteFindingMinimiser.FUEL_WITH_TRAFFIC

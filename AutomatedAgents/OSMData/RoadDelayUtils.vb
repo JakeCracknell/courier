@@ -77,7 +77,7 @@
     End Function
 
     Function PeriodicDelayHelper(ByVal IDSeed As Long, ByVal Time As TimeSpan, ByVal Period As Integer, ByVal Length As Integer, ByVal Coefficient As Double) As Boolean
-        Dim HourOfWeek As Integer = Int(TimeSpan.FromTicks(Time.Ticks Mod TimeSpan.FromDays(7).Ticks).TotalHours)
+        Dim HourOfWeek As Integer = GetHourOfWeek(Time)
         Dim Seed As Long = (Time.TotalSeconds \ Period) + IDSeed
         Dim RNG As New Random(Seed Mod Integer.MaxValue)
 
