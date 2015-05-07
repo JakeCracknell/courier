@@ -1,4 +1,4 @@
-﻿Public Class NearestNeighbourSolver
+﻿Public Class NearestNeighbourPlanner
     Private Map As StreetMap = Nothing
     Private Minimiser As RouteFindingMinimiser = Nothing
 

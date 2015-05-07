@@ -14,8 +14,8 @@
         Dim NewJob As CourierJob = Contractor.CollectJob
         If NewJob IsNot Nothing Then
             Agent.Plan.Update(True)
-            Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser, Agent.VehicleType, NewJob)
-            Agent.Plan = Solver.GetPlan
+            Dim Planner As New NNGAPlanner(Agent, True, NewJob)
+            Agent.Plan = Planner.GetPlan
             Agent.PickupPoints.Add(NewJob.PickupPosition)
         End If
 
@@ -41,7 +41,7 @@
                             Dim OldCost As Double = Agent.Plan.CostScore
                             Agent.Plan.ExtractCancelled()
                             Dim TriangleInequalityCost As Double = Agent.Plan.CostScore
-                            Dim Replan As CourierPlan = New NNGAPlanner(Agent).GetPlan
+                            Dim Replan As CourierPlan = New NNGAPlanner(Agent, True).GetPlan
                             Dim ReplanCost As Double = Replan.CostScore
                             If ReplanCost < TriangleInequalityCost Then
                                 Agent.Plan = Replan
@@ -74,8 +74,8 @@
 
                             'Go to the depot whenever it is optimal.
                             Agent.Plan.WayPoints.Add(DepotWaypoint)
-                            Dim Solver As New NNSearchSolver(Agent.Plan, New SolverPunctualityStrategy(SolverPunctualityStrategy.PStrategy.MINIMISE_LATE_DELIVERIES), Agent.RouteFindingMinimiser, Agent.VehicleType)
-                            Agent.Plan = Solver.GetPlan
+                            Dim Planner As New NNGAPlanner(Agent, True)
+                            Agent.Plan = Planner.GetPlan
                             Debug.Assert(Agent.Plan IsNot Nothing)
                                 
                             SimulationState.NewEvent(Agent.AgentID, LogMessages.DeliveryFail(Job.JobID, ImmediateRouteToDepot.GetKM))

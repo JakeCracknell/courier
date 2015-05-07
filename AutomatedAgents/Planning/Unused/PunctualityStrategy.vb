@@ -1,4 +1,4 @@
-﻿Public Class SolverPunctualityStrategy
+﻿Public Class PunctualityStrategy
     Enum PStrategy
         REDUNDANCY_TIME
         MINIMISE_LATENESS_TOTAL

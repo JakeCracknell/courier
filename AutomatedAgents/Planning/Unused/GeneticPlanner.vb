@@ -1,5 +1,5 @@
 ﻿Public Class GeneticPlanner
-    Implements ISolver
+    Implements IPlanner
 
     Private _OldPlan As CourierPlan
     Private _Start As HopPosition
@@ -230,15 +230,15 @@
 
 
 
-    Public Function GetPlan() As CourierPlan Implements ISolver.GetPlan
+    Public Function GetPlan() As CourierPlan Implements IPlanner.GetPlan
         Return _NewPlan
     End Function
 
-    Public Function GetTotalCost() As Double Implements ISolver.GetTotalCost
+    Public Function GetTotalCost() As Double Implements IPlanner.GetTotalCost
         Return _NewPlan.UpdateAndGetCost
     End Function
 
-    Public Function IsSuccessful() As Boolean Implements ISolver.IsSuccessful
+    Public Function IsSuccessful() As Boolean Implements IPlanner.IsSuccessful
         Return Not _NewPlan.IsBehindSchedule
     End Function
 End Class

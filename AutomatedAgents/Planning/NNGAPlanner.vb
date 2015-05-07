@@ -1,5 +1,5 @@
 ﻿Public Class NNGAPlanner
-    Implements ISolver
+    Implements IPlanner
 
     Private _OldPlan As CourierPlan
     Private _NewPlan As CourierPlan
@@ -18,12 +18,12 @@
     Private Const NEAREST_NEIGHBOUR_ROUTES_TO_CALCULATE As Integer = 3
     Private Const GENETIC_ALGORITHM_GENERATION_COUNT As Integer = 500
 
-    Sub New(ByVal Agent As Agent, Optional ByVal ExtraJob As CourierJob = Nothing)
+    Sub New(ByVal Agent As Agent, ByVal RunGeneticAlgorithm As Boolean, Optional ByVal ExtraJob As CourierJob = Nothing)
         _Agent = Agent
         _OldPlan = Agent.Plan
         _Start = _OldPlan.RoutePosition.GetPoint
         _AllWaypoints = New List(Of WayPoint)(_OldPlan.WayPoints)
-        _RunGeneticAlgorithm = ExtraJob Is Nothing
+        _RunGeneticAlgorithm = RunGeneticAlgorithm
         If ExtraJob IsNot Nothing Then
             _ExtraJob = ExtraJob
             _AllWaypoints.AddRange(WayPoint.CreateWayPointList(ExtraJob))
@@ -317,15 +317,15 @@
     End Class
 
 
-    Public Function GetPlan() As CourierPlan Implements ISolver.GetPlan
+    Public Function GetPlan() As CourierPlan Implements IPlanner.GetPlan
         Return _NewPlan
     End Function
 
-    Public Function GetTotalCost() As Double Implements ISolver.GetTotalCost
+    Public Function GetTotalCost() As Double Implements IPlanner.GetTotalCost
         Return _NewPlan.UpdateAndGetCost
     End Function
 
-    Public Function IsSuccessful() As Boolean Implements ISolver.IsSuccessful
+    Public Function IsSuccessful() As Boolean Implements IPlanner.IsSuccessful
         Return _NewPlan IsNot Nothing AndAlso Not _NewPlan.IsBehindSchedule
     End Function
 End Class

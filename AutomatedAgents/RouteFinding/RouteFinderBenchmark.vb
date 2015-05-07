@@ -28,7 +28,7 @@ Module RouteFinderBenchmark
 
     Private Class RouteFinderBenchmarkEngine
         Sub RunAsync()
-            Threading.ThreadPool.QueueUserWorkItem(AddressOf PlannerTestEasy)
+            Threading.ThreadPool.QueueUserWorkItem(AddressOf BenchmarkAStarEpsilon)
         End Sub
 
         Protected Sub Test()
@@ -137,7 +137,7 @@ Module RouteFinderBenchmark
                     String.Format(BENCHMARK_MSGBOX_FORMAT, CompletedRoutes1, TotalMS1, TotalMS1 / CompletedRoutes1))
         End Sub
 
-        Protected Sub BenchmarkAStarHeuristicMultiplier()
+        Protected Sub BenchmarkAStarEpsilon()
             Dim OldAccelerator As Double = SimulationParameters.AStarAccelerator
 
             Dim t As Stopwatch = Stopwatch.StartNew
@@ -225,7 +225,7 @@ Module RouteFinderBenchmark
             OldPlan.RecreateRouteListFromWaypoints()
             A.Plan = OldPlan
 
-            Dim Planner As New GeneticPlanner(A)
+            Dim Planner As New NNGAPlanner(A, True)
             Dim NewPlan As CourierPlan = Planner.GetPlan
             MsgBox(Planner.GetTotalCost + NewPlan.LateWaypointsCount * 1000)
         End Sub

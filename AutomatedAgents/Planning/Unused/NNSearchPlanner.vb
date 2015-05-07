@@ -1,16 +1,16 @@
-﻿Public Class NNSearchSolver
-    Implements ISolver
+﻿Public Class NNSearchPlanner
+    Implements IPlanner
 
     Private VehicleType As Vehicles.Type
     Private Minimiser As RouteFindingMinimiser
-    Private PunctualityStrategy As SolverPunctualityStrategy
+    Private PunctualityStrategy As PunctualityStrategy
     Private StartState As CourierPlanState
     Public OldPlan As CourierPlan
     Private Solution As CourierPlan
     Private TotalCost As Double
     Private Shared r As Random
 
-    Sub New(ByVal CourierPlan As CourierPlan, ByVal PunctualityStrategy As SolverPunctualityStrategy, ByVal Minimiser As RouteFindingMinimiser, ByVal VehicleType As Vehicles.Type, Optional ByVal ExtraJob As CourierJob = Nothing)
+    Sub New(ByVal CourierPlan As CourierPlan, ByVal PunctualityStrategy As PunctualityStrategy, ByVal Minimiser As RouteFindingMinimiser, ByVal VehicleType As Vehicles.Type, Optional ByVal ExtraJob As CourierJob = Nothing)
         r = RNG.R("nnsearch")
         OldPlan = CourierPlan
         Me.Minimiser = Minimiser
@@ -316,7 +316,7 @@
             Exit Sub
         End If
 
-        If PunctualityStrategy.Strategy = SolverPunctualityStrategy.PStrategy.REDUNDANCY_TIME Then
+        If PunctualityStrategy.Strategy = PunctualityStrategy.PStrategy.REDUNDANCY_TIME Then
             Solution = Nothing
             Exit Sub
         Else
@@ -409,15 +409,15 @@ FailedMutation:
 
     End Class
 
-    Public Function GetPlan() As CourierPlan Implements ISolver.GetPlan
+    Public Function GetPlan() As CourierPlan Implements IPlanner.GetPlan
         Return Solution
     End Function
 
-    Public Function GetTotalCost() As Double Implements ISolver.GetTotalCost
+    Public Function GetTotalCost() As Double Implements IPlanner.GetTotalCost
         Return TotalCost
     End Function
 
-    Public Function IsSuccessful() As Boolean Implements ISolver.IsSuccessful
+    Public Function IsSuccessful() As Boolean Implements IPlanner.IsSuccessful
         Return Solution IsNot Nothing
     End Function
 End Class

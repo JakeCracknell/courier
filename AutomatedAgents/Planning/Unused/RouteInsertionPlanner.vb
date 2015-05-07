@@ -1,4 +1,4 @@
-﻿Public Class RouteInsertionSolver
+﻿Public Class RouteInsertionPlanner
     Private Const SECONDS_PER_KM_STRAIGHTLINE As Double = 55.987558 '40 mph
 
     Private Map As StreetMap = Nothing

@@ -48,7 +48,7 @@
                             Dim OldCost As Double = Agent.Plan.CostScore
                             Agent.Plan.ExtractCancelled()
                             Dim TriangleInequalityCost As Double = Agent.Plan.CostScore
-                            Dim Replan As CourierPlan = New NNGAPlanner(Agent).GetPlan
+                            Dim Replan As CourierPlan = New NNGAPlanner(Agent, True).GetPlan
                             Dim ReplanCost As Double = Replan.CostScore
                             If ReplanCost < TriangleInequalityCost Then
                                 Agent.Plan = Replan

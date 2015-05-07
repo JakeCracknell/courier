@@ -7,10 +7,10 @@
     Private CurrentBid As Double = NO_BID
     Private AwardedJob As CourierJob = Nothing
     Private Agent As Agent
-    Private TentativeSolver As ISolver = Nothing
+    Private TentativePlanner As IPlanner = Nothing
     Private Policy As ContractNetPolicy
 
-    Property Solver As ISolver = Nothing
+    Property Planner As IPlanner = Nothing
 
     Sub New(ByVal Agent As Agent, ByVal Policy As ContractNetPolicy)
         Me.Agent = Agent
@@ -35,7 +35,7 @@
         End If
 
         'The current cost is 0 if idle or whatever the updated plan says. UpdateAndGetCost() necessary for all policies
-        Dim CurrentDrivingCost As Double = If(Solver Is Nothing, 0, Agent.Plan.UpdateAndGetCost())
+        Dim CurrentDrivingCost As Double = If(Planner Is Nothing, 0, Agent.Plan.UpdateAndGetCost())
         Dim StartingTime As TimeSpan = NoticeBoard.Time + Agent.Plan.GetDiversionTimeEstimate
         Select Case Policy
             Case ContractNetPolicy.CNP1
@@ -70,10 +70,10 @@
                 End If
                 CurrentBid = Route1.GetCostForAgent(Agent) + Route2.GetCostForAgent(Agent)
             Case ContractNetPolicy.CNP3
-                TentativeSolver = New CNP3Solver(Agent, JobToReview)
+                TentativePlanner = New CNP3Planner(Agent, JobToReview)
 
                 'Solution is Nothing iff impossible to fit into schedule (though as we only use NN, this is often untrue)
-                CurrentBid = If(TentativeSolver.IsSuccessful, TentativeSolver.GetTotalCost - CurrentDrivingCost, NO_BID)
+                CurrentBid = If(TentativePlanner.IsSuccessful, TentativePlanner.GetTotalCost - CurrentDrivingCost, NO_BID)
 
             Case ContractNetPolicy.CNP4, ContractNetPolicy.CNP5
                 'Check if the deadline is too slim, even if the agent fulfills it immediately
@@ -86,13 +86,13 @@
                     Exit Sub
                 End If
 
-                TentativeSolver = New NNGAPlanner(Agent, JobToReview)
+                TentativePlanner = New NNGAPlanner(Agent, False, JobToReview)
 
                 'Solution is Nothing iff impossible to fit into schedule (though as we only use NN, this is often untrue)
-                CurrentBid = If(TentativeSolver.IsSuccessful, TentativeSolver.GetTotalCost - CurrentDrivingCost, NO_BID)
+                CurrentBid = If(TentativePlanner.IsSuccessful, TentativePlanner.GetTotalCost - CurrentDrivingCost, NO_BID)
         End Select
 
-        'Sometimes the solver will be directed to a lower cost route with this new job, making the difference negative.
+        'Sometimes the planner will be directed to a lower cost route with this new job, making the difference negative.
         CurrentBid = If(CurrentBid <> NO_BID, Math.Max(0, CurrentBid), NO_BID)
     End Sub
 
@@ -112,7 +112,7 @@
     End Function
 
     Function CollectJob() As CourierJob Implements IContractor.CollectJob
-        Solver = TentativeSolver
+        Planner = TentativePlanner
         Dim Temp As CourierJob = AwardedJob
         AwardedJob = Nothing
         Return Temp
@@ -121,7 +121,7 @@
     Function CNP5ImmediateBid(ByVal Job As CourierJob) As Double
         'In case a job has just been awarded and the CNP strategy has not called CollectJob yet.
         If AwardedJob IsNot Nothing Then
-            Agent.Plan = TentativeSolver.GetPlan
+            Agent.Plan = TentativePlanner.GetPlan
             AwardedJob = Nothing
         End If
 
@@ -131,7 +131,7 @@
         End If
 
         'The current cost is 0 if idle or whatever the updated plan says. UpdateAndGetCost() necessary for all policies
-        Dim CurrentDrivingCost As Double = If(Solver Is Nothing, 0, Agent.Plan.UpdateAndGetCost())
+        Dim CurrentDrivingCost As Double = If(Planner Is Nothing, 0, Agent.Plan.UpdateAndGetCost())
         Dim StartingTime As TimeSpan = NoticeBoard.Time + Agent.Plan.GetDiversionTimeEstimate
 
         'Check if the deadline is too slim, even if the agent fulfills it immediately
@@ -144,17 +144,14 @@
             Return NO_BID
         End If
 
-        'TentativeSolver = New NNSearchSolver(Agent.Plan, _
-        '        New SolverPunctualityStrategy(SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_ROUTE), _
-        '        Agent.RouteFindingMinimiser, Agent.VehicleType, Job)
-        TentativeSolver = New NNGAPlanner(Agent, Job)
+        TentativePlanner = New NNGAPlanner(Agent, False, Job)
 
         'Solution is Nothing iff impossible to fit into schedule (though as we only use NN, this is often untrue)
-        Return If(TentativeSolver.IsSuccessful, TentativeSolver.GetTotalCost - CurrentDrivingCost, NO_BID)
+        Return If(TentativePlanner.IsSuccessful, TentativePlanner.GetTotalCost - CurrentDrivingCost, NO_BID)
     End Function
     Sub CNP5ImmediateAward()
-        Debug.Assert(TentativeSolver IsNot Nothing AndAlso TentativeSolver.GetPlan IsNot Nothing)
-        Agent.Plan = TentativeSolver.GetPlan
+        Debug.Assert(TentativePlanner IsNot Nothing AndAlso TentativePlanner.GetPlan IsNot Nothing)
+        Agent.Plan = TentativePlanner.GetPlan
     End Sub
 
     Public Function GetID() As Integer Implements IContractor.GetID

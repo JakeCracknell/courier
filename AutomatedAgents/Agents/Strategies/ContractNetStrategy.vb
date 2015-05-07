@@ -24,7 +24,7 @@
                     Agent.Plan.WayPoints.AddRange(WayPoint.CreateWayPointList(NewJob))
                     Agent.Plan.RecreateRouteListFromWaypoints()
                 Case ContractNetPolicy.CNP3, ContractNetPolicy.CNP4, ContractNetPolicy.CNP5
-                    Agent.Plan = Contractor.Solver.GetPlan
+                    Agent.Plan = Contractor.Planner.GetPlan
                     'With CNP5, the agent may have been awarded a new, fresh job, but
                     'if it has been transferred a job from another agent, CollectJob
                     'would return null. Agent.Plan would have already been updated.
@@ -56,7 +56,7 @@
                             Dim OldCost As Double = Agent.Plan.CostScore
                             Agent.Plan.ExtractCancelled()
                             Dim TriangleInequalityCost As Double = Agent.Plan.CostScore
-                            Dim Replan As CourierPlan = New NNGAPlanner(Agent).GetPlan
+                            Dim Replan As CourierPlan = New NNGAPlanner(Agent, True).GetPlan
                             Dim ReplanCost As Double = Replan.CostScore
                             If ReplanCost < TriangleInequalityCost Then
                                 Agent.Plan = Replan
@@ -95,14 +95,14 @@
                                 Case ContractNetPolicy.CNP4
                                     'Go to the depot whenever it is optimal.
                                     Agent.Plan.WayPoints.Add(DepotWaypoint)
-                                    Dim Solver As New NNGAPlanner(Agent)
-                                    Agent.Plan = Solver.GetPlan
+                                    Dim Planner As New NNGAPlanner(Agent, True)
+                                    Agent.Plan = Planner.GetPlan
                                     Debug.Assert(Agent.Plan IsNot Nothing)
                                 Case ContractNetPolicy.CNP5
                                     'Try to replan and avoid late deliveries.
                                     Agent.Plan.WayPoints.Add(DepotWaypoint)
 
-                                    Dim Planner As New NNGAPlanner(Agent)
+                                    Dim Planner As New NNGAPlanner(Agent, True)
                                     Agent.Plan = If(Planner.IsSuccessful, Planner.GetPlan, CNP5Contingency())
                                     Debug.Assert(Agent.Plan IsNot Nothing)
                             End Select
@@ -147,7 +147,7 @@
             Agent.Plan.RecreateRouteListFromWaypoints()
         End If
 
-        Dim Planner As New NNGAPlanner(Agent)
+        Dim Planner As New NNGAPlanner(Agent, True)
         Return Planner.GetPlan
     End Function
 

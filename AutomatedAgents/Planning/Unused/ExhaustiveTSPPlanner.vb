@@ -1,4 +1,4 @@
-﻿Public Class TSPSolver
+﻿Public Class ExhaustiveTSPPlanner
 
     Private Map As StreetMap = Nothing
     Private Minimiser As RouteFindingMinimiser = Nothing

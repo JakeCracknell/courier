@@ -111,14 +111,14 @@
             Exit Sub
         End If
 
-        Dim CurrentRouteDistance As Double = New NearestNeighbourSolver(Agent.Position.GetPoint, Agent.AssignedJobs, Agent.GetVehicleCapacityLeft).NNCost
+        Dim CurrentRouteDistance As Double = New NearestNeighbourPlanner(Agent.Position.GetPoint, Agent.AssignedJobs, Agent.GetVehicleCapacityLeft).NNCost
         For i = UnallocatedJobs.Count - 1 To 0 Step -1
             Dim Job As CourierJob = UnallocatedJobs(i)
             Dim JobsToPlan As New List(Of CourierJob)(Agent.AssignedJobs.Count)
             JobsToPlan.AddRange(Agent.AssignedJobs)
             JobsToPlan.Add(Job)
 
-            Dim NNS As New NearestNeighbourSolver(Agent.Position.GetPoint, JobsToPlan, Agent.GetVehicleCapacityLeft)
+            Dim NNS As New NearestNeighbourPlanner(Agent.Position.GetPoint, JobsToPlan, Agent.GetVehicleCapacityLeft)
             If NNS.PointList IsNot Nothing Then
                 'A route exists that conforms to deadlines and vehicle capacity
                 Dim MarginalCost As Double = NNS.NNCost - CurrentRouteDistance
@@ -137,7 +137,7 @@
     End Sub
 
     Private Sub RecalculateRoute(ByVal Position As RoutePosition)
-        Dim NNS As New NearestNeighbourSolver(Position.GetPoint, Agent.AssignedJobs, Agent.GetVehicleCapacityLeft)
+        Dim NNS As New NearestNeighbourPlanner(Position.GetPoint, Agent.AssignedJobs, Agent.GetVehicleCapacityLeft)
         If NNS.PointList IsNot Nothing Then
             PlannedRoute = NNS.PointList
             PlannedJobRoute = NNS.JobList

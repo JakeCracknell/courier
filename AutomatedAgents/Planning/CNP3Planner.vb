@@ -1,5 +1,5 @@
-﻿Public Class CNP3Solver
-    Implements ISolver
+﻿Public Class CNP3Planner
+    Implements IPlanner
 
     Private Solution As CourierPlan = Nothing
     Private Agent As Agent
@@ -78,15 +78,15 @@
         Solution = New CourierPlan(Agent.Plan.StartPoint, Agent.Map, Agent.RouteFindingMinimiser, Agent.GetVehicleCapacityLeft, Agent.VehicleType, WayPoints)
     End Sub
 
-    Public Function GetPlan() As CourierPlan Implements ISolver.GetPlan
+    Public Function GetPlan() As CourierPlan Implements IPlanner.GetPlan
         Return Solution
     End Function
 
-    Public Function GetTotalCost() As Double Implements ISolver.GetTotalCost
+    Public Function GetTotalCost() As Double Implements IPlanner.GetTotalCost
         Return TotalCost
     End Function
 
-    Public Function IsSuccessful() As Boolean Implements ISolver.IsSuccessful
+    Public Function IsSuccessful() As Boolean Implements IPlanner.IsSuccessful
         Return Solution IsNot Nothing
     End Function
 End Class
