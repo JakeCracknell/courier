@@ -36,16 +36,16 @@
 
         'The current cost is 0 if idle or whatever the updated plan says. UpdateAndGetCost() necessary for all policies
         Dim CurrentDrivingCost As Double = If(Solver Is Nothing, 0, Agent.Plan.UpdateAndGetCost())
-
+        Dim StartingTime As TimeSpan = NoticeBoard.Time + Agent.Plan.GetDiversionTimeEstimate
         Select Case Policy
             Case ContractNetPolicy.CNP1
                 'Only if idle, bid S->A->B cost. No bid if cannot be done on time
                 If Agent.Plan.IsIdle() Then
-                    Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition)
-                    Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
-                    Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(NoticeBoard.Time)
-                    Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(NoticeBoard.Time + Route1Time)
-                    If NoticeBoard.Time + Agent.Plan.GetDiversionTimeEstimate + MinTime > _
+                    Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition, StartingTime)
+                    Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(StartingTime) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
+                    Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition, StartingTime + Route1Time)
+                    Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(StartingTime + Route1Time)
+                    If StartingTime + MinTime > _
                         JobToReview.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
                         Exit Sub
                     End If
@@ -53,18 +53,19 @@
                 End If
             Case ContractNetPolicy.CNP2
                 'Sum current route times and bid only if the job can be done by the deadline. Bid the cost of appending it to the end of its route.
-                'It will still bid if older jobs are goinjg to be delivered late. It only care sabout the new one :).
+                'It will still bid if older jobs are going to be delivered late. It only cares about the new one :).
                 Dim TimeSum As TimeSpan = TimeSpan.Zero
                 For Each R As Route In Agent.Plan.Routes
-                    TimeSum += R.GetEstimatedTime(NoticeBoard.Time + TimeSum) + SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB
+                    TimeSum += R.GetEstimatedTime(StartingTime + TimeSum) + _
+                        SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB + _
+                            TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
                 Next
                 Dim StartingPoint As IPoint = If(Agent.Plan.IsIdle, Agent.Plan.RoutePosition.GetPoint, Agent.Plan.WayPoints.Last.Position)
-                Dim Route1 As Route = RouteCache.GetRoute(StartingPoint, JobToReview.PickupPosition) 'TODO use timesum for route
-                Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(NoticeBoard.Time + TimeSum)
-                TimeSum += Route1Time
-                Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition) 'TODO use timesum for route
-                TimeSum += Route2.GetEstimatedTime(NoticeBoard.Time + TimeSum)
-                If NoticeBoard.Time + Agent.Plan.GetDiversionTimeEstimate + TimeSum > JobToReview.Deadline Then
+                Dim Route1 As Route = RouteCache.GetRoute(StartingPoint, JobToReview.PickupPosition, StartingTime + TimeSum)
+                TimeSum += Route1.GetEstimatedTime(StartingTime + TimeSum) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
+                Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition, StartingTime + TimeSum)
+                TimeSum += Route2.GetEstimatedTime(StartingTime + TimeSum)
+                If StartingTime + TimeSum > JobToReview.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
                     Exit Sub
                 End If
                 CurrentBid = Route1.GetCostForAgent(Agent) + Route2.GetCostForAgent(Agent)
@@ -76,23 +77,19 @@
 
             Case ContractNetPolicy.CNP4, ContractNetPolicy.CNP5
                 'Check if the deadline is too slim, even if the agent fulfills it immediately
-                Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition)
-                Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition)
-                Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(NoticeBoard.Time)
+                Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition, StartingTime)
+                Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(StartingTime) + TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_AVG)
+                Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition, StartingTime + Route1Time)
                 Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(NoticeBoard.Time + Route1Time)
-                If NoticeBoard.Time + MinTime > _
+                If StartingTime + MinTime > _
                     JobToReview.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB Then
                     Exit Sub
                 End If
 
-                'TentativeSolver = New NNSearchSolver(Agent.Plan, _
-                '        New SolverPunctualityStrategy(SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_ROUTE), _
-                '        Agent.RouteFindingMinimiser, Agent.VehicleType, JobToReview)
                 TentativeSolver = New NNGAPlanner(Agent, JobToReview)
 
                 'Solution is Nothing iff impossible to fit into schedule (though as we only use NN, this is often untrue)
                 CurrentBid = If(TentativeSolver.IsSuccessful, TentativeSolver.GetTotalCost - CurrentDrivingCost, NO_BID)
-
         End Select
 
         'Sometimes the solver will be directed to a lower cost route with this new job, making the difference negative.

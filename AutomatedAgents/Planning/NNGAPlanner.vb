@@ -16,6 +16,7 @@
 
     Private Const MAX_FAILED_NNS_BRANCHES As Integer = 720
     Private Const NEAREST_NEIGHBOUR_ROUTES_TO_CALCULATE As Integer = 3
+    Private Const GENETIC_ALGORITHM_GENERATION_COUNT As Integer = 500
 
     Sub New(ByVal Agent As Agent, Optional ByVal ExtraJob As CourierJob = Nothing)
         _Agent = Agent
@@ -34,6 +35,7 @@
     Private Sub Solve()
         BuildStartState()
 
+        'Enough computation time? Do GA regardless of NNS working and pick best of two.
         Dim Solution As List(Of WayPoint) = SolveUsingNNBFS()
         If Solution Is Nothing Then
             If _RunGeneticAlgorithm Then
@@ -46,8 +48,6 @@
         If Solution IsNot Nothing Then
             _NewPlan = New CourierPlan(_OldPlan.StartPoint, _Agent.Map, _OldPlan.Minimiser, _OldPlan.CapacityLeft, _Agent.VehicleType, Solution)
         End If
-
-
     End Sub
 
     'This protects against a rare edge case that would otherwise force an agent to pickup from a locked waypoint when it does not have enough capacity.
@@ -104,8 +104,8 @@
                     Not Node.State.WayPointsLeft.Contains(W.Predecessor)). _
                          OrderBy(Function(W) HaversineDistance(Node.State.Point, W.Position)). _
                             Take(NEAREST_NEIGHBOUR_ROUTES_TO_CALCULATE). _
-                            OrderBy(Function(W) RouteCache.GetRoute(Node.State.Point, W.Position). _
-                                        GetCostForAgent(_Agent, Node.State.Time)) 'TODO route time.
+                            OrderBy(Function(W) RouteCache.GetRoute(Node.State.Point, W.Position, Node.State.Time). _
+                                        GetCostForAgent(_Agent, Node.State.Time))
             For Each W As WayPoint In WaypointsToConsider
                 Dim NextState As CourierPlanState
                 NextState.Point = W.Position
@@ -201,7 +201,7 @@
         SolutionsEvaluated.Add(GetSolutionHashCode(NNSolution))
         SolutionPool.Add(0, NNSolution)
 
-        For i = 1 To 500
+        For i = 1 To GENETIC_ALGORITHM_GENERATION_COUNT
             Dim SolutionToMutate As List(Of WayPoint) = SolutionPool.Values(0)
             SolutionPool.RemoveAt(0)
             TopSolutions.Add(SolutionToMutate)
@@ -222,28 +222,7 @@
             End If
         Next
 
-
         TopSolutions = TopSolutions.OrderBy(Function(S) GetFuzzySolutionScore(S)).ToList
-
-        If IsInDebugMode() Then
-            Debug.WriteLine("Top solutions" & vbNewLine)
-            For Each Solution In TopSolutions
-                Debug.Write(GetRealSolutionScore(Solution))
-                Debug.WriteLine(GetFuzzySolutionScore(Solution))
-            Next
-            Debug.WriteLine("Pool solutions" & vbNewLine)
-            For Each SolutionPoolItem In SolutionPool
-                Debug.Write(GetRealSolutionScore(SolutionPoolItem.Value))
-                Debug.WriteLine(SolutionPoolItem.Key)
-            Next
-        End If
-        'Debug.WriteLine(TopSolutions.Count & "   " & SolutionPool.Count)
-
-
-        '_NewPlan = New CourierPlan(_Start, _OldPlan.Map, _OldPlan.Minimiser, _OldPlan.CapacityLeft, _OldPlan.VehicleType, TopSolutions(0))
-        'Dim NNPlan = New CourierPlan(_Start, _OldPlan.Map, _OldPlan.Minimiser, _OldPlan.CapacityLeft, _OldPlan.VehicleType, NNSolution)
-        'Debug.WriteLine("NN Cost: " & GetRealSolutionScore(NNSolution) & NNPlan.IsBehindSchedule)
-        'Debug.WriteLine("GA Cost: " & GetRealSolutionScore(TopSolutions(0)) & _NewPlan.IsBehindSchedule)
         Return TopSolutions(0)
     End Function
 
@@ -263,25 +242,6 @@
             LastPoint = WayPoint.Position
         Next
         Return Distance + Latenesses * 1000
-    End Function
-
-    Private Function GetRealSolutionScore(ByVal Solution As List(Of WayPoint)) As Double
-        'Assumes solution is valid.
-        Dim Cost As Double = 0
-        Dim Latenesses As Integer = 0
-        Dim LastPoint As IPoint = _Start
-        Dim Time As TimeSpan = NoticeBoard.Time
-        For Each WayPoint As WayPoint In Solution
-            Dim Route As Route = RouteCache.GetRoute(LastPoint, WayPoint.Position) 'TODO at time.
-            Cost += Route.GetCostForAgent(_Agent)
-            Time += Route.GetEstimatedTime()
-            If Time > WayPoint.Job.Deadline Then
-                Latenesses += 1
-            End If
-            Time += TimeSpan.FromSeconds(CourierJob.CUSTOMER_WAIT_TIME_MAX) + SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_JOB
-            LastPoint = WayPoint.Position
-        Next
-        Return Cost + Latenesses * 1000
     End Function
 
     'Gives at most n-1 mutations.
