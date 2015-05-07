@@ -31,6 +31,7 @@
         Public Const SimpleDeadlineAverage As Integer = 120 'TODO fix
         Public Const StatisticsTickInterval As Integer = 20
         Public Const COURTESY_CALL_LOCK_TIME_HOURS As Double = 5 / 60
+        Public Const PERIODIC_REPLAN As Boolean = True
 
         'These are supposed to take into account fluctuations in traffic,
         'waiting times at waypoints and emergency refuelling.

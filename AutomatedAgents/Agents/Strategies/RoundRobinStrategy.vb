@@ -26,7 +26,13 @@
         'No need to recompute A* route to first waypoint.
         Agent.Plan.Update(False)
 
-        Agent.Plan.ReplanForTrafficConditions()
+        'Periodically, check for changed traffic conditions that might warrant a replan.
+        If SimulationParameters.PERIODIC_REPLAN AndAlso Agent.Plan.NeedToReplan() Then
+            Dim NewPlan As CourierPlan = New NNGAPlanner(Agent, True).GetPlan
+            If NewPlan.CostScore < Agent.Plan.CostScore Then
+                Agent.Plan = NewPlan
+            End If
+        End If
 
         'If a route somewhere has just been completed...
         If Agent.Plan.RoutePosition.RouteCompleted Then

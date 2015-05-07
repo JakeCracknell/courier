@@ -32,8 +32,6 @@
         'No need to recompute A* route to first waypoint.
         Agent.Plan.Update(False)
 
-        Agent.Plan.ReplanForTrafficConditions()
-
         'If a route somewhere has just been completed...
         If Agent.Plan.RoutePosition.RouteCompleted Then
             If Agent.Plan.FirstWayPointReached() Then

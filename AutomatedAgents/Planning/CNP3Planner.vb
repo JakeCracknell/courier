@@ -6,7 +6,7 @@
     Private ExtraJob As CourierJob
     Private TotalCost As Double = 0
 
-    Sub New(ByVal Agent As Agent, ByVal Job As CourierJob)
+    Sub New(ByVal Agent As Agent, Optional ByVal Job As CourierJob = Nothing)
         Me.Agent = Agent
         Me.ExtraJob = Job
         Solve()
@@ -25,7 +25,9 @@
                 JobsLeft.Add(J)
             End If
         Next
-        JobsLeft.Add(ExtraJob)
+        If ExtraJob IsNot Nothing Then
+            JobsLeft.Add(ExtraJob)
+        End If
 
         'Set starting state
         Dim State As New CourierPlanState

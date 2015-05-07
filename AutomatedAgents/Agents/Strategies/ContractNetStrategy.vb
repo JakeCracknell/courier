@@ -36,11 +36,23 @@
             Exit Sub
         End If
 
-        'No need to recompute A* route to first waypoint.
-        Agent.Plan.Update(False)
+        Agent.Plan.Update(False) 'TODO: needed?
 
-        If Agent.Plan.ReplanForTrafficConditions() AndAlso Policy = ContractNetPolicy.CNP5 Then
-            Agent.Plan = CNP5Contingency()
+        'Periodically, check for changed traffic conditions that might warrant a replan.
+        If SimulationParameters.PERIODIC_REPLAN AndAlso Agent.Plan.NeedToReplan() Then
+            Dim NewPlan As CourierPlan = Nothing
+            Select Case Policy
+                Case ContractNetPolicy.CNP3
+                    NewPlan = New CNP3Planner(Agent).GetPlan
+                Case ContractNetPolicy.CNP4, ContractNetPolicy.CNP5
+                    NewPlan = New NNGAPlanner(Agent, True).GetPlan
+            End Select
+            If NewPlan IsNot Nothing AndAlso NewPlan.CostScore < Agent.Plan.CostScore Then
+                Agent.Plan = NewPlan
+            End If
+            If Policy = ContractNetPolicy.CNP5 AndAlso Agent.Plan.IsBehindSchedule Then
+                Agent.Plan = CNP5Contingency()
+            End If
         End If
 
         'If a route somewhere has just been completed...

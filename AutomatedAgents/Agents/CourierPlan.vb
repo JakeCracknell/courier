@@ -120,15 +120,11 @@
         Loop
     End Sub
 
-    'If traffic conditions have changed (check TimeIndex), replan and retrun true iff late.
-    Function ReplanForTrafficConditions() As Boolean
+    Function NeedToReplan() As Boolean
         Dim TimeIndex As Integer = GetTimeIndex(NoticeBoard.Time)
         If TimeIndex <> LastTimeIndexOfTrafficReplan Then
             LastTimeIndexOfTrafficReplan = TimeIndex
-            'TODO: REPLAN!!!!!!!!!!
-            'modify waypoints order and routes accordingly
-            '
-            Return IsBehindSchedule()
+            Return True
         End If
         Return False
     End Function
