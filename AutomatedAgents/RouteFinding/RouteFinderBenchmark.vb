@@ -227,7 +227,7 @@ Module RouteFinderBenchmark
 
             Dim Planner As New NNGAPlanner(A, True)
             Dim NewPlan As CourierPlan = Planner.GetPlan
-            MsgBox(Planner.GetTotalCost + NewPlan.LateWaypointsCount * 1000)
+            MsgBox(Planner.GetTotalCost + NewPlan.LateDeliveriesCount * 1000)
         End Sub
     End Class
 End Module

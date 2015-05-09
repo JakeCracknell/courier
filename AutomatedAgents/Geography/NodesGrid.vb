@@ -22,7 +22,7 @@
     Public Function GetNearestNode(ByVal IPoint As IPoint) As Node
         Return GetNearestNode(IPoint.GetLatitude, IPoint.GetLongitude)
     End Function
-    Public Function GetNearestNode(ByVal Lat As Double, ByVal Lon As Double, Optional ByVal MaxRadius As Integer = CELL_COUNT_EDGE * 2) As Node 'TODO: use this everywhere
+    Public Function GetNearestNode(ByVal Lat As Double, ByVal Lon As Double, Optional ByVal MaxRadius As Integer = CELL_COUNT_EDGE * 2) As Node
         If Not Bounds.Encloses(Lat, Lon) Then
             Return Nothing
         End If

@@ -63,12 +63,12 @@
         StartState.Point = _OldPlan.RoutePosition.GetPoint
         StartState.WayPointsLeft = New List(Of WayPoint)(_AllWaypoints)
 
-        Dim GuarenteedTime As Double = DiversionTime.TotalHours
+        Dim GuaranteedTime As Double = DiversionTime.TotalHours
         For i = 0 To _OldPlan.Routes.Count - 1
             Dim CapacityLeft As Double = StartState.CapacityLeft - _OldPlan.WayPoints(i).VolumeDelta
             Dim RouteTime As TimeSpan = _OldPlan.Routes(i).GetEstimatedTime
-            GuarenteedTime += RouteTime.TotalHours
-            If GuarenteedTime <= SimulationParameters.COURTESY_CALL_LOCK_TIME_HOURS AndAlso CapacityLeft > 0 Then
+            GuaranteedTime += RouteTime.TotalHours
+            If GuaranteedTime <= SimulationParameters.COURTESY_CALL_LOCK_TIME_HOURS AndAlso CapacityLeft > 0 Then
                 _WaypointsToLock += 1
                 StartState.CapacityLeft = CapacityLeft
                 StartState.Time += RouteTime + Customers.WaitTimeAvg
@@ -98,32 +98,23 @@
             'Allow backtracking when deliveries are expected to be late, but cap the
             'number of failed branches, as there are potentially n! of them.
             Dim NextNodes As New SortedList(Of Double, NNSearchNode)
-            Dim WaypointsToConsider As IOrderedEnumerable(Of WayPoint)
+            Dim WaypointsToConsider As WayPoint()
             WaypointsToConsider = Node.State.WayPointsLeft.Where( _
                 Function(W) Node.State.CapacityLeft - W.VolumeDelta >= 0 AndAlso _
                     Not Node.State.WayPointsLeft.Contains(W.Predecessor)). _
                          OrderBy(Function(W) HaversineDistance(Node.State.Point, W.Position)). _
-                            Take(NEAREST_NEIGHBOUR_ROUTES_TO_CALCULATE). _
-                            OrderBy(Function(W) RouteCache.GetRoute(Node.State.Point, W.Position, Node.State.Time). _
-                                        GetCostForAgent(_Agent, Node.State.Time))
+                            Take(NEAREST_NEIGHBOUR_ROUTES_TO_CALCULATE).ToArray
             For Each W As WayPoint In WaypointsToConsider
                 Dim NextState As CourierPlanState
                 NextState.Point = W.Position
                 NextState.CapacityLeft = Node.State.CapacityLeft - W.VolumeDelta
-
-                'PRUNE this branch if the vehicle is overcapacity OR if the pickup is yet to have occurred
-                If NextState.CapacityLeft < 0 OrElse Node.State.WayPointsLeft.Contains(W.Predecessor) Then
-                    Continue For
-                End If
 
                 Dim Route As Route = RouteCache.GetRoute(Node.State.Point, W.Position, Node.State.Time)
                 NextState.Time = Node.State.Time + Route.GetEstimatedTime + Customers.WaitTimeMax
 
                 'If any jobs' deadlines (not just the current waypoint's) come before the time of this route, 
                 ' subtracting redundancy time (if any), PRUNE this branch
-                If Node.State.WayPointsLeft.Any(Function(x)
-                                                    Return x.Job.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_WAYPOINT < NextState.Time
-                                                End Function) Then
+                If Node.State.WayPointsLeft.Any(Function(WL) WL.Job.Deadline - SimulationParameters.DEADLINE_REDUNDANCY < NextState.Time) Then
                     FailedBranches += 1
                     Continue For
                 End If
@@ -201,7 +192,7 @@
         SolutionsEvaluated.Add(GetSolutionHashCode(NNSolution))
         SolutionPool.Add(0, NNSolution)
 
-        For i = 1 To GENETIC_ALGORITHM_GENERATION_COUNT
+        For Generation = 1 To GENETIC_ALGORITHM_GENERATION_COUNT
             Dim SolutionToMutate As List(Of WayPoint) = SolutionPool.Values(0)
             SolutionPool.RemoveAt(0)
             TopSolutions.Add(SolutionToMutate)
@@ -235,7 +226,7 @@
         For Each WayPoint As WayPoint In Solution
             Distance += HaversineDistance(LastPoint, WayPoint.Position)
             Time += TimeSpan.FromHours(Distance / _HaversineToTimeRatio)
-            If Time > WayPoint.Job.Deadline Then
+            If WayPoint.DefinedStatus = JobStatus.PENDING_DELIVERY AndAlso Time > WayPoint.Job.Deadline Then
                 Latenesses += 1
             End If
             Time += Customers.WaitTimeMax

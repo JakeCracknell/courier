@@ -59,7 +59,7 @@
             Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(StartTime) + Customers.WaitTimeAvg
             Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition, StartTime + Route1Time)
             Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(StartTime + Route1Time)
-            If StartTime + MinTime + SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_WAYPOINT > JobToReview.Deadline Then
+            If StartTime + MinTime + SimulationParameters.DEADLINE_REDUNDANCY > JobToReview.Deadline Then
                 Continue For
             End If
             Dim JobValue As Double = Route2.GetCostForAgent(Agent) / Route1.GetCostForAgent(Agent)

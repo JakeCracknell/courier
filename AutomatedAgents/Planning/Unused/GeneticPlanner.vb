@@ -173,7 +173,7 @@
         Dim LastPoint As IPoint = _Start
         Dim Time As TimeSpan = NoticeBoard.Time
         For Each WayPoint As WayPoint In Solution
-            Dim Route As Route = RouteCache.GetRoute(LastPoint, WayPoint.Position) 'TODO at time.
+            Dim Route As Route = RouteCache.GetRoute(LastPoint, WayPoint.Position, Time)
             Cost += Route.GetCostForAgent(_Agent)
             Time += Route.GetEstimatedTime()
             If Time > WayPoint.Job.Deadline Then
@@ -196,7 +196,6 @@
         For i = 0 To Solution.Count - 2
             SolutionCapacityLefts.Add(SolutionCapacityLefts.Last - Solution(i).VolumeDelta)
         Next
-        Debug.Assert(SolutionCapacityLefts.Min > 0) 'TODO REMOVE FOR EFFICIENCY
 
         For i = _WaypointsToLock To Solution.Count - 2
 

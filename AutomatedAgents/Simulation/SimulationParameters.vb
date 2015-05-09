@@ -35,7 +35,7 @@
 
         'These are supposed to take into account fluctuations in traffic,
         'waiting times at waypoints and emergency refuelling.
-        Public DEADLINE_PLANNING_REDUNDANCY_TIME_PER_WAYPOINT As TimeSpan = TimeSpan.FromMinutes(4)
+        Public DEADLINE_REDUNDANCY As TimeSpan = TimeSpan.FromMinutes(4)
 
         Public DisplayedDebugVariable As Object
     End Module

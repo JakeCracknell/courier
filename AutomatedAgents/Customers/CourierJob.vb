@@ -1,5 +1,5 @@
 ﻿Public Class CourierJob
-    Private Const DEADLINE_TO_DEPOT As Integer = 60 * 60 * 12 ' 12 hours TODO poo
+    Private ReadOnly DEADLINE_TO_DEPOT As TimeSpan = TimeSpan.FromHours(12)
     Private Const DEPOT_STRING_IDENTIFIER As String = "DEPOT"
 
     Public ReadOnly JobID As Integer = UIDAssigner.NewID("job")
@@ -76,7 +76,7 @@
         If RNG.R("dropoff").NextDouble < SimulationParameters.ProbDeliveryFail Then
             Status = JobStatus.PENDING_DELIVERY
             DeliveryPosition = Nothing
-            Deadline += TimeSpan.FromSeconds(DEADLINE_TO_DEPOT)
+            Deadline += DEADLINE_TO_DEPOT
             Return Customers.WaitTimeMaxSeconds
         End If
 

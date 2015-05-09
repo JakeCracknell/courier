@@ -48,7 +48,7 @@
                 Dim RouteToPickup As Route = RouteCache.GetRoute(State.Point, J.PickupPosition)
                 Dim Cost As Double = RouteToPickup.GetCostForAgent(Agent)
                 If Not (State.Time + RouteToPickup.GetEstimatedTime + J.GetDirectRoute.GetEstimatedTime < _
-                        J.Deadline - SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_WAYPOINT) Then
+                        J.Deadline - SimulationParameters.DEADLINE_REDUNDANCY) Then
                     Continue For 'Would not get there on time.
                 End If
                 'Fuel constraints are ignored
@@ -60,11 +60,11 @@
             If BestNextJob IsNot Nothing Then
                 JobSolution.Add(BestNextJob)
                 TotalCost += BestNextCost + BestNextJob.GetDirectRoute.GetCostForAgent(Agent)
-                Dim Route1 As Route = RouteCache.GetRoute(State.Point, BestNextJob.PickupPosition) 'TODO route time????????????
+                Dim Route1 As Route = RouteCache.GetRoute(State.Point, BestNextJob.PickupPosition, State.Time)
                 Dim Route2 As Route = BestNextJob.GetDirectRoute
                 State.Time += Route1.GetEstimatedTime _
                     + Route2.GetEstimatedTime _
-                    + SimulationParameters.DEADLINE_PLANNING_REDUNDANCY_TIME_PER_WAYPOINT
+                    + SimulationParameters.DEADLINE_REDUNDANCY
                 State.FuelLeft -= (Route1.GetOptimalFuelUsageWithoutTraffic(Agent.VehicleType) _
                     + Route2.GetOptimalFuelUsageWithoutTraffic(Agent.VehicleType))
                 State.Point = BestNextJob.DeliveryPosition

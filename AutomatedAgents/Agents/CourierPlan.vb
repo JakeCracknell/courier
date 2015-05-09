@@ -102,7 +102,7 @@
         Return WP
     End Function
 
-    'A->CCC->B->CCC->D goes to A->B->D. Triangle inequality should bring some efficiency gains. TODO: compare with a new TSP solve.
+    'A->CCC->B->CCC->D goes to A->B->D.
     Sub ExtractCancelled()
         Dim LastPoint As HopPosition = StartPoint
         Dim Index As Integer = 0
@@ -158,13 +158,13 @@
         Return False
     End Function
 
-    Function LateWaypointsCount() As Integer
+    Function LateDeliveriesCount() As Integer
         Update(True)
         Dim LateWaypoints As Integer = 0
         Dim WorkingTime As TimeSpan = NoticeBoard.Time
         For i = 0 To WayPoints.Count - 1
             WorkingTime += Routes(i).GetTimeWithoutTraffic
-            If WayPoints(i).Job.Deadline < WorkingTime Then
+            If WayPoints(i).Job.Deadline < WorkingTime And WayPoints(i).DefinedStatus = JobStatus.PENDING_DELIVERY Then
                 LateWaypoints += 1
             End If
             WorkingTime += Customers.WaitTimeAvg
@@ -173,7 +173,7 @@
     End Function
 
     Function CostScore() As Double
-        Return UpdateAndGetCost() + LateWaypointsCount() * 1000
+        Return UpdateAndGetCost() + LateDeliveriesCount() * 1000
     End Function
 
     '----------------------------Diversions-------------------------------------
