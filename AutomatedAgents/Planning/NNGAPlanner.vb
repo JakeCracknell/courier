@@ -28,7 +28,6 @@
             _ExtraJob = ExtraJob
             _AllWaypoints.AddRange(WayPoint.CreateWayPointList(ExtraJob))
         End If
-        _AllWaypoints = _AllWaypoints.OrderBy(Function(W As WayPoint) W.Job.Deadline.Ticks).ToList
         Solve()
     End Sub
 
@@ -114,7 +113,7 @@
 
                 'If any jobs' deadlines (not just the current waypoint's) come before the time of this route, 
                 ' subtracting redundancy time (if any), PRUNE this branch
-                If Node.State.WayPointsLeft.Any(Function(WL) WL.Job.Deadline - SimulationParameters.DEADLINE_REDUNDANCY < NextState.Time) Then
+                If Node.State.WayPointsLeft.Any(Function(WL) WL.Deadline - SimulationParameters.DEADLINE_REDUNDANCY < NextState.Time) Then
                     FailedBranches += 1
                     Continue For
                 End If
@@ -226,7 +225,7 @@
         For Each WayPoint As WayPoint In Solution
             Distance += HaversineDistance(LastPoint, WayPoint.Position)
             Time += TimeSpan.FromHours(Distance / _HaversineToTimeRatio)
-            If WayPoint.DefinedStatus = JobStatus.PENDING_DELIVERY AndAlso Time > WayPoint.Job.Deadline Then
+            If WayPoint.DefinedStatus = JobStatus.PENDING_DELIVERY AndAlso Time > WayPoint.Deadline Then
                 Latenesses += 1
             End If
             Time += Customers.WaitTimeMax
