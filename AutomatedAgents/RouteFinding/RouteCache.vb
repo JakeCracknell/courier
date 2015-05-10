@@ -1,10 +1,11 @@
 ﻿Module RouteCache
     Private Minimiser As RouteFindingMinimiser
     Private NodesAdjacencyList As NodesAdjacencyList
-    Private RouteCount As Integer = 0
+    Private RouteCount, CacheHits, CacheMisses As Integer
+
     Private OuterDictionary As New Dictionary(Of IPoint, Dictionary(Of IPoint, List(Of Route)))
 
-    Private HOURS_UNTIL_STALE As Double = 0.5
+    Private Const HOURS_UNTIL_STALE As Double = 0.5
 
     Sub Initialise(NAL As AutomatedAgents.NodesAdjacencyList, RouteFindingMinimiser As RouteFindingMinimiser)
         NodesAdjacencyList = NAL
@@ -31,9 +32,11 @@
     Function GetRoute(ByVal FromPoint As IPoint, ByVal ToPoint As IPoint, ByVal StartTime As TimeSpan) As Route
         Dim Route As Route = GetRouteIfCached(FromPoint, ToPoint, StartTime)
         If Route IsNot Nothing Then
+            CacheHits += 1
             Return Route
         End If
         Route = New AStarSearch(FromPoint, ToPoint, NodesAdjacencyList, Minimiser, StartTime).GetRoute
+        CacheMisses += 1
 
         SyncLock OuterDictionary
             Dim InternalDict As Dictionary(Of IPoint, List(Of Route)) = Nothing
