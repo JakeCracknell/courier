@@ -57,6 +57,13 @@ Partial Class frmMain
         Me.RouteTestingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RouteFromToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BenchmarkToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MinimiserToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DistanceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TimeWith8AMTrafficToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TimeWithoutTrafficToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.FuelWith8AMTrafficToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.FuelWithoutTrafficToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.KeepRefreshingRouteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.NodesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RoadDelayNodesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -84,13 +91,7 @@ Partial Class frmMain
         Me.picMap = New System.Windows.Forms.PictureBox()
         Me.tmrStatus = New System.Windows.Forms.Timer(Me.components)
         Me.bwSimulator = New System.ComponentModel.BackgroundWorker()
-        Me.MinimiserToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DistanceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TimeWith8AMTrafficToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TimeWithoutTrafficToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.FuelWith8AMTrafficToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.FuelWithoutTrafficToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.KeepRefreshingRouteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ScriptToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.picMap, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -303,14 +304,58 @@ Partial Class frmMain
         'RouteFromToolStripMenuItem
         '
         Me.RouteFromToolStripMenuItem.Name = "RouteFromToolStripMenuItem"
-        Me.RouteFromToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.RouteFromToolStripMenuItem.Size = New System.Drawing.Size(193, 22)
         Me.RouteFromToolStripMenuItem.Text = "Route From..."
         '
         'BenchmarkToolStripMenuItem
         '
         Me.BenchmarkToolStripMenuItem.Name = "BenchmarkToolStripMenuItem"
-        Me.BenchmarkToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.BenchmarkToolStripMenuItem.Size = New System.Drawing.Size(193, 22)
         Me.BenchmarkToolStripMenuItem.Text = "Benchmark"
+        '
+        'MinimiserToolStripMenuItem
+        '
+        Me.MinimiserToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DistanceToolStripMenuItem, Me.TimeWith8AMTrafficToolStripMenuItem, Me.TimeWithoutTrafficToolStripMenuItem, Me.FuelWith8AMTrafficToolStripMenuItem, Me.FuelWithoutTrafficToolStripMenuItem})
+        Me.MinimiserToolStripMenuItem.Name = "MinimiserToolStripMenuItem"
+        Me.MinimiserToolStripMenuItem.Size = New System.Drawing.Size(193, 22)
+        Me.MinimiserToolStripMenuItem.Text = "Minimiser"
+        '
+        'DistanceToolStripMenuItem
+        '
+        Me.DistanceToolStripMenuItem.Name = "DistanceToolStripMenuItem"
+        Me.DistanceToolStripMenuItem.Size = New System.Drawing.Size(189, 22)
+        Me.DistanceToolStripMenuItem.Text = "Distance"
+        '
+        'TimeWith8AMTrafficToolStripMenuItem
+        '
+        Me.TimeWith8AMTrafficToolStripMenuItem.Name = "TimeWith8AMTrafficToolStripMenuItem"
+        Me.TimeWith8AMTrafficToolStripMenuItem.Size = New System.Drawing.Size(189, 22)
+        Me.TimeWith8AMTrafficToolStripMenuItem.Text = "Time with 8AM traffic"
+        '
+        'TimeWithoutTrafficToolStripMenuItem
+        '
+        Me.TimeWithoutTrafficToolStripMenuItem.Name = "TimeWithoutTrafficToolStripMenuItem"
+        Me.TimeWithoutTrafficToolStripMenuItem.Size = New System.Drawing.Size(189, 22)
+        Me.TimeWithoutTrafficToolStripMenuItem.Text = "Time without traffic"
+        '
+        'FuelWith8AMTrafficToolStripMenuItem
+        '
+        Me.FuelWith8AMTrafficToolStripMenuItem.Name = "FuelWith8AMTrafficToolStripMenuItem"
+        Me.FuelWith8AMTrafficToolStripMenuItem.Size = New System.Drawing.Size(189, 22)
+        Me.FuelWith8AMTrafficToolStripMenuItem.Text = "Fuel with 8AM traffic"
+        '
+        'FuelWithoutTrafficToolStripMenuItem
+        '
+        Me.FuelWithoutTrafficToolStripMenuItem.Name = "FuelWithoutTrafficToolStripMenuItem"
+        Me.FuelWithoutTrafficToolStripMenuItem.Size = New System.Drawing.Size(189, 22)
+        Me.FuelWithoutTrafficToolStripMenuItem.Text = "Fuel without traffic"
+        '
+        'KeepRefreshingRouteToolStripMenuItem
+        '
+        Me.KeepRefreshingRouteToolStripMenuItem.CheckOnClick = True
+        Me.KeepRefreshingRouteToolStripMenuItem.Name = "KeepRefreshingRouteToolStripMenuItem"
+        Me.KeepRefreshingRouteToolStripMenuItem.Size = New System.Drawing.Size(193, 22)
+        Me.KeepRefreshingRouteToolStripMenuItem.Text = "Keep Refreshing Route"
         '
         'ViewToolStripMenuItem
         '
@@ -427,7 +472,7 @@ Partial Class frmMain
         '
         'SimulationToolStripMenuItem
         '
-        Me.SimulationToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StartSimulationToolStripMenuItem, Me.StartPlaygroundToolStripMenuItem, Me.StopToolStripMenuItem, Me.ResetToolStripMenuItem, Me.SpeedToolStripMenuItem, Me.ViewStatisticsToolStripMenuItem, Me.ViewConsoleToolStripMenuItem})
+        Me.SimulationToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StartSimulationToolStripMenuItem, Me.StartPlaygroundToolStripMenuItem, Me.StopToolStripMenuItem, Me.ResetToolStripMenuItem, Me.SpeedToolStripMenuItem, Me.ViewStatisticsToolStripMenuItem, Me.ViewConsoleToolStripMenuItem, Me.ScriptToolStripMenuItem})
         Me.SimulationToolStripMenuItem.Name = "SimulationToolStripMenuItem"
         Me.SimulationToolStripMenuItem.Size = New System.Drawing.Size(76, 20)
         Me.SimulationToolStripMenuItem.Text = "Simulation"
@@ -495,49 +540,11 @@ Partial Class frmMain
         'bwSimulator
         '
         '
-        'MinimiserToolStripMenuItem
+        'ScriptToolStripMenuItem
         '
-        Me.MinimiserToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DistanceToolStripMenuItem, Me.TimeWith8AMTrafficToolStripMenuItem, Me.TimeWithoutTrafficToolStripMenuItem, Me.FuelWith8AMTrafficToolStripMenuItem, Me.FuelWithoutTrafficToolStripMenuItem})
-        Me.MinimiserToolStripMenuItem.Name = "MinimiserToolStripMenuItem"
-        Me.MinimiserToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-        Me.MinimiserToolStripMenuItem.Text = "Minimiser"
-        '
-        'DistanceToolStripMenuItem
-        '
-        Me.DistanceToolStripMenuItem.Name = "DistanceToolStripMenuItem"
-        Me.DistanceToolStripMenuItem.Size = New System.Drawing.Size(189, 22)
-        Me.DistanceToolStripMenuItem.Text = "Distance"
-        '
-        'TimeWith8AMTrafficToolStripMenuItem
-        '
-        Me.TimeWith8AMTrafficToolStripMenuItem.Name = "TimeWith8AMTrafficToolStripMenuItem"
-        Me.TimeWith8AMTrafficToolStripMenuItem.Size = New System.Drawing.Size(189, 22)
-        Me.TimeWith8AMTrafficToolStripMenuItem.Text = "Time with 8AM traffic"
-        '
-        'TimeWithoutTrafficToolStripMenuItem
-        '
-        Me.TimeWithoutTrafficToolStripMenuItem.Name = "TimeWithoutTrafficToolStripMenuItem"
-        Me.TimeWithoutTrafficToolStripMenuItem.Size = New System.Drawing.Size(189, 22)
-        Me.TimeWithoutTrafficToolStripMenuItem.Text = "Time without traffic"
-        '
-        'FuelWith8AMTrafficToolStripMenuItem
-        '
-        Me.FuelWith8AMTrafficToolStripMenuItem.Name = "FuelWith8AMTrafficToolStripMenuItem"
-        Me.FuelWith8AMTrafficToolStripMenuItem.Size = New System.Drawing.Size(189, 22)
-        Me.FuelWith8AMTrafficToolStripMenuItem.Text = "Fuel with 8AM traffic"
-        '
-        'FuelWithoutTrafficToolStripMenuItem
-        '
-        Me.FuelWithoutTrafficToolStripMenuItem.Name = "FuelWithoutTrafficToolStripMenuItem"
-        Me.FuelWithoutTrafficToolStripMenuItem.Size = New System.Drawing.Size(189, 22)
-        Me.FuelWithoutTrafficToolStripMenuItem.Text = "Fuel without traffic"
-        '
-        'KeepRefreshingRouteToolStripMenuItem
-        '
-        Me.KeepRefreshingRouteToolStripMenuItem.CheckOnClick = True
-        Me.KeepRefreshingRouteToolStripMenuItem.Name = "KeepRefreshingRouteToolStripMenuItem"
-        Me.KeepRefreshingRouteToolStripMenuItem.Size = New System.Drawing.Size(193, 22)
-        Me.KeepRefreshingRouteToolStripMenuItem.Text = "Keep Refreshing Route"
+        Me.ScriptToolStripMenuItem.Name = "ScriptToolStripMenuItem"
+        Me.ScriptToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
+        Me.ScriptToolStripMenuItem.Text = "Script..."
         '
         'frmMain
         '
@@ -627,5 +634,6 @@ Partial Class frmMain
     Friend WithEvents FuelWith8AMTrafficToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents FuelWithoutTrafficToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents KeepRefreshingRouteToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ScriptToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class

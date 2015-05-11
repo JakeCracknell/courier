@@ -6,6 +6,7 @@
     Private AGENT_TSMI_AMOUNTS() As Integer = {1, 2, 3, 4, 5, 10, 50, 100, 500, 1000, 5000, 10000}
 
     Private AASimulation As AASimulation
+    Private MaxSimulationTicks As Long = Long.MaxValue
 
     'On form load, add menu items to load each som file, spawn agents.
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -77,6 +78,7 @@
     End Sub
 
     Private Sub bwSimulator_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles bwSimulator.DoWork
+        Dim TotalTicks As Long = 0
         While True
             If AASimulation IsNot Nothing AndAlso AASimulation.IsRunning Then
                 Dim StatisticsLogCounter As Integer = 0
@@ -102,10 +104,18 @@
                                             SimulationState.CacheAASimulationStatus(AASimulation)
                                         End If
                                     End If
+
+                                    TotalTicks += 1
                                     TickCounter += 1
                                     StatisticsLogCounter += 1
+
+                                    If TotalTicks >= MaxSimulationTicks Then
+                                        AASimulation.Pause()
+                                    End If
                                 End If
                             End SyncLock
+
+
                         End If
                     Loop Until TickCounter >= SimulationParameters.SimulationSpeed
 
@@ -328,7 +338,7 @@
     Private Sub ViewConsoleToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewConsoleToolStripMenuItem.Click
         frmAgentStatus.Show()
     End Sub
-  
+
     Private Sub AgentPlansToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AgentPlansToolStripMenuItem.Click
         MapGraphics.ConfigDrawAgentRoutes = -1
         JobViewToolStripMenuItem.Checked = False
@@ -461,5 +471,17 @@
 
     Private Sub KeepRefreshingRouteToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles KeepRefreshingRouteToolStripMenuItem.Click
         KeepRefreshingRoute = KeepRefreshingRouteToolStripMenuItem.Checked
+    End Sub
+
+    Private Sub ScriptToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ScriptToolStripMenuItem.Click
+        Dim Timespan As TimeSpan
+        Try
+            MaxSimulationTicks = Long.Parse(InputBox("Stop simulation after X ticks:"))
+            Timespan = Timespan.FromTicks(MaxSimulationTicks * SimulationParameters.SIMULATION_TIME_INCREMENT.Ticks)
+        Catch ex As Exception
+            MaxSimulationTicks = Long.MaxValue
+            Timespan = Timespan.MaxValue
+        End Try
+        MsgBox("Simulation will begin at 0:00:00:00 and end at " & Timespan.ToString)
     End Sub
 End Class
