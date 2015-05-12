@@ -55,10 +55,8 @@
                                     .DefinedStatus = JobStatus.PENDING_DELIVERY}
     End Function
 
-
-
     Public Shared Function MakeFailedDeliveryWaypoint(ByVal Agent As Agent, ByVal Job As CourierJob) As WayPoint
-        Job.DeliveryPosition = Agent.Map.GetNearestDepot(Agent.Plan.StartPoint)
+        Job.DeliveryPosition = If(SimulationParameters.FailToDepot, Agent.Map.GetNearestDepot(Agent.Plan.StartPoint), Job.PickupPosition)
         Job.DeliveryName = If(Job.IsFailedDelivery(), "[" & If(SimulationParameters.FailToDepot, CType(Job.DeliveryPosition.Hop.FromPoint, Node).ToString, "↺") & "] ← ", "") & Job.DeliveryName
         Return CreateDropoffWaypoint(Job)
     End Function
