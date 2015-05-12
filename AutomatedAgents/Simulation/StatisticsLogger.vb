@@ -40,6 +40,7 @@
 
         Table.Columns.Add("CumulativeDrivingDistance", GetType(Double))
         Table.Columns.Add("CumulativeDrivingHours", GetType(Double))
+        Table.Columns.Add("CumulativeLitres", GetType(Double))
 
         Table.Columns.Add("CumulativeCost", GetType(Decimal))
         Table.Columns.Add("CumulativeRevenue", GetType(Decimal))
@@ -59,26 +60,27 @@
         Row("CumulativeTimeLate") = NoticeBoard.TotalTimeLate
 
         If Agents.Count > 0 Then
-            Row("CurrentActiveVehicles") = Agents.Sum(Function(x)
-                                                          Return Math.Min(x.Plan.WayPoints.Count, 1)
-                                                      End Function)
             Row("CurrentAverageVehicleSpeed") = Agents.Average(Function(x)
                                                                    Return x.CurrentSpeedKMH
                                                                End Function)
             Row("CurrentAverageVehicleSaturation") = Agents.Average(Function(x)
                                                                         Return x.GetVehicleMaxCapacity - x.GetVehicleCapacityLeft
                                                                     End Function)
-            Row("CurrentTotalSaturation") = Agents.Sum(Function(x)
-                                                           Return x.GetVehicleMaxCapacity - x.GetVehicleCapacityLeft
-                                                       End Function)
-            Row("CurrentFuelReserves") = Agents.Sum(Function(x)
-                                                        Return x.FuelLitres
-                                                    End Function)
-            Row("CurrentVehicleTrafficDelta") = Agents.Sum(Function(x)
-                                                               Dim Way As Way = x.Plan.RoutePosition.GetCurrentWay
-                                                               Return If(Way IsNot Nothing, Way.GetSpeedDifferenceAtTime(NoticeBoard.Time), 0)
-                                                           End Function)
         End If
+
+        Row("CurrentActiveVehicles") = Agents.Sum(Function(x)
+                                                      Return Math.Min(x.Plan.WayPoints.Count, 1)
+                                                  End Function)
+        Row("CurrentTotalSaturation") = Agents.Sum(Function(x)
+                                                       Return x.GetVehicleMaxCapacity - x.GetVehicleCapacityLeft
+                                                   End Function)
+        Row("CurrentFuelReserves") = Agents.Sum(Function(x)
+                                                    Return x.FuelLitres
+                                                End Function)
+        Row("CurrentVehicleTrafficDelta") = Agents.Sum(Function(x)
+                                                           Dim Way As Way = x.Plan.RoutePosition.GetCurrentWay
+                                                           Return If(Way IsNot Nothing, Way.GetSpeedDifferenceAtTime(NoticeBoard.Time), 0)
+                                                       End Function)
 
         Row("CumulativeDrivingDistance") = Agents.Sum(Function(x)
                                                           Return x.TotalKMTravelled
@@ -87,6 +89,7 @@
                                                        Return x.TotalDrivingTime
                                                    End Function) / 3600
 
+        Row("CumulativeLitres") = NoticeBoard.FuelBill / Vehicles.FuelCost(SimulationParameters.VehicleType, 1) - Row("CurrentFuelReserves")
         Row("CumulativeCost") = NoticeBoard.FuelBill
         Row("CumulativeRevenue") = NoticeBoard.JobRevenue
         Row("CumulativeProfit") = NoticeBoard.JobRevenue - NoticeBoard.FuelBill
