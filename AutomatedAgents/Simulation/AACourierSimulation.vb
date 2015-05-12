@@ -27,12 +27,12 @@
         For i = MidIndex To MidIndex + Agents.Count - 1
             Agents(i Mod Agents.Count).Move()
 
-            Dim MovedAmount As Double = HaversineDistance(NoticeBoard.AgentPositions(i Mod Agents.Count), Agents(i Mod Agents.Count).Plan.RoutePosition.GetPoint)
-            If Not MovedAmount < 0.05 Then
-                Debug.WriteLine(MovedAmount * 1000 & "m in one second?")
-                SimulationParameters.SimulationSpeed = 1
-                Console.Beep() 'TODO: Occasionally might flit by one node. 0.05 is 112mph, so this never should be called.
-            End If
+            'Dim MovedAmount As Double = HaversineDistance(NoticeBoard.AgentPositions(i Mod Agents.Count), Agents(i Mod Agents.Count).Plan.RoutePosition.GetPoint)
+            'If Not MovedAmount < 0.05 Then
+            '    Debug.WriteLine(MovedAmount * 1000 & "m in one second?")
+            '    SimulationParameters.SimulationSpeed = 1
+            '    Console.Beep() 'TODO: Occasionally might flit by one node. 0.05 is 112mph, so this never should be called.
+            'End If
             'If Agents(i Mod Agents.Count).Plan.Routes.Count > 0 Then
             '    Dim Last As HopPosition = Agents(i Mod Agents.Count).Plan.Routes(0).GetStartPoint
             '    For Each R As Route In Agents(i Mod Agents.Count).Plan.Routes
@@ -43,8 +43,14 @@
             '    Next
             'End If
 
-            NoticeBoard.AgentPositions(i Mod Agents.Count) = Agents(i Mod Agents.Count).Plan.RoutePosition.GetPoint
+            If SimulationParameters.IdleStrategy = 3 Then
+                NoticeBoard.AgentPositions(i Mod Agents.Count) = Agents(i Mod Agents.Count).Plan.RoutePosition.GetPoint
+            End If
         Next
+
+        If NoticeBoard.Time.Ticks Mod TimeSpan.FromDays(1).Ticks = 0 Then
+            RouteCache.CleanUp()
+        End If
 
         Return Agents.Count > 0
     End Function

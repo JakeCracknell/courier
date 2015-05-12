@@ -3,13 +3,14 @@
     Private NodesAdjacencyList As NodesAdjacencyList
     Private RouteCount, CacheHits, CacheMisses As Integer
 
-    Private OuterDictionary As New Dictionary(Of IPoint, Dictionary(Of IPoint, List(Of Route)))
+    Private OuterDictionary As Dictionary(Of IPoint, Dictionary(Of IPoint, List(Of Route)))
 
     Private Const HOURS_UNTIL_STALE As Double = 0.5
 
     Sub Initialise(NAL As AutomatedAgents.NodesAdjacencyList, RouteFindingMinimiser As RouteFindingMinimiser)
         NodesAdjacencyList = NAL
         Minimiser = RouteFindingMinimiser
+        OuterDictionary = New Dictionary(Of IPoint, Dictionary(Of IPoint, List(Of Route)))
     End Sub
 
     Function GetRouteIfCached(ByVal FromPoint As IPoint, ByVal ToPoint As IPoint) As Route
@@ -58,6 +59,9 @@
         Return Route
     End Function
 
-
+    'Call this every 24 hours to prevent memory leak.
+    Sub CleanUp()
+        OuterDictionary = New Dictionary(Of IPoint, Dictionary(Of IPoint, List(Of Route)))
+    End Sub
 
 End Module

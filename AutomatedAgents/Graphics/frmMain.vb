@@ -207,7 +207,7 @@
             If Not RouteFromNode.Equals(RouteToNode) Then
                 Dim RouteFinder As IRouteFinder = New AStarSearch(RouteFromNode, RouteToNode, _
                                                                   Map.NodesAdjacencyList, _
-                                                                  SimulationParameters.RouteFindingMinimiser, _
+                                                                  SimulationParameters.RouteTestingMinimiser, _
                                                                   TimeSpan.FromHours(8))
                 If RouteFinder.GetRoute() IsNot Nothing Then
                     SetPictureBox(MapGraphics.DrawRoute(RouteFinder.GetRoute, RouteFinder.GetNodesSearched))
@@ -445,27 +445,27 @@
     End Sub
 
     Private Sub DistanceToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DistanceToolStripMenuItem.Click
-        SimulationParameters.RouteFindingMinimiser = RouteFindingMinimiser.DISTANCE
+        SimulationParameters.RouteTestingMinimiser = RouteFindingMinimiser.DISTANCE
         FindAndDisplayRoute()
     End Sub
 
     Private Sub TimeWith8AMTrafficToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TimeWith8AMTrafficToolStripMenuItem.Click
-        SimulationParameters.RouteFindingMinimiser = RouteFindingMinimiser.TIME_WITH_TRAFFIC
+        SimulationParameters.RouteTestingMinimiser = RouteFindingMinimiser.TIME_WITH_TRAFFIC
         FindAndDisplayRoute()
     End Sub
 
     Private Sub TimeWithoutTrafficToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TimeWithoutTrafficToolStripMenuItem.Click
-        SimulationParameters.RouteFindingMinimiser = RouteFindingMinimiser.TIME_NO_TRAFFIC
+        SimulationParameters.RouteTestingMinimiser = RouteFindingMinimiser.TIME_NO_TRAFFIC
         FindAndDisplayRoute()
     End Sub
 
     Private Sub FuelWith8AMTrafficToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FuelWith8AMTrafficToolStripMenuItem.Click
-        SimulationParameters.RouteFindingMinimiser = RouteFindingMinimiser.FUEL_WITH_TRAFFIC
+        SimulationParameters.RouteTestingMinimiser = RouteFindingMinimiser.FUEL_WITH_TRAFFIC
         FindAndDisplayRoute()
     End Sub
 
     Private Sub FuelWithoutTrafficToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FuelWithoutTrafficToolStripMenuItem.Click
-        SimulationParameters.RouteFindingMinimiser = RouteFindingMinimiser.FUEL_NO_TRAFFIC
+        SimulationParameters.RouteTestingMinimiser = RouteFindingMinimiser.FUEL_NO_TRAFFIC
         FindAndDisplayRoute()
     End Sub
 
@@ -483,5 +483,7 @@
             Timespan = Timespan.MaxValue
         End Try
         MsgBox("Simulation will begin at 0:00:00:00 and end at " & Timespan.ToString)
+
+        Me.Text = InputBox("Name this simulation:")
     End Sub
 End Class

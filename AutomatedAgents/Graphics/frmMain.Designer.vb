@@ -87,11 +87,11 @@ Partial Class frmMain
         Me.SpeedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewStatisticsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewConsoleToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ScriptToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.tmrRedraw = New System.Windows.Forms.Timer(Me.components)
         Me.picMap = New System.Windows.Forms.PictureBox()
         Me.tmrStatus = New System.Windows.Forms.Timer(Me.components)
         Me.bwSimulator = New System.ComponentModel.BackgroundWorker()
-        Me.ScriptToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.picMap, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -519,6 +519,12 @@ Partial Class frmMain
         Me.ViewConsoleToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
         Me.ViewConsoleToolStripMenuItem.Text = "View Console..."
         '
+        'ScriptToolStripMenuItem
+        '
+        Me.ScriptToolStripMenuItem.Name = "ScriptToolStripMenuItem"
+        Me.ScriptToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
+        Me.ScriptToolStripMenuItem.Text = "Script..."
+        '
         'tmrRedraw
         '
         Me.tmrRedraw.Enabled = True
@@ -539,12 +545,6 @@ Partial Class frmMain
         '
         'bwSimulator
         '
-        '
-        'ScriptToolStripMenuItem
-        '
-        Me.ScriptToolStripMenuItem.Name = "ScriptToolStripMenuItem"
-        Me.ScriptToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
-        Me.ScriptToolStripMenuItem.Text = "Script..."
         '
         'frmMain
         '

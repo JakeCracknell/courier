@@ -140,11 +140,6 @@ Module RouteFinderBenchmark
         Protected Sub BenchmarkAStarEpsilon()
             Dim OldAccelerator As Double = SimulationParameters.AStarAccelerator
 
-            Dim t As Stopwatch = Stopwatch.StartNew
-            Do
-                Dim AStar As New AStarSearch(AdjacencyList.GetRandomNode, AdjacencyList.GetRandomNode, AdjacencyList, RouteFindingMinimiser.DISTANCE)
-            Loop Until t.ElapsedMilliseconds >= 500
-
             Dim RouteCount As Integer = 50
             Dim StartPoints As New List(Of Node)
             Dim EndPoints As New List(Of Node)
@@ -153,22 +148,22 @@ Module RouteFinderBenchmark
                 EndPoints.Add(AdjacencyList.GetRandomNode)
             Next
 
-            Dim Parameters() As Double = {1, 1.05, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.2, 2.4, 2.6, 2.8, 3, 4, 5}
+            Dim Parameters() As Double = {1, 1.05, 1.1, 1.5, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20}
             Dim Distances(Parameters.Count) As Double
             Dim Times(Parameters.Count) As Double
             For Param = 0 To Parameters.Length - 1
-                t = Stopwatch.StartNew
-                Dim TotalDistance As Double = 0
+                Dim t As Stopwatch = Stopwatch.StartNew
+                Dim TotalCost As Double = 0
                 SimulationParameters.AStarAccelerator = Parameters(Param)
                 For Route = 0 To RouteCount - 1
-                    Dim AStar As New AStarSearch(StartPoints(Route), EndPoints(Route), AdjacencyList, RouteFindingMinimiser.DISTANCE)
-                    TotalDistance += AStar.GetRoute.GetKM
+                    Dim AStar As New AStarSearch(StartPoints(Route), EndPoints(Route), AdjacencyList, SimulationParameters.RouteTestingMinimiser)
+                    TotalCost += AStar.GetRoute.GetCost(SimulationParameters.RouteTestingMinimiser, TimeSpan.FromHours(8))
                     If t.ElapsedMilliseconds > 10000 AndAlso Param = 0 Then
                         RouteCount = Route + 1 'Short circuit if too much computation time
                         Exit For
                     End If
                 Next
-                Distances(Param) = TotalDistance
+                Distances(Param) = TotalCost
                 Times(Param) = t.ElapsedMilliseconds / RouteCount
             Next
             For i = 1 To Parameters.Length - 1
@@ -177,7 +172,7 @@ Module RouteFinderBenchmark
             Distances(0) = 1.0
 
             Dim SB As New System.Text.StringBuilder
-            SB.AppendLine("Accelerator // Distance % // Average Execution Time")
+            SB.AppendLine("Accelerator // Cost % // Average Execution Time")
             For i = 0 To Parameters.Length - 1
                 SB.Append(Parameters(i))
                 SB.Append(vbTab)

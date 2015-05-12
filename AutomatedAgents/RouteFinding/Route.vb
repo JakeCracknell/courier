@@ -137,5 +137,24 @@ Public Class Route
         Return 0
     End Function
 
+    Function GetCost(ByVal RouteTestingMinimiser As RouteFindingMinimiser) As Double
+        Return GetCost(RouteTestingMinimiser, NoticeBoard.Time)
+    End Function
+    Function GetCost(ByVal Minimiser As RouteFindingMinimiser, ByVal Time As TimeSpan) As Double
+        Select Case Minimiser
+            Case AutomatedAgents.RouteFindingMinimiser.DISTANCE
+                Return GetKM()
+            Case AutomatedAgents.RouteFindingMinimiser.TIME_NO_TRAFFIC
+                Return GetHoursWithoutTraffic()
+            Case AutomatedAgents.RouteFindingMinimiser.TIME_WITH_TRAFFIC
+                Return GetEstimatedHours(Time)
+            Case AutomatedAgents.RouteFindingMinimiser.FUEL_NO_TRAFFIC
+                Return GetOptimalFuelUsageWithoutTraffic(Vehicles.Type.CAR)
+            Case AutomatedAgents.RouteFindingMinimiser.FUEL_WITH_TRAFFIC
+                Return GetOptimalFuelUsageWithTraffic(Time, Vehicles.Type.CAR)
+        End Select
+        Return 0
+    End Function
+
 
 End Class

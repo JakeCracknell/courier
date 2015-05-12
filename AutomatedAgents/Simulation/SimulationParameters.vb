@@ -9,7 +9,7 @@
         Public ProbDeliveryFail As Double = 0.1
         Public FeeBasePrice As Double = 2
         Public FeeHourlyPrice As Double = 0.2
-        Public AStarAccelerator As Double = 1.0
+        Public AStarAccelerator As Double = 8
         Public TrafficDisplayAlpha As Double = 3.0
 
         'Options selected in frmMain GUI
@@ -19,7 +19,7 @@
         Public IdleStrategy As Integer = 2
         Public FailToDepot As Boolean = True
         Public Dispatcher As Integer = 0
-        Public RouteFindingMinimiser As RouteFindingMinimiser = AutomatedAgents.RouteFindingMinimiser.DISTANCE
+        Public RouteTestingMinimiser As RouteFindingMinimiser = AutomatedAgents.RouteFindingMinimiser.DISTANCE
 
         '***** Global Constants
         Public SIMULATION_TIME_INCREMENT As TimeSpan = TimeSpan.FromSeconds(1)
