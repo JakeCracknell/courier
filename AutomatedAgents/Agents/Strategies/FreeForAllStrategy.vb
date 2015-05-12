@@ -2,6 +2,7 @@
     Inherits AgentStrategy
 
     Private HopefulJob As CourierJob = Nothing
+    Private JobsToIgnore As New HashSet(Of CourierJob)
 
     Public Sub New(ByVal Agent As Agent)
         MyBase.New(Agent)
@@ -45,21 +46,23 @@
 
     Function FindBestJob() As CourierJob
         'Find best job based on the value of the job and whether the agent can perform it given its current resources.
-
-        'TODO: maybe Take(5) by haversine distance?
         Dim BestJob As CourierJob = Nothing
         Dim BestValue As Double = Double.MinValue
         For Each JobToReview As CourierJob In NoticeBoard.UnallocatedJobs
-            If JobToReview.CubicMetres > Agent.GetVehicleMaxCapacity Then
+            If JobToReview.CubicMetres > Agent.GetVehicleMaxCapacity OrElse _
+                JobsToIgnore.Contains(JobToReview) Then
                 Continue For
             End If
 
             Dim StartTime As TimeSpan = NoticeBoard.Time + Agent.Plan.GetDiversionTimeEstimate
-            Dim Route1 As Route = RouteCache.GetRoute(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition, StartTime)
+            'Too much garbage otherwise
+            Dim Route1 As Route = New AStarSearch(Agent.Plan.RoutePosition.GetPoint, JobToReview.PickupPosition, _
+                                                  Agent.Map.NodesAdjacencyList, Agent.RouteFindingMinimiser, StartTime).GetRoute
             Dim Route1Time As TimeSpan = Route1.GetEstimatedTime(StartTime) + Customers.WaitTimeAvg
             Dim Route2 As Route = RouteCache.GetRoute(JobToReview.PickupPosition, JobToReview.DeliveryPosition, StartTime + Route1Time)
             Dim MinTime As TimeSpan = Route1Time + Route2.GetEstimatedTime(StartTime + Route1Time)
             If StartTime + MinTime + SimulationParameters.DEADLINE_REDUNDANCY > JobToReview.Deadline Then
+                JobsToIgnore.Add(JobToReview)
                 Continue For
             End If
             Dim JobValue As Double = Route2.GetCostForAgent(Agent) / Route1.GetCostForAgent(Agent)
