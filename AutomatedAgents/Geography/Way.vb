@@ -81,9 +81,9 @@
     Public Function GetSpeedAtTime(ByVal Time As TimeSpan) As Double
         If SpeedAtTime IsNot Nothing Then
             Dim TimeIndex As Integer = GetTimeIndex(Time)
-            Return Math.Min(SpeedAtTime(TimeIndex), GetSpeedLimit())
+            Return Math.Min(SpeedAtTime(TimeIndex), GetSpeedLimit()) / 2
         Else
-            Return GetSpeedLimit()
+            Return GetSpeedLimit() / 2
         End If
     End Function
 
