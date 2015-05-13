@@ -37,7 +37,7 @@
         Table.Columns.Add("CurrentFuelReserves", GetType(Double))
         Table.Columns.Add("CurrentVehicleTrafficDelta", GetType(Double))
 
-
+        Table.Columns.Add("EmergencyFuelDiversions", GetType(Integer))
         Table.Columns.Add("CumulativeDrivingDistance", GetType(Double))
         Table.Columns.Add("CumulativeDrivingHours", GetType(Double))
         Table.Columns.Add("CumulativeLitres", GetType(Double))
@@ -88,6 +88,9 @@
         Row("CumulativeDrivingHours") = Agents.Sum(Function(x)
                                                        Return x.TotalDrivingTime
                                                    End Function) / 3600
+        Row("EmergencyFuelDiversions") = Agents.Sum(Function(x)
+                                                        Return x.TotalEmergencyFuelDiversions
+                                                    End Function)
 
         Row("CumulativeLitres") = NoticeBoard.FuelBill / Vehicles.FuelCost(SimulationParameters.VehicleType, 1) - Row("CurrentFuelReserves")
         Row("CumulativeCost") = NoticeBoard.FuelBill

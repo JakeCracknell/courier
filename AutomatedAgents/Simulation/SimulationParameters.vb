@@ -3,7 +3,7 @@
         '***** Global Variables/parameters
         Public SimulationSpeed As Integer = 30
         Public DisplayRefreshSpeed As Integer = 10
-        Public DispatchRateCoefficient As Double = 0.2
+        Public DispatchRateCoefficient As Double = 1
         Public PackageSizeLambda As Double = 3
         Public ProbPickupFail As Double = 0.01
         Public ProbDeliveryFail As Double = 0.1
@@ -14,7 +14,7 @@
 
         'Options selected in frmMain GUI
         Public CNPVersion As ContractNetPolicy = ContractNetPolicy.CNP5
-        Public VehicleType As Vehicles.Type = Vehicles.Type.BAD_TRUCK
+        Public VehicleType As Vehicles.Type = Vehicles.Type.CAR
         Public RoutingStrategy As Integer = 0
         Public IdleStrategy As Integer = 2
         Public FailToDepot As Boolean = True

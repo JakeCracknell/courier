@@ -78,9 +78,6 @@
                                                                           End Function)}
                 Dim Min As Double = NeighbourDistances.Min()
                 If Min > BestMaxMinDistance Then
-                    If Min = BestMaxMinDistance Then
-                        Debug.Write(Min & " ")
-                    End If
                     BestMaxMinDistance = Min
                     BestNode = N
                 End If

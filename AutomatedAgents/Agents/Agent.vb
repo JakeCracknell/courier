@@ -14,6 +14,7 @@
     Public TotalKMTravelled As Double = 0
     Public TotalDrivingTime As Integer = 0
     Public TotalCompletedJobs As Integer = 0
+    Public TotalEmergencyFuelDiversions As Integer = 0
     Public Map As StreetMap
     Public Color As Color
     Public Delayer As New Delayer
@@ -93,6 +94,7 @@
                 If Not Plan.IsOnDiversion Then
                     Dim RouteToFuel As Route = GetRouteForRefuel()
                     Plan.SetDiversion(RouteToFuel)
+                    TotalEmergencyFuelDiversions += 1
                     SimulationState.NewEvent(AgentID, LogMessages.EmergencyRefuel(FuelLitres, RouteToFuel.GetKM))
                 ElseIf Plan.RoutePosition.RouteCompleted Then
                     Delayer = New Delayer(SimulationParameters.REFUELLING_TIME_SECONDS)
