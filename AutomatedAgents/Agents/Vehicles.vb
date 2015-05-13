@@ -7,7 +7,8 @@
         Public Enum Type
             CAR
             VAN
-            TRUCK '7.5 tonnes
+            TRUCK
+            BAD_TRUCK
         End Enum
 
         Function Name(ByVal Type As Type) As String
@@ -18,6 +19,8 @@
                     Return "Van"
                 Case Vehicles.Type.TRUCK
                     Return "Truck"
+                Case Vehicles.Type.BAD_TRUCK
+                    Return "Bad Truck"
                 Case Else
                     Return ""
             End Select
@@ -30,7 +33,7 @@
                     Return 1.0
                 Case Vehicles.Type.VAN
                     Return 2.0
-                Case Vehicles.Type.TRUCK
+                Case Vehicles.Type.TRUCK, Vehicles.Type.BAD_TRUCK
                     Return 8.0
                 Case Else
                     Return 0.0
@@ -45,6 +48,8 @@
                     Return 80.0
                 Case Vehicles.Type.TRUCK
                     Return 92.0
+                Case Vehicles.Type.BAD_TRUCK
+                    Return 10.0
                 Case Else
                     Return 0.0
             End Select
@@ -64,7 +69,7 @@
                     Multiplier = 1
                 Case Vehicles.Type.VAN
                     Multiplier = 0.92
-                Case Vehicles.Type.TRUCK
+                Case Vehicles.Type.TRUCK, Vehicles.Type.BAD_TRUCK
                     Multiplier = 0.55
             End Select
 
@@ -92,7 +97,7 @@
                 Case Vehicles.Type.CAR
                     'Unleaded regular
                     Return Math.Round(Litres * 1.1327, 2)
-                Case Vehicles.Type.VAN, Vehicles.Type.TRUCK
+                Case Vehicles.Type.VAN, Vehicles.Type.TRUCK, Vehicles.Type.BAD_TRUCK
                     'Diesel
                     Return Math.Round(Litres * 1.1882, 2)
                 Case Else
