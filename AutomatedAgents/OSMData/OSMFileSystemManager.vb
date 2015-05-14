@@ -11,7 +11,9 @@
                 Dim OSMFiles As IO.FileInfo() = FolderToScan.GetFiles("*.osm")
                 For Each OSMFile As IO.FileInfo In OSMFiles
                     Dim Filename As String = OSMFile.Name
-                    Dictionary.Add(OSMFile.Name, OSMFile.FullName)
+                    If Not Dictionary.ContainsKey(OSMFile.Name) Then
+                        Dictionary.Add(OSMFile.Name, OSMFile.FullName)
+                    End If
                     FilenameList.Add(OSMFile.Name)
                 Next
             End If

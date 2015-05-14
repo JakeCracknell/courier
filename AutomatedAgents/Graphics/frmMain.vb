@@ -110,7 +110,7 @@
                                     StatisticsLogCounter += 1
 
                                     If TotalTicks >= MaxSimulationTicks Then
-                                        AASimulation.Pause()
+                                        Exit Sub
                                     End If
                                 End If
                             End SyncLock
@@ -119,12 +119,13 @@
                         End If
                     Loop Until TickCounter >= SimulationParameters.SimulationSpeed
 
+                    Dim SleepTime As Integer = 1000 / SimulationParameters.SimulationSpeed
+                    If SleepTime > 0 AndAlso Not PauseDisplayToolStripMenuItem.Checked Then
+                        Threading.Thread.Sleep(SleepTime)
+                    End If
+                Else
+                    Threading.Thread.Sleep(100) 'Simulation stopped, mitigate busy wait.
                 End If
-            End If
-
-            Dim SleepTime As Integer = 1000 / SimulationParameters.SimulationSpeed
-            If SleepTime > 0 AndAlso Not PauseDisplayToolStripMenuItem.Checked Then
-                Threading.Thread.Sleep(SleepTime)
             End If
         End While
     End Sub

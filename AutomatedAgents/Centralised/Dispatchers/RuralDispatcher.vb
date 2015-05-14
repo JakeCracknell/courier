@@ -40,10 +40,10 @@
         DeliveryLocation = Map.NodesAdjacencyList.GetRandomPoint
         PickupName = GenerateWaypointName(PickupLocation)
         DeliveryName = GenerateWaypointName(DeliveryLocation)
-
-        Dim Deadline As TimeSpan = NoticeBoard.Time + _
-            RouteCache.GetRoute(PickupLocation, DeliveryLocation).GetEstimatedTime + _
-            TimeSpan.FromHours(ProbabilityDistributions.Gamma(RNG.R("deadline"), 2, 1))
+        Dim RouteTime As TimeSpan = RouteCache.GetRoute(PickupLocation, DeliveryLocation).GetEstimatedTime
+        Dim Deadline As TimeSpan = NoticeBoard.Time + RouteTime + _
+            TimeSpan.FromHours(ProbabilityDistributions.Gamma(RNG.R("deadline"), _
+                       SimulationParameters.DEADLINE_GAMMA_K, SimulationParameters.DeadlineGammaTheta))
 
         'Generate a random package size from an exponential distribution (as many packages will be documents).
         Dim Size As Double = ProbabilityDistributions.Exponential(SimulationParameters.PackageSizeLambda, RNG.R("dispatcher").NextDouble)

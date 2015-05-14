@@ -88,7 +88,7 @@
                         TotalTimeEarly += TimeSpare
                     End If
 
-                    If Job.IsFailedDelivery AndAlso SimulationParameters.FailToDepot = True Then
+                    If Job.IsFailedDelivery AndAlso SimulationParameters.FailToDepot = True AndAlso SimulationParameters.ENABLE_DEPOT_DISPATCHER Then
                         DepotDispatcher.AddPotentialJob(Job)
                     End If
                 End If

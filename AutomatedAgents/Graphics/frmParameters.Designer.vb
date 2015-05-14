@@ -455,7 +455,7 @@ Partial Class frmParameters
         '
         Me.tbCubicMetres.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tbCubicMetres.Location = New System.Drawing.Point(152, 115)
-        Me.tbCubicMetres.Maximum = 500
+        Me.tbCubicMetres.Maximum = 10000
         Me.tbCubicMetres.Minimum = 1
         Me.tbCubicMetres.Name = "tbCubicMetres"
         Me.tbCubicMetres.Size = New System.Drawing.Size(143, 22)
@@ -487,25 +487,24 @@ Partial Class frmParameters
         '
         Me.tbDeadlines.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tbDeadlines.Location = New System.Drawing.Point(152, 87)
-        Me.tbDeadlines.Maximum = 1440
+        Me.tbDeadlines.Maximum = 1200
         Me.tbDeadlines.Minimum = 1
         Me.tbDeadlines.Name = "tbDeadlines"
         Me.tbDeadlines.Size = New System.Drawing.Size(143, 22)
         Me.tbDeadlines.TabIndex = 10
         Me.tbDeadlines.TickFrequency = 0
         Me.tbDeadlines.TickStyle = System.Windows.Forms.TickStyle.None
-        Me.tbDeadlines.Value = 10
+        Me.tbDeadlines.Value = 100
         '
         'Label4
         '
         Me.Label4.AutoSize = True
         Me.Label4.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Label4.Enabled = False
         Me.Label4.Location = New System.Drawing.Point(3, 84)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(143, 28)
         Me.Label4.TabIndex = 9
-        Me.Label4.Text = "Average Deadline (min)"
+        Me.Label4.Text = "Deadline Excess, Γ(2,_) (h)"
         Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtDispatchRate

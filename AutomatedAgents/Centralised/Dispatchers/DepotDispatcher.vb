@@ -27,7 +27,9 @@
                 PotentialJobs.RemoveAt(0)
 
                 Dim DirectRoute As Route = RouteCache.GetRoute(OldJob.DeliveryPosition, OldJob.OriginalDeliveryPosition)
-                Dim Deadline As TimeSpan = NoticeBoard.Time + DirectRoute.GetEstimatedTime() + TimeSpan.FromHours(ProbabilityDistributions.Gamma(RNG.R("retry_deadline"), 2, 1))
+                Dim Deadline As TimeSpan = NoticeBoard.Time + DirectRoute.GetEstimatedTime() + _
+                    TimeSpan.FromHours(ProbabilityDistributions.Gamma(RNG.R("deadline"), _
+                               SimulationParameters.DEADLINE_GAMMA_K, SimulationParameters.DeadlineGammaTheta))
                 Dim DepotName As String = CType(OldJob.DeliveryPosition.Hop.FromPoint, Node).Description
                 Dim NewJob As New CourierJob(OldJob.DeliveryPosition, OldJob.OriginalDeliveryPosition, DepotName, OldJob.OriginalDeliveryName, OldJob.CubicMetres, Deadline)
                 NoticeBoard.PostJob(NewJob)

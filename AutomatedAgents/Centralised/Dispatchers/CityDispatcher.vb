@@ -127,9 +127,11 @@
                 TimeSpan.FromSeconds(RNG.R("dispatcher").Next( _
                                      END_OF_BUSINESS_DAY_MIN.TotalSeconds, END_OF_BUSINESS_DAY_MAX.TotalSeconds))
         Else
-            'A gamma distribution, giving a range from 0 to infinity. Mode of (alpha-1)*theta = +1h
+            'A gamma distribution, giving a range from 0 to infinity. Mode of (k-1)*theta = +1h, mean of k*theta = +2h
             'Spread mostly between 0.5 and 4
-            Deadline = NoticeBoard.Time + DirectRoute.GetEstimatedTime() + TimeSpan.FromHours(ProbabilityDistributions.Gamma(RNG.R("deadline"), 2, 1))
+            Deadline = NoticeBoard.Time + DirectRoute.GetEstimatedTime() + _
+                TimeSpan.FromHours(ProbabilityDistributions.Gamma(RNG.R("deadline"), _
+                           SimulationParameters.DEADLINE_GAMMA_K, SimulationParameters.DeadlineGammaTheta))
         End If
 
         'Generate a random package size from an exponential distribution (as many packages will be documents).
