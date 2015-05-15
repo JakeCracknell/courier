@@ -127,6 +127,7 @@
                     Threading.Thread.Sleep(100) 'Simulation stopped, mitigate busy wait.
                 End If
             End If
+            Threading.Thread.Sleep(100)
         End While
     End Sub
 
