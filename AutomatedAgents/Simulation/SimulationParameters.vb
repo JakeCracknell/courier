@@ -1,8 +1,8 @@
 ﻿Namespace SimulationParameters
     Module SimulationParameters
         '***** Global Variables/parameters
-        Public SimulationSpeed As Integer = 30
-        Public DisplayRefreshSpeed As Integer = 10
+        Public SimulationSpeed As Integer = 1
+        Public DisplayRefreshSpeed As Integer = 1
         Public DispatchRateCoefficient As Double = 1
         Public DeadlineGammaTheta As Double = 1
         Public PackageSizeLambda As Double = 3

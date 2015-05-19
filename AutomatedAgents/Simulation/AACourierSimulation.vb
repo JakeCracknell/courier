@@ -11,6 +11,8 @@
                 NoticeBoard.SetDispatcher(If(Map.Businesses.Count > 50, New CityDispatcher(Map), New RuralDispatcher(Map)))
             Case 1
                 NoticeBoard.SetDispatcher(New SingleBusinessDispatcher(Map))
+            Case 2
+                NoticeBoard.SetDispatcher(New HubAndSpokeDispatcher(Map))
         End Select
     End Sub
 

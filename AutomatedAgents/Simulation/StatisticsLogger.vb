@@ -25,8 +25,11 @@
         Table.Columns.Add("CompletedJobsCount", GetType(Integer))
         Table.Columns.Add("IncompleteJobsCount", GetType(Integer))
         Table.Columns.Add("RefusedJobsCount", GetType(Integer))
+        Table.Columns.Add("CompletedJobsPercentage", GetType(Double))
 
         Table.Columns.Add("LateJobsCount", GetType(Integer))
+        Table.Columns.Add("LateJobsPercentage", GetType(Double))
+
         Table.Columns.Add("CumulativeTimeEarly", GetType(Integer))
         Table.Columns.Add("CumulativeTimeLate", GetType(Integer))
 
@@ -41,8 +44,9 @@
         Table.Columns.Add("CumulativeDrivingDistance", GetType(Double))
         Table.Columns.Add("CumulativeDrivingHours", GetType(Double))
         Table.Columns.Add("CumulativeLitres", GetType(Double))
-
         Table.Columns.Add("CumulativeCost", GetType(Decimal))
+
+        Table.Columns.Add("CumulativeCostNoDeduction", GetType(Decimal))
         Table.Columns.Add("CumulativeRevenue", GetType(Decimal))
         Table.Columns.Add("CumulativeProfit", GetType(Decimal))
     End Sub
@@ -54,8 +58,11 @@
         Row("CompletedJobsCount") = NoticeBoard.CompletedJobs.Count
         Row("IncompleteJobsCount") = NoticeBoard.IncompleteJobs.Count
         Row("RefusedJobsCount") = NoticeBoard.RefusedJobs.Count
-
+        Dim AllSpawnedJobs As Integer = NoticeBoard.RefusedJobs.Count + NoticeBoard.CompletedJobs.Count
+        Row("CompletedJobsPercentage") = If(AllSpawnedJobs > 0, NoticeBoard.CompletedJobs.Count / AllSpawnedJobs, 0)
         Row("LateJobsCount") = NoticeBoard.LateJobs
+        Row("LateJobsPercentage") = If(NoticeBoard.CompletedJobs.Count > 0, NoticeBoard.LateJobs / NoticeBoard.CompletedJobs.Count, 0)
+
         Row("CumulativeTimeEarly") = NoticeBoard.TotalTimeEarly
         Row("CumulativeTimeLate") = NoticeBoard.TotalTimeLate
 
@@ -93,7 +100,8 @@
                                                     End Function)
 
         Row("CumulativeLitres") = NoticeBoard.FuelBill / Vehicles.FuelCost(SimulationParameters.VehicleType, 1) - Row("CurrentFuelReserves")
-        Row("CumulativeCost") = NoticeBoard.FuelBill
+        Row("CumulativeCost") = Vehicles.FuelCost(SimulationParameters.VehicleType, Row("CumulativeLitres"))
+        Row("CumulativeCostNoDeduction") = NoticeBoard.FuelBill
         Row("CumulativeRevenue") = NoticeBoard.JobRevenue
         Row("CumulativeProfit") = NoticeBoard.JobRevenue - NoticeBoard.FuelBill
 

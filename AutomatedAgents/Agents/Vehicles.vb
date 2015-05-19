@@ -92,7 +92,6 @@
         'UK Petrol Prices for Thursday 9th April 2015
         'http://www.petrolprices.com/
         Function FuelCost(ByVal Type As Type, ByVal Litres As Double) As Double
-            Debug.Assert(Litres >= 0)
             Select Case Type
                 Case Vehicles.Type.CAR
                     'Unleaded regular

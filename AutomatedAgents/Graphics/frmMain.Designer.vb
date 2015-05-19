@@ -92,6 +92,7 @@ Partial Class frmMain
         Me.picMap = New System.Windows.Forms.PictureBox()
         Me.tmrStatus = New System.Windows.Forms.Timer(Me.components)
         Me.bwSimulator = New System.ComponentModel.BackgroundWorker()
+        Me.HubAndSpokeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.picMap, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -100,9 +101,9 @@ Partial Class frmMain
         'StatusStrip1
         '
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.pbLoad, Me.lblLoadStatus, Me.lblTime, Me.lblDebugVariable})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 438)
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 415)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(1099, 22)
+        Me.StatusStrip1.Size = New System.Drawing.Size(336, 22)
         Me.StatusStrip1.TabIndex = 0
         Me.StatusStrip1.Text = "StatusStrip1"
         '
@@ -134,7 +135,7 @@ Partial Class frmMain
         Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.AgentsToolStripMenuItem, Me.RouteTestingToolStripMenuItem, Me.ViewToolStripMenuItem, Me.SimulationToolStripMenuItem})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
-        Me.MenuStrip1.Size = New System.Drawing.Size(1099, 24)
+        Me.MenuStrip1.Size = New System.Drawing.Size(336, 24)
         Me.MenuStrip1.TabIndex = 1
         Me.MenuStrip1.Text = "MenuStrip1"
         '
@@ -277,7 +278,7 @@ Partial Class frmMain
         '
         'SelectDispatcherToolStripMenuItem
         '
-        Me.SelectDispatcherToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.GeneralToolStripMenuItem, Me.SingleBusinessToolStripMenuItem})
+        Me.SelectDispatcherToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.GeneralToolStripMenuItem, Me.SingleBusinessToolStripMenuItem, Me.HubAndSpokeToolStripMenuItem})
         Me.SelectDispatcherToolStripMenuItem.Name = "SelectDispatcherToolStripMenuItem"
         Me.SelectDispatcherToolStripMenuItem.Size = New System.Drawing.Size(174, 22)
         Me.SelectDispatcherToolStripMenuItem.Text = "Select Dispatcher"
@@ -285,13 +286,13 @@ Partial Class frmMain
         'GeneralToolStripMenuItem
         '
         Me.GeneralToolStripMenuItem.Name = "GeneralToolStripMenuItem"
-        Me.GeneralToolStripMenuItem.Size = New System.Drawing.Size(154, 22)
+        Me.GeneralToolStripMenuItem.Size = New System.Drawing.Size(155, 22)
         Me.GeneralToolStripMenuItem.Text = "General"
         '
         'SingleBusinessToolStripMenuItem
         '
         Me.SingleBusinessToolStripMenuItem.Name = "SingleBusinessToolStripMenuItem"
-        Me.SingleBusinessToolStripMenuItem.Size = New System.Drawing.Size(154, 22)
+        Me.SingleBusinessToolStripMenuItem.Size = New System.Drawing.Size(155, 22)
         Me.SingleBusinessToolStripMenuItem.Text = "Single Business"
         '
         'RouteTestingToolStripMenuItem
@@ -535,7 +536,7 @@ Partial Class frmMain
         Me.picMap.Dock = System.Windows.Forms.DockStyle.Fill
         Me.picMap.Location = New System.Drawing.Point(0, 24)
         Me.picMap.Name = "picMap"
-        Me.picMap.Size = New System.Drawing.Size(1099, 414)
+        Me.picMap.Size = New System.Drawing.Size(336, 391)
         Me.picMap.TabIndex = 2
         Me.picMap.TabStop = False
         '
@@ -546,11 +547,17 @@ Partial Class frmMain
         'bwSimulator
         '
         '
+        'HubAndSpokeToolStripMenuItem
+        '
+        Me.HubAndSpokeToolStripMenuItem.Name = "HubAndSpokeToolStripMenuItem"
+        Me.HubAndSpokeToolStripMenuItem.Size = New System.Drawing.Size(155, 22)
+        Me.HubAndSpokeToolStripMenuItem.Text = "Hub and Spoke"
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1099, 460)
+        Me.ClientSize = New System.Drawing.Size(336, 437)
         Me.Controls.Add(Me.picMap)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.MenuStrip1)
@@ -635,5 +642,6 @@ Partial Class frmMain
     Friend WithEvents FuelWithoutTrafficToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents KeepRefreshingRouteToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ScriptToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents HubAndSpokeToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class

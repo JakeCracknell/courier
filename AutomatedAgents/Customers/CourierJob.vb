@@ -40,7 +40,7 @@
         Debug.Assert(Status = JobStatus.PENDING_PICKUP)
 
         'Assume best case scenario with outbound depot jobbies.
-        If PickupName.Contains(DEPOT_STRING_IDENTIFIER) Then
+        If SimulationParameters.Dispatcher = 2 OrElse PickupName.Contains(DEPOT_STRING_IDENTIFIER) Then
             Status = JobStatus.PENDING_DELIVERY
             Return Customers.WaitTimeMinSeconds
         End If
@@ -67,7 +67,7 @@
         End If
 
         'Assume best case scenario with returned jobs.
-        If IsFailedDelivery() OrElse DeliveryName.Contains(DEPOT_STRING_IDENTIFIER) Then
+        If IsFailedDelivery() OrElse SimulationParameters.Dispatcher = 2 OrElse DeliveryName.Contains(DEPOT_STRING_IDENTIFIER) Then
             Status = JobStatus.COMPLETED
             Return Customers.WaitTimeMinSeconds
         End If

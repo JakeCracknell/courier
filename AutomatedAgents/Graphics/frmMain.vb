@@ -3,7 +3,7 @@
  
     Private Const LOAD_TSMI_TEXT_PREFIX As String = "Load "
     Private Const AGENT_TSMI_TEXT_PREFIX As String = "Add "
-    Private AGENT_TSMI_AMOUNTS() As Integer = {1, 2, 3, 4, 5, 10, 50, 100, 500, 1000, 5000, 10000}
+    Private AGENT_TSMI_AMOUNTS() As Integer = {1, 2, 3, 4, 5, 10, 20, 50, 100, 500, 1000, 5000, 10000}
 
     Private AASimulation As AASimulation
     Private MaxSimulationTicks As Long = Long.MaxValue
@@ -30,7 +30,6 @@
         frmAgentStatus.Location = New Point(Me.Location.X, Me.Location.Y + Me.Height)
         frmParameters.Show()
         frmParameters.Location = New Point(Me.Location.X + Me.Width, Me.Location.Y)
-
     End Sub
 
     Private Sub frmMain_Resize(sender As Object, e As EventArgs) Handles Me.Resize
@@ -110,6 +109,8 @@
                                     StatisticsLogCounter += 1
 
                                     If TotalTicks >= MaxSimulationTicks Then
+                                        RouteCache.CleanUp()
+                                        Console.Beep()
                                         Exit Sub
                                     End If
                                 End If
@@ -126,8 +127,9 @@
                 Else
                     Threading.Thread.Sleep(100) 'Simulation stopped, mitigate busy wait.
                 End If
+            Else
+                Threading.Thread.Sleep(100)
             End If
-            Threading.Thread.Sleep(100)
         End While
     End Sub
 
@@ -445,6 +447,9 @@
     Private Sub SingleBusinessToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SingleBusinessToolStripMenuItem.Click
         SimulationParameters.Dispatcher = 1
     End Sub
+    Private Sub HubAndSpokeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HubAndSpokeToolStripMenuItem.Click
+        SimulationParameters.Dispatcher = 2
+    End Sub
 
     Private Sub DistanceToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DistanceToolStripMenuItem.Click
         SimulationParameters.RouteTestingMinimiser = RouteFindingMinimiser.DISTANCE
@@ -488,4 +493,6 @@
 
         Me.Text = InputBox("Name this simulation:")
     End Sub
+
+
 End Class
