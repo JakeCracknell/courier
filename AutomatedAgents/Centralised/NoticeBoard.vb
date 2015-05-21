@@ -6,6 +6,7 @@
                                 CompletedJobs, RefusedJobs As List(Of CourierJob)
 
         Property JobRevenue As Decimal
+        Property BillableJobCost As Double
         Property FuelBill As Decimal
         Property TotalTimeEarly As Long
         Property TotalTimeLate As Long
@@ -24,6 +25,7 @@
             TotalTimeEarly = 0
             TotalTimeLate = 0
             LateJobs = 0
+            BillableJobCost = 0
 
             UnallocatedJobs = New List(Of CourierJob)
             UnpickedJobs = New List(Of CourierJob)
@@ -77,6 +79,7 @@
                 Dim Job As CourierJob = PickedJobs(i)
                 If Job.Status = JobStatus.COMPLETED Then
                     JobRevenue += Job.CustomerFee
+                    BillableJobCost += Job.BillableCost
                     CompletedJobs.Add(Job)
                     IncompleteJobs.Remove(Job)
                     PickedJobs.Remove(Job)
@@ -102,7 +105,7 @@
                 End If
                 If Job.Status = JobStatus.CANCELLED Then
                     JobRevenue += Job.CustomerFee
-                    'Debug.WriteLine(JobRevenue)
+                    BillableJobCost += Job.BillableCost
                     IncompleteJobs.Remove(Job)
                     CompletedJobs.Add(Job)
                     UnpickedJobs.Remove(Job)

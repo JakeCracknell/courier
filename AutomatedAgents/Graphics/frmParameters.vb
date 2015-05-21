@@ -136,6 +136,24 @@
             End If
         End If
     End Sub
+    Private Sub txtFeeBase_TextChanged(sender As Object, e As EventArgs) Handles txtFeeBase.TextChanged
+        If IsNumeric(txtFeeBase.Text) Then
+            Dim txtValue As Decimal = CDec(txtFeeBase.Text) * 100
+            If txtValue >= tbFeeBase.Minimum And txtValue <= tbFeeBase.Maximum Then
+                tbFeeBase.Value = txtValue
+                SimulationParameters.FeeBasePrice = txtValue / 100
+            End If
+        End If
+    End Sub
+    Private Sub txtFeeHourly_TextChanged(sender As Object, e As EventArgs) Handles txtFeeHourly.TextChanged
+        If IsNumeric(txtFeeHourly.Text) Then
+            Dim txtValue As Decimal = CDec(txtFeeHourly.Text) * 100
+            If txtValue >= tbFeeHourly.Minimum And txtValue <= tbFeeHourly.Maximum Then
+                tbFeeHourly.Value = txtValue
+                SimulationParameters.FeeHourlyPrice = txtValue / 100
+            End If
+        End If
+    End Sub
     Private Sub txtAStarAccelerator_TextChanged(sender As Object, e As EventArgs) Handles txtAStarAccelerator.TextChanged
         If IsNumeric(txtAStarAccelerator.Text) Then
             Dim txtValue As Decimal = CDec(txtAStarAccelerator.Text) * 100

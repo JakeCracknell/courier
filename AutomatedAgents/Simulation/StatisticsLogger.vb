@@ -43,6 +43,7 @@
         Table.Columns.Add("EmergencyFuelDiversions", GetType(Integer))
         Table.Columns.Add("CumulativeDrivingDistance", GetType(Double))
         Table.Columns.Add("CumulativeDrivingHours", GetType(Double))
+        Table.Columns.Add("CumulativeBillableCost", GetType(Double))
         Table.Columns.Add("CumulativeLitres", GetType(Double))
         Table.Columns.Add("CumulativeCost", GetType(Decimal))
 
@@ -103,7 +104,8 @@
         Row("CumulativeCost") = Vehicles.FuelCost(SimulationParameters.VehicleType, Row("CumulativeLitres"))
         Row("CumulativeCostNoDeduction") = NoticeBoard.FuelBill
         Row("CumulativeRevenue") = NoticeBoard.JobRevenue
-        Row("CumulativeProfit") = NoticeBoard.JobRevenue - NoticeBoard.FuelBill
+        Row("CumulativeBillableCost") = NoticeBoard.BillableJobCost
+        Row("CumulativeProfit") = NoticeBoard.JobRevenue - Row("CumulativeCost")
 
         SyncLock Table
             Table.Rows.Add(Row)

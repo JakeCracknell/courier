@@ -10,6 +10,7 @@
     Public ReadOnly CubicMetres As Double
     Public CustomerFee As Decimal 'Potentially refunded
     Public OriginalCustomerFee As Decimal
+    Public BillableCost As Double
     Public Status As JobStatus = JobStatus.UNALLOCATED
     Public PickupName As String
     Public DeliveryName As String
@@ -97,6 +98,7 @@
     End Function
 
     Public Sub CalculateFee(ByVal EstimatedExtraCostOfDriving As Double)
+        BillableCost = EstimatedExtraCostOfDriving
         OriginalCustomerFee = Math.Round(SimulationParameters.FeeBasePrice + EstimatedExtraCostOfDriving * SimulationParameters.FeeHourlyPrice, 2)
         CustomerFee = OriginalCustomerFee
     End Sub
