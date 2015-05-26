@@ -140,7 +140,7 @@ Module RouteFinderBenchmark
         Protected Sub BenchmarkAStarEpsilon()
             Dim OldAccelerator As Double = SimulationParameters.AStarAccelerator
 
-            Dim RouteCount As Integer = 50
+            Dim RouteCount As Integer = 100
             Dim StartPoints As New List(Of Node)
             Dim EndPoints As New List(Of Node)
             For i = 1 To RouteCount
@@ -172,7 +172,7 @@ Module RouteFinderBenchmark
             Distances(0) = 1.0
 
             Dim SB As New System.Text.StringBuilder
-            SB.AppendLine("Accelerator // Cost % // Average Execution Time")
+            SB.AppendLine("Heuristic Weight (1+e) // Cost % // Average Execution Time")
             For i = 0 To Parameters.Length - 1
                 SB.Append(Parameters(i))
                 SB.Append(vbTab)
@@ -184,7 +184,8 @@ Module RouteFinderBenchmark
 
             SimulationParameters.AStarAccelerator = OldAccelerator
 
-            MsgBox(SB.ToString)
+            Dim TableString As String = SB.ToString
+            MsgBox(TableString)
         End Sub
 
         Protected Sub HaversineVsAStar()
