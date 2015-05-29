@@ -315,7 +315,7 @@ Partial Class frmParameters
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(143, 28)
         Me.Label10.TabIndex = 27
-        Me.Label10.Text = "A* Search Accelerator"
+        Me.Label10.Text = "A* Search Speed"
         Me.Label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtFeeHourly
@@ -347,7 +347,7 @@ Partial Class frmParameters
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(143, 28)
         Me.Label9.TabIndex = 24
-        Me.Label9.Text = "Fee Hourly Price £"
+        Me.Label9.Text = "Fee Unit Price £"
         Me.Label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtFeeBase
@@ -409,7 +409,7 @@ Partial Class frmParameters
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(143, 28)
         Me.Label7.TabIndex = 18
-        Me.Label7.Text = "Prob of Failed Delivery"
+        Me.Label7.Text = "Prob of Failed Dropoff"
         Me.Label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtFailedPickup
