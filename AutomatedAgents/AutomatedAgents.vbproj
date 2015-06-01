@@ -121,7 +121,7 @@
     <Compile Include="OSMData\HERETrafficData.vb" />
     <Compile Include="OSMData\RoadDelayUtils.vb" />
     <Compile Include="Planning\NNGAPlanner.vb" />
-    <None Include="Planning\Unused\ExhaustiveTSPPlanner.vb" />
+    <Compile Include="Planning\Unused\ExhaustiveTSPPlanner.vb" />
     <Compile Include="RouteFinding\RouteCache.vb" />
     <Compile Include="Simulation\LogMessages.vb" />
     <Compile Include="Simulation\SimulationState.vb" />
@@ -136,7 +136,7 @@
     <None Include="Planning\Unused\NNSearchPlanner.vb" />
     <None Include="Planning\Unused\RouteInsertionPlanner.vb" />
     <None Include="Planning\Unused\PunctualityStrategy.vb" />
-    <None Include="Planning\Unused\ListPermutator.vb" />
+    <Compile Include="Planning\Unused\ListPermutator.vb" />
     <None Include="Planning\Unused\NearestNeighbourPlanner.vb" />
     <Compile Include="Planning\WayPoint.vb" />
     <Compile Include="Simulation\AAPlayground.vb" />

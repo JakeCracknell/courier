@@ -19,7 +19,7 @@
             Return (Math.Log(1 - UniformlyDistributedRV)) / (-lambda) 'The inversion method
         End Function
 
-        'http://www.codeproject.com/Articles/15102/NET-random-number-generators-and-distributions
+        'Adapted from http://www.codeproject.com/Articles/15102/NET-random-number-generators-and-distributions
         Public Function Gamma(ByVal RNG As Random, ByVal alpha As Double, ByVal theta As Double) As Double
             Dim helper1 As Double = alpha - Math.Floor(alpha)
             Dim helper2 As Double = Math.E / (Math.E + helper1)

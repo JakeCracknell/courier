@@ -46,7 +46,7 @@
     'Sets StartPoint and Routes(0)
     Public Sub Update(ByVal RecreateRoute As Boolean)
         StartPoint = RoutePosition.GetPoint
-        If WayPoints.Count > 0 Then
+        If WayPoints.Count > 0 AndAlso Routes.Count > 0 Then
             If RecreateRoute AndAlso Not Routes(0).GetStartPoint.Equals(WayPoints(0).Position) Then
                 If RoutePosition.Route.Equals(Routes(0)) Then
                     Routes(0) = RoutePosition.GetSubRoute
@@ -173,7 +173,10 @@
     End Function
 
     Function CostScore() As Double
-        Return UpdateAndGetCost() + LateDeliveriesCount() * 1000
+        If WayPoints.Count > 0 And Routes.Count > 0 Then
+            Return UpdateAndGetCost() + LateDeliveriesCount() * 1000
+        Else : Return 0
+        End If
     End Function
 
     '----------------------------Diversions-------------------------------------

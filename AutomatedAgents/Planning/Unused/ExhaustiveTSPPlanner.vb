@@ -1,10 +1,9 @@
 ﻿Public Class ExhaustiveTSPPlanner
-
     Private Map As StreetMap = Nothing
     Private Minimiser As RouteFindingMinimiser = Nothing
 
     Property RouteCost As Double = 0
-    Property PointList As List(Of HopPosition)
+    Property PointList As List(Of WayPoint)
     Property JobList As List(Of CourierJob)
 
     Sub New(ByVal Start As IPoint, ByVal Jobs As List(Of CourierJob), ByVal VehicleCapacityLeft As Double, ByVal Map As StreetMap, ByVal Minimiser As RouteFindingMinimiser)
@@ -15,10 +14,10 @@
 
     Private Sub RunAlgorithm(ByVal Start As IPoint, ByVal Jobs As List(Of CourierJob), ByVal CapacityLeft As Double)
         Dim WayPoints As List(Of WayPoint) = WayPoint.CreateWayPointList(Jobs)
-        Dim WayPointPermutations As List(Of List(Of WayPoint)) = GetAllPermutations(WayPoints)
+        Dim WayPointPermutations As List(Of List(Of WayPoint)) = (New ListPermutator(Of WayPoint)).GetAllPermutations(WayPoints)
 
         Dim BestRoute As List(Of WayPoint) = Nothing
-        Dim BestRouteCost As Double = Double.MaxValue
+        Dim BestRouteScore As Double = Double.MaxValue
 
         For Each Route As List(Of WayPoint) In WayPointPermutations
             'Ensure pickups -> dropoffs
@@ -39,44 +38,31 @@
             Next
 
             'Calculate routes now
-            Dim AStarRoutes(Route.Count - 1) As Route
             Dim LastPoint As IPoint = Start
+            Dim Time As TimeSpan = NoticeBoard.Time
+            Dim Latenesses As Integer = 0
             For i = 0 To Route.Count - 1
-                AStarRoutes(i) = RouteCache.GetRoute(LastPoint, Route(i).Position)
+                Dim AStarRoute As Route = RouteCache.GetRoute(LastPoint, Route(i).Position)
+                Time += AStarRoute.GetEstimatedTime(Time) + Customers.WaitTimeAvg + SimulationParameters.DEADLINE_REDUNDANCY
+                If Route(i).DefinedStatus = JobStatus.PENDING_DELIVERY AndAlso Route(i).Job.Deadline < Time Then
+                    Latenesses += 1
+                End If
                 LastPoint = Route(i).Position
             Next
 
-            'Ensure it meets all the deadlines
-            Dim TimeAdded As TimeSpan = NoticeBoard.Time 'Safe/cloned
-            For i = 0 To Route.Count - 2
-                TimeAdded += AStarRoutes(i).GetEstimatedTime + Customers.WaitTimeMax
-                If Route(i).Job.Deadline < TimeAdded Then
-                    Continue For
-                End If
-            Next
-            'End waiting time is ignored, as it counts as on time even if < 2 min to spare.
-
             'Is it any better?
-            Dim Cost As Double = 0
-            Select Case Minimiser
-                Case RouteFindingMinimiser.TIME_NO_TRAFFIC, RouteFindingMinimiser.TIME_WITH_TRAFFIC
-                    Cost = TimeAdded.TotalMilliseconds
-                Case RouteFindingMinimiser.DISTANCE
-                    For Each R As Route In AStarRoutes
-                        Cost += R.GetKM
-                    Next
-            End Select
-            If Cost < BestRouteCost Then
-                BestRouteCost = Cost
+            Dim Score As Double = (Time - NoticeBoard.Time).TotalHours + Latenesses * 1000
+            If Score < BestRouteScore Then
+                BestRouteScore = Score
                 BestRoute = Route
             End If
         Next
 
         If BestRoute IsNot Nothing Then
-            PointList = New List(Of HopPosition)(BestRoute.Count)
-            RouteCost = BestRouteCost
+            PointList = New List(Of WayPoint)(BestRoute.Count)
+            RouteCost = BestRouteScore
             For Each WayPoint As WayPoint In BestRoute
-                PointList.Add(WayPoint.Position)
+                PointList.Add(WayPoint)
             Next
         End If
     End Sub

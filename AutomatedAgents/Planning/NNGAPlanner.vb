@@ -235,7 +235,7 @@
     End Function
 
     'Gives at most n-1 mutations.
-    Function GetAllMutations(ByVal Solution As List(Of WayPoint)) As List(Of List(Of WayPoint))
+    Private Function GetAllMutations(ByVal Solution As List(Of WayPoint)) As List(Of List(Of WayPoint))
         Dim Mutations As New List(Of List(Of WayPoint))
 
         'The capacity just before the waypoint is fulfilled. We know it to be 100% at the end.

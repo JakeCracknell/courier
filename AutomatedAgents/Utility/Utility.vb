@@ -61,11 +61,4 @@
         Dim aProp As System.Reflection.PropertyInfo = GetType(System.Windows.Forms.Control).GetProperty("DoubleBuffered", System.Reflection.BindingFlags.NonPublic Or System.Reflection.BindingFlags.Instance)
         aProp.SetValue(c, True, Nothing)
     End Sub
-
-    Declare Function GetKeyState Lib "user32" Alias "GetKeyState" (ByVal ByValnVirtKey As Int32) As Int16
-    Private Const VK_CAPSLOCK = &H14
-    Private CapsLockOriginalState As Boolean = GetKeyState(VK_CAPSLOCK)
-    Public Function IsInDebugMode()
-        Return CapsLockOriginalState <> GetKeyState(VK_CAPSLOCK)
-    End Function
 End Module
