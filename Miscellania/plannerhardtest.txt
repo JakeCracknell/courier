@@ -1,0 +1,45 @@
+
+        Dim FileName As String = "london_z1.osm"
+        FileName = OSMFileSystemManager.GetFilePathFromName(FileName)
+        Dim Loader As OSMLoader = New OSMLoader(FileName)
+        Map = Loader.CreateMap()
+        MapGraphics.Resize(picMap.Width, picMap.Height, Map.Bounds)
+        SetPictureBox(MapGraphics.DrawMap(Map))
+        tmrRedraw.Start()
+
+        SimulationParameters.DeadlineGammaTheta = 0.5
+        RouteCache.Initialise(Map.NodesAdjacencyList, RouteFindingMinimiser.FUEL_WITH_TRAFFIC)
+        Dim Dispatcher As New CityDispatcher(Map)
+        MapGraphics.ConfigDrawAgentRoutes = 1
+        NoticeBoard.Time = TimeSpan.FromHours(10)
+        Parallel.For(1, 10000, Sub(i)
+                                   Dim Agent1 As New Agent(0, Map, Color.Blue, Vehicles.Type.CAR)
+                                   Dim AgentOpt As New Agent(0, Map, Color.Yellow, Vehicles.Type.CAR)
+                                   Dim Agent2 As New Agent(0, Map, Color.Yellow, Vehicles.Type.CAR)
+                                   Dim Agents As New List(Of Agent)
+                                   Dim Jobs As New List(Of CourierJob)(4)
+                                   For j = 1 To 4
+                                       Jobs.Add(Dispatcher.GenerateJob())
+                                   Next
+                                   Dim StartingPosition As HopPosition = Map.NodesAdjacencyList.GetRandomPoint
+                                   Agent1.Plan.WayPoints = WayPoint.CreateWayPointList(Jobs)
+                                   Dim Planner As New NNGAPlanner(Agent1, False)
+                                   Agent1.Plan = If(Planner.IsSuccessful, Planner.GetPlan, Agent1.Plan)
+                                   Agent2.Plan.WayPoints = WayPoint.CreateWayPointList(Jobs)
+                                   Dim Planner2 As New NNGAPlanner(Agent2, True)
+                                   Agent2.Plan = Planner2.GetPlan
+
+                                   AgentOpt.Plan.WayPoints = WayPoint.CreateWayPointList(Jobs)
+                                   Dim Exhaustic As New ExhaustiveTSPPlanner(AgentOpt.Plan.RoutePosition.GetPoint, Jobs, AgentOpt.GetVehicleCapacityLeft, Map, RouteFindingMinimiser.TIME_WITH_TRAFFIC)
+                                   AgentOpt.Plan = New CourierPlan(AgentOpt.Plan.RoutePosition.GetPoint, Map, RouteFindingMinimiser.TIME_WITH_TRAFFIC, 1, Vehicles.Type.CAR, Exhaustic.PointList)
+                                   'SyncLock Map
+                                   '    'Agents.Add(Agent1)
+                                   '    'MapGraphics.DrawOverlay(Agents, Map).Save("C:\images\" & Now.Ticks & ".png", Drawing.Imaging.ImageFormat.Png)
+                                   '    'Agents(0) = Agent2
+                                   '    'MapGraphics.DrawOverlay(Agents, Map).Save("C:\images\" & Now.Ticks & ".png", Drawing.Imaging.ImageFormat.Png)
+                                   '    'Agents(0) = AgentOpt
+                                   '    'MapGraphics.DrawOverlay(Agents, Map).Save("C:\images\" & Now.Ticks & ".png", Drawing.Imaging.ImageFormat.Png)
+                                   'End SyncLock
+                                   Debug.WriteLine(AgentOpt.Plan.CostScore & "," & Agent1.Plan.CostScore & "," & Agent2.Plan.CostScore)
+
+                               End Sub)
