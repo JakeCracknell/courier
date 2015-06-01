@@ -77,8 +77,8 @@ Partial Class frmStatistics
         'SplitContainer1.Panel2
         '
         Me.SplitContainer1.Panel2.Controls.Add(Me.SplitContainer2)
-        Me.SplitContainer1.Size = New System.Drawing.Size(380, 346)
-        Me.SplitContainer1.SplitterDistance = 299
+        Me.SplitContainer1.Size = New System.Drawing.Size(635, 459)
+        Me.SplitContainer1.SplitterDistance = 412
         Me.SplitContainer1.TabIndex = 0
         '
         'SplitContainer5
@@ -94,8 +94,8 @@ Partial Class frmStatistics
         'SplitContainer5.Panel2
         '
         Me.SplitContainer5.Panel2.Controls.Add(Me.chartSimulationStatistics)
-        Me.SplitContainer5.Size = New System.Drawing.Size(380, 299)
-        Me.SplitContainer5.SplitterDistance = 252
+        Me.SplitContainer5.Size = New System.Drawing.Size(635, 412)
+        Me.SplitContainer5.SplitterDistance = 167
         Me.SplitContainer5.TabIndex = 0
         '
         'clbDataSeries
@@ -105,7 +105,7 @@ Partial Class frmStatistics
         Me.clbDataSeries.FormattingEnabled = True
         Me.clbDataSeries.Location = New System.Drawing.Point(0, 0)
         Me.clbDataSeries.Name = "clbDataSeries"
-        Me.clbDataSeries.Size = New System.Drawing.Size(252, 299)
+        Me.clbDataSeries.Size = New System.Drawing.Size(167, 412)
         Me.clbDataSeries.TabIndex = 0
         '
         'chartSimulationStatistics
@@ -121,7 +121,7 @@ Partial Class frmStatistics
         Me.chartSimulationStatistics.Legends.Add(Legend1)
         Me.chartSimulationStatistics.Location = New System.Drawing.Point(0, 0)
         Me.chartSimulationStatistics.Name = "chartSimulationStatistics"
-        Me.chartSimulationStatistics.Size = New System.Drawing.Size(124, 299)
+        Me.chartSimulationStatistics.Size = New System.Drawing.Size(464, 412)
         Me.chartSimulationStatistics.TabIndex = 0
         '
         'SplitContainer2
@@ -138,8 +138,8 @@ Partial Class frmStatistics
         'SplitContainer2.Panel2
         '
         Me.SplitContainer2.Panel2.Controls.Add(Me.SplitContainer4)
-        Me.SplitContainer2.Size = New System.Drawing.Size(380, 43)
-        Me.SplitContainer2.SplitterDistance = 187
+        Me.SplitContainer2.Size = New System.Drawing.Size(635, 43)
+        Me.SplitContainer2.SplitterDistance = 312
         Me.SplitContainer2.TabIndex = 0
         '
         'SplitContainer3
@@ -156,8 +156,8 @@ Partial Class frmStatistics
         '
         Me.SplitContainer3.Panel2.Controls.Add(Me.txtDataRefreshTimerInterval)
         Me.SplitContainer3.Panel2.Controls.Add(Me.cbDataRefreshTimer)
-        Me.SplitContainer3.Size = New System.Drawing.Size(187, 43)
-        Me.SplitContainer3.SplitterDistance = 90
+        Me.SplitContainer3.Size = New System.Drawing.Size(312, 43)
+        Me.SplitContainer3.SplitterDistance = 150
         Me.SplitContainer3.TabIndex = 0
         '
         'btnRefreshData
@@ -166,7 +166,7 @@ Partial Class frmStatistics
         Me.btnRefreshData.Font = New System.Drawing.Font("Microsoft Sans Serif", 24.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnRefreshData.Location = New System.Drawing.Point(0, 0)
         Me.btnRefreshData.Name = "btnRefreshData"
-        Me.btnRefreshData.Size = New System.Drawing.Size(90, 43)
+        Me.btnRefreshData.Size = New System.Drawing.Size(150, 43)
         Me.btnRefreshData.TabIndex = 0
         Me.btnRefreshData.Text = "Refresh"
         Me.btnRefreshData.UseVisualStyleBackColor = True
@@ -177,7 +177,7 @@ Partial Class frmStatistics
         Me.txtDataRefreshTimerInterval.Enabled = False
         Me.txtDataRefreshTimerInterval.Location = New System.Drawing.Point(0, 17)
         Me.txtDataRefreshTimerInterval.Name = "txtDataRefreshTimerInterval"
-        Me.txtDataRefreshTimerInterval.Size = New System.Drawing.Size(93, 20)
+        Me.txtDataRefreshTimerInterval.Size = New System.Drawing.Size(158, 20)
         Me.txtDataRefreshTimerInterval.TabIndex = 1
         Me.txtDataRefreshTimerInterval.Text = "100"
         '
@@ -187,7 +187,7 @@ Partial Class frmStatistics
         Me.cbDataRefreshTimer.Dock = System.Windows.Forms.DockStyle.Top
         Me.cbDataRefreshTimer.Location = New System.Drawing.Point(0, 0)
         Me.cbDataRefreshTimer.Name = "cbDataRefreshTimer"
-        Me.cbDataRefreshTimer.Size = New System.Drawing.Size(93, 17)
+        Me.cbDataRefreshTimer.Size = New System.Drawing.Size(158, 17)
         Me.cbDataRefreshTimer.TabIndex = 0
         Me.cbDataRefreshTimer.Text = "Timer Refresh Interval:"
         Me.cbDataRefreshTimer.UseVisualStyleBackColor = True
@@ -206,8 +206,8 @@ Partial Class frmStatistics
         'SplitContainer4.Panel2
         '
         Me.SplitContainer4.Panel2.Controls.Add(Me.btnSaveDataAsXML)
-        Me.SplitContainer4.Size = New System.Drawing.Size(189, 43)
-        Me.SplitContainer4.SplitterDistance = 87
+        Me.SplitContainer4.Size = New System.Drawing.Size(319, 43)
+        Me.SplitContainer4.SplitterDistance = 146
         Me.SplitContainer4.TabIndex = 0
         '
         'btnSaveImage
@@ -216,7 +216,7 @@ Partial Class frmStatistics
         Me.btnSaveImage.Font = New System.Drawing.Font("Microsoft Sans Serif", 26.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnSaveImage.Location = New System.Drawing.Point(0, 0)
         Me.btnSaveImage.Name = "btnSaveImage"
-        Me.btnSaveImage.Size = New System.Drawing.Size(87, 43)
+        Me.btnSaveImage.Size = New System.Drawing.Size(146, 43)
         Me.btnSaveImage.TabIndex = 0
         Me.btnSaveImage.Text = ".PNG"
         Me.btnSaveImage.UseVisualStyleBackColor = True
@@ -227,7 +227,7 @@ Partial Class frmStatistics
         Me.btnSaveDataAsXML.Font = New System.Drawing.Font("Microsoft Sans Serif", 26.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnSaveDataAsXML.Location = New System.Drawing.Point(0, 0)
         Me.btnSaveDataAsXML.Name = "btnSaveDataAsXML"
-        Me.btnSaveDataAsXML.Size = New System.Drawing.Size(98, 43)
+        Me.btnSaveDataAsXML.Size = New System.Drawing.Size(169, 43)
         Me.btnSaveDataAsXML.TabIndex = 1
         Me.btnSaveDataAsXML.Text = ".XML"
         Me.btnSaveDataAsXML.UseVisualStyleBackColor = True
@@ -239,7 +239,7 @@ Partial Class frmStatistics
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(380, 346)
+        Me.ClientSize = New System.Drawing.Size(635, 459)
         Me.Controls.Add(Me.SplitContainer1)
         Me.Name = "frmStatistics"
         Me.Text = "Simulation Statistics"
