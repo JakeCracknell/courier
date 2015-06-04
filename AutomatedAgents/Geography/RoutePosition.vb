@@ -6,11 +6,11 @@
     Public HopIndex As Integer
     Public RoadDelay As Boolean = False
 
-    Public Function GetOldNode() As Node
+    Public Function GetPrevPoint() As IPoint
         Return Route.At(HopIndex).FromPoint
     End Function
 
-    Public Function GetNextNode() As Node
+    Public Function GetNextPoint() As IPoint
         Return Route.At(HopIndex).ToPoint
     End Function
 

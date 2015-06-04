@@ -54,6 +54,14 @@
         Return New PointF((X1 + X2) / 2, (Y1 + Y2) / 2)
     End Function
 
+
+    Public Function GetBearing(lat1 As Double, lon1 As Double, lat2 As Double, lon2 As Double) As Double
+        Dim dLon = lon2 - lon1
+        Dim y = Math.Sin(dLon) * Math.Cos(lat2)
+        Dim x = Math.Cos(lat1) * Math.Sin(lat2) - Math.Sin(lat1) * Math.Cos(lat2) * Math.Cos(dLon)
+        Return (180.0 / Math.PI) * Math.Atan2(y, x)
+    End Function
+
     'Euclidian is too inaccurate. This is only called after each waypoint completion.
     Function PointsAreApproximatelyEqual(ByVal p1 As IPoint, ByVal p2 As IPoint) As Boolean
         Return HaversineDistance(p1, p2) < 0.001 ' 1 metre radius allowed.
