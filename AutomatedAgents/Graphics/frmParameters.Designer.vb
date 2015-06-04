@@ -504,7 +504,7 @@ Partial Class frmParameters
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(143, 28)
         Me.Label4.TabIndex = 9
-        Me.Label4.Text = "Deadline Excess, Γ(2,_) (h)"
+        Me.Label4.Text = "Deadline Excess (h), Γ(2,_)"
         Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtDispatchRate

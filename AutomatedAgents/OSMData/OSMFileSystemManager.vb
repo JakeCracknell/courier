@@ -1,5 +1,8 @@
-﻿Module OSMFileSystemManager
-    Private OSM_FOLDERS() As String = {"C:\Users\Jake\Downloads\", "maps\", "C:\Users\Jake\Documents\AAMaps"}
+﻿Imports System.IO
+Module OSMFileSystemManager
+    Private OSM_FOLDERS() As String = {"C:\Users\Jake\Downloads\", _
+                                       AppDomain.CurrentDomain.BaseDirectory & Path.DirectorySeparatorChar & "maps" & Path.DirectorySeparatorChar, _
+                                       "C:\Users\Jake\Documents\AAMaps"}
 
     Private Dictionary As New Dictionary(Of String, String)
 

@@ -60,7 +60,7 @@
         lvLog.BeginUpdate()
         For Each E As SimulationState.LogEvent In Events
             Dim LVI As New ListViewItem(E.Time.ToString)
-            LVI.SubItems.Add(If(E.AgentID >= 0, E.AgentID, "HQ"))
+            LVI.SubItems.Add(If(E.AgentID >= 0, E.AgentID.ToString, "HQ"))
             LVI.SubItems.Add(E.Description)
             lvLog.Items.Insert(0, LVI)
         Next

@@ -273,7 +273,9 @@
                 AASimulation = New AACourierSimulation(Map)
             End If
             AASimulation.Start()
-            frmStatistics.SetAASimulation(AASimulation)
+            If ChartingIsSupported() Then
+                frmStatistics.SetAASimulation(AASimulation)
+            End If
         End If
     End Sub
 
@@ -286,7 +288,9 @@
                 AASimulation = New AAPlayground(Map)
             End If
             AASimulation.Start()
-            frmStatistics.SetAASimulation(AASimulation)
+            If ChartingIsSupported() Then
+                frmStatistics.SetAASimulation(AASimulation)
+            End If
         End If
     End Sub
 
@@ -371,9 +375,11 @@
     End Sub
 
     Private Sub ViewStatisticsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewStatisticsToolStripMenuItem.Click
-        frmStatistics.Show()
-        If AASimulation IsNot Nothing Then
-            frmStatistics.SetAASimulation(AASimulation)
+        If ChartingIsSupported() Then
+            frmStatistics.Show()
+            If AASimulation IsNot Nothing Then
+                frmStatistics.SetAASimulation(AASimulation)
+            End If
         End If
     End Sub
     Private Sub GridToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles GridToolStripMenuItem.Click

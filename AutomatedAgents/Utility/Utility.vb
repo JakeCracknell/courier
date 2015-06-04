@@ -54,6 +54,10 @@
     End Function
 
 
+    Public Function ChartingIsSupported() As Boolean
+        Return Type.GetType("Mono.Runtime") Is Nothing
+    End Function
+
     Public Sub SetDoubleBuffered(ByVal c As System.Windows.Forms.Control)
         If System.Windows.Forms.SystemInformation.TerminalServerSession Then
             Return
