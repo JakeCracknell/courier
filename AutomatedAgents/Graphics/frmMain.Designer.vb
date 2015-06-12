@@ -89,9 +89,8 @@ Partial Class frmMain
         Me.ViewStatisticsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewConsoleToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ScriptToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.tmrRedraw = New System.Windows.Forms.Timer(Me.components)
         Me.picMap = New System.Windows.Forms.PictureBox()
-        Me.tmrStatus = New System.Windows.Forms.Timer(Me.components)
+        Me.tmrSimulation = New System.Windows.Forms.Timer(Me.components)
         Me.bwSimulator = New System.ComponentModel.BackgroundWorker()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
@@ -532,11 +531,6 @@ Partial Class frmMain
         Me.ScriptToolStripMenuItem.Size = New System.Drawing.Size(162, 22)
         Me.ScriptToolStripMenuItem.Text = "Script..."
         '
-        'tmrRedraw
-        '
-        Me.tmrRedraw.Enabled = True
-        Me.tmrRedraw.Interval = 10
-        '
         'picMap
         '
         Me.picMap.Dock = System.Windows.Forms.DockStyle.Fill
@@ -546,9 +540,9 @@ Partial Class frmMain
         Me.picMap.TabIndex = 2
         Me.picMap.TabStop = False
         '
-        'tmrStatus
+        'tmrSimulation
         '
-        Me.tmrStatus.Enabled = True
+        Me.tmrSimulation.Enabled = True
         '
         'bwSimulator
         '
@@ -579,10 +573,9 @@ Partial Class frmMain
     Friend WithEvents MenuStrip1 As System.Windows.Forms.MenuStrip
     Friend WithEvents FileToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents AgentsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents tmrRedraw As System.Windows.Forms.Timer
     Friend WithEvents picMap As System.Windows.Forms.PictureBox
     Friend WithEvents lblTime As System.Windows.Forms.ToolStripStatusLabel
-    Friend WithEvents tmrStatus As System.Windows.Forms.Timer
+    Friend WithEvents tmrSimulation As System.Windows.Forms.Timer
     Friend WithEvents RouteTestingToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents RouteFromToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents lblDebugVariable As System.Windows.Forms.ToolStripStatusLabel

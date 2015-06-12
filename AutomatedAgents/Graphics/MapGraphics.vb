@@ -28,7 +28,6 @@
 
     Private Const ROUTE_TO_LABEL_FORMAT As String = "TO ({0} hops, {1} km, {2}-{3} min, {4}-{5} L)"
 
-
     Private MapBitmapOriginal As Bitmap
     Private MapBitmapOverlay As Bitmap
     Private Width As Integer
@@ -44,6 +43,7 @@
     Public ConfigDrawLandmarks As Boolean = True
     Public ConfigDrawGrid As Boolean = False
     Public ConfigDrawTrafficLayer As Boolean = False
+    Public MapRedrawRequired As Boolean
 
     Sub Resize(ByVal _Width As Integer, ByVal _Height As Integer, ByVal Bounds As Bounds)
         Width = _Width
@@ -283,6 +283,11 @@
     End Function
 
     Function DrawOverlay(ByVal Agents As List(Of Agent), ByVal Map As StreetMap) As Image
+        If MapRedrawRequired Then
+            DrawMap(Map)
+            MapRedrawRequired = False
+        End If
+
         Dim OverlayBitmapCopy As Bitmap = MapBitmapOriginal.Clone
         Dim grOverlay As Graphics = Graphics.FromImage(OverlayBitmapCopy)
 

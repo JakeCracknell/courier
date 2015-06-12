@@ -1,12 +1,14 @@
 ﻿Public Class frmMain
     Private Map As StreetMap
- 
+
+    Private Const STATUS_REFRESH_MAX_INTERVAL_MS As Integer = 10
     Private Const LOAD_TSMI_TEXT_PREFIX As String = "Load "
     Private Const AGENT_TSMI_TEXT_PREFIX As String = "Add "
     Private AGENT_TSMI_AMOUNTS() As Integer = {1, 2, 3, 4, 5, 10, 20, 50, 100, 500, 1000, 5000, 10000}
 
     Private AASimulation As AASimulation
     Private MaxSimulationTicks As Long = Long.MaxValue
+    Private PictureBoxImageToDraw As Bitmap = Nothing
 
     'On form load, add menu items to load each som file, spawn agents.
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -35,7 +37,7 @@
     Private Sub frmMain_Resize(sender As Object, e As EventArgs) Handles Me.Resize
         If Map IsNot Nothing And picMap.Width * picMap.Height > 0 Then
             MapGraphics.Resize(picMap.Width, picMap.Height, Map.Bounds)
-            SetPictureBox(MapGraphics.DrawMap(Map))
+            ScheduleMapRedraw()
         End If
     End Sub
 
@@ -47,15 +49,12 @@
         Dim Loader As OSMLoader = New OSMLoader(FileName)
         Map = Loader.CreateMap()
         MapGraphics.Resize(picMap.Width, picMap.Height, Map.Bounds)
-        SetPictureBox(MapGraphics.DrawMap(Map))
-        tmrRedraw.Start()
+        ScheduleMapRedraw()
     End Sub
 
     Private Sub NodesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NodesToolStripMenuItem.Click
         MapGraphics.ConfigDrawBusinessNodes = NodesToolStripMenuItem.Checked
-        If Map IsNot Nothing Then
-            SetPictureBox(DrawMap(Map))
-        End If
+        ScheduleMapRedraw()
     End Sub
 
     Private Sub AgentRoutesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AgentRoutesToolStripMenuItem.Click
@@ -99,7 +98,8 @@
                                     If TickCounter Mod SimulationParameters.DisplayRefreshSpeed = 0 AndAlso _
                                         Not PauseDisplayToolStripMenuItem.Checked Then
                                         If SimulationStateChanged Then
-                                            SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, AASimulation.Map))
+                                            'SetPictureBox(MapGraphics.DrawOverlay(AASimulation.Agents, AASimulation.Map))
+                                            PictureBoxImageToDraw = MapGraphics.DrawOverlay(AASimulation.Agents, AASimulation.Map)
                                             SimulationState.CacheAASimulationStatus(AASimulation)
                                         End If
                                     End If
@@ -133,7 +133,9 @@
         End While
     End Sub
 
-    Private Sub tmrStatus_Tick(sender As Object, e As EventArgs) Handles tmrStatus.Tick
+    Private Sub tmrStatus_Tick(sender As Object, e As EventArgs) Handles tmrSimulation.Tick
+        tmrSimulation.Interval = Math.Min(STATUS_REFRESH_MAX_INTERVAL_MS, SimulationParameters.DisplayRefreshSpeed)
+
         ShowMemoryUsage()
         ShowTime()
         ShowDebugVariable()
@@ -144,6 +146,11 @@
 
         If KeepRefreshingRoute AndAlso LastAStarEpsilon <> SimulationParameters.AStarAccelerator Then
             FindAndDisplayRoute()
+        End If
+
+        If PictureBoxImageToDraw IsNot Nothing Then
+            SetPictureBox(PictureBoxImageToDraw)
+            PictureBoxImageToDraw = Nothing
         End If
     End Sub
 
@@ -244,11 +251,22 @@
             If picMap.Image IsNot Nothing Then
                 picMap.Image.Dispose()
             End If
-            picMap.Image = NewImage.Clone
+
+            picMap.Image = NewImage
         Catch ex As Exception
             Debug.WriteLine(ex.ToString)
         End Try
     End Sub
+    Private Sub ScheduleMapRedraw()
+        If Map IsNot Nothing Then
+            If AASimulation Is Nothing OrElse Not AASimulation.IsRunning Then
+                SetPictureBox(DrawMap(Map))
+            Else
+                MapGraphics.MapRedrawRequired = True
+            End If
+        End If
+    End Sub
+
 
     Private Sub ShowDebugVariable()
         If SimulationParameters.DisplayedDebugVariable IsNot Nothing Then
@@ -304,7 +322,7 @@
 
     Private Sub ResetToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetToolStripMenuItem.Click
         CancelSimulation()
-        SetPictureBox(MapGraphics.DrawMap(Map))
+        ScheduleMapRedraw()
     End Sub
 
     Private Sub ThinRoadsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ThinRoadsToolStripMenuItem.Click
@@ -314,10 +332,7 @@
         ElseIf Not ThickRoadsToolStripMenuItem.Checked Then
             MapGraphics.ConfigDrawRoads = 0
         End If
-
-        If Map IsNot Nothing Then
-            SetPictureBox(DrawMap(Map))
-        End If
+        ScheduleMapRedraw()
     End Sub
 
     Private Sub ThickRoadsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ThickRoadsToolStripMenuItem.Click
@@ -327,10 +342,7 @@
         ElseIf Not ThinRoadsToolStripMenuItem.Checked Then
             MapGraphics.ConfigDrawRoads = 0
         End If
-
-        If Map IsNot Nothing Then
-            SetPictureBox(DrawMap(Map))
-        End If
+        ScheduleMapRedraw()
     End Sub
 
     Private Sub SpeedToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SpeedToolStripMenuItem.Click
@@ -371,7 +383,7 @@
 
     Private Sub LandmarksToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LandmarksToolStripMenuItem.Click
         MapGraphics.ConfigDrawLandmarks = LandmarksToolStripMenuItem.Checked
-        SetPictureBox(MapGraphics.DrawMap(Map))
+        ScheduleMapRedraw()
     End Sub
 
     Private Sub ViewStatisticsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewStatisticsToolStripMenuItem.Click
@@ -384,11 +396,11 @@
     End Sub
     Private Sub GridToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles GridToolStripMenuItem.Click
         MapGraphics.ConfigDrawGrid = GridToolStripMenuItem.Checked
-        SetPictureBox(MapGraphics.DrawMap(Map))
+        ScheduleMapRedraw()
     End Sub
     Private Sub RoadDelayNodesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RoadDelayNodesToolStripMenuItem.Click
         MapGraphics.ConfigDrawRoadDelayNodes = RoadDelayNodesToolStripMenuItem.Checked
-        SetPictureBox(MapGraphics.DrawMap(Map))
+        ScheduleMapRedraw()
     End Sub
     Private Sub TrafficToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TrafficToolStripMenuItem.Click
         MapGraphics.ConfigDrawTrafficLayer = TrafficToolStripMenuItem.Checked
@@ -499,6 +511,4 @@
 
         Me.Text = InputBox("Name this simulation:")
     End Sub
-
-
 End Class
