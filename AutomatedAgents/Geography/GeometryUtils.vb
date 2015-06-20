@@ -54,7 +54,9 @@
         Return New PointF((X1 + X2) / 2, (Y1 + Y2) / 2)
     End Function
 
-
+    Public Function GetBearing(FromPoint As IPoint, ToPoint As IPoint) As Double
+        Return GetBearing(FromPoint.GetLatitude, FromPoint.GetLongitude, ToPoint.GetLatitude, ToPoint.GetLongitude)
+    End Function
     Public Function GetBearing(lat1 As Double, lon1 As Double, lat2 As Double, lon2 As Double) As Double
         Dim dLon = lon2 - lon1
         Dim y = Math.Sin(dLon) * Math.Cos(lat2)

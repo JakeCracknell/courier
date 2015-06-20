@@ -1,13 +1,22 @@
 ﻿Public Class frmAgentStatus
-    Private AASimulation As AASimulation
     Private LastStateHash As Integer
     Private StrikeOutFont As Font
+    Private frmStreetView As Form
+    Private picStreetView As PictureBox
 
     Private Sub frmAgentStatus_Load(sender As Object, e As EventArgs) Handles Me.Load
         SetDoubleBuffered(lvAgentList)
         SetDoubleBuffered(lvJobList)
         SetDoubleBuffered(lvLog)
         StrikeOutFont = New Font(lvJobList.Font.FontFamily, lvJobList.Font.Size, FontStyle.Strikeout)
+
+        picStreetView = New PictureBox
+        picStreetView.Dock = DockStyle.Fill
+        frmStreetView = New Form()
+        frmStreetView.FormBorderStyle = Windows.Forms.FormBorderStyle.None
+        frmStreetView.TopMost = True
+        frmStreetView.Size = New Size(600, 200)
+        frmStreetView.Controls.Add(picStreetView)
     End Sub
 
     Sub RefreshLists()
@@ -68,4 +77,27 @@
         lvLog.EndUpdate()
     End Sub
 
+    Private Sub lvAgentList_MouseDown(sender As Object, e As MouseEventArgs) Handles lvAgentList.MouseDown
+        Try
+            Dim MousePoint As Point = lvAgentList.PointToClient(Control.MousePosition)
+            Dim HitTest As ListViewHitTestInfo = lvAgentList.HitTest(MousePoint)
+            Dim LVI As ListViewItem = lvAgentList.GetItemAt(MousePoint.X, MousePoint.Y)
+            If LVI IsNot Nothing Then
+                Dim AgentID As Integer = Integer.Parse(LVI.Text)
+                Dim Hop As Hop = SimulationState.GetHopByAgentID(AgentID)
+                Dim Bearing As Double = GetBearing(Hop.FromPoint, Hop.ToPoint)
+                picStreetView.ImageLocation = "http://maps.googleapis.com/maps/api/streetview?size=600x200&location=" & Hop.FromPoint.GetLatitude & ",%20" & Hop.FromPoint.GetLongitude & "&fov=110&heading=" & Bearing & "&pitch=9.66"
+                frmStreetView.Location = Cursor.Position
+                frmStreetView.Visible = True
+            Else
+                frmStreetView.Hide()
+            End If
+        Catch ex As Exception
+            'Possible race condition. GUI bug is acceptable
+        End Try
+    End Sub
+
+    Private Sub lvAgentList_MouseUp(sender As Object, e As MouseEventArgs) Handles lvAgentList.MouseUp
+        frmStreetView.Hide()
+    End Sub
 End Class

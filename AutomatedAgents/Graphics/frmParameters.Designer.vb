@@ -613,7 +613,6 @@ Partial Class frmParameters
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
         Me.Name = "frmParameters"
         Me.Text = "Simulation Parameters"
-        Me.TopMost = True
         Me.TableLayoutPanel1.ResumeLayout(False)
         Me.TableLayoutPanel1.PerformLayout()
         CType(Me.TrackBar12, System.ComponentModel.ISupportInitialize).EndInit()

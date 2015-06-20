@@ -21,11 +21,13 @@
         Private SimulationStateSyncObject As New Object
         Private AgentStatuses As List(Of List(Of String))
         Private JobStatuses As List(Of List(Of String))
+        Private CurrentHops As Dictionary(Of Integer, Hop)
 
         Public Sub Initialise()
             Events = New List(Of LogEvent)
             AgentStatuses = New List(Of List(Of String))
             JobStatuses = New List(Of List(Of String))
+            CurrentHops = New Dictionary(Of Integer, Hop)
         End Sub
 
         Public Sub NewEvent(ByVal Description As String)
@@ -69,6 +71,7 @@
                     AgentList.Add(Math.Round(Agent.GetVehicleCapacityPercentage, 1) & "%")
                     AgentList.Add(Agent.TotalCompletedJobs)
                     AgentStatuses.Add(AgentList)
+                    CurrentHops(Agent.AgentID) = Agent.Plan.RoutePosition.GetCurrentHop
 
                     For Each J As CourierJob In Agent.Plan.GetCurrentJobs
                         Dim JobList As New List(Of String)
@@ -96,5 +99,8 @@
             End SyncLock
         End Function
 
+        Public Function GetHopByAgentID(ByVal AgentID As Integer) As Hop
+            Return CurrentHops(AgentID)
+        End Function
     End Module
 End Namespace

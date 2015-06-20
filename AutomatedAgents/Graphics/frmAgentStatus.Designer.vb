@@ -270,7 +270,6 @@ Partial Class frmAgentStatus
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.Name = "frmAgentStatus"
         Me.Text = "Agent Status"
-        Me.TopMost = True
         Me.SplitContainer1.Panel1.ResumeLayout(False)
         Me.SplitContainer1.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).EndInit()

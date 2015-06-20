@@ -104,4 +104,12 @@
         Return SubRoute
     End Function
 
+    Function GetCurrentHop() As Hop
+        If Route IsNot Nothing AndAlso HopIndex < Route.HopCount Then
+            Return Route.At(HopIndex)
+        Else
+            Return Nothing
+        End If
+    End Function
+
 End Class
