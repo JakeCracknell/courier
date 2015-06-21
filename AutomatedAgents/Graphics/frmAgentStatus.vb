@@ -15,6 +15,7 @@
         frmStreetView = New Form()
         frmStreetView.FormBorderStyle = Windows.Forms.FormBorderStyle.None
         frmStreetView.TopMost = True
+        frmStreetView.ShowInTaskbar = False
         frmStreetView.Size = New Size(600, 200)
         frmStreetView.Controls.Add(picStreetView)
     End Sub

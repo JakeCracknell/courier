@@ -29,8 +29,8 @@ Partial Class frmParameters
         Me.TextBox11 = New System.Windows.Forms.TextBox()
         Me.TrackBar11 = New System.Windows.Forms.TrackBar()
         Me.Label13 = New System.Windows.Forms.Label()
-        Me.TextBox10 = New System.Windows.Forms.TextBox()
-        Me.TrackBar10 = New System.Windows.Forms.TrackBar()
+        Me.txtAgentRadius = New System.Windows.Forms.TextBox()
+        Me.tbAgentRadius = New System.Windows.Forms.TrackBar()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.txtTrafficDisplay = New System.Windows.Forms.TextBox()
         Me.tbTrafficDisplay = New System.Windows.Forms.TrackBar()
@@ -68,7 +68,7 @@ Partial Class frmParameters
         Me.TableLayoutPanel1.SuspendLayout()
         CType(Me.TrackBar12, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TrackBar11, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.TrackBar10, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.tbAgentRadius, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbTrafficDisplay, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbAStarAccelerator, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tbFeeHourly, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -94,8 +94,8 @@ Partial Class frmParameters
         Me.TableLayoutPanel1.Controls.Add(Me.TextBox11, 2, 12)
         Me.TableLayoutPanel1.Controls.Add(Me.TrackBar11, 1, 12)
         Me.TableLayoutPanel1.Controls.Add(Me.Label13, 0, 12)
-        Me.TableLayoutPanel1.Controls.Add(Me.TextBox10, 2, 11)
-        Me.TableLayoutPanel1.Controls.Add(Me.TrackBar10, 1, 11)
+        Me.TableLayoutPanel1.Controls.Add(Me.txtAgentRadius, 2, 11)
+        Me.TableLayoutPanel1.Controls.Add(Me.tbAgentRadius, 1, 11)
         Me.TableLayoutPanel1.Controls.Add(Me.Label12, 0, 11)
         Me.TableLayoutPanel1.Controls.Add(Me.txtTrafficDisplay, 2, 10)
         Me.TableLayoutPanel1.Controls.Add(Me.tbTrafficDisplay, 1, 10)
@@ -148,6 +148,7 @@ Partial Class frmParameters
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.142857!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.142857!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.142857!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
         Me.TableLayoutPanel1.Size = New System.Drawing.Size(369, 396)
         Me.TableLayoutPanel1.TabIndex = 0
         '
@@ -219,28 +220,27 @@ Partial Class frmParameters
         Me.Label13.Text = " "
         Me.Label13.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'TextBox10
+        'txtAgentRadius
         '
-        Me.TextBox10.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TextBox10.Enabled = False
-        Me.TextBox10.Location = New System.Drawing.Point(301, 311)
-        Me.TextBox10.Name = "TextBox10"
-        Me.TextBox10.Size = New System.Drawing.Size(65, 20)
-        Me.TextBox10.TabIndex = 35
+        Me.txtAgentRadius.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.txtAgentRadius.Location = New System.Drawing.Point(301, 311)
+        Me.txtAgentRadius.Name = "txtAgentRadius"
+        Me.txtAgentRadius.Size = New System.Drawing.Size(65, 20)
+        Me.txtAgentRadius.TabIndex = 35
         '
-        'TrackBar10
+        'tbAgentRadius
         '
-        Me.TrackBar10.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TrackBar10.Enabled = False
-        Me.TrackBar10.Location = New System.Drawing.Point(152, 311)
-        Me.TrackBar10.Maximum = 5000
-        Me.TrackBar10.Minimum = 10
-        Me.TrackBar10.Name = "TrackBar10"
-        Me.TrackBar10.Size = New System.Drawing.Size(143, 22)
-        Me.TrackBar10.TabIndex = 34
-        Me.TrackBar10.TickFrequency = 0
-        Me.TrackBar10.TickStyle = System.Windows.Forms.TickStyle.None
-        Me.TrackBar10.Value = 10
+        Me.tbAgentRadius.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tbAgentRadius.LargeChange = 3
+        Me.tbAgentRadius.Location = New System.Drawing.Point(152, 311)
+        Me.tbAgentRadius.Maximum = 100
+        Me.tbAgentRadius.Minimum = 1
+        Me.tbAgentRadius.Name = "tbAgentRadius"
+        Me.tbAgentRadius.Size = New System.Drawing.Size(143, 22)
+        Me.tbAgentRadius.TabIndex = 34
+        Me.tbAgentRadius.TickFrequency = 0
+        Me.tbAgentRadius.TickStyle = System.Windows.Forms.TickStyle.None
+        Me.tbAgentRadius.Value = 10
         '
         'Label12
         '
@@ -250,7 +250,7 @@ Partial Class frmParameters
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(143, 28)
         Me.Label12.TabIndex = 33
-        Me.Label12.Text = " "
+        Me.Label12.Text = "Agent Display Radius"
         Me.Label12.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtTrafficDisplay
@@ -617,7 +617,7 @@ Partial Class frmParameters
         Me.TableLayoutPanel1.PerformLayout()
         CType(Me.TrackBar12, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.TrackBar11, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.TrackBar10, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.tbAgentRadius, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbTrafficDisplay, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbAStarAccelerator, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tbFeeHourly, System.ComponentModel.ISupportInitialize).EndInit()
@@ -645,8 +645,8 @@ Partial Class frmParameters
     Friend WithEvents TextBox11 As System.Windows.Forms.TextBox
     Friend WithEvents TrackBar11 As System.Windows.Forms.TrackBar
     Friend WithEvents Label13 As System.Windows.Forms.Label
-    Friend WithEvents TextBox10 As System.Windows.Forms.TextBox
-    Friend WithEvents TrackBar10 As System.Windows.Forms.TrackBar
+    Friend WithEvents txtAgentRadius As System.Windows.Forms.TextBox
+    Friend WithEvents tbAgentRadius As System.Windows.Forms.TrackBar
     Friend WithEvents Label12 As System.Windows.Forms.Label
     Friend WithEvents txtTrafficDisplay As System.Windows.Forms.TextBox
     Friend WithEvents tbTrafficDisplay As System.Windows.Forms.TrackBar

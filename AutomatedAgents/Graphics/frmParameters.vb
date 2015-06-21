@@ -23,6 +23,8 @@
         tbAStarAccelerator.Value = SimulationParameters.AStarAccelerator * 100
         txtTrafficDisplay.Text = SimulationParameters.TrafficDisplayAlpha
         tbTrafficDisplay.Value = SimulationParameters.TrafficDisplayAlpha * 10
+        txtAgentRadius.Text = SimulationParameters.AgentDrawSize
+        tbAgentRadius.Value = SimulationParameters.AgentDrawSize
 
         Label1.Focus()
     End Sub
@@ -71,6 +73,10 @@
     Private Sub tbTrafficDisplay_Scroll(sender As Object, e As EventArgs) Handles tbTrafficDisplay.Scroll
         txtTrafficDisplay.Text = tbTrafficDisplay.Value / 10
         SimulationParameters.TrafficDisplayAlpha = tbTrafficDisplay.Value / 10
+    End Sub
+    Private Sub tbAgentRadius_Scroll(sender As Object, e As EventArgs) Handles tbAgentRadius.Scroll
+        txtAgentRadius.Text = tbAgentRadius.Value
+        SimulationParameters.AgentDrawSize = tbAgentRadius.Value
     End Sub
 
     Private Sub txtSimSpeed_TextChanged(sender As Object, e As EventArgs) Handles txtSimSpeed.TextChanged
@@ -172,4 +178,15 @@
             End If
         End If
     End Sub
+    Private Sub txtAgentRadius_TextChanged(sender As Object, e As EventArgs) Handles txtAgentRadius.TextChanged
+        If IsNumeric(txtAgentRadius.Text) Then
+            Dim txtValue As Integer = CInt(txtAgentRadius.Text)
+            If txtValue >= tbAgentRadius.Minimum And txtValue <= tbAgentRadius.Maximum Then
+                tbAgentRadius.Value = txtValue
+                SimulationParameters.AgentDrawSize = txtValue
+            End If
+        End If
+    End Sub
+
+
 End Class

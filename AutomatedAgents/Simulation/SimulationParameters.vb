@@ -12,7 +12,7 @@
         Public FeeHourlyPrice As Double = 5
         Public AStarAccelerator As Double = 8
         Public TrafficDisplayAlpha As Double = 3.0
-
+        Public AgentDrawSize As Integer = 10
 
         'Options selected in frmMain GUI
         Public CNPVersion As ContractNetPolicy = ContractNetPolicy.CNP5

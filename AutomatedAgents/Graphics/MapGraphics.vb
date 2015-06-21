@@ -1,6 +1,5 @@
 ﻿Module MapGraphics
     Private BG_COLOR As Color = Color.White
-    Private Const AGENT_DRAW_SIZE As Integer = 10
     Private Const LANDMARK_NODE_DRAW_SIZE As Integer = 10
     Private Const SPECIAL_NODE_DRAW_SIZE_THIN As Integer = 3
     Private Const SPECIAL_NODE_DRAW_SIZE_THICK As Integer = 5
@@ -124,10 +123,10 @@
     End Function
 
     Sub DrawTriangle(ByVal gr As Graphics, ByVal Point As Point, ByVal Upwards As Boolean)
-        Dim y1 As Integer = Point.Y - AGENT_DRAW_SIZE \ 2
-        Dim y2 As Integer = Point.Y + AGENT_DRAW_SIZE \ 2
-        Dim x1 As Integer = Point.X - AGENT_DRAW_SIZE \ 2
-        Dim x2 As Integer = Point.X + AGENT_DRAW_SIZE \ 2
+        Dim y1 As Integer = Point.Y - SimulationParameters.AgentDrawSize \ 2
+        Dim y2 As Integer = Point.Y + SimulationParameters.AgentDrawSize \ 2
+        Dim x1 As Integer = Point.X - SimulationParameters.AgentDrawSize \ 2
+        Dim x2 As Integer = Point.X + SimulationParameters.AgentDrawSize \ 2
 
         Dim gp As New Drawing2D.GraphicsPath(Drawing2D.FillMode.Alternate)
         If Upwards Then
@@ -160,10 +159,10 @@
         If Agent.Plan.RoutePosition IsNot Nothing Then
             Dim CurrentPoint As Point = CC.GetPoint(Agent.Plan.RoutePosition.GetPoint)
             Dim Brush As New SolidBrush(Agent.Color)
-            Dim Rectangle As New Rectangle(CInt(CurrentPoint.X - AGENT_DRAW_SIZE / 2), _
-                               CInt(CurrentPoint.Y - AGENT_DRAW_SIZE / 2), _
-                               AGENT_DRAW_SIZE, AGENT_DRAW_SIZE)
-            If Agent.Delayer.IsWaiting Then             
+            Dim Rectangle As New Rectangle(CInt(CurrentPoint.X - SimulationParameters.AgentDrawSize / 2), _
+                               CInt(CurrentPoint.Y - SimulationParameters.AgentDrawSize / 2), _
+                               SimulationParameters.AgentDrawSize, SimulationParameters.AgentDrawSize)
+            If Agent.Delayer.IsWaiting Then
                 gr.DrawEllipse(New Pen(Brush), Rectangle)
                 gr.FillPie(Brush, Rectangle, 0, CSng(Agent.Delayer.GetPercentage * 360))
             Else
@@ -172,7 +171,11 @@
 
 
             If Agent.Plan.RoutePosition.RoadDelay Then
-                gr.FillRectangle(New SolidBrush(Color.FromArgb(Agent.Color.ToArgb Xor &HFFFFFF)), CurrentPoint.X - 2, CurrentPoint.Y - 2, 4, 4)
+                Rectangle.Location = New Point(Rectangle.X + Rectangle.Width / 4, Rectangle.Y + Rectangle.Height / 4)
+                Rectangle.Width /= 2
+                Rectangle.Height /= 2
+                Dim NegativeColourBrush As Brush = New SolidBrush(Color.FromArgb(Agent.Color.ToArgb Xor &HFFFFFF))
+                gr.FillRectangle(NegativeColourBrush, Rectangle)
             End If
 
             If ConfigDrawAgentLines Then
